@@ -2,7 +2,7 @@
 //  AppDelegate.m
 //  Sensors test
 //
-//  Created by MISO on 25/4/19.
+//  Created by Alberto J. on 25/4/19.
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
@@ -17,6 +17,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    self.motion = [[MotionManager alloc] init];
+    [self.motion startAccelerometers];
     return YES;
 }
 
@@ -35,11 +37,13 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+    [self.motion stopAccelerometers];
 }
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [self.motion startAccelerometers];
 }
 
 

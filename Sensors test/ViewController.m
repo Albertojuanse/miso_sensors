@@ -2,7 +2,7 @@
 //  ViewController.m
 //  Sensors test
 //
-//  Created by MISO on 25/4/19.
+//  Created by Alberto J. on 25/4/19.
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
@@ -16,7 +16,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
 }
 
 

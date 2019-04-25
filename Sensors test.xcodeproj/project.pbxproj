@@ -13,6 +13,7 @@
 		4227988D2271F37800E07C39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4227988C2271F37800E07C39 /* Assets.xcassets */; };
 		422798902271F37800E07C39 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4227988E2271F37800E07C39 /* LaunchScreen.storyboard */; };
 		422798932271F37800E07C39 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798922271F37800E07C39 /* main.m */; };
+		4227989B2271F60700E07C39 /* MotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227989A2271F60700E07C39 /* MotionManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,8 @@
 		4227988F2271F37800E07C39 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		422798912271F37800E07C39 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		422798922271F37800E07C39 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		422798992271F5D600E07C39 /* MotionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MotionManager.h; sourceTree = "<group>"; };
+		4227989A2271F60700E07C39 /* MotionManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MotionManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +70,8 @@
 				4227988E2271F37800E07C39 /* LaunchScreen.storyboard */,
 				422798912271F37800E07C39 /* Info.plist */,
 				422798922271F37800E07C39 /* main.m */,
+				422798992271F5D600E07C39 /* MotionManager.h */,
+				4227989A2271F60700E07C39 /* MotionManager.m */,
 			);
 			path = "Sensors test";
 			sourceTree = "<group>";
@@ -145,6 +150,7 @@
 				422798882271F37800E07C39 /* ViewController.m in Sources */,
 				422798932271F37800E07C39 /* main.m in Sources */,
 				422798852271F37800E07C39 /* AppDelegate.m in Sources */,
+				4227989B2271F60700E07C39 /* MotionManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
