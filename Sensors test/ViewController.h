@@ -20,6 +20,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *labelGX;
 @property (weak, nonatomic) IBOutlet UILabel *labelGY;
 @property (weak, nonatomic) IBOutlet UILabel *labelGZ;
+@property (weak, nonatomic) IBOutlet UILabel *labelDegP;
+@property (weak, nonatomic) IBOutlet UILabel *labelDegR;
+@property (weak, nonatomic) IBOutlet UILabel *labelDegY;
 
 
 @end

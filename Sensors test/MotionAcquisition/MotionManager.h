@@ -29,9 +29,9 @@
     double ay0;
     double az0;
     
-    double gx0;
+    double gp0;
+    double gr0;
     double gy0;
-    double gz0;
     
     double ax_ave_sum;
     double ay_ave_sum;
@@ -41,22 +41,22 @@
     double ay_ave;
     double az_ave;
     
-    double gx_ave_sum;
+    double gp_ave_sum;
+    double gr_ave_sum;
     double gy_ave_sum;
-    double gz_ave_sum;
     
-    double gx_ave;
+    double gp_ave;
+    double gr_ave;
     double gy_ave;
-    double gz_ave;
     
     // Kinematic variables
     double ax;
     double ay;
     double az;
     
-    double gx;
+    double gp;
+    double gr;
     double gy;
-    double gz;
     
     double vx;
     double vy;

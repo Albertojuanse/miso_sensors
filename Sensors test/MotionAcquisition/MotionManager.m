@@ -80,7 +80,7 @@
 }
 
 - (void) process {
-    // NSLog(@"; x: %f ; y: %f ; z: %f } { timestamp: ", self.gyroData.rotationRate.x, self.gyroData.rotationRate.y, self.gyroData.rotationRate.y);
+    NSLog(@"; x: %f ; y: %f ; z: %f } { timestamp: ", self.gyroData.rotationRate.x, self.gyroData.rotationRate.y, self.gyroData.rotationRate.y);
     // NSLog(@"; x: %f ; y: %f ; z: %f } { timestamp: ", self.accelerometerData.acceleration.x, self.accelerometerData.acceleration.y, self.accelerometerData.acceleration.z);
 
     // No valid results will be while calibration process
@@ -101,25 +101,25 @@
         az_ave = az_ave_sum / calibration_counter;
         
         // Gyroscope calibration
-        gx0 = self.gyroData.rotationRate.x;
-        gx_ave_sum += gx0;
-        gx_ave = gx_ave_sum / calibration_counter;
+        gp0 = self.gyroData.rotationRate.x;
+        gp_ave_sum += gp0;
+        gp_ave = gp_ave_sum / calibration_counter;
         
-        gy0 = self.gyroData.rotationRate.y;
+        gr0 = self.gyroData.rotationRate.y;
+        gr_ave_sum += gr0;
+        gr_ave = gr_ave_sum / calibration_counter;
+        
+        gy0 = self.gyroData.rotationRate.z;
         gy_ave_sum += gy0;
         gy_ave = gy_ave_sum / calibration_counter;
-        
-        gz0 = self.gyroData.rotationRate.z;
-        gz_ave_sum += gz0;
-        gz_ave = gz_ave_sum / calibration_counter;
         
         self.viewController.labelAX.text = [NSString stringWithFormat:@"%.2f", ax0 - ax_ave];
         self.viewController.labelAY.text = [NSString stringWithFormat:@"%.2f", ay0 - ay_ave];
         self.viewController.labelAZ.text = [NSString stringWithFormat:@"%.2f", az0 - az_ave];
         
-        self.viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", gx0 - gx_ave];
-        self.viewController.labelGY.text = [NSString stringWithFormat:@"%.2f", gy0 - gy_ave];
-        self.viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", gz0 - gz_ave];
+        self.viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", gp0 - gp_ave];
+        self.viewController.labelGY.text = [NSString stringWithFormat:@"%.2f", gr0 - gr_ave];
+        self.viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", gy0 - gy_ave];
     } else {
         self.viewController.labelCalibrated.text = @"Calibrated";
         
@@ -133,28 +133,44 @@
         self.viewController.labelAZ.text = [NSString stringWithFormat:@"%.2f", az];
         
         // Gyroscope acquisition
-        gx = self.gyroData.rotationRate.x - gx_ave;
-        gy = self.gyroData.rotationRate.y - gy_ave;
-        gz = self.gyroData.rotationRate.z - gz_ave;
+        gp = self.gyroData.rotationRate.x - gp_ave;
+        gr = self.gyroData.rotationRate.y - gr_ave;
+        gy = self.gyroData.rotationRate.z - gy_ave;
         
-        self.viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", gx];
-        self.viewController.labelGY.text = [NSString stringWithFormat:@"%.2f", gy];
-        self.viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", gz];
+        self.viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", gp];
+        self.viewController.labelGY.text = [NSString stringWithFormat:@"%.2f", gr];
+        self.viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", gy];
         
         // Inertial compensation
-        /*
-        if (gx > precision_threshold) {
-            dy = dy + gx * 180 / M_PI * ;
-            rx = rx + (1.0/2.0) * vx * t;
-            self.viewController.labelPosX.text = [NSString stringWithFormat:@"%.2f", rx];
-        }
-        if (gx < -precision_threshold) {
-            vx = vx + ax * t;
-            rx = rx + (1.0/2.0) * vx * t;
-            self.viewController.labelPosX.text = [NSString stringWithFormat:@"%.2f", rx];
-        }*/
         
-        // Walk calculation
+        
+        // Attitude
+        if (gp > precision_threshold) {
+            dp = dp + gp * 180 / M_PI * t;
+            self.viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", dp];
+        }
+        if (gp < -precision_threshold) {
+            dp = dp + gp * 180 / M_PI * t;
+            self.viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", dp];
+        }
+        if (gr > precision_threshold) {
+            dr = dr + gr * 180 / M_PI * t;
+            self.viewController.labelDegR.text = [NSString stringWithFormat:@"%.2f", dr];
+        }
+        if (gr < -precision_threshold) {
+            dr = dr + gr * 180 / M_PI * t;
+            self.viewController.labelDegR.text = [NSString stringWithFormat:@"%.2f", dr];
+        }
+        if (gy > precision_threshold) {
+            dy = dy + gy * 180 / M_PI * t;
+            self.viewController.labelDegY.text = [NSString stringWithFormat:@"%.2f", dy];
+        }
+        if (gy < -precision_threshold) {
+            dy = dy + gy * 180 / M_PI * t;
+            self.viewController.labelDegY.text = [NSString stringWithFormat:@"%.2f", dy];
+        }
+        
+        // Position
         if (ax > precision_threshold) {
             vx = vx + ax * t;
             rx = rx + (1.0/2.0) * vx * t;
