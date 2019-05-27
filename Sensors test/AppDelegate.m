@@ -18,7 +18,10 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     self.motion = [[MotionManager alloc] init];
+    [self.motion configure];
+    self.motion.viewController = self.window.rootViewController;
     [self.motion startAccelerometers];
+    [self.motion startGyroscopes];
     return YES;
 }
 

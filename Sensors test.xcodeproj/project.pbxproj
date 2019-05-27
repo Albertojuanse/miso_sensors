@@ -14,6 +14,7 @@
 		422798902271F37800E07C39 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4227988E2271F37800E07C39 /* LaunchScreen.storyboard */; };
 		422798932271F37800E07C39 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798922271F37800E07C39 /* main.m */; };
 		4227989B2271F60700E07C39 /* MotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227989A2271F60700E07C39 /* MotionManager.m */; };
+		42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 42917F02229BE12900EE6CD3 /* Blackbox.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,8 @@
 		422798922271F37800E07C39 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		422798992271F5D600E07C39 /* MotionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MotionManager.h; sourceTree = "<group>"; };
 		4227989A2271F60700E07C39 /* MotionManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MotionManager.m; sourceTree = "<group>"; };
+		42917F02229BE12900EE6CD3 /* Blackbox.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Blackbox.m; sourceTree = "<group>"; };
+		42917F04229BE16500EE6CD3 /* Blackbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Blackbox.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +64,8 @@
 		422798822271F37800E07C39 /* Sensors test */ = {
 			isa = PBXGroup;
 			children = (
+				42917F01229BDE4500EE6CD3 /* SignalProcessing */,
+				42917F00229BDE2100EE6CD3 /* MotionAcquisition */,
 				422798832271F37800E07C39 /* AppDelegate.h */,
 				422798842271F37800E07C39 /* AppDelegate.m */,
 				422798862271F37800E07C39 /* ViewController.h */,
@@ -70,10 +75,26 @@
 				4227988E2271F37800E07C39 /* LaunchScreen.storyboard */,
 				422798912271F37800E07C39 /* Info.plist */,
 				422798922271F37800E07C39 /* main.m */,
+			);
+			path = "Sensors test";
+			sourceTree = "<group>";
+		};
+		42917F00229BDE2100EE6CD3 /* MotionAcquisition */ = {
+			isa = PBXGroup;
+			children = (
 				422798992271F5D600E07C39 /* MotionManager.h */,
 				4227989A2271F60700E07C39 /* MotionManager.m */,
 			);
-			path = "Sensors test";
+			path = MotionAcquisition;
+			sourceTree = "<group>";
+		};
+		42917F01229BDE4500EE6CD3 /* SignalProcessing */ = {
+			isa = PBXGroup;
+			children = (
+				42917F04229BE16500EE6CD3 /* Blackbox.h */,
+				42917F02229BE12900EE6CD3 /* Blackbox.m */,
+			);
+			path = SignalProcessing;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -147,6 +168,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */,
 				422798882271F37800E07C39 /* ViewController.m in Sources */,
 				422798932271F37800E07C39 /* main.m in Sources */,
 				422798852271F37800E07C39 /* AppDelegate.m in Sources */,

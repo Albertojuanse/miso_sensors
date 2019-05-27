@@ -10,6 +10,17 @@
 
 @interface ViewController : UIViewController
 
+@property (weak, nonatomic) IBOutlet UILabel *labelAX;
+@property (weak, nonatomic) IBOutlet UILabel *labelAY;
+@property (weak, nonatomic) IBOutlet UILabel *labelAZ;
+@property (weak, nonatomic) IBOutlet UILabel *labelPosX;
+@property (weak, nonatomic) IBOutlet UILabel *labelPosY;
+@property (weak, nonatomic) IBOutlet UILabel *labelPosZ;
+@property (weak, nonatomic) IBOutlet UILabel *labelCalibrated;
+@property (weak, nonatomic) IBOutlet UILabel *labelGX;
+@property (weak, nonatomic) IBOutlet UILabel *labelGY;
+@property (weak, nonatomic) IBOutlet UILabel *labelGZ;
+
 
 @end
 
