@@ -17,11 +17,22 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    // View controller configuration
+    self.viewController = self.window.rootViewController;
+    
+    // Motion managing initialization.
     self.motion = [[MotionManager alloc] init];
     [self.motion configure];
-    self.motion.viewController = self.window.rootViewController;
+    self.motion.viewController = self.viewController;
     [self.motion startAccelerometers];
     [self.motion startGyroscopes];
+    
+    // Location manager initialization.
+    // Ask location services to initialize
+    self.location = [[LocationManagerDelegate alloc] init];
+    [self.location configure];
+    
     return YES;
 }
 

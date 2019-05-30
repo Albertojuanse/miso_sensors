@@ -7,8 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
+#import <CoreLocation/CoreLocation.h>
+#import "Canvas.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController{
+    // For update canvas
+    NSMutableArray * rangedBeacons;
+}
 
 @property (weak, nonatomic) IBOutlet UILabel *labelAX;
 @property (weak, nonatomic) IBOutlet UILabel *labelAY;
@@ -23,6 +29,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *labelDegP;
 @property (weak, nonatomic) IBOutlet UILabel *labelDegR;
 @property (weak, nonatomic) IBOutlet UILabel *labelDegY;
+
+@property (weak, nonatomic) IBOutlet UILabel *text;
+
+@property (weak, nonatomic) IBOutlet Canvas *canvas;
 
 
 @end
