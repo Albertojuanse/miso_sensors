@@ -14,6 +14,10 @@
 		422798902271F37800E07C39 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4227988E2271F37800E07C39 /* LaunchScreen.storyboard */; };
 		422798932271F37800E07C39 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798922271F37800E07C39 /* main.m */; };
 		4227989B2271F60700E07C39 /* MotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227989A2271F60700E07C39 /* MotionManager.m */; };
+		426501BA22A03B3000BE20B7 /* LocationManagerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */; };
+		426501BD22A03B4300BE20B7 /* Canvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501BC22A03B4300BE20B7 /* Canvas.m */; };
+		426501C322A03B5200BE20B7 /* RDPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C022A03B5200BE20B7 /* RDPosition.m */; };
+		426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */; };
 		42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 42917F02229BE12900EE6CD3 /* Blackbox.m */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +34,14 @@
 		422798922271F37800E07C39 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		422798992271F5D600E07C39 /* MotionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MotionManager.h; sourceTree = "<group>"; };
 		4227989A2271F60700E07C39 /* MotionManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MotionManager.m; sourceTree = "<group>"; };
+		426501B822A03B2A00BE20B7 /* LocationManagerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationManagerDelegate.h; sourceTree = "<group>"; };
+		426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManagerDelegate.m; sourceTree = "<group>"; };
+		426501BB22A03B4000BE20B7 /* Canvas.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Canvas.h; sourceTree = "<group>"; };
+		426501BC22A03B4300BE20B7 /* Canvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Canvas.m; sourceTree = "<group>"; };
+		426501BF22A03B5200BE20B7 /* RDPosition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDPosition.h; sourceTree = "<group>"; };
+		426501C022A03B5200BE20B7 /* RDPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDPosition.m; sourceTree = "<group>"; };
+		426501C122A03B5200BE20B7 /* RDRhoRhoSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDRhoRhoSystem.h; sourceTree = "<group>"; };
+		426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDRhoRhoSystem.m; sourceTree = "<group>"; };
 		42917F02229BE12900EE6CD3 /* Blackbox.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Blackbox.m; sourceTree = "<group>"; };
 		42917F04229BE16500EE6CD3 /* Blackbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Blackbox.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -64,28 +76,60 @@
 		422798822271F37800E07C39 /* Sensors test */ = {
 			isa = PBXGroup;
 			children = (
+				426501BE22A03B5200BE20B7 /* Radiodetermination */,
+				426501B722A0393100BE20B7 /* ViewControlling */,
+				426501B322A032B800BE20B7 /* LocationManaging */,
 				42917F01229BDE4500EE6CD3 /* SignalProcessing */,
-				42917F00229BDE2100EE6CD3 /* MotionAcquisition */,
+				42917F00229BDE2100EE6CD3 /* MotionManaging */,
 				422798832271F37800E07C39 /* AppDelegate.h */,
 				422798842271F37800E07C39 /* AppDelegate.m */,
-				422798862271F37800E07C39 /* ViewController.h */,
-				422798872271F37800E07C39 /* ViewController.m */,
-				422798892271F37800E07C39 /* Main.storyboard */,
 				4227988C2271F37800E07C39 /* Assets.xcassets */,
-				4227988E2271F37800E07C39 /* LaunchScreen.storyboard */,
 				422798912271F37800E07C39 /* Info.plist */,
 				422798922271F37800E07C39 /* main.m */,
 			);
 			path = "Sensors test";
 			sourceTree = "<group>";
 		};
-		42917F00229BDE2100EE6CD3 /* MotionAcquisition */ = {
+		426501B322A032B800BE20B7 /* LocationManaging */ = {
+			isa = PBXGroup;
+			children = (
+				426501B822A03B2A00BE20B7 /* LocationManagerDelegate.h */,
+				426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */,
+			);
+			path = LocationManaging;
+			sourceTree = "<group>";
+		};
+		426501B722A0393100BE20B7 /* ViewControlling */ = {
+			isa = PBXGroup;
+			children = (
+				422798892271F37800E07C39 /* Main.storyboard */,
+				4227988E2271F37800E07C39 /* LaunchScreen.storyboard */,
+				422798862271F37800E07C39 /* ViewController.h */,
+				422798872271F37800E07C39 /* ViewController.m */,
+				426501BB22A03B4000BE20B7 /* Canvas.h */,
+				426501BC22A03B4300BE20B7 /* Canvas.m */,
+			);
+			path = ViewControlling;
+			sourceTree = "<group>";
+		};
+		426501BE22A03B5200BE20B7 /* Radiodetermination */ = {
+			isa = PBXGroup;
+			children = (
+				426501BF22A03B5200BE20B7 /* RDPosition.h */,
+				426501C022A03B5200BE20B7 /* RDPosition.m */,
+				426501C122A03B5200BE20B7 /* RDRhoRhoSystem.h */,
+				426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */,
+			);
+			path = Radiodetermination;
+			sourceTree = "<group>";
+		};
+		42917F00229BDE2100EE6CD3 /* MotionManaging */ = {
 			isa = PBXGroup;
 			children = (
 				422798992271F5D600E07C39 /* MotionManager.h */,
 				4227989A2271F60700E07C39 /* MotionManager.m */,
 			);
-			path = MotionAcquisition;
+			path = MotionManaging;
 			sourceTree = "<group>";
 		};
 		42917F01229BDE4500EE6CD3 /* SignalProcessing */ = {
@@ -169,10 +213,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */,
+				426501BD22A03B4300BE20B7 /* Canvas.m in Sources */,
+				426501C322A03B5200BE20B7 /* RDPosition.m in Sources */,
 				422798882271F37800E07C39 /* ViewController.m in Sources */,
 				422798932271F37800E07C39 /* main.m in Sources */,
 				422798852271F37800E07C39 /* AppDelegate.m in Sources */,
+				426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */,
 				4227989B2271F60700E07C39 /* MotionManager.m in Sources */,
+				426501BA22A03B3000BE20B7 /* LocationManagerDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -22,14 +22,13 @@
     calibrationSteps = calibrationTime * 1/t;
     calibration_counter = 0;
     precision_threshold = 0.1;
-    
 }
 
 - (void) startAccelerometers {
     
     // Make sure the accelerometer hardware is available.
     if (self.isAccelerometerAvailable) {
-        NSLog(@"[INFO] Accelerometer avalible");
+        NSLog(@"[INFO][MM] Accelerometer avalible");
         self.accelerometerUpdateInterval = t;
         [self startAccelerometerUpdates];
         if (self.timer == nil){
@@ -40,22 +39,22 @@
             [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
         }
     } else {
-        NSLog(@"[ERROR] Accelerometer not avalible");
+        NSLog(@"[ERROR][MM] Accelerometer not avalible");
     }
-    NSLog(@"[INFO] Accelerometer started");
+    NSLog(@"[INFO][MM] Accelerometer started");
 }
 
 - (void) stopAccelerometers {
     [self.timer invalidate];
     self.timer = nil;
     [self stopAccelerometerUpdates];
-    NSLog(@"[INFO] Accelerometer stopped");
+    NSLog(@"[INFO][MM] Accelerometer stopped");
 }
 
 - (void) startGyroscopes {
     // Make sure the gyroscope hardware is available.
     if (self.isGyroAvailable) {
-        NSLog(@"[INFO] Gyroscope avalible");
+        NSLog(@"[INFO][MM] Gyroscope avalible");
         self.gyroUpdateInterval = t;
         [self startGyroUpdates];
         
@@ -67,9 +66,9 @@
             [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
         }
     } else {
-        NSLog(@"[ERROR] Gyroscope not avalible");
+        NSLog(@"[ERROR][MM] Gyroscope not avalible");
     }
-    NSLog(@"[INFO] Gyroscope started");
+    NSLog(@"[INFO][MM] Gyroscope started");
 }
 
 - (void) stopGyroscopes {
