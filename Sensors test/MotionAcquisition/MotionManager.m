@@ -82,7 +82,7 @@
 - (void) process {
     // NSLog(@"; x: %f ; y: %f ; z: %f } { timestamp: ", self.gyroData.rotationRate.x, self.gyroData.rotationRate.y, self.gyroData.rotationRate.y);
     // NSLog(@"; x: %f ; y: %f ; z: %f } { timestamp: ", self.accelerometerData.acceleration.x, self.accelerometerData.acceleration.y, self.accelerometerData.acceleration.z);
-
+    
     // No valid results will be while calibration process.
     // The calibration procces calculate the average of the signals in order od subtracting them.
     if (calibration_counter < calibrationSteps) {
@@ -139,27 +139,27 @@
         self.viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", gy];
         
         // Attitude
-        if (gp > precision_threshold) {
+        if (gp > (precision_threshold/10)) {
             dp = dp + gp * t;
             self.viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", dp * 180 / M_PI];
         }
-        if (gp < -precision_threshold) {
+        if (gp < -(precision_threshold/10)) {
             dp = dp + gp * t;
             self.viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", dp * 180 / M_PI];
         }
-        if (gr > precision_threshold) {
+        if (gr > (precision_threshold/10)) {
             dr = dr + gr * t;
             self.viewController.labelDegR.text = [NSString stringWithFormat:@"%.2f", dr * 180 / M_PI];
         }
-        if (gr < -precision_threshold) {
+        if (gr < -(precision_threshold/10)) {
             dr = dr + gr * t;
             self.viewController.labelDegR.text = [NSString stringWithFormat:@"%.2f", dr * 180 / M_PI];
         }
-        if (gy > precision_threshold) {
+        if (gy > (precision_threshold/10)) {
             dy = dy + gy * t;
             self.viewController.labelDegY.text = [NSString stringWithFormat:@"%.2f", dy * 180 / M_PI];
         }
-        if (gy < -precision_threshold) {
+        if (gy < -(precision_threshold/10)) {
             dy = dy + gy * t;
             self.viewController.labelDegY.text = [NSString stringWithFormat:@"%.2f", dy * 180 / M_PI];
         }
@@ -172,9 +172,20 @@
         double gyt = gy * t;
         double gpt = gp * t;
         double grt = gr * t;
+        
+        ax_ave = ax_ave_t * (1 + sin(grt));
+        az_ave = az_ave_t * (1 - sin(grt));
+        
+        /*
         ax_ave = ax_ave_t * cos(gyt) * cos(gpt) + ay_ave_t * (cos(gyt) * sin(gpt) * sin(grt) - sin(gyt) * cos(grt)) + az_ave_t * (cos(gyt) * sin(gpt) * cos(grt) + sin(gyt) * sin(grt));
         ay_ave = ax_ave_t * sin(gyt) * cos(gpt) + ay_ave_t * (sin(gyt) * sin(gpt) * sin(grt) + cos(gyt) * cos(grt)) + az_ave_t * (sin(gyt) * sin(gpt) * cos(grt) - cos(gyt) * sin(grt));
         az_ave = ax_ave_t * -sin(gpt) + ay_ave_t * cos(gpt) * sin(grt) + az_ave_t * cos(gpt) * cos(grt);
+        
+        
+        ax_ave = ax_ave_t * (cos(gyt) * cos(gpt) * cos(grt) - sin(gyt) * sin(grt)) + ay_ave_t * (-cos(grt) * sin(gyt) - cos(gyt) * cos(gpt) * sin(grt)) + az_ave_t * (cos(gyt) * sin(gpt));
+        ay_ave = ax_ave_t * (cos(gyt) * sin(grt) + cos(gpt) * cos(grt) * sin(gyt)) + ay_ave_t * (cos(gyt) * cos(grt) - cos(gpt) * sin(gyt) * sin(grt)) + az_ave_t * (sin(gyt) * sin(gpt));
+        az_ave = ax_ave_t * (-cos(grt) * sin(gpt)) + ay_ave_t * (sin(gpt) * sin (grt)) + az_ave_t * (cos(gpt));
+        */
         
         // Accelerometer acquisition
         ax = self.accelerometerData.acceleration.x * g - ax_ave;
