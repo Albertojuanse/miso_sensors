@@ -6,7 +6,6 @@
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import <CoreMotion/CoreMotion.h>
 #import "MotionManager.h"
 #import "LocationManagerDelegate.h"

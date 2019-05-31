@@ -10,11 +10,19 @@
 
 @implementation MotionManager
 
+/*!
+ @method init
+ @discussion Constructor.
+ */
 - (instancetype)init {
     self = [super init];
     return self;
 }
 
+/*!
+ @method configure
+ @discussion This method initializes some variables of the object and must be called when the object is created.
+ */
 - (void) configure {
     t = 1.0/100.0;
     g = 9.7994;
@@ -24,6 +32,10 @@
     precision_threshold = 0.1;
 }
 
+/*!
+ @method startAccelerometers
+ @discussion This method manages how the accelerometer status acquisition starts and its error's control.
+ */
 - (void) startAccelerometers {
     
     // Make sure the accelerometer hardware is available.
@@ -44,6 +56,10 @@
     NSLog(@"[INFO][MM] Accelerometer started");
 }
 
+/*!
+ @method stopAccelerometers
+ @discussion This method manages how the accelerometer status acquisition stops and its error's control.
+ */
 - (void) stopAccelerometers {
     [self.timer invalidate];
     self.timer = nil;
@@ -51,6 +67,10 @@
     NSLog(@"[INFO][MM] Accelerometer stopped");
 }
 
+/*!
+ @method startGyroscopes
+ @discussion This method manages how the gyroscope status acquisition starts and its error's control.
+ */
 - (void) startGyroscopes {
     // Make sure the gyroscope hardware is available.
     if (self.isGyroAvailable) {
@@ -71,6 +91,10 @@
     NSLog(@"[INFO][MM] Gyroscope started");
 }
 
+/*!
+ @method stopGyroscopes
+ @discussion This method manages how the gyroscope status acquisition stops and its error's control.
+ */
 - (void) stopGyroscopes {
     [self.timer invalidate];
     self.timer = nil;
@@ -78,6 +102,10 @@
     NSLog(@"[INFO] Gyroscope stopped");
 }
 
+/*!
+ @method procces
+ @discussion This method procces the acquisited data.
+ */
 - (void) process {
     // NSLog(@"; x: %f ; y: %f ; z: %f } { timestamp: ", self.gyroData.rotationRate.x, self.gyroData.rotationRate.y, self.gyroData.rotationRate.y);
     // NSLog(@"; x: %f ; y: %f ; z: %f } { timestamp: ", self.accelerometerData.acceleration.x, self.accelerometerData.acceleration.y, self.accelerometerData.acceleration.z);

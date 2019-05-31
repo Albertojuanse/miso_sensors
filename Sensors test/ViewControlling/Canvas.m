@@ -6,12 +6,14 @@
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "Canvas.h"
-#import <CoreLocation/CoreLocation.h>
 
 @implementation Canvas: UIView
 
+/*!
+ @method init
+ @discussion Constructor.
+ */
 - (instancetype)init
 {
     self = [super init];
@@ -22,6 +24,10 @@
     return self;
 }
 
+/*!
+ @method initWithFrame:
+ @discussion Constructor with a given specific frame in which be embedded.
+ */
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
@@ -31,6 +37,10 @@
     return self;
 }
 
+/*!
+ @method prepareCanvas
+ @discussion This method initializes some properties of the canvas; is called when the main view is loaded by its controller.
+ */
 -(void)prepareCanvas{
     // Initialize variables
     self.rangedBeacons = [[NSMutableArray alloc] init];
@@ -56,6 +66,10 @@
     [self setNeedsDisplay];
 }
 
+/*!
+ @method drawRect:
+ @discussion This method controls the display of a new drown area; is called when a new draw must be created and displayed.
+ */
 - (void)drawRect:(CGRect)rect {
     
     // Delete previus 

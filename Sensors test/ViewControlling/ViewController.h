@@ -6,11 +6,12 @@
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import "AppDelegate.h"
-#import <CoreLocation/CoreLocation.h>
 #import "Canvas.h"
 
+/*!
+ @class ViewController
+ @discussion This class extends UIViewController and controls the main view of the app.
+ */
 @interface ViewController : UIViewController{
     // For update canvas
     NSMutableArray * rangedBeacons;

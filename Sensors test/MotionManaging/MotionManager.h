@@ -8,10 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreMotion/CoreMotion.h>
-#import <AudioUnit/AudioUnit.h>
-#import <UIKit/UIKit.h>
 #import "ViewController.h"
 
+/*!
+ @class MotionManager
+ @discussion This class extends CMMotionManager object and so implements the methods that controls the acquisition of motion information and what to do with it.
+ */
 @interface MotionManager : CMMotionManager {
     // Data variables
     

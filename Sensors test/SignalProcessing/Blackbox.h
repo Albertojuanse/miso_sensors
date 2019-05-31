@@ -6,6 +6,10 @@
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
+/*!
+ @class Blackbox
+ @discussion This class defines the protocol of a blackbox type system.
+ */
 @interface Blackbox.m {
     
     @property input;

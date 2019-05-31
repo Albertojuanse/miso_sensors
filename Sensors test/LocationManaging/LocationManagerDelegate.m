@@ -10,6 +10,10 @@
 
 @implementation LocationManagerDelegate : NSObject
 
+/*!
+ @method configure
+ @discussion This method is called when the app is loaded and manage some initializations and permission askings.
+ */
 - (void) configure{
     
     // Initialize location manager and set this class as the delegate which implement the event response's methods
@@ -51,35 +55,39 @@
         default:
             break;
     }
-    NSLog(@"[INFO] LocationManager prepared");
+    NSLog(@"[INFO][LM] LocationManager prepared");
 }
 
+/*!
+ @method locationManager:didChangeAuthorizationStatus:
+ @discussion This method is called when the device's location permission change because user's desire or automatic rutines; depending on the current permission status this delegate will start searching for beacon's regions or not.
+ */
 - (void)locationManager:(CLLocationManager *)manager
 didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
     switch (status) {
         case kCLAuthorizationStatusNotDetermined:
             // Request authorization initially
-             NSLog(@"[ERROR] Authorization is not known");
+             NSLog(@"[ERROR][LM] Authorization is not known");
             
         case kCLAuthorizationStatusRestricted:
             // Disable location features
-            NSLog(@"[ERROR] User restricts localization services");
+            NSLog(@"[ERROR][LM] User restricts localization services");
             break;
             
         case kCLAuthorizationStatusDenied:
             // Disable location features
-            NSLog(@"[ERROR] User doesn't allow localization services");
+            NSLog(@"[ERROR][LM] User doesn't allow localization services");
             break;
             
         case kCLAuthorizationStatusAuthorizedAlways:
             // Enable location features
-            NSLog(@"[INFO] User allows 'always' localization services");
+            NSLog(@"[INFO][LM] User allows 'always' localization services");
             break;
             
         case kCLAuthorizationStatusAuthorizedWhenInUse:
             // Enable location features
-            NSLog(@"[INFO] User allows 'when-in-use' localization services");
+            NSLog(@"[INFO][LM] User allows 'when-in-use' localization services");
             break;
             
         default:
@@ -88,21 +96,21 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
     
     // Error managment
     if ([CLLocationManager locationServicesEnabled]) {
-        NSLog(@"[INFO] Location services enabled.");
+        NSLog(@"[INFO][LM] Location services enabled.");
     }else{
-        NSLog(@"[ERROR] Location services not enabled.");
+        NSLog(@"[ERROR][LM] Location services not enabled.");
     }
     
     if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]]) {
-        NSLog(@"[INFO] Monitoring avalible for class CLBeaconRegion.");
+        NSLog(@"[INFO][LM] Monitoring avalible for class CLBeaconRegion.");
     }else{
-        NSLog(@"[ERROR] Monitoring not avalible for class CLBeaconRegion.");
+        NSLog(@"[ERROR][LM] Monitoring not avalible for class CLBeaconRegion.");
     }
     
     if ([CLLocationManager isRangingAvailable]) {
-        NSLog(@"[INFO] Ranging avalible.");
+        NSLog(@"[INFO][LM] Ranging avalible.");
     }else{
-        NSLog(@"[ERROR] Ranging not avalible.");
+        NSLog(@"[ERROR][LM] Ranging not avalible.");
     }
     
     if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways || CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
@@ -143,14 +151,12 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         [locationManager startRangingBeaconsInRegion:Beacon1Region];
         
         
-        NSLog(@"[INFO] Device monitorizes a region:");
-        NSString *log = [NSString stringWithFormat:@"[INFO] ->", [[RaspiRegion proximityUUID] UUIDString]];
-        NSLog(log);
-        NSLog(@"[INFO] Device monitorizes a region:");
-        NSString *log2 = [NSString stringWithFormat:@"[INFO] ->", [[Beacon1Region proximityUUID] UUIDString]];
-        NSLog(log2);
+        NSLog(@"[INFO][LM] Device monitorizes a region:");
+        NSLog(@"[INFO][LM] -> %@", [[RaspiRegion proximityUUID] UUIDString]);
+        NSLog(@"[INFO][LM] Device monitorizes a region:");
+        NSLog(@"[INFO][LM] -> %@", [[Beacon1Region proximityUUID] UUIDString]);
         
-        NSLog(@"[INFO] Start monitoring regions.");
+        NSLog(@"[INFO][LM] Start monitoring regions.");
     }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied || CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted){
         for(CLBeaconRegion * region in  locationManager.monitoredRegions){
             [locationManager stopMonitoringForRegion:region];
@@ -158,49 +164,57 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
     }
 }
 
+/*!
+ @method locationManager:didEnterRegion:
+ @discussion This method is called when the device cross the border line and enters one of the monitor's monitorized regions (areas); ask the monitor to start searching for specific devices in the region.
+ */
 - (void)locationManager:(CLLocationManager*)manager
-         didEnterRegion:(CLRegion*)region
+         didEnterRegion:(CLBeaconRegion*)region
 {
+    // Changed definition of method for (CLBeaconRegion*) instead of (CLRegion*)!!!!
+    
     // Start ranging
     rangedRegions = [[NSMutableArray alloc] init];
     [rangedRegions addObject:region];
     [manager startRangingBeaconsInRegion:region];
     
-    NSLog(@"[INFO] Device ranged a region:");
+    NSLog(@"[INFO][LM] Device ranged a region:");
+    NSLog(@"[INFO][LM] -> %@", [[region proximityUUID] UUIDString]);
     //NSLog([NSString stringWithFormat:@"[INFO] Device ranged a region:", [[region proximityUUID] UUIDString]]);
 }
 
+/*!
+ @method locationManager:rangingBeaconsDidFailForRegion:inRegion:
+ @discussion This method is called when the device fails in detect some other device in a ranged region.
+ */
 - (void)locationManager:(CLLocationManager *)manager
 rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
               withError:(NSError *)error {
-    NSLog(@"[ERROR] Device failed in raging a region:");
+    NSLog(@"[ERROR][LM] Device failed in raging a region:");
+    NSLog(@"[ERROR][LM] -> %@", [[region proximityUUID] UUIDString]);
 }
 
+/*!
+ @method locationManager:didRangeBeacons:inRegion:
+ @discussion This method is called when the device detects some other device in a ranged region; it saves it and ask view to show its information.
+ */
 -(void)locationManager:(CLLocationManager*)manager
        didRangeBeacons:(NSArray*)beacons
               inRegion:(CLBeaconRegion*)region
 {
     if (beacons.count > 0) {
-        NSLog(@"beacons.count > 0");
         if(self.rangedBeacons.count > 0) {
-            NSLog(@"self.rangedBeacons.count > 0");
             NSInteger index = 0;
             for(CLBeacon *oldBeacon in self.rangedBeacons){
-                NSLog(@"oldBeacon");
                 for(CLBeacon *newBeacon in beacons){
-                    NSLog(@"newBeacon");
                     if([[[oldBeacon proximityUUID] UUIDString] isEqual:[[newBeacon proximityUUID] UUIDString]]){
                         [self.rangedBeacons replaceObjectAtIndex:index withObject:newBeacon];
-                        NSLog(@"[INFO] Beacon ranged:");
-                        NSString *log = [NSString stringWithFormat:@"[INFO] ->", [[newBeacon proximityUUID] UUIDString]];
-                        NSLog(log);
-                        NSLog(@"is oldBeacon");
+                        NSLog(@"[INFO][LM] Beacon ranged:");
+                        NSLog(@"[INFO][LM] -> %@", [[newBeacon proximityUUID] UUIDString]);
                     } else {
                         [self.rangedBeacons addObject:newBeacon];
                         NSLog(@"[INFO] Beacon ranged:");
-                        NSString *log = [NSString stringWithFormat:@"[INFO] ->", [[newBeacon proximityUUID] UUIDString]];
-                        NSLog(log);
-                        NSLog(@"is newBeacon");
+                        NSLog(@"[INFO][LM] -> %@", [[newBeacon proximityUUID] UUIDString]);
                     }
                     
                     // Save measures
@@ -215,14 +229,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 index ++;
             }
         } else {
-            NSLog(@"self.rangedBeacons.count < 0");
             self.rangedBeacons = [[NSMutableArray alloc] init];
             for (CLBeacon *beacon in beacons) {
                 // Save ranged Beacons
                 [self.rangedBeacons addObject:beacon];
                 NSLog(@"[INFO] Beacon ranged:");
-                NSString *log = [NSString stringWithFormat:@"[INFO] ->", [[beacon proximityUUID] UUIDString]];
-                NSLog(log);
+                NSLog(@"[INFO][LM] -> %@",  [[beacon proximityUUID] UUIDString]);
             }
         }
         
@@ -234,7 +246,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          object:nil
          userInfo:data];
     } else {
-        NSLog(@"[INFO] No beacons ranged.");
+        NSLog(@"[INFO][LM] No beacons ranged.");
     }
     
 }

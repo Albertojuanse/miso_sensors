@@ -8,41 +8,46 @@
 
 #import "ViewController.h"
 
-@interface ViewController ()
-
-@end
-
 @implementation ViewController
 
+/*!
+ @method viewDidLoad
+ @discussion This method initializes some properties once the object has been loaded.
+ */
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    // Get the app delegate
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     // Ask canvas to initialize
     [self.canvas prepareCanvas];
     
-    // This object must listen to this events.
+    // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(refreshCanvas:)
                                                  name:@"refreshCanvas"
                                                object:nil];
 }
 
+/*!
+ @method didReceiveMemoryWarning
+ @discussion This method dispose of any resources that can be recreated id a memory warning is recived.
+ */
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
+/*!
+ @method refreshCanvas:
+ @discussion This method gets the beacons that must be represented in canvas and ask it to upload; this method is called when someone submits the 'refreshCanvas' notification.
+ */
 - (void) refreshCanvas:(NSNotification *) notification
 {
-    // [notification name] should always be @"TestNotification"
+    // [notification name] should always be @"refreshCanvas"
     // unless you use this method for observation of other notifications
     // as well.
     
     if ([[notification name] isEqualToString:@"refreshCanvas"]){
-        NSLog(@"[NOTIF] Notification \"refreshCanvas\" recived");
+        NSLog(@"[NOTIF][VC] Notification \"refreshCanvas\" recived");
         
         // Save beacons
         NSDictionary *data = notification.userInfo;

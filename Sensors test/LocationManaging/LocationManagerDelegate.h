@@ -7,8 +7,11 @@
 //
 
 #import <CoreLocation/CoreLocation.h>
-#import "Canvas.h"
 
+/*!
+ @class LocationManagerDelegate
+ @discussion This class implements the protocol CLLocationManagerDelegate and so implements the methods for attend the events of location manager.
+ */
 @interface LocationManagerDelegate: NSObject<CLLocationManagerDelegate>{
     
     NSMutableArray * monitoredRegions;
