@@ -150,6 +150,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         [rangedRegions addObject:Beacon1Region];
         [locationManager startRangingBeaconsInRegion:Beacon1Region];
         
+        rangedBeacons = [[NSMutableDictionary alloc] init];
         
         NSLog(@"[INFO][LM] Device monitorizes a region:");
         NSLog(@"[INFO][LM] -> %@", [[RaspiRegion proximityUUID] UUIDString]);
@@ -202,53 +203,49 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
        didRangeBeacons:(NSArray*)beacons
               inRegion:(CLBeaconRegion*)region
 {
+    NSMutableArray * newBeacons = [[NSMutableArray alloc] init];
+    
+    // If there is any beacon in the event...
     if (beacons.count > 0) {
-        if(self.rangedBeacons.count > 0) {
-            NSInteger index = 0;
-            for(CLBeacon *oldBeacon in self.rangedBeacons){
-                for(CLBeacon *newBeacon in beacons){
-                    if([[[oldBeacon proximityUUID] UUIDString] isEqual:[[newBeacon proximityUUID] UUIDString]]){
-                        [self.rangedBeacons replaceObjectAtIndex:index withObject:newBeacon];
-                        NSLog(@"[INFO][LM] Beacon ranged:");
-                        NSLog(@"[INFO][LM] -> %@", [[newBeacon proximityUUID] UUIDString]);
-                    } else {
-                        [self.rangedBeacons addObject:newBeacon];
-                        NSLog(@"[INFO] Beacon ranged:");
-                        NSLog(@"[INFO][LM] -> %@", [[newBeacon proximityUUID] UUIDString]);
-                    }
-                    
-                    // Save measures
-                    NSInteger indexData = 0;
-                    for (CLBeacon *monitoredRegion in monitoredRegions) {
-                        if ([[newBeacon proximityUUID] isEqual:[monitoredRegion proximityUUID]]){
-                            NSNumber * rssi = [NSNumber numberWithInteger:[newBeacon rssi]];                            
-                            [rssiMeasures[indexData] addObject:rssi];
-                        }
-                    }
-                }
-                index ++;
-            }
-        } else {
-            self.rangedBeacons = [[NSMutableArray alloc] init];
+        // ...add them to the class variable 'self.rangedBeacons' if it is empty...
+        if(rangedBeacons.count == 0) {
             for (CLBeacon *beacon in beacons) {
                 // Save ranged Beacons
-                [self.rangedBeacons addObject:beacon];
-                NSLog(@"[INFO] Beacon ranged:");
+                [rangedBeacons setObject:beacon forKey:[[beacon proximityUUID] UUIDString]];
+                NSLog(@"[INFO][LM] Beacon ranged:");
                 NSLog(@"[INFO][LM] -> %@",  [[beacon proximityUUID] UUIDString]);
             }
+        // ...but if it is not the first beacon detected, replace it with the old one.
+        } else {
+            // For every old beacon ranged...
+            NSArray *keys = [rangedBeacons allKeys];
+            for(id key in keys) {
+                // ... check for every new beacon...
+                for(CLBeacon *newbeacon in beacons){
+                    // ... if old one and new one is from the same source.
+                    if ([[[newbeacon proximityUUID] UUIDString] isEqual:key]){
+                        [rangedBeacons removeObjectForKey:key];
+                    }
+                    [rangedBeacons setObject:newbeacon forKey:[[newbeacon proximityUUID] UUIDString]];
+                    [newBeacons addObject:newbeacon];
+                    NSLog(@"[INFO][LM] Beacon ranged:");
+                    NSLog(@"[INFO][LM] -> %@", [[newbeacon proximityUUID] UUIDString]);
+                }
+            }
         }
-        
-        // Ask view controller to refresh the canvas
-        NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-        [data setObject:self.rangedBeacons forKey:@"rangedBeacons"];        
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"refreshCanvas"
-         object:nil
-         userInfo:data];
     } else {
         NSLog(@"[INFO][LM] No beacons ranged.");
     }
     
+    // Ask view controller to refresh the canvas
+    if(rangedBeacons.count > 0) {
+        NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+        [data setObject:rangedBeacons forKey:@"rangedBeacons"];
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"refreshCanvas"
+         object:nil
+         userInfo:data];
+    }
 }
 
 - (void) radiolocator {

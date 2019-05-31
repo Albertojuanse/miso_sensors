@@ -20,7 +20,6 @@
     if (self) {
         
     }
-    self.rangedBeacons = [[NSMutableArray alloc] init];
     return self;
 }
 
@@ -33,7 +32,6 @@
     if (self) {
         
     }
-    self.rangedBeacons = [[NSMutableArray alloc] init];
     return self;
 }
 
@@ -43,7 +41,7 @@
  */
 -(void)prepareCanvas{
     // Initialize variables
-    self.rangedBeacons = [[NSMutableArray alloc] init];
+    self.rangedBeacons = [[NSMutableDictionary alloc] init];
     
     // Canvas configurations
     [self setUserInteractionEnabled:NO];
@@ -72,14 +70,15 @@
  */
 - (void)drawRect:(CGRect)rect {
     
-    // Delete previus 
+    // Delete previus
     if (self.layer.sublayers.count > 0) {
         for (CALayer *layer in self.layer.sublayers) {
             if ([layer isKindOfClass:[CAShapeLayer class]]) {
-                [layer removeFromSuperlayer];
+                [layer setHidden:YES];
             }
         }
     }
+    
     
     // Center point
     UIBezierPath *bezierPath = [UIBezierPath bezierPath];
@@ -94,8 +93,8 @@
     [centerLayer setFillColor:[UIColor clearColor].CGColor];
     
     NSInteger index = 0;
-    for (CLBeacon * beacon in self.rangedBeacons){
-        NSLog(@"beacon");
+    NSArray *beacons = [self.rangedBeacons allValues];
+    for (CLBeacon *beacon in beacons){
         UIBezierPath *bezierPath = [UIBezierPath bezierPath];
         CGPoint center;
         center.x = self.frame.size.width/2;

@@ -17,14 +17,11 @@
     NSMutableArray * monitoredRegions;
     NSMutableArray * rangedRegions;
     CLLocationManager * locationManager;
+    NSMutableDictionary * rangedBeacons;
     
-    // Radiolocator
-    NSMutableArray *rssiMeasures;
 }
 
 - (void) configure;
-
-@property NSMutableArray * rangedBeacons;
 
 @end
 

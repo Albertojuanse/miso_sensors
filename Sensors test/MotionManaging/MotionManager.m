@@ -113,6 +113,7 @@
     // No valid results will be while calibration process.
     // The calibration procces calculate the average of the signals in order od subtracting them.
     if (calibration_counter < calibrationSteps) {
+        
         // Starts at zero; is needed to increase the counter here.
         calibration_counter++;
         
@@ -151,7 +152,7 @@
         self.viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", gy0 - gy_ave];
     } else if (calibration_counter == calibrationSteps) {
         self.viewController.labelCalibrated.text = @"Calibrated";
-        NSLog(@"[INFO] Calibrated");
+        NSLog(@"[INFO][MM] Calibrated.");
         calibration_counter++;
     } else if (calibration_counter > calibrationSteps) {
         calibration_counter++;

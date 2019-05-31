@@ -14,7 +14,7 @@
  */
 @interface ViewController : UIViewController{
     // For update canvas
-    NSMutableArray * rangedBeacons;
+    NSMutableDictionary * rangedBeacons;
 }
 
 @property (weak, nonatomic) IBOutlet UILabel *labelAX;

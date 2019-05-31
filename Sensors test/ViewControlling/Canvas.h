@@ -16,7 +16,7 @@
  */
 @interface Canvas: UIView
 
-@property NSMutableArray * rangedBeacons;
+@property NSMutableDictionary * rangedBeacons;
 @property NSMutableArray * currentLayers;
 
 - (void) prepareCanvas;

@@ -47,19 +47,21 @@
     // as well.
     
     if ([[notification name] isEqualToString:@"refreshCanvas"]){
-        NSLog(@"[NOTIF][VC] Notification \"refreshCanvas\" recived");
+        NSLog(@"[NOTI][VC] Notification \"refreshCanvas\" recived");
         
         // Save beacons
         NSDictionary *data = notification.userInfo;
         rangedBeacons = [data valueForKey:@"rangedBeacons"];
         self.text.text =  [[NSString alloc] init];
-        self.canvas.rangedBeacons = [[NSMutableArray alloc] init];
+        self.canvas.rangedBeacons = [[NSMutableDictionary alloc] init];
         
         // Do whatever with every beacon
-        for (CLBeacon * beacon in rangedBeacons){
+        NSArray *keys = [rangedBeacons allKeys];
+        for (id key in keys){
+            CLBeacon *beacon = [rangedBeacons objectForKey:key];
             NSString * beaconUUID = [[beacon proximityUUID] UUIDString];
-            self.text.text = [self.text.text stringByAppendingString:beaconUUID];
-            [self.canvas.rangedBeacons addObject:beacon];
+            self.text.text = [self.text.text stringByAppendingString:[beaconUUID stringByAppendingString:@"\n"]];
+            [self.canvas.rangedBeacons setObject:beacon forKey:beaconUUID];
         }
     }
     [self.canvas setNeedsDisplay];
