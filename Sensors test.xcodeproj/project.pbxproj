@@ -18,6 +18,7 @@
 		426501BD22A03B4300BE20B7 /* Canvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501BC22A03B4300BE20B7 /* Canvas.m */; };
 		426501C322A03B5200BE20B7 /* RDPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C022A03B5200BE20B7 /* RDPosition.m */; };
 		426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */; };
+		4277938F22A51AD500E6A723 /* RDPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 4277938E22A51AD500E6A723 /* RDPoint.m */; };
 		42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 42917F02229BE12900EE6CD3 /* Blackbox.m */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +43,8 @@
 		426501C022A03B5200BE20B7 /* RDPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDPosition.m; sourceTree = "<group>"; };
 		426501C122A03B5200BE20B7 /* RDRhoRhoSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDRhoRhoSystem.h; sourceTree = "<group>"; };
 		426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDRhoRhoSystem.m; sourceTree = "<group>"; };
+		4277938D22A51ABA00E6A723 /* RDPoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDPoint.h; sourceTree = "<group>"; };
+		4277938E22A51AD500E6A723 /* RDPoint.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDPoint.m; sourceTree = "<group>"; };
 		42917F02229BE12900EE6CD3 /* Blackbox.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Blackbox.m; sourceTree = "<group>"; };
 		42917F04229BE16500EE6CD3 /* Blackbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Blackbox.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -119,6 +122,8 @@
 				426501C022A03B5200BE20B7 /* RDPosition.m */,
 				426501C122A03B5200BE20B7 /* RDRhoRhoSystem.h */,
 				426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */,
+				4277938D22A51ABA00E6A723 /* RDPoint.h */,
+				4277938E22A51AD500E6A723 /* RDPoint.m */,
 			);
 			path = Radiodetermination;
 			sourceTree = "<group>";
@@ -216,6 +221,7 @@
 				426501BD22A03B4300BE20B7 /* Canvas.m in Sources */,
 				426501C322A03B5200BE20B7 /* RDPosition.m in Sources */,
 				422798882271F37800E07C39 /* ViewController.m in Sources */,
+				4277938F22A51AD500E6A723 /* RDPoint.m in Sources */,
 				422798932271F37800E07C39 /* main.m in Sources */,
 				422798852271F37800E07C39 /* AppDelegate.m in Sources */,
 				426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */,

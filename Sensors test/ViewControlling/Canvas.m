@@ -69,6 +69,68 @@
  @discussion This method controls the display of a new drown area; is called when a new draw must be created and displayed.
  */
 - (void)drawRect:(CGRect)rect {
+ 
+    /* TEST
+     NSMutableArray * realPoints = [[NSMutableArray alloc] init];
+     
+     RDPoint * point1 = [[RDPoint alloc] init];
+     point1.x = 10.0;
+     point1.y = 10.0;
+     point1.z = 0.0;
+     RDPoint * point2 = [[RDPoint alloc] init];
+     point2.x = 10.0;
+     point2.y = -10.0;
+     point2.z = 0.0;
+     RDPoint * point3 = [[RDPoint alloc] init];
+     point3.x = -10.0;
+     point3.y = 10.0;
+     point3.z = 0.0;
+     RDPoint * point4 = [[RDPoint alloc] init];
+     point4.x = -10.0;
+     point4.y = -10.0;
+     point4.z = 0.0;
+     RDPoint * point5 = [[RDPoint alloc] init];
+     point5.x = 5.0;
+     point5.y = 0.0;
+     point5.z = 0.0;
+     RDPoint * point6 = [[RDPoint alloc] init];
+     point6.x = 0.0;
+     point6.y = -5.0;
+     point6.z = 0.0;
+     RDPoint * point7 = [[RDPoint alloc] init];
+     point7.x = 0.0;
+     point7.y = 5.0;
+     point7.z = 0.0;
+     RDPoint * point8 = [[RDPoint alloc] init];
+     point8.x = -5.0;
+     point8.y = 0.0;
+     point8.z = 0.0;
+     
+     [realPoints addObject:point1];
+     [realPoints addObject:point2];
+     [realPoints addObject:point3];
+     [realPoints addObject:point4];
+     [realPoints addObject:point5];
+     [realPoints addObject:point6];
+     [realPoints addObject:point7];
+     [realPoints addObject:point8];
+     
+     NSMutableArray * canvasPoints = [self transformRealPointsToCanvasPoints:realPoints];
+     
+     for (RDPoint * canvasPoint in canvasPoints) {
+     UIBezierPath *bezierPath = [UIBezierPath bezierPath];
+     [bezierPath addArcWithCenter:[canvasPoint toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+     
+     CAShapeLayer *pointLayer = [[CAShapeLayer alloc] init];
+     [pointLayer setPath:bezierPath.CGPath];
+     [pointLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
+     [pointLayer setFillColor:[UIColor clearColor].CGColor];
+     [[self layer] addSublayer:pointLayer];
+     }
+     
+     [self setNeedsDisplay];
+     NSLog(@"[INFO][CA] Test finished.");
+    */
     
     // Delete previus
     if (self.layer.sublayers.count > 0) {
@@ -78,7 +140,7 @@
             }
         }
     }
-    
+
     
     // Center point
     UIBezierPath *bezierPath = [UIBezierPath bezierPath];
@@ -91,6 +153,7 @@
     [centerLayer setPath:bezierPath.CGPath];
     [centerLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
     [centerLayer setFillColor:[UIColor clearColor].CGColor];
+    [self.layer addSublayer:centerLayer];
     
     NSInteger index = 0;
     NSArray *beacons = [self.rangedBeacons allValues];
@@ -136,6 +199,102 @@
         index++;
     }
     [self setNeedsDisplay];
+}
+
+/*!
+ @method getBarycenterOf:
+ @discussion This method calculated the barycenter of a given set of RDPoint objects.
+ */
+- (RDPoint *) getBarycenterOf:(NSMutableArray *)points {
+    RDPoint * barycenter = [[RDPoint alloc] init];
+    float sumx = 0.0;
+    float sumy = 0.0;
+    float sumz = 0.0;
+    for (RDPoint * point in points) {
+        sumx = sumx + point.x;
+        sumy = sumy + point.y;
+        sumz = sumz + point.z;
+    }
+    barycenter.x = sumx / points.count;
+    barycenter.y = sumy / points.count;
+    barycenter.z = sumz / points.count;
+    return barycenter;
+}
+
+/*!
+ @method subtract:
+ @discussion This method subtracts a 'RDPoint' point from another one.
+ */
+- (RDPoint *) subtract:(RDPoint *)pointB
+                  from:(RDPoint *)pointA {
+    RDPoint * difference = [[RDPoint alloc] init];
+    difference.x = pointB.x - pointA.x;
+    difference.y = pointB.y - pointA.y;
+    difference.z = pointB.z - pointA.z;
+    return difference;
+}
+
+/*!
+ @method transformRealPointsToCanvasPoints:
+ @discussion This method transform a 3D RDPoint that represents a physical location to a canvas point; z coordinate is not transformed.
+ */
+- (NSMutableArray *) transformRealPointsToCanvasPoints:(NSMutableArray *)realPoints {
+    
+    // Result array initialization
+    NSMutableArray * canvasPoints = [[NSMutableArray alloc] init];
+    
+    // Get the canvas dimensions and its center
+    float canvasWidth = self.frame.size.width;
+    float canvasHeight = self.frame.size.height;
+    RDPoint * center = [[RDPoint alloc] init];
+    center.x = self.frame.size.width/2;
+    center.y = self.frame.size.height/2;
+    
+    // Define a safe area
+    float widthSafe = self.frame.size.width * 0.05;
+    float heightSafe = self.frame.size.height * 0.05;
+    float widthSafeMin = 0 + widthSafe;
+    float widthSafeMax = canvasWidth - widthSafe;
+    float heightSafeMin = 0 + heightSafe;
+    float heightSafeMax = canvasHeight - heightSafe;
+
+    // Get the minimum and maximum x and y values
+    float maxX = -FLT_MAX;
+    float minX = FLT_MAX;
+    float maxY = -FLT_MAX;
+    float minY = FLT_MAX;
+    for (RDPoint * realPoint in realPoints) {
+        if (realPoint.x > maxX) {
+            maxX = realPoint.x;
+        }
+        if (realPoint.x < minX) {
+            minX = realPoint.x;
+        }
+        if (realPoint.y > maxY) {
+            maxY = realPoint.y;
+        }
+        if (realPoint.y < minY) {
+            minY = realPoint.y;
+        }
+    }
+    
+    // Get the relations of the transformation
+    float rWidth = (widthSafeMax - widthSafeMin)/(maxX - minX);;
+    float rHeight = (heightSafeMax - heightSafeMin)/(maxY - minY);
+    
+    // Transform the point's coordinates; they would be centered at the origin, hence the senter point is added
+    for (RDPoint * realPoint in realPoints) {
+        RDPoint * canvasPoint = [[RDPoint alloc] init];
+        canvasPoint.x = realPoint.x * rWidth + center.x;
+        canvasPoint.y = realPoint.y * rHeight + center.y;
+        canvasPoint.z = realPoint.z;
+        [canvasPoints addObject:canvasPoint];
+    }
+    
+    // If a ponderate representation is wanted, the center of the screen should be alingned with the barycenter of the set os points
+    // RDPoint * barycenter = [self getBarycenterOf:canvasPoints];
+    
+    return canvasPoints;
 }
 
 @end

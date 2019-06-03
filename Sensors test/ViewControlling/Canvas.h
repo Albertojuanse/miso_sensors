@@ -9,12 +9,16 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
+#import "RDPoint.h"
+#import <float.h>
 
 /*!
  @class Canvas
  @discussion This class extends UIView and creates an area in which draws can be displayed and it configuration.
  */
 @interface Canvas: UIView
+
+typedef CGPoint NSPoint;
 
 @property NSMutableDictionary * rangedBeacons;
 @property NSMutableArray * currentLayers;
