@@ -51,13 +51,13 @@
 - (NSNumber *) calculateDistanceWithRssi: (NSUInteger) rssi
 {
     // Absolute values of speed of light, frecuency, and antenna's join gain
-    NSNumber * C = [[NSNumber alloc]initWithDouble:299792458.0];
-    NSNumber * F = [[NSNumber alloc]initWithDouble:2440000000.0]; // 2400 - 2480 MHz
-    NSNumber * G = [[NSNumber alloc]initWithDouble:1.0]; // typically 2.16 dBi
+    NSNumber * C = [[NSNumber alloc]initWithFloat:299792458.0];
+    NSNumber * F = [[NSNumber alloc]initWithFloat:2440000000.0]; // 2400 - 2480 MHz
+    NSNumber * G = [[NSNumber alloc]initWithFloat:1.0]; // typically 2.16 dBi
     // RSSI value to double
     NSNumber * RSSIvalue = [[NSNumber alloc]initWithInteger:rssi];
     // Calculate the distance
-    NSNumber * distance = [[NSNumber alloc] initWithDouble:([C doubleValue] / (4.0 * M_PI * [F doubleValue])) * sqrt([G doubleValue] * pow(10.0, [RSSIvalue doubleValue] / 10.0))];
+    NSNumber * distance = [[NSNumber alloc] initWithFloat:([C doubleValue] / (4.0 * M_PI * [F floatValue])) * sqrt([G floatValue] * pow(10.0, [RSSIvalue floatValue] / 10.0))];
     return distance;
 }
 

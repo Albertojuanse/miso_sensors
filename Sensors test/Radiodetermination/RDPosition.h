@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 /*!
  @class RDPosition
@@ -19,6 +20,11 @@
 @property NSNumber * x;
 @property NSNumber * y;
 @property NSNumber * z;
+
+typedef double CGFloat;
+typedef CGPoint NSPoint;
+
+- (NSPoint) toNSPoint;
 
 @end
 

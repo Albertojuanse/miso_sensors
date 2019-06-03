@@ -70,41 +70,41 @@
  */
 - (void)drawRect:(CGRect)rect {
  
-    /* TEST
+    /*
      NSMutableArray * realPoints = [[NSMutableArray alloc] init];
      
-     RDPoint * point1 = [[RDPoint alloc] init];
-     point1.x = 10.0;
-     point1.y = 10.0;
-     point1.z = 0.0;
-     RDPoint * point2 = [[RDPoint alloc] init];
-     point2.x = 10.0;
-     point2.y = -10.0;
-     point2.z = 0.0;
-     RDPoint * point3 = [[RDPoint alloc] init];
-     point3.x = -10.0;
-     point3.y = 10.0;
-     point3.z = 0.0;
-     RDPoint * point4 = [[RDPoint alloc] init];
-     point4.x = -10.0;
-     point4.y = -10.0;
-     point4.z = 0.0;
-     RDPoint * point5 = [[RDPoint alloc] init];
-     point5.x = 5.0;
-     point5.y = 0.0;
-     point5.z = 0.0;
-     RDPoint * point6 = [[RDPoint alloc] init];
-     point6.x = 0.0;
-     point6.y = -5.0;
-     point6.z = 0.0;
-     RDPoint * point7 = [[RDPoint alloc] init];
-     point7.x = 0.0;
-     point7.y = 5.0;
-     point7.z = 0.0;
-     RDPoint * point8 = [[RDPoint alloc] init];
-     point8.x = -5.0;
-     point8.y = 0.0;
-     point8.z = 0.0;
+     RDPosition * point1 = [[RDPosition alloc] init];
+     point1.x = [[NSNumber alloc] initWithFloat:10.0];
+     point1.y = [[NSNumber alloc] initWithFloat:10.0];
+     point1.z = [[NSNumber alloc] initWithFloat:0.0];
+     RDPosition * point2 = [[RDPosition alloc] init];
+     point2.x = [[NSNumber alloc] initWithFloat:10.0];
+     point2.y = [[NSNumber alloc] initWithFloat:-10.0];
+     point2.z = [[NSNumber alloc] initWithFloat:0.0];
+     RDPosition * point3 = [[RDPosition alloc] init];
+     point3.x = [[NSNumber alloc] initWithFloat:-10.0];
+     point3.y = [[NSNumber alloc] initWithFloat:10.0];
+     point3.z = [[NSNumber alloc] initWithFloat:0.0];
+     RDPosition * point4 = [[RDPosition alloc] init];
+     point4.x = [[NSNumber alloc] initWithFloat:-10.0];
+     point4.y = [[NSNumber alloc] initWithFloat:-10.0];
+     point4.z = [[NSNumber alloc] initWithFloat:0.0];
+     RDPosition * point5 = [[RDPosition alloc] init];
+     point5.x = [[NSNumber alloc] initWithFloat:5.0];
+     point5.y = [[NSNumber alloc] initWithFloat:0.0];
+     point5.z = [[NSNumber alloc] initWithFloat:0.0];
+     RDPosition * point6 = [[RDPosition alloc] init];
+     point6.x = [[NSNumber alloc] initWithFloat:0.0];
+     point6.y = [[NSNumber alloc] initWithFloat:-5.0];
+     point6.z = [[NSNumber alloc] initWithFloat:0.0];
+     RDPosition * point7 = [[RDPosition alloc] init];
+     point7.x = [[NSNumber alloc] initWithFloat:0.0];
+     point7.y = [[NSNumber alloc] initWithFloat:5.0];
+     point7.z = [[NSNumber alloc] initWithFloat:0.0];
+     RDPosition * point8 = [[RDPosition alloc] init];
+     point8.x = [[NSNumber alloc] initWithFloat:-5.0];
+     point8.y = [[NSNumber alloc] initWithFloat:0.0];
+     point8.z = [[NSNumber alloc] initWithFloat:0.0];
      
      [realPoints addObject:point1];
      [realPoints addObject:point2];
@@ -117,7 +117,7 @@
      
      NSMutableArray * canvasPoints = [self transformRealPointsToCanvasPoints:realPoints];
      
-     for (RDPoint * canvasPoint in canvasPoints) {
+     for (RDPosition * canvasPoint in canvasPoints) {
      UIBezierPath *bezierPath = [UIBezierPath bezierPath];
      [bezierPath addArcWithCenter:[canvasPoint toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
      
@@ -203,40 +203,40 @@
 
 /*!
  @method getBarycenterOf:
- @discussion This method calculated the barycenter of a given set of RDPoint objects.
+ @discussion This method calculated the barycenter of a given set of RDPosition objects.
  */
-- (RDPoint *) getBarycenterOf:(NSMutableArray *)points {
-    RDPoint * barycenter = [[RDPoint alloc] init];
+- (RDPosition *) getBarycenterOf:(NSMutableArray *)points {
+    RDPosition * barycenter = [[RDPosition alloc] init];
     float sumx = 0.0;
     float sumy = 0.0;
     float sumz = 0.0;
-    for (RDPoint * point in points) {
-        sumx = sumx + point.x;
-        sumy = sumy + point.y;
-        sumz = sumz + point.z;
+    for (RDPosition * point in points) {
+        sumx = sumx + [point.x floatValue];
+        sumy = sumy + [point.y floatValue];
+        sumz = sumz + [point.z floatValue];
     }
-    barycenter.x = sumx / points.count;
-    barycenter.y = sumy / points.count;
-    barycenter.z = sumz / points.count;
+    barycenter.x = [[NSNumber alloc] initWithFloat: sumx / points.count];
+    barycenter.y = [[NSNumber alloc] initWithFloat: sumy / points.count];
+    barycenter.z = [[NSNumber alloc] initWithFloat: sumz / points.count];
     return barycenter;
 }
 
 /*!
  @method subtract:
- @discussion This method subtracts a 'RDPoint' point from another one.
+ @discussion This method subtracts a 'RDPosition' point from another one.
  */
-- (RDPoint *) subtract:(RDPoint *)pointB
-                  from:(RDPoint *)pointA {
-    RDPoint * difference = [[RDPoint alloc] init];
-    difference.x = pointB.x - pointA.x;
-    difference.y = pointB.y - pointA.y;
-    difference.z = pointB.z - pointA.z;
+- (RDPosition *) subtract:(RDPosition *)pointB
+                     from:(RDPosition *)pointA {
+    RDPosition * difference = [[RDPosition alloc] init];
+    difference.x = [[NSNumber alloc] initWithFloat:[pointB.x floatValue] - [pointA.x floatValue]];
+    difference.y = [[NSNumber alloc] initWithFloat:[pointB.y floatValue] - [pointA.y floatValue]];
+    difference.z = [[NSNumber alloc] initWithFloat:[pointB.z floatValue] - [pointA.z floatValue]];
     return difference;
 }
 
 /*!
  @method transformRealPointsToCanvasPoints:
- @discussion This method transform a 3D RDPoint that represents a physical location to a canvas point; z coordinate is not transformed.
+ @discussion This method transform a 3D RDPosition that represents a physical location to a canvas point; z coordinate is not transformed.
  */
 - (NSMutableArray *) transformRealPointsToCanvasPoints:(NSMutableArray *)realPoints {
     
@@ -246,9 +246,9 @@
     // Get the canvas dimensions and its center
     float canvasWidth = self.frame.size.width;
     float canvasHeight = self.frame.size.height;
-    RDPoint * center = [[RDPoint alloc] init];
-    center.x = self.frame.size.width/2;
-    center.y = self.frame.size.height/2;
+    RDPosition * center = [[RDPosition alloc] init];
+    center.x = [[NSNumber alloc] initWithFloat:self.frame.size.width/2];
+    center.y = [[NSNumber alloc] initWithFloat:self.frame.size.height/2];
     
     // Define a safe area
     float widthSafe = self.frame.size.width * 0.05;
@@ -263,18 +263,18 @@
     float minX = FLT_MAX;
     float maxY = -FLT_MAX;
     float minY = FLT_MAX;
-    for (RDPoint * realPoint in realPoints) {
-        if (realPoint.x > maxX) {
-            maxX = realPoint.x;
+    for (RDPosition * realPoint in realPoints) {
+        if ([realPoint.x floatValue] > maxX) {
+            maxX = [realPoint.x floatValue];
         }
-        if (realPoint.x < minX) {
-            minX = realPoint.x;
+        if ([realPoint.x floatValue] < minX) {
+            minX = [realPoint.x floatValue];
         }
-        if (realPoint.y > maxY) {
-            maxY = realPoint.y;
+        if ([realPoint.y floatValue] > maxY) {
+            maxY = [realPoint.y floatValue];
         }
-        if (realPoint.y < minY) {
-            minY = realPoint.y;
+        if ([realPoint.y floatValue] < minY) {
+            minY = [realPoint.y floatValue];
         }
     }
     
@@ -283,16 +283,16 @@
     float rHeight = (heightSafeMax - heightSafeMin)/(maxY - minY);
     
     // Transform the point's coordinates; they would be centered at the origin, hence the senter point is added
-    for (RDPoint * realPoint in realPoints) {
-        RDPoint * canvasPoint = [[RDPoint alloc] init];
-        canvasPoint.x = realPoint.x * rWidth + center.x;
-        canvasPoint.y = realPoint.y * rHeight + center.y;
+    for (RDPosition * realPoint in realPoints) {
+        RDPosition * canvasPoint = [[RDPosition alloc] init];
+        canvasPoint.x = [[NSNumber alloc] initWithFloat:[realPoint.x floatValue] * rWidth + [center.x floatValue]];
+        canvasPoint.y = [[NSNumber alloc] initWithFloat:[realPoint.y floatValue] * rHeight + [center.y floatValue]];
         canvasPoint.z = realPoint.z;
         [canvasPoints addObject:canvasPoint];
     }
     
     // If a ponderate representation is wanted, the center of the screen should be alingned with the barycenter of the set os points
-    // RDPoint * barycenter = [self getBarycenterOf:canvasPoints];
+    // RDPosition * barycenter = [self getBarycenterOf:canvasPoints];
     
     return canvasPoints;
 }

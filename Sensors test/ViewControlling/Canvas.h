@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
-#import "RDPoint.h"
+#import "RDPosition.h"
 #import <float.h>
 
 /*!
