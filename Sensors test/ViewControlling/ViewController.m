@@ -19,6 +19,11 @@
     
     // Ask canvas to initialize
     [self.canvas prepareCanvas];
+    self.text.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.5];
+    
+    // Variables
+    displayedUUID = [[NSMutableArray alloc] init];
+    self.text.text = @"";
     
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -51,19 +56,60 @@
         
         // Save beacons
         NSDictionary *data = notification.userInfo;
-        rangedBeacons = [data valueForKey:@"rangedBeacons"];
+        rangedBeaconsDic = [data valueForKey:@"rangedBeaconsDic"];
         self.text.text =  [[NSString alloc] init];
-        self.canvas.rangedBeacons = [[NSMutableDictionary alloc] init];
+        self.canvas.rangedBeaconsDic = rangedBeaconsDic;
         
-        // Do whatever with every beacon
-        NSArray *keys = [rangedBeacons allKeys];
-        for (id key in keys){
-            CLBeacon *beacon = [rangedBeacons objectForKey:key];
-            NSString * beaconUUID = [[beacon proximityUUID] UUIDString];
-            self.text.text = [self.text.text stringByAppendingString:[beaconUUID stringByAppendingString:@"\n"]];
-            [self.canvas.rangedBeacons setObject:beacon forKey:beaconUUID];
+        
+        // Inspect dictionary for UUID names
+        // Declare the inner dictionaries.
+        NSMutableDictionary * measureDicDic;
+        NSMutableDictionary * uuidDic;
+        NSMutableDictionary * uuidDicDic;
+        NSMutableDictionary * positionDic;
+        
+        // For every position where measures were taken
+        NSArray *positionKeys = [rangedBeaconsDic allKeys];
+        for (id positionKey in positionKeys) {
+            // ...get the dictionary for this position.
+            positionDic = [rangedBeaconsDic objectForKey:positionKey];
+            
+            // Get the the dictionary with the UUID's dictionaries...
+            uuidDicDic = positionDic[@"positionMeasures"];
+            // ...and for every UUID...
+            NSArray *uuidKeys = [uuidDicDic allKeys];
+            BOOL found = NO;
+            for (id uuidKey in uuidKeys) {
+                // ...get the dictionary...
+                uuidDic = [uuidDicDic objectForKey:uuidKey];
+                // ...and get the uuid.
+                NSString * uuidNew = uuidDic[@"uuid"];
+                
+                // Check if it is already displayed
+                if (displayedUUID.count == 0) {
+                    // Later will be added the new item
+                } else {
+                    for (NSString * displayed in displayedUUID) {
+                        if ([displayed isEqualToString:uuidNew]) {
+                            found = YES;
+                            NSLog(@"[INFO][VC] Found.");
+                        } else {
+                            // Later will be added the new item
+                        }
+                    }
+                }
+                if (found == NO) {
+                    [displayedUUID addObject:uuidNew];
+                    NSLog(@"[INFO][VC] Added.");
+                    NSLog(@"[INFO][VC] -> %@", uuidNew);
+                    self.text.text = [@"\n" stringByAppendingString:uuidNew] ;
+                    //self.text.text = [self.text.text stringByAppendingString:[uuidNew stringByAppendingString:@"\n"]];
+                    NSLog(@"[INFO][VC] Displayed new UUID.");
+                }
+            }
         }
     }
+
     [self.canvas setNeedsDisplay];
 }
 

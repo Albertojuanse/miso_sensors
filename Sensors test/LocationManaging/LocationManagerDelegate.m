@@ -422,7 +422,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     }
     
     // Ask view controller to refresh the canvas
-    if(rangedBeacons.count > 0) {
+    if(rangedBeaconsDic.count > 0) {
         NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
         [data setObject:rangedBeaconsDic forKey:@"rangedBeaconsDic"];
         [[NSNotificationCenter defaultCenter]

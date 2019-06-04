@@ -41,7 +41,7 @@
  */
 -(void)prepareCanvas{
     // Initialize variables
-    self.rangedBeacons = [[NSMutableDictionary alloc] init];
+    self.rangedBeaconsDic = [[NSMutableDictionary alloc] init];
     
     // Canvas configurations
     [self setUserInteractionEnabled:NO];
@@ -132,6 +132,9 @@
      NSLog(@"[INFO][CA] Test finished.");
     */
     
+    
+    
+    /*
     // Delete previus
     if (self.layer.sublayers.count > 0) {
         for (CALayer *layer in self.layer.sublayers) {
@@ -199,6 +202,7 @@
         index++;
     }
     [self setNeedsDisplay];
+     */
 }
 
 /*!
