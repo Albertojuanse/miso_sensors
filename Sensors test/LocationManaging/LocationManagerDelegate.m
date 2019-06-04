@@ -16,6 +16,19 @@
  */
 - (void) configure{
     
+    // Set device's location at the origin
+    position = [[RDPosition alloc] init];
+    position.x = [NSNumber numberWithFloat:0.0];
+    position.y = [NSNumber numberWithFloat:0.0];
+    position.z = [NSNumber numberWithFloat:0.0];
+    
+    // Other variables
+    rangedBeacons = [[NSMutableDictionary alloc] init];
+    rangedBeaconsDic = [[NSMutableDictionary alloc] init];
+    positionIdNumber = [NSNumber numberWithInt:0];
+    uuidIdNumber = [NSNumber numberWithInt:0];
+    measureIdNumber = [NSNumber numberWithInt:0];
+    
     // Initialize location manager and set this class as the delegate which implement the event response's methods
     locationManager = [[CLLocationManager alloc] init];
     locationManager.delegate = self;
@@ -150,8 +163,6 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         [rangedRegions addObject:Beacon1Region];
         [locationManager startRangingBeaconsInRegion:Beacon1Region];
         
-        rangedBeacons = [[NSMutableDictionary alloc] init];
-        
         NSLog(@"[INFO][LM] Device monitorizes a region:");
         NSLog(@"[INFO][LM] -> %@", [[RaspiRegion proximityUUID] UUIDString]);
         NSLog(@"[INFO][LM] Device monitorizes a region:");
@@ -203,53 +214,222 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
        didRangeBeacons:(NSArray*)beacons
               inRegion:(CLBeaconRegion*)region
 {
-    NSMutableArray * newBeacons = [[NSMutableArray alloc] init];
     
     // If there is any beacon in the event...
     if (beacons.count > 0) {
-        // ...add them to the class variable 'self.rangedBeacons' if it is empty...
-        if(rangedBeacons.count == 0) {
-            for (CLBeacon *beacon in beacons) {
-                // Save ranged Beacons
-                [rangedBeacons setObject:beacon forKey:[[beacon proximityUUID] UUIDString]];
-                NSLog(@"[INFO][LM] Beacon ranged:");
-                NSLog(@"[INFO][LM] -> %@",  [[beacon proximityUUID] UUIDString]);
-            }
-        // ...but if it is not the first beacon detected, replace it with the old one.
-        } else {
-            // For every old beacon ranged...
-            NSArray *keys = [rangedBeacons allKeys];
-            for(id key in keys) {
-                // ... check for every new beacon...
-                for(CLBeacon *newbeacon in beacons){
-                    // ... if old one and new one is from the same source.
-                    if ([[[newbeacon proximityUUID] UUIDString] isEqual:key]){
-                        [rangedBeacons removeObjectForKey:key];
+        for (CLBeacon *beacon in beacons) {
+            // ...get its information...
+            NSString * uuid = [[beacon proximityUUID] UUIDString];
+            NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
+            RDPosition * measurePosition = position;
+            
+            // ...and save it in dictionary 'rangedBeaconsDic'.
+            
+            // This dictionary's schema is:
+            //
+            // { "measurePosition1":                              //  rangedBeaconsDic
+            //     { "measurePosition": measurePosition;          //  positionDic
+            //       "positionMeasures":
+            //         { "measureUuid1":                          //  uuidDicDic
+            //             { "uuid" : uuid1;                      //  uuidDic
+            //               "uuidMeasures":
+            //                 { "measure1":                      //  measureDicDic
+            //                     { "type": "rssi"/"heading";    //  measureDic
+            //                       "measure": rssi/heading
+            //                     };
+            //                   "measure2":  { (···) }
+            //                 }
+            //             };
+            //           "measureUuid2": { (···) }
+            //         }
+            //     };
+            //   "measurePosition2": { (···) }
+            // }
+            
+            // Save measure value and type
+            // The 'measureDic' is always new.
+            NSMutableDictionary * measureDic = [[NSMutableDictionary alloc] init];
+            // TO DO: Heading measures. Alberto J. 2019-06-04.
+            measureDic[@"type"] = @"rssi";
+            measureDic[@"measure"] = rssi;
+            
+            // Declare the rest of dictionaries; they will be created or gotten if they already exists.
+            NSMutableDictionary * measureDicDic;
+            NSMutableDictionary * uuidDic;
+            NSMutableDictionary * uuidDicDic;
+            NSMutableDictionary * positionDic;
+            
+            if (rangedBeaconsDic.count == 0) {
+                // First initialization
+                
+                // { "measurePosition1":                              //  rangedBeaconsDic
+                //     { "measurePosition": measurePosition;          //  positionDic
+                //       "positionMeasures":
+                //         { "measureUuid1":                          //  uuidDicDic
+                //             { "uuid" : uuid1;                      //  uuidDic
+                //               "uuidMeasures":
+                //                 { "measure1":                      //  measureDicDic
+                //                     { "type": "rssi"/"heading";    //  measureDic
+                //                       "measure": rssi/heading
+                //                     };
+                //                   "measure2":  { (···) }
+                //                 }
+                //             };
+                //           "measureUuid2": { (···) }
+                //         }
+                //     };
+                //   "measurePosition2": { (···) }
+                // }
+                
+                // Compose the dictionary from the innest to the outest
+                // Wrap measureDic with another dictionary and an unique measure's identifier key
+                measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
+                NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
+                NSMutableDictionary * measureDicDic = [[NSMutableDictionary alloc] init];
+                measureDicDic[measureId] = measureDic;
+                
+                // Create the 'uuidDic' dictionary
+                uuidDic = [[NSMutableDictionary alloc] init];
+                uuidDic[@"uuid"] = uuid;
+                uuidDic[@"uuidMeasures"] = measureDicDic;
+                
+                // Wrap uuidDic with another dictionary and an unique uuid's identifier key
+                uuidIdNumber = [NSNumber numberWithInt:[uuidIdNumber intValue] + 1];
+                NSString * uuidId = [@"measureUuid" stringByAppendingString:[uuidIdNumber stringValue]];
+                uuidDicDic = [[NSMutableDictionary alloc] init];
+                uuidDicDic[uuidId] = uuidDic;
+                
+                // Create the 'positionDic' dictionary
+                positionDic = [[NSMutableDictionary alloc] init];
+                positionDic[@"measurePosition"] = measurePosition;
+                positionDic[@"positionMeasures"] = uuidDicDic;
+                
+                // Set positionDic in the main dictionary 'rangedBeaconsDic' with an unique position's identifier key
+                positionIdNumber = [NSNumber numberWithInt:[positionIdNumber intValue] + 1];
+                NSString * positionId = [@"measurePosition" stringByAppendingString:[positionIdNumber stringValue]];
+                rangedBeaconsDic[positionId] = positionDic;
+                
+            } else {
+                // Find if already exists position and uuid and create it if not.
+                // If a 'parent' dictionary exists, there will exist at least one 'child' dictionary, since they are created that way; there not will be [ if(dic.count == 0) ] checks
+                
+                // { "measurePosition1":                              //  rangedBeaconsDic
+                //     { "measurePosition": measurePosition;          //  positionDic
+                //       "positionMeasures":
+                //         { "measureUuid1":                          //  uuidDicDic
+                //             { "uuid" : uuid1;                      //  uuidDic
+                //               "uuidMeasures":
+                //                 { "measure1":                      //  measureDicDic
+                //                     { "type": "rssi"/"heading";    //  measureDic
+                //                       "measure": rssi/heading
+                //                     };
+                //                   "measure2":  { (···) }
+                //                 }
+                //             };
+                //           "measureUuid2": { (···) }
+                //         }
+                //     };
+                //   "measurePosition2": { (···) }
+                // }
+                
+                // If position and UUID already exists, the measure is allocated there; if not, they will be created later.
+                BOOL positionFound = NO;
+                BOOL uuidFound = NO;
+                // For each position already saved...
+                NSArray *positionKeys = [rangedBeaconsDic allKeys];
+                for (id positionKey in positionKeys) {
+                    // ...get the dictionary for this position...
+                    positionDic = [rangedBeaconsDic objectForKey:positionKey];
+                    // ...and checks if the position already exists.
+                    if ([positionDic[@"measurePosition"] isEqualToRDPosition:measurePosition]) {
+                        positionFound = YES;
+                        
+                        // For each uuid already saved...
+                        uuidDicDic = positionDic[@"positionMeasures"];
+                        NSArray *uuidKeys = [uuidDicDic allKeys];
+                        for (id uuidKey in uuidKeys) {
+                            // ...get the dictionary for this uuid...
+                            uuidDic = [uuidDicDic objectForKey:uuidKey];
+                            // ...and checks if the uuid already exists.
+                            if ([uuidDic[@"uuid"] isEqual:uuid]) {
+                                uuidFound = YES;
+                                
+                                // If both position and uuid are found, set the 'measureDic' into 'measureDicDic' with an unique measure's identifier key.
+                                measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
+                                NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
+                                measureDicDic = uuidDic[@"uuidMeasures"];
+                                measureDicDic[measureId] = measureDic;
+                                
+                            }
+                        }
+                        // If only the UUID was not found, but te positions was found, create all the inner dictionaries.
+                        if (uuidFound == NO) {
+                            // Compose the dictionary from the innest to the outest
+                            // Wrap measureDic with another dictionary and an unique measure's identifier key
+                            measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
+                            NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
+                            measureDicDic = [[NSMutableDictionary alloc] init];
+                            measureDicDic[measureId] = measureDic;
+                            
+                            // Create the 'uuidDic' dictionary
+                            uuidDic = [[NSMutableDictionary alloc] init];
+                            uuidDic[@"uuid"] = uuid;
+                            uuidDic[@"uuidMeasures"] = measureDicDic;
+                            
+                            // Allocate 'uuidDic' into 'uuidDicDic' with an unique uuid's identifier key
+                            uuidIdNumber = [NSNumber numberWithInt:[uuidIdNumber intValue] + 1];
+                            NSString * uuidId = [@"measureUuid" stringByAppendingString:[uuidIdNumber stringValue]];
+                            uuidDicDic[uuidId] = uuidDic;
+                        }
                     }
-                    [rangedBeacons setObject:newbeacon forKey:[[newbeacon proximityUUID] UUIDString]];
-                    [newBeacons addObject:newbeacon];
-                    NSLog(@"[INFO][LM] Beacon ranged:");
-                    NSLog(@"[INFO][LM] -> %@", [[newbeacon proximityUUID] UUIDString]);
+                }
+                
+                // If both position and UUID was not found create all the inner dictionaries.
+                if (positionFound == NO) {
+                    // Compose the dictionary from the innest to the outest
+                    // Wrap measureDic with another dictionary and an unique measure's identifier key
+                    measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
+                    NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
+                    measureDicDic = [[NSMutableDictionary alloc] init];
+                    measureDicDic[measureId] = measureDic;
+                    
+                    // Create the 'uuidDic' dictionary
+                    uuidDic = [[NSMutableDictionary alloc] init];
+                    uuidDic[@"uuid"] = uuid;
+                    uuidDic[@"uuidMeasures"] = measureDicDic;
+                    
+                    // Wrap uuidDic with another dictionary and an unique uuid's identifier key
+                    uuidIdNumber = [NSNumber numberWithInt:[uuidIdNumber intValue] + 1];
+                    NSString * uuidId = [@"measureUuid" stringByAppendingString:[uuidIdNumber stringValue]];
+                    uuidDicDic = [[NSMutableDictionary alloc] init];
+                    uuidDicDic[uuidId] = uuidDic;
+                    
+                    // Create the 'positionDic' dictionary
+                    positionDic = [[NSMutableDictionary alloc] init];
+                    positionDic[@"measurePosition"] = measurePosition;
+                    positionDic[@"positionMeasures"] = measureDicDic;
+                    
+                    // Set positionDic in the main dictionary 'rangedBeaconsDic' with an unique position's identifier key
+                    positionIdNumber = [NSNumber numberWithInt:[positionIdNumber intValue] + 1];
+                    NSString * positionId = [@"measurePosition" stringByAppendingString:[positionIdNumber stringValue]];
+                    rangedBeaconsDic[positionId] = positionDic;
                 }
             }
         }
-    } else {
-        NSLog(@"[INFO][LM] No beacons ranged.");
+        
+        NSLog(@"[INFO][MM] Generated dictionary:");
+        NSLog(@"[INFO][MM]  -> %@", rangedBeaconsDic);
     }
     
     // Ask view controller to refresh the canvas
     if(rangedBeacons.count > 0) {
         NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-        [data setObject:rangedBeacons forKey:@"rangedBeacons"];
+        [data setObject:rangedBeaconsDic forKey:@"rangedBeaconsDic"];
         [[NSNotificationCenter defaultCenter]
          postNotificationName:@"refreshCanvas"
          object:nil
          userInfo:data];
     }
-}
-
-- (void) radiolocator {
-    
 }
 
 @end

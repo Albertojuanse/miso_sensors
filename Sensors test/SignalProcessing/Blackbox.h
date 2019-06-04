@@ -10,13 +10,14 @@
  @class Blackbox
  @discussion This class defines the protocol of a blackbox type system.
  */
-@interface Blackbox.m {
+@interface Blackbox {
     
-    @property input;
-    @property output;
-    
-    - (void) queueInput;
-    - (void) dequeueOutput;
 }
+
+//@property input;
+//@property output;
+
+- (void) queueInput;
+- (void) dequeueOutput;
 
 @end

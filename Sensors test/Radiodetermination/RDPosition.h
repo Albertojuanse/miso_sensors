@@ -25,6 +25,8 @@ typedef double CGFloat;
 typedef CGPoint NSPoint;
 
 - (NSPoint) toNSPoint;
+- (BOOL)isEqual:(id)other;
+- (BOOL)isEqualToRDPosition:(RDPosition *)position;
 
 @end
 

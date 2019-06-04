@@ -7,6 +7,7 @@
 //
 
 #import <CoreLocation/CoreLocation.h>
+#import "RDPosition.h"
 
 /*!
  @class LocationManagerDelegate
@@ -14,10 +15,20 @@
  */
 @interface LocationManagerDelegate: NSObject<CLLocationManagerDelegate>{
     
+    // Variables
+    RDPosition * position;
+    
+    // Data store
     NSMutableArray * monitoredRegions;
     NSMutableArray * rangedRegions;
     CLLocationManager * locationManager;
     NSMutableDictionary * rangedBeacons;
+    
+    // Data shared
+    NSMutableDictionary * rangedBeaconsDic;
+    NSNumber * positionIdNumber;
+    NSNumber * uuidIdNumber;
+    NSNumber * measureIdNumber;
     
 }
 

@@ -40,4 +40,32 @@
     return point;
 }
 
+/*!
+ @method isEqual
+ @discussion This method overwrites the isEqual super method.
+ */
+- (BOOL)isEqual:(id)other {
+    if (other == self) {
+        return YES;
+    }
+    if (!other || ![other isKindOfClass:[self class]]) {
+        return NO;
+    }
+    return [self isEqualToRDPosition:other];
+}
+
+/*!
+ @method isEqualToRDPosition
+ @discussion This method compares two RDPosition objects.
+ */
+- (BOOL)isEqualToRDPosition:(RDPosition *)position {
+    if (position == self) {
+        return YES;
+    }
+    if ([self.x isEqual:position.x] && [self.y isEqual:position.y] && [self.z isEqual:position.z]) {
+        return YES;
+    }
+    return NO;
+}
+
 @end
