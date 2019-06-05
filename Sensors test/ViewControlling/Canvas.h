@@ -16,7 +16,16 @@
  @class Canvas
  @discussion This class extends UIView and creates an area in which draws can be displayed and it configuration.
  */
-@interface Canvas: UIView
+@interface Canvas: UIView {
+    
+    // Data for display
+    NSMutableArray * displayedUUID;
+    NSString * displayedUUIDString;
+    
+    // For canvas relation of aspect
+    float rWidth;
+    float rHeight;
+}
 
 typedef CGPoint NSPoint;
 

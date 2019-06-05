@@ -19,11 +19,11 @@
     
     // Ask canvas to initialize
     [self.canvas prepareCanvas];
-    self.text.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.5];
+    self.text.backgroundColor = [UIColor colorWithRed:218/255.0 green:224/255.0 blue:235/255.0 alpha:0.6];
     
     // Variables
     displayedUUID = [[NSMutableArray alloc] init];
-    self.text.text = @"";
+    displayedUUIDString = [[NSString alloc] init];
     
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -57,7 +57,6 @@
         // Save beacons
         NSDictionary *data = notification.userInfo;
         rangedBeaconsDic = [data valueForKey:@"rangedBeaconsDic"];
-        self.text.text =  [[NSString alloc] init];
         self.canvas.rangedBeaconsDic = rangedBeaconsDic;
         
         
@@ -92,7 +91,6 @@
                     for (NSString * displayed in displayedUUID) {
                         if ([displayed isEqualToString:uuidNew]) {
                             found = YES;
-                            NSLog(@"[INFO][VC] Found.");
                         } else {
                             // Later will be added the new item
                         }
@@ -100,11 +98,12 @@
                 }
                 if (found == NO) {
                     [displayedUUID addObject:uuidNew];
-                    NSLog(@"[INFO][VC] Added.");
+                    displayedUUIDString = [displayedUUIDString stringByAppendingString:[uuidNew stringByAppendingString:@"\n"]];
+                    NSLog(@"%@", displayedUUIDString);
+                    NSLog(@"%@", displayedUUID);
+                    [self.text setText:displayedUUIDString];
+                    NSLog(@"[INFO][VC] Added displayedUUID.");
                     NSLog(@"[INFO][VC] -> %@", uuidNew);
-                    self.text.text = [@"\n" stringByAppendingString:uuidNew] ;
-                    //self.text.text = [self.text.text stringByAppendingString:[uuidNew stringByAppendingString:@"\n"]];
-                    NSLog(@"[INFO][VC] Displayed new UUID.");
                 }
             }
         }

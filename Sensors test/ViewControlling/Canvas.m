@@ -42,6 +42,8 @@
 -(void)prepareCanvas{
     // Initialize variables
     self.rangedBeaconsDic = [[NSMutableDictionary alloc] init];
+    rHeight = 1.0;
+    rWidth = 1.0;
     
     // Canvas configurations
     [self setUserInteractionEnabled:NO];
@@ -70,7 +72,7 @@
  */
 - (void)drawRect:(CGRect)rect {
  
-    /*
+    /* TEST CANVAS
      NSMutableArray * realPoints = [[NSMutableArray alloc] init];
      
      RDPosition * point1 = [[RDPosition alloc] init];
@@ -130,9 +132,203 @@
      
      [self setNeedsDisplay];
      NSLog(@"[INFO][CA] Test finished.");
+    *********************************************************************** */
+    
+    // Delete previus
+    if (self.layer.sublayers.count > 0) {
+        for (CALayer *layer in self.layer.sublayers) {
+            if ([layer isKindOfClass:[CAShapeLayer class]]) {
+                [layer setHidden:YES];
+            }
+        }
+    }
+    
+    // Center point
+    UIBezierPath *bezierPath = [UIBezierPath bezierPath];
+    CGPoint center;
+    center.x = self.frame.size.width/2;
+    center.y = self.frame.size.height/2;
+    [bezierPath addArcWithCenter:center radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+    
+    CAShapeLayer *centerLayer = [[CAShapeLayer alloc] init];
+    [centerLayer setPath:bezierPath.CGPath];
+    [centerLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
+    [centerLayer setFillColor:[UIColor clearColor].CGColor];
+    [self.layer addSublayer:centerLayer];
+    
+    // Inspect dictionary from location manager for data retrieving
+    //
+    // { "measurePosition1":                              //  rangedBeaconsDic
+    //     { "measurePosition": measurePosition;          //  positionDic
+    //       "positionMeasures":
+    //         { "measureUuid1":                          //  uuidDicDic
+    //             { "uuid" : uuid1;                      //  uuidDic
+    //               "uuidMeasures":
+    //                 { "measure1":                      //  measureDicDic
+    //                     { "type": "rssi"/"heading";    //  measureDic
+    //                       "measure": rssi/heading
+    //                     };
+    //                   "measure2":  { (···) }
+    //                 }
+    //             };
+    //           "measureUuid2": { (···) }
+    //         }
+    //     };
+    //   "measurePosition2": { (···) }
+    // }
+    //
+    // Declare the inner dictionaries.
+    NSMutableDictionary * measureDic;
+    NSMutableDictionary * measureDicDic;
+    NSMutableDictionary * uuidDic;
+    NSMutableDictionary * uuidDicDic;
+    NSMutableDictionary * positionDic;
+    
+    // For every position where measures were taken
+    NSArray * positionKeys = [self.rangedBeaconsDic allKeys];
+    for (id positionKey in positionKeys) {
+        // ...get the dictionary for this position...
+        positionDic = [self.rangedBeaconsDic objectForKey:positionKey];
+        // ...and the position.
+        RDPosition * position = positionDic[@"measurePosition"];
+        
+        // DEFINE POSITION CANVAS REPRESENTATION (METHOD)
+        
+        // Get the the dictionary with the UUID's dictionaries...
+        uuidDicDic = positionDic[@"positionMeasures"];
+        // ...and for every UUID...
+        NSArray * uuidKeys = [uuidDicDic allKeys];
+        // Color for every UUID
+        NSInteger UUIDindex = 0;
+        for (id uuidKey in uuidKeys) {
+            
+            // ...get the dictionary...
+            uuidDic = [uuidDicDic objectForKey:uuidKey];
+            // ...and get the uuid.
+            NSString * uuid = uuidDic[@"uuid"];
+            
+            // DEFINE UUID CANVAS REPRESENTATION (METHOD)
+            
+            // Get the the dictionary with the measures dictionaries...
+            measureDicDic = uuidDic[@"uuidMeasures"];
+            // ...and for every measure...
+            NSArray * measuresKeys = [measureDicDic allKeys];
+            for (id measureKey in measuresKeys) {
+                // ...get the dictionary for this measure...
+                measureDic = [measureDicDic objectForKey:measureKey];
+                // ...and the measure.
+                NSNumber * measure = [NSNumber numberWithInteger:[measureDic[@"measure"] integerValue]];
+                
+                // DEFINE MEASURE CANVAS REPRESENTATION (METHOD)
+                // Prepare points
+                NSMutableArray * canvasPoints = [self transformRealPointsToCanvasPoints:[NSMutableArray arrayWithObject:position]];
+                for (RDPosition * canvasPoint in canvasPoints) {
+                    UIBezierPath *bezierPath = [UIBezierPath bezierPath];
+                    CGPoint point;
+                    point.x = [canvasPoint.x floatValue];
+                    point.y = [canvasPoint.y floatValue];
+                    [bezierPath addArcWithCenter:point radius:rWidth*[measure integerValue] startAngle:0 endAngle:2 * M_PI clockwise:YES];
+                    CAShapeLayer *beaconLayer = [[CAShapeLayer alloc] init];
+                    [beaconLayer setPath:bezierPath.CGPath];
+                    
+                    switch (UUIDindex) {
+                        case 0:
+                            [beaconLayer setStrokeColor:[UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2].CGColor];
+                            [beaconLayer setFillColor:[UIColor clearColor].CGColor];
+                            break;
+                            
+                        case 1:
+                            [beaconLayer setStrokeColor:[UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:0.2].CGColor];
+                            [beaconLayer setFillColor:[UIColor clearColor].CGColor];
+                            break;
+                            
+                        case 2:
+                            [beaconLayer setStrokeColor:[UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:0.2].CGColor];
+                            [beaconLayer setFillColor:[UIColor clearColor].CGColor];
+                            break;
+                            
+                        case 3:
+                            [beaconLayer setStrokeColor:[UIColor colorWithRed:127.0/255.0 green:128.0/255.0 blue:0.0 alpha:0.2].CGColor];
+                            [beaconLayer setFillColor:[UIColor clearColor].CGColor];
+                            break;
+                            
+                        case 4:
+                            [beaconLayer setStrokeColor:[UIColor colorWithRed:127.0/255.0 green:0.0 blue:128.0/255.0 alpha:0.2].CGColor];
+                            [beaconLayer setFillColor:[UIColor clearColor].CGColor];
+                            break;
+                            
+                        case 5:
+                            [beaconLayer setStrokeColor:[UIColor colorWithRed:0.0 green:127.0/255.0 blue:128.0/255.0 alpha:0.2].CGColor];
+                            [beaconLayer setFillColor:[UIColor clearColor].CGColor];
+                            break;
+                            
+                        case 6:
+                            [beaconLayer setStrokeColor:[UIColor colorWithRed:127.0/255.0 green:64.0 blue:64.0 alpha:0.2].CGColor];
+                            [beaconLayer setFillColor:[UIColor clearColor].CGColor];
+                            break;
+                            
+                        case 7:
+                            [beaconLayer setStrokeColor:[UIColor colorWithRed:64.0 green:127.0/255.0 blue:64.0 alpha:0.2].CGColor];
+                            [beaconLayer setFillColor:[UIColor clearColor].CGColor];
+                            break;
+                            
+                        default:
+                            break;
+                    }
+                    
+                    [[self layer] addSublayer:beaconLayer];
+                }
+            }
+        }
+    }
+    [self setNeedsDisplay];
+
+    /*
+    NSInteger index = 0;
+    NSArray *beacons = @[@"45", @"50", @"60"];
+    for (NSString *beacon in beacons){
+        UIBezierPath *bezierPath = [UIBezierPath bezierPath];
+        CGPoint center;
+        center.x = self.frame.size.width/2;
+        center.y = self.frame.size.height/2;
+        [bezierPath addArcWithCenter:center radius:3*[beacon integerValue] startAngle:0 endAngle:2 * M_PI clockwise:YES];
+        CAShapeLayer *beaconLayer = [[CAShapeLayer alloc] init];
+        [beaconLayer setPath:bezierPath.CGPath];
+        
+        switch (index) {
+            case 0:
+                [beaconLayer setStrokeColor:[UIColor redColor].CGColor];
+                [beaconLayer setFillColor:[UIColor clearColor].CGColor];
+                break;
+                
+            case 1:
+                [beaconLayer setStrokeColor:[UIColor greenColor].CGColor];
+                [beaconLayer setFillColor:[UIColor clearColor].CGColor];
+                break;
+                
+            case 2:
+                [beaconLayer setStrokeColor:[UIColor blueColor].CGColor];
+                [beaconLayer setFillColor:[UIColor clearColor].CGColor];
+                break;
+                
+            case 3:
+                [beaconLayer setStrokeColor:[UIColor yellowColor].CGColor];
+                [beaconLayer setFillColor:[UIColor clearColor].CGColor];
+                break;
+                
+            default:
+                break;
+        }
+        // If there is previus layers, change them; if not, create new ones.
+        if (self.currentLayers.count > 0) {
+            //[[self layer] replaceSublayer:[[[self layer] sublayers] objectAtIndex:index] with:beaconLayer];
+        }else{
+            [[self layer] addSublayer:beaconLayer];
+        }
+        index++;
+    }
+    [self setNeedsDisplay];
     */
-    
-    
     
     /*
     // Delete previus
@@ -254,50 +450,62 @@
     center.x = [[NSNumber alloc] initWithFloat:self.frame.size.width/2];
     center.y = [[NSNumber alloc] initWithFloat:self.frame.size.height/2];
     
-    // Define a safe area
-    float widthSafe = self.frame.size.width * 0.05;
-    float heightSafe = self.frame.size.height * 0.05;
-    float widthSafeMin = 0 + widthSafe;
-    float widthSafeMax = canvasWidth - widthSafe;
-    float heightSafeMin = 0 + heightSafe;
-    float heightSafeMax = canvasHeight - heightSafe;
-
-    // Get the minimum and maximum x and y values
-    float maxX = -FLT_MAX;
-    float minX = FLT_MAX;
-    float maxY = -FLT_MAX;
-    float minY = FLT_MAX;
-    for (RDPosition * realPoint in realPoints) {
-        if ([realPoint.x floatValue] > maxX) {
-            maxX = [realPoint.x floatValue];
-        }
-        if ([realPoint.x floatValue] < minX) {
-            minX = [realPoint.x floatValue];
-        }
-        if ([realPoint.y floatValue] > maxY) {
-            maxY = [realPoint.y floatValue];
-        }
-        if ([realPoint.y floatValue] < minY) {
-            minY = [realPoint.y floatValue];
-        }
-    }
-    
-    // Get the relations of the transformation
-    float rWidth = (widthSafeMax - widthSafeMin)/(maxX - minX);;
-    float rHeight = (heightSafeMax - heightSafeMin)/(maxY - minY);
-    
-    // Transform the point's coordinates; they would be centered at the origin, hence the senter point is added
-    for (RDPosition * realPoint in realPoints) {
+    // Case only one point
+    if (realPoints.count == 1) {
+        
         RDPosition * canvasPoint = [[RDPosition alloc] init];
-        canvasPoint.x = [[NSNumber alloc] initWithFloat:[realPoint.x floatValue] * rWidth + [center.x floatValue]];
-        canvasPoint.y = [[NSNumber alloc] initWithFloat:[realPoint.y floatValue] * rHeight + [center.y floatValue]];
+        RDPosition * realPoint = [realPoints objectAtIndex:0];
+        canvasPoint.x = [[NSNumber alloc] initWithFloat:[realPoint.x floatValue] + [center.x floatValue]];
+        canvasPoint.y = [[NSNumber alloc] initWithFloat:[realPoint.y floatValue] + [center.y floatValue]];
         canvasPoint.z = realPoint.z;
         [canvasPoints addObject:canvasPoint];
+        
+    } else {
+    
+        // Define a safe area
+        float widthSafe = self.frame.size.width * 0.05;
+        float heightSafe = self.frame.size.height * 0.05;
+        float widthSafeMin = 0 + widthSafe;
+        float widthSafeMax = canvasWidth - widthSafe;
+        float heightSafeMin = 0 + heightSafe;
+        float heightSafeMax = canvasHeight - heightSafe;
+
+        // Get the minimum and maximum x and y values
+        float maxX = -FLT_MAX;
+        float minX = FLT_MAX;
+        float maxY = -FLT_MAX;
+        float minY = FLT_MAX;
+        for (RDPosition * realPoint in realPoints) {
+            if ([realPoint.x floatValue] > maxX) {
+                maxX = [realPoint.x floatValue];
+            }
+            if ([realPoint.x floatValue] < minX) {
+                minX = [realPoint.x floatValue];
+            }
+            if ([realPoint.y floatValue] > maxY) {
+                maxY = [realPoint.y floatValue];
+            }
+            if ([realPoint.y floatValue] < minY) {
+                minY = [realPoint.y floatValue];
+            }
+        }
+        
+        // Get the relations of the transformation
+        rWidth = (widthSafeMax - widthSafeMin)/(maxX - minX);;
+        rHeight = (heightSafeMax - heightSafeMin)/(maxY - minY);
+        
+        // Transform the point's coordinates; they would be centered at the origin, hence the senter point is added
+        for (RDPosition * realPoint in realPoints) {
+            RDPosition * canvasPoint = [[RDPosition alloc] init];
+            canvasPoint.x = [[NSNumber alloc] initWithFloat:[realPoint.x floatValue] * rWidth + [center.x floatValue]];
+            canvasPoint.y = [[NSNumber alloc] initWithFloat:[realPoint.y floatValue] * rHeight + [center.y floatValue]];
+            canvasPoint.z = realPoint.z;
+            [canvasPoints addObject:canvasPoint];
+        }
+        
+        // If a ponderate representation is wanted, the center of the screen should be alingned with the barycenter of the set os points
+        // RDPosition * barycenter = [self getBarycenterOf:canvasPoints];
     }
-    
-    // If a ponderate representation is wanted, the center of the screen should be alingned with the barycenter of the set os points
-    // RDPosition * barycenter = [self getBarycenterOf:canvasPoints];
-    
     return canvasPoints;
 }
 

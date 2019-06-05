@@ -16,6 +16,7 @@
     // For update canvas
     NSMutableDictionary * rangedBeaconsDic;
     NSMutableArray * displayedUUID;
+    NSString * displayedUUIDString;
 }
 
 @property (weak, nonatomic) IBOutlet UILabel *labelAX;
@@ -33,10 +34,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *labelDegY;
 
 @property (weak, nonatomic) IBOutlet UILabel *text;
-
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
 
-
+@property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
+@property (weak, nonatomic) IBOutlet UIButton *buttonTravel;
 
 @end
 
