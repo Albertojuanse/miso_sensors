@@ -261,4 +261,17 @@
         }
     }
 }
+
+/*!
+ @method simulateTraveling
+ @discussion This method simulate a traveling in space from a given 'RDPosition'.
+ */
++ (RDPosition *) simulateTraveling:(RDPosition*)initialPosition {
+    RDPosition * newPosition = [[RDPosition alloc] init];
+    newPosition.x = [NSNumber numberWithFloat:[initialPosition.x floatValue] + 50];
+    newPosition.y = [NSNumber numberWithFloat:[initialPosition.y floatValue] + 50];
+    newPosition.z = [NSNumber numberWithFloat:[initialPosition.y floatValue]];
+    return newPosition;
+}
+
 @end

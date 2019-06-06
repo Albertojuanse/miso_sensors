@@ -83,5 +83,6 @@
 - (void) stopAccelerometers;
 - (void) startGyroscopes;
 - (void) stopGyroscopes;
++ (RDPosition *) simulateTraveling;
 
 @end
