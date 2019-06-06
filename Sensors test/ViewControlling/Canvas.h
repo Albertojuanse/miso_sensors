@@ -23,6 +23,7 @@
     NSString * displayedUUIDString;
     
     // For canvas relation of aspect
+    CGPoint center;
     float rWidth;
     float rHeight;
 }

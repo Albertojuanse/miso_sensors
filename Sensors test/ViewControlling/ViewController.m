@@ -30,6 +30,10 @@
                                              selector:@selector(refreshCanvas:)
                                                  name:@"refreshCanvas"
                                                object:nil];
+    
+    // Visualization
+    [self.buttonTravel setEnabled:YES];
+    [self.buttonMeasure setEnabled:NO];
 }
 
 /*!
@@ -60,9 +64,8 @@
         self.canvas.rangedBeaconsDic = rangedBeaconsDic;
         
         
-        // Inspect dictionary for UUID names
+        // Inspect dictionary for UUID names.
         // Declare the inner dictionaries.
-        NSMutableDictionary * measureDicDic;
         NSMutableDictionary * uuidDic;
         NSMutableDictionary * uuidDicDic;
         NSMutableDictionary * positionDic;
@@ -82,7 +85,7 @@
                 // ...get the dictionary...
                 uuidDic = [uuidDicDic objectForKey:uuidKey];
                 // ...and get the uuid.
-                NSString * uuidNew = uuidDic[@"uuid"];
+                NSString * uuidNew = [NSString stringWithString:uuidDic[@"uuid"]];
                 
                 // Check if it is already displayed
                 if (displayedUUID.count == 0) {
@@ -99,8 +102,6 @@
                 if (found == NO) {
                     [displayedUUID addObject:uuidNew];
                     displayedUUIDString = [displayedUUIDString stringByAppendingString:[uuidNew stringByAppendingString:@"\n"]];
-                    NSLog(@"%@", displayedUUIDString);
-                    NSLog(@"%@", displayedUUID);
                     [self.text setText:displayedUUIDString];
                     NSLog(@"[INFO][VC] Added displayedUUID.");
                     NSLog(@"[INFO][VC] -> %@", uuidNew);
@@ -111,5 +112,13 @@
 
     [self.canvas setNeedsDisplay];
 }
+
+- (IBAction)handleButtonMeasure:(id)sender {
+    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"simulateTravel"
+                                                        object:nil
+                                                      userInfo:data];
+}
+
 
 @end
