@@ -1,5 +1,5 @@
 //
-//  Position.h
+//  RDPosition.h
 //  Sensors test
 //
 //  Created by Alberto J. on 14/5/19.

@@ -1,5 +1,5 @@
 //
-//  RhoRhoSystem.h
+//  RDRhoRhoSystem.h
 //  Sensors test
 //
 //  Created by Alberto J. on 14/5/19.
@@ -27,5 +27,7 @@
                           andReference1:(RDPosition *) ref1
                           andReference2:(RDPosition *) ref2
                           andPrediction:(RDPosition *) pred;
+
++ (NSNumber *) calculateDistanceWithRssi:(NSInteger) rssi;
 
 @end

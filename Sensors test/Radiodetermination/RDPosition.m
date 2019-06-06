@@ -1,5 +1,5 @@
 //
-//  Position.m
+//  RDPosition.m
 //  Sensors test
 //
 //  Created by Alberto J. on 14/5/19.

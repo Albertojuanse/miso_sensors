@@ -1,5 +1,5 @@
 //
-//  RhoRhoSystem.m
+//  RDRhoRhoSystem.m
 //  Sensors test
 //
 //  Created by Alberto J. on 14/5/19.
@@ -36,8 +36,8 @@
     NSNumber * x2 = ref2.x;
     NSNumber * y2 = ref2.y;
     // Estimate the distance given the RSSI values
-    NSNumber * dis1 = [self calculateDistanceWithRssi:rssi1];
-    NSNumber * dis2 = [self calculateDistanceWithRssi:rssi2];
+    NSNumber * dis1 = [RDRhoRhoSystem calculateDistanceWithRssi:rssi1];
+    NSNumber * dis2 = [RDRhoRhoSystem calculateDistanceWithRssi:rssi2];
     
     RDPosition * pos = [[RDPosition alloc] init];
     pos.x = x1;
@@ -48,7 +48,7 @@
  @method calculateDistanceWithRssi:
  @discussion This method calculates the distance from a signal was transmited using reception's RSSI value.
  */
-- (NSNumber *) calculateDistanceWithRssi: (NSUInteger) rssi
++ (NSNumber *) calculateDistanceWithRssi: (NSInteger) rssi
 {
     // Absolute values of speed of light, frecuency, and antenna's join gain
     NSNumber * C = [[NSNumber alloc]initWithFloat:299792458.0];
