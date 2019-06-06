@@ -23,7 +23,7 @@
     position.z = [NSNumber numberWithFloat:0.0];
     
     // Other variables
-    rangedBeacons = [[NSMutableDictionary alloc] init];
+    rangedBeacons = [[NSMutableArray alloc] init];
     rangedBeaconsDic = [[NSMutableDictionary alloc] init];
     positionIdNumber = [NSNumber numberWithInt:0];
     uuidIdNumber = [NSNumber numberWithInt:0];
@@ -39,6 +39,13 @@
     // It seems is only for background modes
     //locationManager.allowsBackgroundLocationUpdates = YES;
     //locationManager.pausesLocationUpdatesAutomatically = false;
+    
+    // This object must listen to this events
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(simulateTraveling)
+                                                 name:@"simulateTravel"
+                                               object:nil];
+    
     
     // Ask for authorization for location services
     switch (CLLocationManager.authorizationStatus) {
@@ -218,10 +225,15 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     // If there is any beacon in the event...
     if (beacons.count > 0) {
         for (CLBeacon *beacon in beacons) {
-            // ...get its information...
+            // ...save it and get its information...
+            [rangedBeacons addObject:beacon];
             NSString * uuid = [[beacon proximityUUID] UUIDString];
             NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
-            RDPosition * measurePosition = position;
+            
+            RDPosition * measurePosition = [[RDPosition alloc] init];
+            measurePosition.x = position.x;
+            measurePosition.y = position.y;
+            measurePosition.z = position.z;
             
             // ...and save it in dictionary 'rangedBeaconsDic'.
             
@@ -251,7 +263,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             NSMutableDictionary * measureDic = [[NSMutableDictionary alloc] init];
             // TO DO: Heading measures. Alberto J. 2019-06-04.
             measureDic[@"type"] = @"rssi";
-            measureDic[@"measure"] = rssi;
+            measureDic[@"measure"] = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue]];
             
             // Declare the rest of dictionaries; they will be created or gotten if they already exists.
             NSMutableDictionary * measureDicDic;
@@ -340,8 +352,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 for (id positionKey in positionKeys) {
                     // ...get the dictionary for this position...
                     positionDic = [rangedBeaconsDic objectForKey:positionKey];
-                    // ...and checks if the position already exists.
-                    if ([positionDic[@"measurePosition"] isEqualToRDPosition:measurePosition]) {
+                    // ...and checks if the current position 'measurePosition' already exists comparing it with the saved ones.
+                    RDPosition *dicPosition = positionDic[@"measurePosition"];
+                    if ([dicPosition isEqualToRDPosition:measurePosition]) {
                         positionFound = YES;
                         
                         // For each uuid already saved...
@@ -359,7 +372,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                 NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
                                 measureDicDic = uuidDic[@"uuidMeasures"];
                                 measureDicDic[measureId] = measureDic;
-                                
                             }
                         }
                         // If only the UUID was not found, but te positions was found, create all the inner dictionaries.
@@ -395,7 +407,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     
                     // Create the 'uuidDic' dictionary
                     uuidDic = [[NSMutableDictionary alloc] init];
-                    uuidDic[@"uuid"] = uuid;
+                    uuidDic[@"uuid"] = [NSString stringWithString:uuid];
                     uuidDic[@"uuidMeasures"] = measureDicDic;
                     
                     // Wrap uuidDic with another dictionary and an unique uuid's identifier key
@@ -407,7 +419,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     // Create the 'positionDic' dictionary
                     positionDic = [[NSMutableDictionary alloc] init];
                     positionDic[@"measurePosition"] = measurePosition;
-                    positionDic[@"positionMeasures"] = measureDicDic;
+                    positionDic[@"positionMeasures"] = uuidDicDic;
                     
                     // Set positionDic in the main dictionary 'rangedBeaconsDic' with an unique position's identifier key
                     positionIdNumber = [NSNumber numberWithInt:[positionIdNumber intValue] + 1];
@@ -422,7 +434,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     }
     
     // Ask view controller to refresh the canvas
-    if(rangedBeaconsDic.count > 0) {
+    if(beacons.count > 0) {
+        NSLog(@"[NOTI][MM] Notification \"refreshCanvas\" posted.");
         NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
         [data setObject:rangedBeaconsDic forKey:@"rangedBeaconsDic"];
         [[NSNotificationCenter defaultCenter]
@@ -430,6 +443,16 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          object:nil
          userInfo:data];
     }
+}
+
+/*!
+ @method simulateTraveling
+ @discussion This method simulate a traveling in space from the current 'RDPosition'.
+ */
+- (void) simulateTraveling {
+    position.x = [NSNumber numberWithFloat:[position.x floatValue] + 1.0];
+    position.y = [NSNumber numberWithFloat:[position.y floatValue] + 1.0];
+    position.z = [NSNumber numberWithFloat:[position.z floatValue]];
 }
 
 @end

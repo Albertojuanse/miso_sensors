@@ -8,6 +8,8 @@
 
 #import <CoreLocation/CoreLocation.h>
 #import "RDPosition.h"
+#import "RDRhoRhoSystem.h"
+#import "MotionManager.h"
 
 /*!
  @class LocationManagerDelegate
@@ -22,7 +24,7 @@
     NSMutableArray * monitoredRegions;
     NSMutableArray * rangedRegions;
     CLLocationManager * locationManager;
-    NSMutableDictionary * rangedBeacons;
+    NSMutableArray * rangedBeacons;
     
     // Data shared
     NSMutableDictionary * rangedBeaconsDic;
