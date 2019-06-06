@@ -435,9 +435,9 @@
         rHeight = (heightSafeMax - heightSafeMin)/(maxY - minY);
         
         // Transform the point's coordinates.
-        // The first position is always (0, 0), and it is centered at the origin of the canvas, the upper left corner. Hence the center point is added for traslating it to the center. But as is not intended to display the set of points with the (0, 0) in the center of te canvas, but with a proporcionated organization, the barycenter es calculated and substracted.
+        // The first position is always (0, 0), and it is centered at the origin of the canvas, the upper left corner. Hence, a correction must be done in orther to center the set in the canvas. But as is not intended to display (0, 0) in the center of te canvas, but the barycenter of the set es calculated and translated to the center of the canvas. For this, the 'vector' needed for adding is the subtract of the center of the canvas minus the barycenter.
         
-        // Center at the origin of the canvas points
+        // Get the proportionate set of canvas points with centered at the orgin of the canvas
         NSMutableArray * centeredCanvasPoints = [[NSMutableArray alloc] init];
         for (RDPosition * realPoint in realPoints) {
             RDPosition * centeredCanvasPoint = [[RDPosition alloc] init];
@@ -446,17 +446,14 @@
             centeredCanvasPoint.z = realPoint.z;
             [centeredCanvasPoints addObject:centeredCanvasPoint];
         }
+        // Correct the points location.
         RDPosition * barycenter = [self getBarycenterOf:centeredCanvasPoints];
-        NSLog(@"[INFO][CA] Barycenter of positions: (%.2f, %.2f, %.2f)", [barycenter.x floatValue], [barycenter.y floatValue],[barycenter.z floatValue]);
-        NSMutableArray * barycenteredCanvasPoints = [[NSMutableArray alloc] init];
+        RDPosition * correction = [self subtract:RDcenter from:barycenter];
         for (RDPosition * centeredCanvasPoint in centeredCanvasPoints) {
-            RDPosition * barycenteredCanvasPoint = [self add:centeredCanvasPoint to:barycenter];
-            [barycenteredCanvasPoints addObject:barycenteredCanvasPoint];
+            RDPosition * correctedCanvasPoint = [self add:centeredCanvasPoint to:correction];
+            [canvasPoints addObject:correctedCanvasPoint];
         }
-        for (RDPosition * barycenteredCanvasPoint in barycenteredCanvasPoints) {
-            RDPosition * canvasPoint = [self add:RDcenter to:barycenteredCanvasPoint];
-            [canvasPoints addObject:canvasPoint];
-        }
+        
     }
     return canvasPoints;
 }
