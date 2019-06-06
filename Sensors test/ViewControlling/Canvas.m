@@ -50,13 +50,16 @@
     self.backgroundColor = [UIColor colorWithRed:218/255.0 green:224/255.0 blue:235/255.0 alpha:0.6];
     
     // Center point
-    UIBezierPath *bezierPath = [UIBezierPath bezierPath];
+    UIBezierPath *centerBezierPath = [UIBezierPath bezierPath];
     center.x = self.frame.size.width/2;
     center.y = self.frame.size.height/2;
-    [bezierPath addArcWithCenter:center radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+    [centerBezierPath moveToPoint:CGPointMake(center.x - 3.0, center.y)];
+    [centerBezierPath addLineToPoint:CGPointMake(center.x + 3.0, center.y)];
+    [centerBezierPath moveToPoint:CGPointMake(center.x, center.y - 3.0)];
+    [centerBezierPath addLineToPoint:CGPointMake(center.x, center.y + 3.0)];
     
     CAShapeLayer *centerLayer = [[CAShapeLayer alloc] init];
-    [centerLayer setPath:bezierPath.CGPath];
+    [centerLayer setPath:centerBezierPath.CGPath];
     [centerLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
     [centerLayer setFillColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
     // TO DO: This one is not centered
@@ -150,7 +153,10 @@
     center.x = self.frame.size.width/2;
     center.y = self.frame.size.height/2;
     UIBezierPath *centerBezierPath = [UIBezierPath bezierPath];
-    [centerBezierPath addArcWithCenter:center radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+    [centerBezierPath moveToPoint:CGPointMake(center.x - 3.0, center.y)];
+    [centerBezierPath addLineToPoint:CGPointMake(center.x + 3.0, center.y)];
+    [centerBezierPath moveToPoint:CGPointMake(center.x, center.y - 3.0)];
+    [centerBezierPath addLineToPoint:CGPointMake(center.x, center.y + 3.0)];
     
     CAShapeLayer *centerLayer = [[CAShapeLayer alloc] init];
     [centerLayer setPath:centerBezierPath.CGPath];
