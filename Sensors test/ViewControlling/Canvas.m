@@ -141,7 +141,7 @@
     if (self.layer.sublayers.count > 0) {
         NSArray *oldLayers = [NSArray arrayWithArray:self.layer.sublayers];
         for (CALayer *oldLayer in oldLayers) {
-            if ([oldLayer isKindOfClass:[CAShapeLayer class]]) {
+            if ([oldLayer isKindOfClass:[CAShapeLayer class]] ||[oldLayer isKindOfClass:[CATextLayer class]] ) {
                 [oldLayer removeFromSuperlayer];
             }
         }
@@ -213,21 +213,40 @@
     for (id positionKey in positionKeys) {
         // ...get the dictionary for this position...
         positionDic = [self.rangedBeaconsDic objectForKey:positionKey];
-        // ...but get the transformed position.
-        RDPosition * position = [canvasPositions objectAtIndex:positionIndex];
-        NSLog(@"[INFO][CA] Position to show: (%.2f, %.2f, %.2f)", [position.x floatValue], [position.y floatValue],[position.z floatValue]);
+        // ...but also get the transformed position.
+        RDPosition * realPosition = positionDic[@"measurePosition"];
+        RDPosition * canvasPosition = [canvasPositions objectAtIndex:positionIndex];
+        NSLog(@"[INFO][CA][TRAN] Real position to show: (%.2f, %.2f)",  [realPosition.x floatValue], [realPosition.y floatValue]);
+        NSLog(@"[INFO][CA][TRAN] Canvas position to show: (%.2f, %.2f)",  [canvasPosition.x floatValue], [canvasPosition.y floatValue]);
+        NSLog(@"[INFO][CA][TRAN] rWith 2: %.2f", rWidth);
+        NSLog(@"[INFO][CA][TRAN] rHeight 2: %.2f", rHeight);
         
         // DEFINE POSITION CANVAS REPRESENTATION (METHOD)
+        
+        // Draw the point
         UIBezierPath *positionBezierPath = [UIBezierPath bezierPath];
-        [positionBezierPath addArcWithCenter:[position toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+        [positionBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
         CAShapeLayer *positionLayer = [[CAShapeLayer alloc] init];
         [positionLayer setPath:positionBezierPath.CGPath];
         [positionLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
         [positionLayer setFillColor:[UIColor clearColor].CGColor];
         [[self layer] addSublayer:positionLayer];
-        // * END * DEFINE POSITION CANVAS REPRESENTATION (METHOD)
         
-        /* ******************************************************************
+        // Text of real position but in canvas position
+        CATextLayer *positionTextLayer = [CATextLayer layer];
+        positionTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] + 5.0);
+        positionTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 5.0,
+                                             [canvasPosition.y floatValue] + 5.0,
+                                             100,
+                                             20);
+        positionTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)", [realPosition.x floatValue], [realPosition.y floatValue]];
+        positionTextLayer.fontSize = 10;
+        positionTextLayer.alignmentMode = kCAAlignmentCenter;
+        positionTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+        positionTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
+        [[self layer] addSublayer:positionTextLayer];
+        
+        // * END * DEFINE POSITION CANVAS REPRESENTATION (METHOD)
         
         // Get the the dictionary with the UUID's dictionaries...
         uuidDicDic = positionDic[@"positionMeasures"];
@@ -244,6 +263,61 @@
             
             // DEFINE UUID CANVAS REPRESENTATION (METHOD)
             
+            UIBezierPath *uuidBezierPath = [UIBezierPath bezierPath];
+            
+            // Choos a color for each UUID
+            UIColor *colorUUID;
+            switch (UUIDindex % 8) {
+                case 0:
+                    colorUUID = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
+                    break;
+                case 1:
+                    colorUUID = [UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:0.2];
+                    break;
+                case 2:
+                    colorUUID = [UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:0.2];
+                    break;
+                case 3:
+                    colorUUID = [UIColor colorWithRed:127.0/255.0 green:128.0/255.0 blue:0.0 alpha:0.2];
+                    break;
+                case 4:
+                    colorUUID = [UIColor colorWithRed:127.0/255.0 green:0.0 blue:128.0/255.0 alpha:0.2];
+                    break;
+                case 5:
+                    colorUUID = [UIColor colorWithRed:0.0 green:127.0/255.0 blue:128.0/255.0 alpha:0.2];
+                    break;
+                case 6:
+                    colorUUID = [UIColor colorWithRed:127.0/255.0 green:64.0 blue:64.0 alpha:0.2];
+                    break;
+                case 7:
+                    colorUUID = [UIColor colorWithRed:64.0 green:127.0/255.0 blue:64.0 alpha:0.2];
+                    break;
+                default:
+                    colorUUID = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
+                    break;
+            }
+            
+            // Choose a position for display the UUID
+            [uuidBezierPath moveToPoint:CGPointMake(16.0, 8.0 * (UUIDindex + 1.0) + 10.0)];
+            [uuidBezierPath addLineToPoint:CGPointMake(16.0 + 100.0, 8.0 * (UUIDindex + 1.0) + 10.0)];
+            
+            CAShapeLayer *uuidLayer = [[CAShapeLayer alloc] init];
+            [uuidLayer setPath:uuidBezierPath.CGPath];
+            [uuidLayer setStrokeColor:colorUUID.CGColor];
+            [uuidLayer setFillColor:[UIColor clearColor].CGColor];
+            [self.layer addSublayer:uuidLayer];
+            
+            // Add the description
+            CATextLayer *uuidTextLayer = [CATextLayer layer];
+            uuidTextLayer.position = CGPointMake(116.0, 8.0 * (UUIDindex + 1.0));
+            uuidTextLayer.frame = CGRectMake(116.0, 8.0 * (UUIDindex + 1.0), 400, 20);
+            uuidTextLayer.string = [NSString stringWithFormat:@"UUID: %@", uuid];
+            uuidTextLayer.fontSize = 12;
+            uuidTextLayer.alignmentMode = kCAAlignmentCenter;
+            uuidTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+            uuidTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
+            [[self layer] addSublayer:uuidTextLayer];
+            
             // * END * DEFINE UUID CANVAS REPRESENTATION (METHOD)
             
             // Get the the dictionary with the measures dictionaries...
@@ -258,75 +332,30 @@
                 
                 // DEFINE MEASURE CANVAS REPRESENTATION (METHOD)
                 RDPosition * canvasPosition = [canvasPositions objectAtIndex:positionIndex];
+                
+                UIBezierPath *measureBezierPath = [UIBezierPath bezierPath];
+                [measureBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:[measure floatValue]*(rWidth+rHeight)/2.0 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+                NSLog(@"[INFO][CA][TRAN] Radius measured: %.2f",  [measure floatValue]);
+                NSLog(@"[INFO][CA][TRAN] Radius canvas: %.2f",  [measure floatValue]*(rWidth+rHeight)/2.0);
+                
+                /*
                 CGRect rect = CGRectMake([canvasPosition.x floatValue] - [measure floatValue] * rWidth,
                                          [canvasPosition.y floatValue] - [measure floatValue] * rHeight,
                                          2.0 * [measure floatValue] * rWidth,
                                          2.0 * [measure floatValue] * rHeight);
-                NSLog(@"[INFO][CA] Oval displayed with coordinates");
-                NSLog(@"[INFO][CA] -> %.2f", [canvasPosition.x floatValue] - [measure floatValue] * rWidth);
-                NSLog(@"[INFO][CA] -> %.2f", [canvasPosition.y floatValue] - [measure floatValue] * rHeight);
-                NSLog(@"[INFO][CA] -> %.2f", 2.0 * [measure floatValue] * rWidth);
-                NSLog(@"[INFO][CA] -> %.2f", 2.0 * [measure floatValue] * rHeight);
-                NSLog(@"[INFO][CA] -> %.2f", 2.0 * rWidth);
-                NSLog(@"[INFO][CA] -> %.2f", 2.0 * rHeight);
-                NSLog(@"[INFO][CA] -> %.2f", 2.0 * [measure floatValue]);
-                NSLog(@"[INFO][CA] -> %.2f", 2.0 * [measure floatValue]);
                 UIBezierPath *measureBezierPath = [UIBezierPath bezierPathWithOvalInRect:rect];
+                 */
 
                 
                 CAShapeLayer *beaconLayer = [[CAShapeLayer alloc] init];
                 [beaconLayer setPath:measureBezierPath.CGPath];
-                
-                switch (UUIDindex) {
-                    case 0:
-                        [beaconLayer setStrokeColor:[UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2].CGColor];
-                        [beaconLayer setFillColor:[UIColor clearColor].CGColor];
-                        break;
-                        
-                    case 1:
-                        [beaconLayer setStrokeColor:[UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:0.2].CGColor];
-                        [beaconLayer setFillColor:[UIColor clearColor].CGColor];
-                        break;
-                        
-                    case 2:
-                        [beaconLayer setStrokeColor:[UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:0.2].CGColor];
-                        [beaconLayer setFillColor:[UIColor clearColor].CGColor];
-                        break;
-                        
-                    case 3:
-                        [beaconLayer setStrokeColor:[UIColor colorWithRed:127.0/255.0 green:128.0/255.0 blue:0.0 alpha:0.2].CGColor];
-                        [beaconLayer setFillColor:[UIColor clearColor].CGColor];
-                        break;
-                        
-                    case 4:
-                        [beaconLayer setStrokeColor:[UIColor colorWithRed:127.0/255.0 green:0.0 blue:128.0/255.0 alpha:0.2].CGColor];
-                        [beaconLayer setFillColor:[UIColor clearColor].CGColor];
-                        break;
-                        
-                    case 5:
-                        [beaconLayer setStrokeColor:[UIColor colorWithRed:0.0 green:127.0/255.0 blue:128.0/255.0 alpha:0.2].CGColor];
-                        [beaconLayer setFillColor:[UIColor clearColor].CGColor];
-                        break;
-                        
-                    case 6:
-                        [beaconLayer setStrokeColor:[UIColor colorWithRed:127.0/255.0 green:64.0 blue:64.0 alpha:0.2].CGColor];
-                        [beaconLayer setFillColor:[UIColor clearColor].CGColor];
-                        break;
-                        
-                    case 7:
-                        [beaconLayer setStrokeColor:[UIColor colorWithRed:64.0 green:127.0/255.0 blue:64.0 alpha:0.2].CGColor];
-                        [beaconLayer setFillColor:[UIColor clearColor].CGColor];
-                        break;
-                        
-                    default:
-                        break;
-                }
+                [beaconLayer setStrokeColor:colorUUID.CGColor];
+                [beaconLayer setFillColor:[UIColor clearColor].CGColor];
                 [[self layer] addSublayer:beaconLayer];
                 // * END * DEFINE MEASURE CANVAS REPRESENTATION (METHOD)
             }
             UUIDindex++;
         }
-         ****************************************************************** */
         positionIndex++;
     }
     [self setNeedsDisplay];
@@ -403,14 +432,14 @@
         canvasPoint.y = [[NSNumber alloc] initWithFloat:[realPoint.y floatValue] + [RDcenter.y floatValue]];
         canvasPoint.z = realPoint.z;
         [canvasPoints addObject:canvasPoint];
-        rWidth = 5.0;
-        rHeight = 5.0;
+        rWidth = 1.0;
+        rHeight = 1.0;
         
     } else {
     
         // Define a safe area
-        float widthSafe = canvasWidth * 0.15;
-        float heightSafe = canvasHeight * 0.15;
+        float widthSafe = canvasWidth * 0.4;
+        float heightSafe = canvasHeight * 0.4;
         float widthSafeMin = 0 + widthSafe;
         float widthSafeMax = canvasWidth - widthSafe;
         float heightSafeMin = 0 + heightSafe;
@@ -437,8 +466,10 @@
         }
         
         // Get the relations of the transformation
-        rWidth = (widthSafeMax - widthSafeMin)/(maxX - minX);;
+        rWidth = (widthSafeMax - widthSafeMin)/(maxX - minX);
         rHeight = (heightSafeMax - heightSafeMin)/(maxY - minY);
+        NSLog(@"[INFO][CA][TRAN] rWith: %.2f", rWidth);
+        NSLog(@"[INFO][CA][TRAN] rHeight: %.2f", rHeight);
         
         // Transform the point's coordinates.
         // The first position is always (0, 0), and it is centered at the origin of the canvas, the upper left corner. Hence, a correction must be done in orther to center the set in the canvas. But as is not intended to display (0, 0) in the center of te canvas, but the barycenter of the set es calculated and translated to the center of the canvas. For this, the 'vector' needed for adding is the subtract of the center of the canvas minus the barycenter.
@@ -451,6 +482,8 @@
             centeredCanvasPoint.y = [[NSNumber alloc] initWithFloat:[realPoint.y floatValue] * rHeight];
             centeredCanvasPoint.z = realPoint.z;
             [centeredCanvasPoints addObject:centeredCanvasPoint];
+            NSLog(@"[INFO][CA][TRAN] Real point: (%.2f, %.2f)", [realPoint.x floatValue], [realPoint.x floatValue]);
+            NSLog(@"[INFO][CA][TRAN] Centered canvasPoint: (%.2f, %.2f)", [centeredCanvasPoint.x floatValue], [centeredCanvasPoint.x floatValue]);
         }
         // Correct the points location.
         RDPosition * barycenter = [self getBarycenterOf:centeredCanvasPoints];
@@ -458,6 +491,7 @@
         for (RDPosition * centeredCanvasPoint in centeredCanvasPoints) {
             RDPosition * correctedCanvasPoint = [self add:centeredCanvasPoint to:correction];
             [canvasPoints addObject:correctedCanvasPoint];
+            NSLog(@"[INFO][CA][TRAN] Corrected canvasPoint: (%.2f, %.2f)", [correctedCanvasPoint.x floatValue], [correctedCanvasPoint.x floatValue]);
         }
         
     }
