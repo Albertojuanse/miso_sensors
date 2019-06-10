@@ -6,6 +6,8 @@
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import "RDPosition.h"
 #import <float.h>

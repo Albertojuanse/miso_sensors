@@ -6,6 +6,8 @@
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "Canvas.h"
 
 /*!

@@ -8,9 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
-#import <CoreMotion/CoreMotion.h>
-#import "MotionManager.h"
-#import "LocationManagerDelegate.h"
 #import "ViewController.h"
 #import "StateMachine.h"
 

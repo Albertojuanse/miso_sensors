@@ -6,12 +6,11 @@
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
-
 #import <Foundation/Foundation.h>
 #import "StateMachine.h"
-#import "LocationManagerDelegate.h"
-#import "MotionManager.h"
 #import "ViewController.h"
+#import "MotionManager.h"
+#import "LocationManagerDelegate.h"
 
 /*!
  @class StateMachine
