@@ -107,7 +107,7 @@
  @discussion This method is called when the device is UNLOCATED and checks if the state machine should evolve to the LOCATED state.
  */
 - (bool) isLocated{
-    return YES;
+    return location.isLocated;
 }
 
 /*!

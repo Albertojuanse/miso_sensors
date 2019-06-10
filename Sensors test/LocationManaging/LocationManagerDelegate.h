@@ -35,6 +35,8 @@
     
 }
 
+@property BOOL isLocated;
+
 - (void) configure;
 
 @end

@@ -21,6 +21,7 @@
     position.x = [NSNumber numberWithFloat:0.0];
     position.y = [NSNumber numberWithFloat:0.0];
     position.z = [NSNumber numberWithFloat:0.0];
+    self.isLocated = YES;
     
     // Other variables
     rangedBeacons = [[NSMutableArray alloc] init];
@@ -451,6 +452,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  @discussion This method simulate a traveling in space from the current 'RDPosition'.
  */
 - (void) simulateTraveling {
+    self.isLocated = NO;
     float low_bound = -2.00;
     float high_bound = 2.00;
     float rndValue1 = (((float)arc4random()/0x100000000)*(high_bound-low_bound)+low_bound);
@@ -458,6 +460,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     position.x = [NSNumber numberWithFloat:[position.x floatValue] + rndValue1];
     position.y = [NSNumber numberWithFloat:[position.y floatValue] + rndValue2];
     position.z = [NSNumber numberWithFloat:[position.z floatValue]];
+    self.isLocated = YES;
+    
 }
 
 @end
