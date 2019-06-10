@@ -14,8 +14,13 @@
  @method init
  @discussion Constructor.
  */
-- (instancetype)init {
-    self = [super init];
+- (instancetype)initWithViewController:(ViewController *) viewControllerFromStateMachine
+{
+self = [super init];
+if (self) {
+    // View controller
+    viewController = viewControllerFromStateMachine;
+    }
     return self;
 }
 
@@ -143,15 +148,15 @@
         gy_ave_sum += gy0;
         gy_ave = gy_ave_sum / calibration_counter;
         
-        self.viewController.labelAX.text = [NSString stringWithFormat:@"%.2f", ax0 - ax_ave];
-        self.viewController.labelAY.text = [NSString stringWithFormat:@"%.2f", ay0 - ay_ave];
-        self.viewController.labelAZ.text = [NSString stringWithFormat:@"%.2f", az0 - az_ave];
+        viewController.labelAX.text = [NSString stringWithFormat:@"%.2f", ax0 - ax_ave];
+        viewController.labelAY.text = [NSString stringWithFormat:@"%.2f", ay0 - ay_ave];
+        viewController.labelAZ.text = [NSString stringWithFormat:@"%.2f", az0 - az_ave];
         
-        self.viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", gp0 - gp_ave];
-        self.viewController.labelGY.text = [NSString stringWithFormat:@"%.2f", gr0 - gr_ave];
-        self.viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", gy0 - gy_ave];
+        viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", gp0 - gp_ave];
+        viewController.labelGY.text = [NSString stringWithFormat:@"%.2f", gr0 - gr_ave];
+        viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", gy0 - gy_ave];
     } else if (calibration_counter == calibrationSteps) {
-        self.viewController.labelCalibrated.text = @"Calibrated";
+        viewController.labelCalibrated.text = @"Calibrated";
         NSLog(@"[INFO][MM] Calibrated.");
         calibration_counter++;
     } else if (calibration_counter > calibrationSteps) {
@@ -162,34 +167,34 @@
         gr = self.gyroData.rotationRate.y - gr_ave;
         gy = self.gyroData.rotationRate.z - gy_ave;
         
-        self.viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", gp];
-        self.viewController.labelGY.text = [NSString stringWithFormat:@"%.2f", gr];
-        self.viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", gy];
+        viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", gp];
+        viewController.labelGY.text = [NSString stringWithFormat:@"%.2f", gr];
+        viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", gy];
         
         // Attitude
         if (gp > (precision_threshold/10)) {
             dp = dp + gp * t;
-            self.viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", dp * 180 / M_PI];
+            viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", dp * 180 / M_PI];
         }
         if (gp < -(precision_threshold/10)) {
             dp = dp + gp * t;
-            self.viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", dp * 180 / M_PI];
+            viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", dp * 180 / M_PI];
         }
         if (gr > (precision_threshold/10)) {
             dr = dr + gr * t;
-            self.viewController.labelDegR.text = [NSString stringWithFormat:@"%.2f", dr * 180 / M_PI];
+            viewController.labelDegR.text = [NSString stringWithFormat:@"%.2f", dr * 180 / M_PI];
         }
         if (gr < -(precision_threshold/10)) {
             dr = dr + gr * t;
-            self.viewController.labelDegR.text = [NSString stringWithFormat:@"%.2f", dr * 180 / M_PI];
+            viewController.labelDegR.text = [NSString stringWithFormat:@"%.2f", dr * 180 / M_PI];
         }
         if (gy > (precision_threshold/10)) {
             dy = dy + gy * t;
-            self.viewController.labelDegY.text = [NSString stringWithFormat:@"%.2f", dy * 180 / M_PI];
+            viewController.labelDegY.text = [NSString stringWithFormat:@"%.2f", dy * 180 / M_PI];
         }
         if (gy < -(precision_threshold/10)) {
             dy = dy + gy * t;
-            self.viewController.labelDegY.text = [NSString stringWithFormat:@"%.2f", dy * 180 / M_PI];
+            viewController.labelDegY.text = [NSString stringWithFormat:@"%.2f", dy * 180 / M_PI];
         }
         
         // Inertial compensation; the matrix is in order: dy, dp, dr
@@ -220,9 +225,9 @@
         ay = self.accelerometerData.acceleration.y * g - ay_ave;
         az = self.accelerometerData.acceleration.z * g - az_ave;
         
-        self.viewController.labelAX.text = [NSString stringWithFormat:@"%.2f", ax];
-        self.viewController.labelAY.text = [NSString stringWithFormat:@"%.2f", ay];
-        self.viewController.labelAZ.text = [NSString stringWithFormat:@"%.2f", az];
+        viewController.labelAX.text = [NSString stringWithFormat:@"%.2f", ax];
+        viewController.labelAY.text = [NSString stringWithFormat:@"%.2f", ay];
+        viewController.labelAZ.text = [NSString stringWithFormat:@"%.2f", az];
         
         // Position
         // If the refenrence system is the one described by Apple in documentation, the acceleration measures are negative.
@@ -230,34 +235,34 @@
         if (ax < - precision_threshold) {
             vx = vx - ax * t;
             rx = rx + (1.0/2.0) * vx * t;
-            self.viewController.labelPosX.text = [NSString stringWithFormat:@"%.2f", rx];
+            viewController.labelPosX.text = [NSString stringWithFormat:@"%.2f", rx];
         }
         if (ax > precision_threshold) {
             vx = vx - ax * t;
             rx = rx + (1.0/2.0) * vx * t;
-            self.viewController.labelPosX.text = [NSString stringWithFormat:@"%.2f", rx];
+            viewController.labelPosX.text = [NSString stringWithFormat:@"%.2f", rx];
         }
         
         if (ay < - precision_threshold) {
             vy = vy - ay * t;
             ry = ry + (1.0/2.0) * vy * t;
-            self.viewController.labelPosY.text = [NSString stringWithFormat:@"%.2f", ry];
+            viewController.labelPosY.text = [NSString stringWithFormat:@"%.2f", ry];
         }
         if (ay > precision_threshold) {
             vy = vy - ay * t;
             ry = ry + (1.0/2.0) * vy * t;
-            self.viewController.labelPosY.text = [NSString stringWithFormat:@"%.2f", ry];
+            viewController.labelPosY.text = [NSString stringWithFormat:@"%.2f", ry];
         }
         
         if (az < -precision_threshold) {
             vz = vz - az * t;
             rz = rz + (1.0/2.0) * vz * t;
-            self.viewController.labelPosZ.text = [NSString stringWithFormat:@"%.2f", rz];
+            viewController.labelPosZ.text = [NSString stringWithFormat:@"%.2f", rz];
         }
         if (az > precision_threshold) {
             vz = vz - az * t;
             rz = rz + (1.0/2.0) * vz * t;
-            self.viewController.labelPosZ.text = [NSString stringWithFormat:@"%.2f", rz];
+            viewController.labelPosZ.text = [NSString stringWithFormat:@"%.2f", rz];
         }
     }
 }

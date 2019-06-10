@@ -15,6 +15,10 @@
  @discussion This class extends CMMotionManager object and so implements the methods that controls the acquisition of motion information and what to do with it.
  */
 @interface MotionManager : CMMotionManager {
+    
+    // Components
+    ViewController * viewController;
+    
     // Data variables
     
     // Configuration variables
@@ -76,13 +80,13 @@
 }
 
 @property NSTimer *timer;
-@property ViewController * viewController;
 
+- (instancetype) initWithViewController:(ViewController *) viewControllerFromStateMachine;
 - (void) configure;
 - (void) startAccelerometers;
 - (void) stopAccelerometers;
 - (void) startGyroscopes;
 - (void) stopGyroscopes;
-+ (RDPosition *) simulateTraveling;
++ (RDPosition *) simulateTraveling:(RDPosition*)initialPosition;
 
 @end

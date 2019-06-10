@@ -8,6 +8,10 @@
 
 
 #import <Foundation/Foundation.h>
+#import "StateMachine.h"
+#import "LocationManagerDelegate.h"
+#import "MotionManager.h"
+#import "ViewController.h"
 
 /*!
  @class StateMachine
@@ -17,12 +21,22 @@
     
     // The possible states of the state machine
     NSArray * STATES;
+    // Other components
+    MotionManager * motion;
+    LocationManagerDelegate * location;
+    ViewController * viewController;
     
 }
 
 @property BOOL started;
 @property NSString * state;
 
+- (instancetype)initWithViewController:(ViewController *) viewControllerFromAppDelegate;
 - (void) evaluateState;
+- (void) applicationWillResignActive;
+- (void) applicationDidEnterBackground;
+- (void) applicationWillEnterForeground;
+- (void) applicationDidBecomeActive;
+- (void) applicationWillTerminate;
 
 @end

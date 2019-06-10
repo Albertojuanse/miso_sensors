@@ -19,19 +19,10 @@
     // Override point for customization after application launch.
     
     // View controller configuration
-    self.viewController = self.window.rootViewController;
+    viewController = self.window.rootViewController;
     
-    // Motion managing initialization.
-    self.motion = [[MotionManager alloc] init];
-    [self.motion configure];
-    self.motion.viewController = self.viewController;
-    [self.motion startAccelerometers];
-    [self.motion startGyroscopes];
-    
-    // Location manager initialization.
-    // Ask location services to initialize
-    self.location = [[LocationManagerDelegate alloc] init];
-    [self.location configure];
+    // State machine initialization; main orchestrator
+    stateMachine = [[StateMachine alloc] initWithViewController:viewController];
     
     return YES;
 }
@@ -51,13 +42,13 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-    [self.motion stopAccelerometers];
+    [stateMachine applicationWillEnterForeground];
 }
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    [self.motion startAccelerometers];
+    [stateMachine applicationDidBecomeActive];
 }
 
 

@@ -10,16 +10,32 @@
 
 @implementation StateMachine
 
+#pragma mark SatateMachineMainMethods
 /*!
  @method init
  @discussion Constructor.
  */
-- (instancetype)init
+- (instancetype)initWithViewController:(ViewController *) viewControllerFromAppDelegate
 {
     self = [super init];
     if (self) {
+        // Instance parameters
         STATES = @[@"IDLE", @"UNLOCATED", @"LOCATED", @"MEASURING", @"TRAVELING"];
         self.started = YES;
+        
+        // View controller
+        viewController = viewControllerFromAppDelegate;
+        
+        // Motion managing initialization.
+        motion = [[MotionManager alloc] initWithViewController:viewControllerFromAppDelegate];
+        [motion configure];
+        [motion startAccelerometers];
+        [motion startGyroscopes];
+        
+        // Location manager initialization.
+        // Ask location services to initialize
+        location = [[LocationManagerDelegate alloc] init];
+        [location configure];
     }
     return self;
 }
@@ -126,6 +142,47 @@
  */
 - (bool) isTraveled{
     return YES;
+}
+
+#pragma mark AppDelegateResponseMethods
+/*!
+ @method applicationWillResignActive
+ @discussion Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state. Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+ */
+- (void) applicationWillResignActive {
+    
+}
+
+/*!
+ @method applicationWillResignActive
+ @discussion Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+ */
+- (void) applicationDidEnterBackground {
+    
+}
+
+/*!
+ @method applicationWillEnterForeground
+ @discussion Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+*/
+- (void) applicationWillEnterForeground {
+    [motion stopAccelerometers];
+}
+
+/*!
+ @method applicationDidBecomeActive
+ @discussion Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+*/
+-  (void)applicationDidBecomeActive {
+    [motion startAccelerometers];
+}
+
+/*!
+ @method applicationWillTerminate
+ @discussion Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:..
+ */
+- (void) applicationWillTerminate {
+    //
 }
 
 @end
