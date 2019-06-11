@@ -40,11 +40,11 @@
         [location configure];
         
         // Properties
-        self.started = NO;
+        self.started = YES;
         
         // Threading
         // Start with the thread locked
-        self.lock = YES;
+        self.lock = NO;
         // NSCondition instance
         self.condition = [[NSCondition alloc]init];
         // Create the thread and start it
@@ -152,7 +152,9 @@
  @discussion This method is called when the device is IDLE and checks if the state machine should evolve to the UNLOCATED state.
  */
 - (BOOL) isStarted{
-    [viewController.labelStatus setText:@"UNLOCATED; tap 'Measure' or 'Travel' to start."];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [viewController.labelStatus setText:@"UNLOCATED; tap 'Measure' or 'Travel' to start."];
+    });
     return self.started;
 }
 
@@ -170,10 +172,12 @@
  */
 - (BOOL) isLocated{
     if ([location isLocated]) {
-        [viewController.labelStatus setText:@"LOCATED; tap 'Measure' or 'Travel' to start."];
-        // Control tapping
-        [viewController.buttonMeasure setEnabled:YES];
-        [viewController.buttonTravel setEnabled:YES];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [viewController.labelStatus setText:@"LOCATED; tap 'Measure' or 'Travel' to start."];
+            // Control tapping
+            [viewController.buttonMeasure setEnabled:YES];
+            [viewController.buttonTravel setEnabled:YES];
+        });
         return YES;
     } else {
         return NO;
@@ -186,10 +190,12 @@
  */
 - (BOOL) isMeasuring{
     if (userWantsToStartMeasure) {
-        [viewController.labelStatus setText:@"MEASURING; tap 'Measure' again for stop the measure."];
-        // Control tapping
-        [viewController.buttonMeasure setEnabled:YES];
-        [viewController.buttonTravel setEnabled:NO];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [viewController.labelStatus setText:@"MEASURING; tap 'Measure' again for stop the measure."];
+            // Control tapping
+            [viewController.buttonMeasure setEnabled:YES];
+            [viewController.buttonTravel setEnabled:NO];
+        });
         // Ask location manager to start measuring
         [location startMeasuring];
         return YES;
@@ -204,12 +210,14 @@
  */
 - (BOOL) isMeasured{
     if(userWantsToStopMeasure) {
-        [viewController.labelStatus setText:@"LOCATED; tap 'Measure' or 'Travel' to start."];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [viewController.labelStatus setText:@"LOCATED; tap 'Measure' or 'Travel' to start."];
+            // Control tapping
+            [viewController.buttonMeasure setEnabled:YES];
+            [viewController.buttonTravel setEnabled:YES];
+        });
         // Ask location manager to stop measuring
         [location stopMeasuring];
-        // Control tapping
-        [viewController.buttonMeasure setEnabled:YES];
-        [viewController.buttonTravel setEnabled:YES];
         return YES;
     } else {
         return NO;
@@ -222,10 +230,12 @@
  */
 - (BOOL) isTraveling{
     if (userWantsToStartTravel) {
-        [viewController.labelStatus setText:@"TRAVELING; tap 'Travel' again for stop the travel."];
-        // Prevent new tapping
-        [viewController.buttonMeasure setEnabled:NO];
-        [viewController.buttonTravel setEnabled:YES];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [viewController.labelStatus setText:@"TRAVELING; tap 'Travel' again for stop the travel."];
+            // Prevent new tapping
+            [viewController.buttonMeasure setEnabled:NO];
+            [viewController.buttonTravel setEnabled:YES];
+        });
         // Ask motion manager to start taveling
         [location setLocated:NO];
         RDPosition * currentPosition = [location getPosition];
@@ -242,12 +252,14 @@
  */
 - (BOOL) isTraveled {
     if(userWantsToStopTravel) {
-        [viewController.labelStatus setText:@"UNLOCATED; tap 'Measure' or 'Travel' to start."];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [viewController.labelStatus setText:@"UNLOCATED; tap 'Measure' or 'Travel' to start."];
+            // Control tapping
+            [viewController.buttonMeasure setEnabled:NO];
+            [viewController.buttonTravel setEnabled:NO];
+        });
         // Ask motion manager to stop t
         [location stopMeasuring];
-        // Control tapping
-        [viewController.buttonMeasure setEnabled:NO];
-        [viewController.buttonTravel setEnabled:NO];
         [location setPosition:[motion getFinalPosition]];
         [location setLocated:YES];
         return YES;
