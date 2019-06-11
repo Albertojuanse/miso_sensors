@@ -33,11 +33,20 @@
     NSNumber * uuidIdNumber;
     NSNumber * measureIdNumber;
     
+    // Orchestration variables
+    BOOL measuring;
+    BOOL located;
+    NSNumber * currentNumberOfMeasures;
 }
 
-@property BOOL isLocated;
-
 - (void) configure;
+- (void) setLocated:(BOOL)newLocated;
+- (BOOL) isLocated;
+- (void) startMeasuring;
+- (void) stopMeasuring;
+- (BOOL) isMeasuredWith:(NSNumber *)numberOfMeasures;
+- (RDPosition *) getPosition;
+- (void) setPosition:(RDPosition *)newPosition;
 
 @end
 

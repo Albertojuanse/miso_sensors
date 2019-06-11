@@ -76,7 +76,8 @@
     double dr;
     double dy;
     
-    
+    BOOL traveling;
+    RDPosition * position;
 }
 
 @property NSTimer *timer;
@@ -87,6 +88,8 @@
 - (void) stopAccelerometers;
 - (void) startGyroscopes;
 - (void) stopGyroscopes;
-+ (RDPosition *) simulateTraveling:(RDPosition*)initialPosition;
+- (void) startTravelingFrom:(RDPosition*)initialPosition;
+- (void) stopTraveling;
+- (RDPosition *) getFinalPosition;
 
 @end

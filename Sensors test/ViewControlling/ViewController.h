@@ -28,6 +28,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *labelPosY;
 @property (weak, nonatomic) IBOutlet UILabel *labelPosZ;
 @property (weak, nonatomic) IBOutlet UILabel *labelCalibrated;
+@property (weak, nonatomic) IBOutlet UILabel *labelStatus;
 @property (weak, nonatomic) IBOutlet UILabel *labelGX;
 @property (weak, nonatomic) IBOutlet UILabel *labelGY;
 @property (weak, nonatomic) IBOutlet UILabel *labelGZ;

@@ -14,23 +14,41 @@
 
 /*!
  @class StateMachine
- @discussion This class implements the state machine that orquestates the whole app.
+ @discussion This class implements the state machine that orchestates the whole program.
  */
 @interface StateMachine : NSObject {
     
-    // The possible states of the state machine
+    // Intance constants
     NSArray * STATES;
+    NSNumber * NUMBER_OF_MEASURES;
+    
+    // Intance variables
+    NSString * state;
+    // Orchestration variables
+    BOOL userWantsToStartMeasure;
+    BOOL userWantsToStopMeasure;
+    BOOL userWantsToStartTravel;
+    BOOL userWantsToStopTravel;
+    
     // Other components
+    ViewController * viewController;
     MotionManager * motion;
     LocationManagerDelegate * location;
-    ViewController * viewController;
     
 }
 
 @property BOOL started;
-@property NSString * state;
+
+// Threading
+@property (strong, nonatomic) NSCondition *condition;
+@property (strong, nonatomic) NSThread *SMThread;
+// For unlock the thread from outside; YES for blocking the thread and prevent its evolution and NO for leaving it to run.
+@property (nonatomic) BOOL lock;
 
 - (instancetype)initWithViewController:(ViewController *) viewControllerFromAppDelegate;
+
+#pragma mark AppDelegateResponseMethods
+
 - (void) evaluateState;
 - (void) applicationWillResignActive;
 - (void) applicationDidEnterBackground;

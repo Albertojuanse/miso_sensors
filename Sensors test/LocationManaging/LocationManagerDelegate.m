@@ -21,7 +21,11 @@
     position.x = [NSNumber numberWithFloat:0.0];
     position.y = [NSNumber numberWithFloat:0.0];
     position.z = [NSNumber numberWithFloat:0.0];
-    self.isLocated = YES;
+    
+    // Orchestration variables
+    measuring = NO;
+    located = YES;
+    currentNumberOfMeasures = [NSNumber numberWithInteger:0];
     
     // Other variables
     rangedBeacons = [[NSMutableArray alloc] init];
@@ -40,13 +44,6 @@
     // It seems is only for background modes
     //locationManager.allowsBackgroundLocationUpdates = YES;
     //locationManager.pausesLocationUpdatesAutomatically = false;
-    
-    // This object must listen to this events
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(simulateTraveling)
-                                                 name:@"simulateTravel"
-                                               object:nil];
-    
     
     // Ask for authorization for location services
     switch (CLLocationManager.authorizationStatus) {
@@ -222,7 +219,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
        didRangeBeacons:(NSArray*)beacons
               inRegion:(CLBeaconRegion*)region
 {
-    
     // If there is any beacon in the event...
     if (beacons.count > 0) {
         for (CLBeacon *beacon in beacons) {
@@ -296,10 +292,16 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 
                 // Compose the dictionary from the innest to the outest
                 // Wrap measureDic with another dictionary and an unique measure's identifier key
-                measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
-                NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
                 NSMutableDictionary * measureDicDic = [[NSMutableDictionary alloc] init];
-                measureDicDic[measureId] = measureDic;
+                NSLog(measuring ? @"[HOLA] measuring: TRUE" : @"[HOLA] measuring: FALSE");
+                if (measuring) {
+                    measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
+                    NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
+                    measureDicDic[measureId] = measureDic;
+                } else {
+                    // saves nothing
+                }
+                
                 
                 // Create the 'uuidDic' dictionary
                 uuidDic = [[NSMutableDictionary alloc] init];
@@ -369,20 +371,29 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                 uuidFound = YES;
                                 
                                 // If both position and uuid are found, set the 'measureDic' into 'measureDicDic' with an unique measure's identifier key.
-                                measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
-                                NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
-                                measureDicDic = uuidDic[@"uuidMeasures"];
-                                measureDicDic[measureId] = measureDic;
+                                NSMutableDictionary * measureDicDic = [[NSMutableDictionary alloc] init];
+                                NSLog(measuring ? @"[HOLA] measuring: TRUE" : @"[HOLA] measuring: FALSE");
+                                if (measuring) {
+                                    measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
+                                    NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
+                                    measureDicDic[measureId] = measureDic;
+                                } else {
+                                    // saves nothing
+                                }
                             }
                         }
                         // If only the UUID was not found, but te positions was found, create all the inner dictionaries.
                         if (uuidFound == NO) {
                             // Compose the dictionary from the innest to the outest
                             // Wrap measureDic with another dictionary and an unique measure's identifier key
-                            measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
-                            NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
-                            measureDicDic = [[NSMutableDictionary alloc] init];
-                            measureDicDic[measureId] = measureDic;
+                            NSLog(measuring ? @"[HOLA] measuring: TRUE" : @"[HOLA] measuring: FALSE");
+                            NSMutableDictionary * measureDicDic = [[NSMutableDictionary alloc] init];
+                            if (measuring) {
+                                measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
+                                NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
+                                measureDicDic[measureId] = measureDic;
+                            } else {
+                            }
                             
                             // Create the 'uuidDic' dictionary
                             uuidDic = [[NSMutableDictionary alloc] init];
@@ -401,10 +412,15 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 if (positionFound == NO) {
                     // Compose the dictionary from the innest to the outest
                     // Wrap measureDic with another dictionary and an unique measure's identifier key
-                    measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
-                    NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
-                    measureDicDic = [[NSMutableDictionary alloc] init];
-                    measureDicDic[measureId] = measureDic;
+                    NSLog(measuring ? @"[HOLA] measuring: TRUE" : @"[HOLA] measuring: FALSE");
+                    NSMutableDictionary * measureDicDic = [[NSMutableDictionary alloc] init];
+                    if (measuring) {
+                        measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
+                        NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
+                        measureDicDic[measureId] = measureDic;
+                    } else {
+                        // saves nothing
+                    }
                     
                     // Create the 'uuidDic' dictionary
                     uuidDic = [[NSMutableDictionary alloc] init];
@@ -445,23 +461,93 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          object:nil
          userInfo:data];
     }
+    
+    // Notify the state machine that a measure has been stored
+    if(beacons.count > 0) {
+        NSLog(@"[NOTI][MM] Notification \"measureSaved\" posted.");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"measureSaved" object:nil];
+    }
+}
+
+#pragma mark OrchestrationMethods
+
+/*!
+ @method setLocated
+ @discussion This method sets the location status.
+ */
+- (void) setLocated:(BOOL) newLocated {
+    located = newLocated;
 }
 
 /*!
- @method simulateTraveling
- @discussion This method simulate a traveling in space from the current 'RDPosition'.
+ @method isLocated
+ @discussion This method is called when a superior instance wants to know if the current location is known.
  */
-- (void) simulateTraveling {
-    self.isLocated = NO;
-    float low_bound = -2.00;
-    float high_bound = 2.00;
-    float rndValue1 = (((float)arc4random()/0x100000000)*(high_bound-low_bound)+low_bound);
-    float rndValue2 = (((float)arc4random()/0x100000000)*(high_bound-low_bound)+low_bound);
-    position.x = [NSNumber numberWithFloat:[position.x floatValue] + rndValue1];
-    position.y = [NSNumber numberWithFloat:[position.y floatValue] + rndValue2];
-    position.z = [NSNumber numberWithFloat:[position.z floatValue]];
-    self.isLocated = YES;
-    
+- (BOOL) isLocated {
+    if (measuring || located) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+/*!
+ @method startMeasuring
+ @discussion This method sets the flag 'measuring' true, and thus the measures are stored.
+ */
+- (void) startMeasuring {
+    // If is not currently measuring
+    if (!measuring) {
+        measuring = YES;
+    }
+}
+
+/*!
+ @method stopMeasuring
+ @discussion This method sets the flag 'measuring' false, and thus the measures are not stored.
+ */
+- (void) stopMeasuring {
+    // If is currently measuring
+    if (measuring) {
+        measuring = NO;
+        // Reset the number of 'measures per measure'
+        currentNumberOfMeasures = [NSNumber numberWithInteger:0];
+    }
+}
+
+/*!
+ @method stopMeasuring
+ @discussion This method sets the flag 'measuring' false, and thus the measures are not stored.
+ */
+- (BOOL) isMeasuredWith:(NSNumber *)numberOfMeasures {
+    if ([currentNumberOfMeasures integerValue] >= [numberOfMeasures integerValue] - 1) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+/*!
+ @method getPosition
+ @discussion Getter of current position of the device.
+ */
+- (RDPosition *) getPosition {
+    RDPosition * newPosition = [[RDPosition alloc] init];
+    newPosition.x = [NSNumber numberWithFloat:[position.x floatValue] + 50];
+    newPosition.y = [NSNumber numberWithFloat:[position.y floatValue] + 50];
+    newPosition.z = [NSNumber numberWithFloat:[position.y floatValue]];
+    return newPosition;
+}
+
+/*!
+ @method getPosition
+ @discussion Getter of current position of the device.
+ */
+- (void) setPosition:(RDPosition *) newPosition {
+    position = [[RDPosition alloc] init];
+    position.x = [NSNumber numberWithFloat:[newPosition.x floatValue] + 50];
+    position.y = [NSNumber numberWithFloat:[newPosition.y floatValue] + 50];
+    position.z = [NSNumber numberWithFloat:[newPosition.y floatValue]];
 }
 
 @end

@@ -20,6 +20,7 @@ self = [super init];
 if (self) {
     // View controller
     viewController = viewControllerFromStateMachine;
+    RDPosition * position = [[RDPosition alloc] init];
     }
     return self;
 }
@@ -35,6 +36,7 @@ if (self) {
     calibrationSteps = calibrationTime * 1/t;
     calibration_counter = 0;
     precision_threshold = 0.1;
+    traveling = NO;
 }
 
 /*!
@@ -268,14 +270,33 @@ if (self) {
 }
 
 /*!
+ @method startTravelingFrom
+ @discussion This method simulate a traveling in space from a given 'RDPosition'.
+ */
+- (void) startTravelingFrom:(RDPosition*)initialPosition {
+    traveling = YES;
+    position.x = [NSNumber numberWithFloat:[initialPosition.x floatValue] + 50];
+    position.y = [NSNumber numberWithFloat:[initialPosition.y floatValue] + 50];
+    position.z = [NSNumber numberWithFloat:[initialPosition.y floatValue]];
+}
+
+/*!
  @method simulateTraveling
  @discussion This method simulate a traveling in space from a given 'RDPosition'.
  */
-+ (RDPosition *) simulateTraveling:(RDPosition*)initialPosition {
+- (void) stopTraveling {
+    traveling = NO;
+}
+
+/*!
+ @method simulateTraveling
+ @discussion This method simulate a traveling in space from a given 'RDPosition'.
+ */
+- (RDPosition *) getFinalPosition {
     RDPosition * newPosition = [[RDPosition alloc] init];
-    newPosition.x = [NSNumber numberWithFloat:[initialPosition.x floatValue] + 50];
-    newPosition.y = [NSNumber numberWithFloat:[initialPosition.y floatValue] + 50];
-    newPosition.z = [NSNumber numberWithFloat:[initialPosition.y floatValue]];
+    newPosition.x = [NSNumber numberWithFloat:[position.x floatValue] + 50];
+    newPosition.y = [NSNumber numberWithFloat:[position.y floatValue] + 50];
+    newPosition.z = [NSNumber numberWithFloat:[position.y floatValue]];
     return newPosition;
 }
 

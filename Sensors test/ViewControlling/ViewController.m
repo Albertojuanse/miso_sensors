@@ -33,7 +33,7 @@
     
     // Visualization
     [self.buttonTravel setEnabled:YES];
-    [self.buttonMeasure setEnabled:NO];
+    [self.buttonMeasure setEnabled:YES];
 }
 
 /*!
@@ -113,12 +113,28 @@
     [self.canvas setNeedsDisplay];
 }
 
-- (IBAction)handleButtonMeasure:(id)sender {
+/*!
+ @method handleButtonTravel:
+ @discussion This method handles the action in which the Travel button is pressed; it must notify the orchestrator that the user wants to move the device.
+ */
+- (IBAction)handleButtonTravel:(id)sender {
+    // Empty data array for use the 'postNotificationName:object:userInfo:' method.
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"simulateTravel"
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"handleButtonTravel"
                                                         object:nil
                                                       userInfo:data];
 }
 
+/*!
+ @method handleButtonMeasure:
+ @discussion This method handles the action in which the Measure button is pressed; it must notify the orchestrator that the user wants to make a measure.
+ */
+- (IBAction)handleButtonMeasure:(id)sender {
+    // Empty data array for use the 'postNotificationName:object:userInfo:' method.
+    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"handleButtonMeasure"
+                                                        object:nil
+                                                      userInfo:data];
+}
 
 @end
