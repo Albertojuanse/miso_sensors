@@ -119,10 +119,8 @@
  */
 - (IBAction)handleButtonTravel:(id)sender {
     // Empty data array for use the 'postNotificationName:object:userInfo:' method.
-    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"handleButtonTravel"
-                                                        object:nil
-                                                      userInfo:data];
+                                                        object:nil];
 }
 
 /*!
@@ -131,10 +129,8 @@
  */
 - (IBAction)handleButtonMeasure:(id)sender {
     // Empty data array for use the 'postNotificationName:object:userInfo:' method.
-    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"handleButtonMeasure"
-                                                        object:nil
-                                                      userInfo:data];
+                                                        object:nil];
 }
 
 @end
