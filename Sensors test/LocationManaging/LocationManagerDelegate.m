@@ -225,7 +225,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             // ...save it and get its information...
             [rangedBeacons addObject:beacon];
             NSString * uuid = [[beacon proximityUUID] UUIDString];
-            NSNumber * rssi = [RDRhoRhoSystem calculateDistanceWithRssi:[beacon rssi]];
+            NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
             
             RDPosition * measurePosition = [[RDPosition alloc] init];
             measurePosition.x = position.x;
