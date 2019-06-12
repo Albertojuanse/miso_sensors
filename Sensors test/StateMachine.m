@@ -437,7 +437,7 @@
             [viewController.buttonTravel setEnabled:NO];
         });
         // Ask motion manager to stop traveling
-        [location stopMeasuring];
+        [motion stopTraveling];
         [location setPosition:[motion getFinalPosition]];
         [location setLocated:YES];
         NSLog(@"[INFO][SM] Motion manager has been asked the final position of the travel; returns YES");

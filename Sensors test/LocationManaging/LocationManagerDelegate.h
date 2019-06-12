@@ -7,7 +7,6 @@
 //
 
 #import <CoreLocation/CoreLocation.h>
-#include <stdlib.h>
 #import "RDPosition.h"
 #import "RDRhoRhoSystem.h"
 #import "MotionManager.h"

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreMotion/CoreMotion.h>
+#include <stdlib.h>
 #import "ViewController.h"
 
 /*!

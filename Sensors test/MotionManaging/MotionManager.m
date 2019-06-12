@@ -37,6 +37,7 @@ if (self) {
     calibration_counter = 0;
     precision_threshold = 0.1;
     traveling = NO;
+    position = [[RDPosition alloc] init];
 }
 
 /*!
@@ -274,10 +275,15 @@ if (self) {
  @discussion This method simulate a traveling in space from a given 'RDPosition'.
  */
 - (void) startTravelingFrom:(RDPosition*)initialPosition {
+    NSLog(@"[INFO][MM] Starting traveling from position: %@", initialPosition);
     traveling = YES;
-    position.x = [NSNumber numberWithFloat:[initialPosition.x floatValue] + 50];
-    position.y = [NSNumber numberWithFloat:[initialPosition.y floatValue] + 50];
-    position.z = [NSNumber numberWithFloat:[initialPosition.y floatValue]];
+    float low_bound = -1.00;
+    float high_bound = 1.00;
+    float rndValue1 = (((float)arc4random()/0x100000000)*(high_bound-low_bound)+low_bound);
+    float rndValue2 = (((float)arc4random()/0x100000000)*(high_bound-low_bound)+low_bound);
+    position.x = [NSNumber numberWithFloat:[initialPosition.x floatValue] + rndValue1];
+    position.y = [NSNumber numberWithFloat:[initialPosition.y floatValue] + rndValue2];
+    position.z = [NSNumber numberWithFloat:[initialPosition.z floatValue]];
     
     // Notify the event
     [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
@@ -289,6 +295,7 @@ if (self) {
  @discussion This method simulate a traveling in space from a given 'RDPosition'.
  */
 - (void) stopTraveling {
+    NSLog(@"[INFO][MM] Stopping traveling");
     traveling = NO;
     
     // Notify the event
@@ -302,9 +309,10 @@ if (self) {
  */
 - (RDPosition *) getFinalPosition {
     RDPosition * newPosition = [[RDPosition alloc] init];
-    newPosition.x = [NSNumber numberWithFloat:[position.x floatValue] + 50];
-    newPosition.y = [NSNumber numberWithFloat:[position.y floatValue] + 50];
-    newPosition.z = [NSNumber numberWithFloat:[position.y floatValue]];
+    newPosition.x = [NSNumber numberWithFloat:[position.x floatValue]];
+    newPosition.y = [NSNumber numberWithFloat:[position.y floatValue]];
+    newPosition.z = [NSNumber numberWithFloat:[position.z floatValue]];
+    NSLog(@"[INFO][MM] The travel finished at position: %@", newPosition);
     
     // Notify the event
     [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"

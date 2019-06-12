@@ -538,9 +538,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  */
 - (RDPosition *) getPosition {
     RDPosition * newPosition = [[RDPosition alloc] init];
-    newPosition.x = [NSNumber numberWithFloat:[position.x floatValue] + 50];
-    newPosition.y = [NSNumber numberWithFloat:[position.y floatValue] + 50];
-    newPosition.z = [NSNumber numberWithFloat:[position.y floatValue]];
+    newPosition.x = [NSNumber numberWithFloat:[position.x floatValue]];
+    newPosition.y = [NSNumber numberWithFloat:[position.y floatValue]];
+    newPosition.z = [NSNumber numberWithFloat:[position.z floatValue]];
     return newPosition;
 }
 
@@ -550,9 +550,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  */
 - (void) setPosition:(RDPosition *) newPosition {
     position = [[RDPosition alloc] init];
-    position.x = [NSNumber numberWithFloat:[newPosition.x floatValue] + 50];
-    position.y = [NSNumber numberWithFloat:[newPosition.y floatValue] + 50];
-    position.z = [NSNumber numberWithFloat:[newPosition.y floatValue]];
+    position.x = [NSNumber numberWithFloat:[newPosition.x floatValue]];
+    position.y = [NSNumber numberWithFloat:[newPosition.y floatValue]];
+    position.z = [NSNumber numberWithFloat:[newPosition.z floatValue]];
     
     // Notify the event
     [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
