@@ -292,8 +292,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 
                 // Compose the dictionary from the innest to the outest
                 // Wrap measureDic with another dictionary and an unique measure's identifier key
-                NSMutableDictionary * measureDicDic = [[NSMutableDictionary alloc] init];
-                NSLog(measuring ? @"[HOLA] measuring: TRUE" : @"[HOLA] measuring: FALSE");
+                measureDicDic = [[NSMutableDictionary alloc] init];
                 if (measuring) {
                     measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
                     NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
@@ -371,8 +370,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                 uuidFound = YES;
                                 
                                 // If both position and uuid are found, set the 'measureDic' into 'measureDicDic' with an unique measure's identifier key.
-                                NSMutableDictionary * measureDicDic = [[NSMutableDictionary alloc] init];
-                                NSLog(measuring ? @"[HOLA] measuring: TRUE" : @"[HOLA] measuring: FALSE");
+                                measureDicDic = uuidDic[@"uuidMeasures"];
                                 if (measuring) {
                                     measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
                                     NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
@@ -386,8 +384,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                         if (uuidFound == NO) {
                             // Compose the dictionary from the innest to the outest
                             // Wrap measureDic with another dictionary and an unique measure's identifier key
-                            NSLog(measuring ? @"[HOLA] measuring: TRUE" : @"[HOLA] measuring: FALSE");
-                            NSMutableDictionary * measureDicDic = [[NSMutableDictionary alloc] init];
+                            measureDicDic = [[NSMutableDictionary alloc] init];
                             if (measuring) {
                                 measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
                                 NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
@@ -412,8 +409,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 if (positionFound == NO) {
                     // Compose the dictionary from the innest to the outest
                     // Wrap measureDic with another dictionary and an unique measure's identifier key
-                    NSLog(measuring ? @"[HOLA] measuring: TRUE" : @"[HOLA] measuring: FALSE");
-                    NSMutableDictionary * measureDicDic = [[NSMutableDictionary alloc] init];
+                    measureDicDic = [[NSMutableDictionary alloc] init];
                     if (measuring) {
                         measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
                         NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
@@ -437,7 +433,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     positionDic = [[NSMutableDictionary alloc] init];
                     positionDic[@"measurePosition"] = measurePosition;
                     positionDic[@"positionMeasures"] = uuidDicDic;
-                    NSLog(@"[INFO][MM] New position saved in dictionary: (%.2f, %.2f)", [measurePosition.x floatValue], [measurePosition.y floatValue]);
+                    NSLog(@"[INFO][LM] New position saved in dictionary: (%.2f, %.2f)", [measurePosition.x floatValue], [measurePosition.y floatValue]);
                     
                     // Set positionDic in the main dictionary 'rangedBeaconsDic' with an unique position's identifier key
                     positionIdNumber = [NSNumber numberWithInt:[positionIdNumber intValue] + 1];
@@ -447,13 +443,13 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             }
         }
         
-        NSLog(@"[INFO][MM] Generated dictionary:");
-        NSLog(@"[INFO][MM]  -> %@", rangedBeaconsDic);
+        NSLog(@"[INFO][LM] Generated dictionary:");
+        NSLog(@"[INFO][LM]  -> %@", rangedBeaconsDic);
     }
     
     // Ask view controller to refresh the canvas
     if(beacons.count > 0) {
-        NSLog(@"[NOTI][MM] Notification \"refreshCanvas\" posted.");
+        NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
         NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
         [data setObject:rangedBeaconsDic forKey:@"rangedBeaconsDic"];
         [[NSNotificationCenter defaultCenter]
@@ -464,7 +460,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     
     // Notify the event
     if(beacons.count > 0) {
-        NSLog(@"[NOTI][MM] Notification \"needEvaluateState\" posted.");
+        NSLog(@"[NOTI][LM] Notification \"needEvaluateState\" posted.");
     [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
                                                         object:nil];
     }
@@ -497,8 +493,10 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  @discussion This method sets the flag 'measuring' true, and thus the measures are stored.
  */
 - (void) startMeasuring {
+    NSLog(@"[INFO][LM] Asked to start measuring.");
     // If is not currently measuring
     if (!measuring) {
+        NSLog(@"[INFO][LM] Measured flag is YES.");
         measuring = YES;
     }
     // Notify the event
