@@ -278,6 +278,10 @@ if (self) {
     position.x = [NSNumber numberWithFloat:[initialPosition.x floatValue] + 50];
     position.y = [NSNumber numberWithFloat:[initialPosition.y floatValue] + 50];
     position.z = [NSNumber numberWithFloat:[initialPosition.y floatValue]];
+    
+    // Notify the event
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
+                                                        object:nil];
 }
 
 /*!
@@ -286,6 +290,10 @@ if (self) {
  */
 - (void) stopTraveling {
     traveling = NO;
+    
+    // Notify the event
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
+                                                        object:nil];
 }
 
 /*!
@@ -297,6 +305,10 @@ if (self) {
     newPosition.x = [NSNumber numberWithFloat:[position.x floatValue] + 50];
     newPosition.y = [NSNumber numberWithFloat:[position.y floatValue] + 50];
     newPosition.z = [NSNumber numberWithFloat:[position.y floatValue]];
+    
+    // Notify the event
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
+                                                        object:nil];
     return newPosition;
 }
 

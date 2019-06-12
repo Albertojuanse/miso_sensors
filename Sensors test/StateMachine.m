@@ -61,6 +61,11 @@
                                                  selector:@selector(handleButtonMeasure:)
                                                      name:@"handleButtonMeasure"
                                                    object:nil];
+        // From anywhere
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(needEvaluateState)
+                                                     name:@"needEvaluateState"
+                                                   object:nil];
     }
     return self;
 }
@@ -78,13 +83,13 @@
             [self.condition wait];
         }
         
-        // Action state machine evolution
-        [self evaluateState];
-        
         // Lock the condition again and release
         self.lock = YES;
         [self.condition signal];
         [self.condition unlock];
+        
+        // Action state machine evolution; it must be called after release the condition
+        [self evaluateState];
     }
 }
 
@@ -94,57 +99,130 @@
  */
 - (void) evaluateState {
     // Check the current state and perform the rule verification for each of them
-    NSLog(@"[INFO][SM] Evaluating state. Current state %@", state);
-    if ([state isEqualToString:STATES[0]]) {  // IDLE
+    
+    // Acquire the lock to get the currentState
+    [self.condition lock];
+    NSString * currentState = [NSString stringWithString:state];
+    NSString * lastState;
+    [self.condition signal];
+    [self.condition unlock];
+    
+    // Recycle the state machine
+    NSLog(@"[INFO][SM] Evaluating state. Current state %@", currentState);
+    if ([currentState isEqualToString:STATES[0]]) {  // IDLE
         if ([self isStarted]){  // UNLOCATED?
+            [self.condition lock];
+            lastState = [NSString stringWithString:state];
             state = STATES[1];
-            NSLog(@"[INFO][SM] -> From state %@ to %@", STATES[0], state);
+            currentState = [NSString stringWithString:state];
+            [self.condition signal];
+            [self.condition unlock];
+            NSLog(@"[INFO][SM] -> From state %@ to %@", lastState, currentState);
         }
     }
     if ([state isEqualToString:STATES[1]]) {  // UNLOCATED
         if ([self isStopped]){  // IDLE?
+            [self.condition lock];
+            lastState = [NSString stringWithString:state];
             state = STATES[0];
-            NSLog(@"[INFO][SM] -> From state %@ to %@", STATES[1], state);
+            currentState = [NSString stringWithString:state];
+            [self.condition signal];
+            [self.condition unlock];
+            NSLog(@"[INFO][SM] -> From state %@ to %@", lastState, currentState);
         }
         if ([self isLocated]){  // LOCATED?
+            [self.condition lock];
+            lastState = [NSString stringWithString:state];
             state = STATES[2];
-            NSLog(@"[INFO][SM] -> From state %@ to %@", STATES[1], state);
+            currentState = [NSString stringWithString:state];
+            [self.condition signal];
+            [self.condition unlock];
+            NSLog(@"[INFO][SM] -> From state %@ to %@", lastState, currentState);
         }
     }
     if ([state isEqualToString:STATES[2]]) {  // LOCATED
         if ([self isStopped]){  // IDLE?
+            [self.condition lock];
+            lastState = [NSString stringWithString:state];
             state = STATES[0];
-            NSLog(@"[INFO][SM] -> From state %@ to %@", STATES[2], state);
+            currentState = [NSString stringWithString:state];
+            [self.condition signal];
+            [self.condition unlock];
+            NSLog(@"[INFO][SM] -> From state %@ to %@", lastState, currentState);
         }
         if ([self isMeasuring]){  // MEASURING?
+            [self.condition lock];
+            lastState = [NSString stringWithString:state];
             state = STATES[3];
-            NSLog(@"[INFO][SM] -> From state %@ to %@", STATES[2], state);
+            currentState = [NSString stringWithString:state];
+            [self.condition signal];
+            [self.condition unlock];
+            NSLog(@"[INFO][SM] -> From state %@ to %@", lastState, currentState);
         }
         if ([self isTraveling]){  // TRAVELING?
+            [self.condition lock];
+            lastState = [NSString stringWithString:state];
             state = STATES[4];
-            NSLog(@"[INFO][SM] -> From state %@ to %@", STATES[2], state);
+            currentState = [NSString stringWithString:state];
+            [self.condition signal];
+            [self.condition unlock];
+            NSLog(@"[INFO][SM] -> From state %@ to %@", lastState, currentState);
         }
     }
     if ([state isEqualToString:STATES[3]]) {  // MEASURING
         if ([self isStopped]){  // IDLE?
+            [self.condition lock];
+            lastState = [NSString stringWithString:state];
             state = STATES[0];
-            NSLog(@"[INFO][SM] -> From state %@ to %@", STATES[3], state);
+            currentState = [NSString stringWithString:state];
+            [self.condition signal];
+            [self.condition unlock];
+            NSLog(@"[INFO][SM] -> From state %@ to %@", lastState, currentState);
         }
         if ([self isMeasured]){  // LOCATED?
+            [self.condition lock];
+            lastState = [NSString stringWithString:state];
             state = STATES[2];
-            NSLog(@"[INFO][SM] -> From state %@ to %@", STATES[3], state);
+            currentState = [NSString stringWithString:state];
+            [self.condition signal];
+            [self.condition unlock];
+            NSLog(@"[INFO][SM] -> From state %@ to %@", lastState, currentState);
         }
     }
     if ([state isEqualToString:STATES[4]]) {  // TRAVELING
         if ([self isStopped]){  // IDLE?
+            [self.condition lock];
+            lastState = [NSString stringWithString:state];
             state = STATES[0];
-            NSLog(@"[INFO][SM] -> From state %@ to %@", STATES[4], state);
+            currentState = [NSString stringWithString:state];
+            [self.condition signal];
+            [self.condition unlock];
+            NSLog(@"[INFO][SM] -> From state %@ to %@", lastState, currentState);
         }
         if ([self isTraveled]){  // UNLOCATED?
+            [self.condition lock];
+            lastState = [NSString stringWithString:state];
             state = STATES[1];
-            NSLog(@"[INFO][SM] -> From state %@ to %@", STATES[4], state);
+            currentState = [NSString stringWithString:state];
+            [self.condition signal];
+            [self.condition unlock];
+            NSLog(@"[INFO][SM] -> From state %@ to %@", lastState, currentState);
         }
     }
+}
+
+/*!
+ @method needEvaluateState
+ @discussion Set the class' lock as NO, and so the state machine recycles one time; it must be called everytime that something happens.
+ */
+- (void) needEvaluateState {
+    NSLog(@"[INFO][SM] Asked to recycle the state machine");
+    // Acquire the lock
+    [self.condition lock];
+    // Unlock the condition again and release
+    self.lock = NO;
+    [self.condition signal];
+    [self.condition unlock];
 }
 
 /*!
@@ -155,7 +233,20 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [viewController.labelStatus setText:@"UNLOCATED; tap 'Measure' or 'Travel' to start."];
     });
-    return self.started;
+    
+    BOOL isStarted;
+    // Acquire the lock
+    [self.condition lock];
+    // Unlock the condition again and release
+    if (self.started) {
+        isStarted = YES;
+    } else {
+        isStarted = NO;
+    }
+    [self.condition signal];
+    [self.condition unlock];
+    
+    return isStarted;
 }
 
 /*!
@@ -163,7 +254,20 @@
  @discussion This method is called in every state and checks if the state machine should evolve to the IDLE state.
  */
 - (BOOL) isStopped{
-    return !self.started;
+    
+    BOOL isStoped;
+    // Acquire the lock
+    [self.condition lock];
+    // Unlock the condition again and release
+    if (!self.started) {
+        isStoped = YES;
+    } else {
+        isStoped = NO;
+    }
+    [self.condition signal];
+    [self.condition unlock];
+    
+    return isStoped;
 }
 
 /*!
@@ -189,7 +293,24 @@
  @discussion This method is called when the device is LOCATED and checks if the state machine should evolve to the MEASURING state.
  */
 - (BOOL) isMeasuring{
+    
+    NSLog(@"[INFO][SM] isMeasuring method called");
+    BOOL userWantsToStartMeasureFlag;
+    // Acquire the lock
+    [self.condition lock];
+    // Unlock the condition again and release
     if (userWantsToStartMeasure) {
+        userWantsToStartMeasureFlag = YES;
+    } else {
+        userWantsToStartMeasureFlag = NO;
+    }
+    [self.condition signal];
+    [self.condition unlock];
+    
+    NSLog(userWantsToStartMeasureFlag ? @"[INFO][SM] userWantsToStartMeasureFlag is YES" : @"[INFO][SM] userWantsToStartMeasureFlag is NO");
+    
+    if (userWantsToStartMeasureFlag) {
+        NSLog(@"[INFO][SM] Label is going to be changed");
         dispatch_async(dispatch_get_main_queue(), ^{
             [viewController.labelStatus setText:@"MEASURING; tap 'Measure' again for stop the measure."];
             // Control tapping
@@ -198,8 +319,10 @@
         });
         // Ask location manager to start measuring
         [location startMeasuring];
+        NSLog(@"[INFO][SM] Location manager has been asked to start measuring; returns YES");
         return YES;
     } else {
+        NSLog(@"[INFO][SM] isMeasuring method returns NO");
         return NO;
     }
 }
@@ -209,8 +332,25 @@
  @discussion This method is called when the device is MEASURING and checks if the state machine should evolve to the LOCATED state.
  */
 - (BOOL) isMeasured{
-    if(userWantsToStopMeasure) {
+    
+    NSLog(@"[INFO][SM] isMeasured method called");
+        BOOL userWantsToStopMeasureFlag;
+    // Acquire the lock
+    [self.condition lock];
+    // Unlock the condition again and release
+    if (userWantsToStopMeasure) {
+        userWantsToStopMeasureFlag = YES;
+    } else {
+        userWantsToStopMeasureFlag = NO;
+    }
+    [self.condition signal];
+    [self.condition unlock];
+    
+    NSLog(userWantsToStopMeasureFlag ? @"[INFO][SM] userWantsToStopMeasureFlag is YES" : @"[INFO][SM] userWantsToStopMeasureFlag is NO");
+    
+    if(userWantsToStopMeasureFlag) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"[INFO][SM] Label is going to be changed");
             [viewController.labelStatus setText:@"LOCATED; tap 'Measure' or 'Travel' to start."];
             // Control tapping
             [viewController.buttonMeasure setEnabled:YES];
@@ -218,8 +358,10 @@
         });
         // Ask location manager to stop measuring
         [location stopMeasuring];
+        NSLog(@"[INFO][SM] Location manager has been asked to stop measuring; returns YES");
         return YES;
     } else {
+        NSLog(@"[INFO][SM] isMeasured method returns NO");
         return NO;
     }
 }
@@ -229,19 +371,38 @@
  @discussion This method is called when the device is LOCATED and checks if the state machine should evolve to the TRAVELING state.
  */
 - (BOOL) isTraveling{
+    
+    NSLog(@"[INFO][SM] isTraveling method called");
+    BOOL userWantsToStartTravelFlag;
+    // Acquire the lock
+    [self.condition lock];
+    // Unlock the condition again and release
     if (userWantsToStartTravel) {
+        userWantsToStartTravelFlag = YES;
+    } else {
+        userWantsToStartTravelFlag = NO;
+    }
+    [self.condition signal];
+    [self.condition unlock];
+    
+    NSLog(userWantsToStartTravelFlag ? @"[INFO][SM] userWantsToStartTravelFlag is YES" : @"[INFO][SM] userWantsToStartTravelFlag is NO");
+    
+    if (userWantsToStartTravelFlag) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"[INFO][SM] Label is going to be changed");
             [viewController.labelStatus setText:@"TRAVELING; tap 'Travel' again for stop the travel."];
             // Prevent new tapping
             [viewController.buttonMeasure setEnabled:NO];
             [viewController.buttonTravel setEnabled:YES];
         });
-        // Ask motion manager to start taveling
+        // Ask motion manager to start traveling
         [location setLocated:NO];
         RDPosition * currentPosition = [location getPosition];
         [motion startTravelingFrom:currentPosition];
+        NSLog(@"[INFO][SM] Motion manager has been asked to start traveling; returns YES");
         return YES;
     } else {
+        NSLog(@"[INFO][SM] isTraveling method returns NO");
         return NO;
     }
 }
@@ -251,19 +412,38 @@
  @discussion This method is called when the device is TRAVELING and checks if the state machine should evolve to the UNLOCATED state.
  */
 - (BOOL) isTraveled {
-    if(userWantsToStopTravel) {
+    
+    NSLog(@"[INFO][SM] isTraveled method called");
+    BOOL userWantsToStopTravelFlag;
+    // Acquire the lock
+    [self.condition lock];
+    // Unlock the condition again and release
+    if (userWantsToStopTravel) {
+        userWantsToStopTravelFlag = YES;
+    } else {
+        userWantsToStopTravelFlag = NO;
+    }
+    [self.condition signal];
+    [self.condition unlock];
+    
+    NSLog(userWantsToStopTravelFlag ? @"[INFO][SM] userWantsToStopTravelFlag is YES" : @"[INFO][SM] userWantsToStopTravelFlag is NO");
+    
+    if(userWantsToStopTravelFlag) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"[INFO][SM] Label is going to be changed");
             [viewController.labelStatus setText:@"UNLOCATED; tap 'Measure' or 'Travel' to start."];
             // Control tapping
             [viewController.buttonMeasure setEnabled:NO];
             [viewController.buttonTravel setEnabled:NO];
         });
-        // Ask motion manager to stop t
+        // Ask motion manager to stop traveling
         [location stopMeasuring];
         [location setPosition:[motion getFinalPosition]];
         [location setLocated:YES];
+        NSLog(@"[INFO][SM] Motion manager has been asked the final position of the travel; returns YES");
         return YES;
     } else {
+        NSLog(@"[INFO][SM] isTraveled method returns NO");
         return NO;
     }
 }
@@ -285,7 +465,25 @@
                 userWantsToStartTravel = NO;
                 userWantsToStopTravel = YES;
             } else if (!userWantsToStartTravel && userWantsToStopTravel) {
+                NSLog(@"[ERROR][SM] 'userWantsToStartTravel' is NO && 'userWantsToStopTravel' is YES");
+                userWantsToStartTravel = NO;
+                userWantsToStopTravel = NO;
+            } else if (userWantsToStartTravel && userWantsToStopTravel) {
+                NSLog(@"[ERROR][SM] Both 'userWantsToStartTravel' && 'userWantsToStopTravel' flags are YES");
+                userWantsToStartTravel = NO;
+                userWantsToStopTravel = NO;
+            }
+        }
+        
+        if (state == STATES[4]) {  // TRAVELING
+            if (!userWantsToStartTravel && !userWantsToStopTravel) {
                 userWantsToStartTravel = YES;
+            } else if (userWantsToStartTravel && !userWantsToStopTravel) {
+                userWantsToStartTravel = NO;
+                userWantsToStopTravel = YES;
+            } else if (!userWantsToStartTravel && userWantsToStopTravel) {
+                NSLog(@"[ERROR][SM] 'userWantsToStartTravel' is NO && 'userWantsToStopTravel' is YES");
+                userWantsToStartTravel = NO;
                 userWantsToStopTravel = NO;
             } else if (userWantsToStartTravel && userWantsToStopTravel) {
                 NSLog(@"[ERROR][SM] Both 'userWantsToStartTravel' && 'userWantsToStopTravel' flags are YES");
@@ -295,6 +493,7 @@
         }
         
         // Unlock the thread for recycle
+        NSLog(@"[INFO][SM] Asked to recycle the state machine");
         self.lock = NO;
         [self.condition signal];
         [self.condition unlock];
@@ -317,7 +516,25 @@
                 userWantsToStartMeasure = NO;
                 userWantsToStopMeasure = YES;
             } else if (!userWantsToStartMeasure && userWantsToStopMeasure) {
+                NSLog(@"[ERROR][SM] 'userWantsToStartMeasure' is NO && 'userWantsToStopMeasure' is YES");
+                userWantsToStartMeasure = NO;
+                userWantsToStopMeasure = NO;
+            } else if (userWantsToStartMeasure && userWantsToStopMeasure) {
+                NSLog(@"[ERROR][SM] Both 'userWantsToStartMeasure' && 'userWantsToStopMeasure' flags are YES");
+                userWantsToStartMeasure = NO;
+                userWantsToStopMeasure = NO;
+            }
+        }
+        
+        if (state == STATES[3]) {  // MEASURING
+            if (!userWantsToStartMeasure && !userWantsToStopMeasure) {
                 userWantsToStartMeasure = YES;
+            } else if (userWantsToStartMeasure && !userWantsToStopMeasure) {
+                userWantsToStartMeasure = NO;
+                userWantsToStopMeasure = YES;
+            } else if (!userWantsToStartMeasure && userWantsToStopMeasure) {
+                NSLog(@"[ERROR][SM] 'userWantsToStartMeasure' is NO && 'userWantsToStopMeasure' is YES");
+                userWantsToStartMeasure = NO;
                 userWantsToStopMeasure = NO;
             } else if (userWantsToStartMeasure && userWantsToStopMeasure) {
                 NSLog(@"[ERROR][SM] Both 'userWantsToStartMeasure' && 'userWantsToStopMeasure' flags are YES");
@@ -327,6 +544,7 @@
         }
         
         // Unlock the thread for recycle
+        NSLog(@"[INFO][SM] Asked to recycle the state machine");
         self.lock = NO;
         [self.condition signal];
         [self.condition unlock];
@@ -339,7 +557,12 @@
  @discussion Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state. Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
  */
 - (void) applicationWillResignActive {
+    // Acquire the lock
+    [self.condition lock];
+    // Unlock the condition again and release
     self.started = NO;
+    [self.condition signal];
+    [self.condition unlock];
     [motion stopAccelerometers];
     [motion stopGyroscopes];
 }
@@ -349,7 +572,12 @@
  @discussion Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
  */
 - (void) applicationDidEnterBackground {
+    // Acquire the lock
+    [self.condition lock];
+    // Unlock the condition again and release
     self.started = NO;
+    [self.condition signal];
+    [self.condition unlock];
     [motion stopAccelerometers];
     [motion stopGyroscopes];
 }
@@ -359,7 +587,12 @@
  @discussion Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
 */
 - (void) applicationWillEnterForeground {
+    // Acquire the lock
+    [self.condition lock];
+    // Unlock the condition again and release
     self.started = YES;
+    [self.condition signal];
+    [self.condition unlock];
     [motion startAccelerometers];
     [motion startGyroscopes];
 }
@@ -369,7 +602,12 @@
  @discussion Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 */
 -  (void)applicationDidBecomeActive {
+    // Acquire the lock
+    [self.condition lock];
+    // Unlock the condition again and release
     self.started = YES;
+    [self.condition signal];
+    [self.condition unlock];
     [motion startAccelerometers];
     [motion startGyroscopes];
 }
@@ -379,7 +617,12 @@
  @discussion Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:..
  */
 - (void) applicationWillTerminate {
+    // Acquire the lock
+    [self.condition lock];
+    // Unlock the condition again and release
     self.started = NO;
+    [self.condition signal];
+    [self.condition unlock];
     [motion stopAccelerometers];
     [motion stopGyroscopes];
 }

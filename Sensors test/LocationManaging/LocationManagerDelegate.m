@@ -462,10 +462,11 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          userInfo:data];
     }
     
-    // Notify the state machine that a measure has been stored
+    // Notify the event
     if(beacons.count > 0) {
-        NSLog(@"[NOTI][MM] Notification \"measureSaved\" posted.");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"measureSaved" object:nil];
+        NSLog(@"[NOTI][MM] Notification \"needEvaluateState\" posted.");
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
+                                                        object:nil];
     }
 }
 
@@ -500,6 +501,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     if (!measuring) {
         measuring = YES;
     }
+    // Notify the event
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
+                                                        object:nil];
 }
 
 /*!
@@ -513,6 +517,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         // Reset the number of 'measures per measure'
         currentNumberOfMeasures = [NSNumber numberWithInteger:0];
     }
+    // Notify the event
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
+                                                        object:nil];
 }
 
 /*!
@@ -548,6 +555,10 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     position.x = [NSNumber numberWithFloat:[newPosition.x floatValue] + 50];
     position.y = [NSNumber numberWithFloat:[newPosition.y floatValue] + 50];
     position.z = [NSNumber numberWithFloat:[newPosition.y floatValue]];
+    
+    // Notify the event
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
+                                                        object:nil];
 }
 
 @end

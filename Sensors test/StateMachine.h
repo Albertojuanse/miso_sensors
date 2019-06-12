@@ -50,6 +50,7 @@
 #pragma mark AppDelegateResponseMethods
 
 - (void) evaluateState;
+- (void) needEvaluateState;
 - (void) applicationWillResignActive;
 - (void) applicationDidEnterBackground;
 - (void) applicationWillEnterForeground;
