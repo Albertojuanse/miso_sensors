@@ -216,10 +216,10 @@
         // ...but also get the transformed position.
         RDPosition * realPosition = positionDic[@"measurePosition"];
         RDPosition * canvasPosition = [canvasPositions objectAtIndex:positionIndex];
-        NSLog(@"[INFO][CA][TRAN] Real position to show: (%.2f, %.2f)",  [realPosition.x floatValue], [realPosition.y floatValue]);
-        NSLog(@"[INFO][CA][TRAN] Canvas position to show: (%.2f, %.2f)",  [canvasPosition.x floatValue], [canvasPosition.y floatValue]);
-        NSLog(@"[INFO][CA][TRAN] rWith 2: %.2f", rWidth);
-        NSLog(@"[INFO][CA][TRAN] rHeight 2: %.2f", rHeight);
+        NSLog(@"[INFO][CA] Real position to show: %@", realPosition);
+        NSLog(@"[INFO][CA] Canvas position to show: %@",  canvasPosition);
+        NSLog(@"[INFO][CA] rWith: %.2f", rWidth);
+        NSLog(@"[INFO][CA] rHeight: %.2f", rHeight);
         
         // DEFINE POSITION CANVAS REPRESENTATION (METHOD)
         
@@ -333,18 +333,20 @@
                 // DEFINE MEASURE CANVAS REPRESENTATION (METHOD)
                 RDPosition * canvasPosition = [canvasPositions objectAtIndex:positionIndex];
                 
-                UIBezierPath *measureBezierPath = [UIBezierPath bezierPath];
-                [measureBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:[measure floatValue]*(rWidth+rHeight)/2.0 startAngle:0 endAngle:2 * M_PI clockwise:YES];
-                NSLog(@"[INFO][CA][TRAN] Radius measured: %.2f",  [measure floatValue]);
-                NSLog(@"[INFO][CA][TRAN] Radius canvas: %.2f",  [measure floatValue]*(rWidth+rHeight)/2.0);
+                //UIBezierPath *measureBezierPath = [UIBezierPath bezierPath];
+                //[measureBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:[measure floatValue]*(rWidth+rHeight)/2.0 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+                //NSLog(@"[INFO][CA][TRAN] Radius measured: %.2f",  [measure floatValue]);
+                //NSLog(@"[INFO][CA][TRAN] Radius canvas: %.2f",  [measure floatValue]*(rWidth+rHeight)/2.0);
                 
-                /*
+                
                 CGRect rect = CGRectMake([canvasPosition.x floatValue] - [measure floatValue] * rWidth,
                                          [canvasPosition.y floatValue] - [measure floatValue] * rHeight,
                                          2.0 * [measure floatValue] * rWidth,
                                          2.0 * [measure floatValue] * rHeight);
                 UIBezierPath *measureBezierPath = [UIBezierPath bezierPathWithOvalInRect:rect];
-                 */
+                NSLog(@"[INFO][CA][TRAN] Ellipse measured: %.2f, %.2f",  [measure floatValue],  [measure floatValue]);
+                NSLog(@"[INFO][CA][TRAN] Ellipse canvas: %.2f, %.2f",  [measure floatValue] * rWidth, [measure floatValue] * rHeight);
+                
 
                 
                 CAShapeLayer *beaconLayer = [[CAShapeLayer alloc] init];
@@ -468,8 +470,6 @@
         // Get the relations of the transformation
         rWidth = (widthSafeMax - widthSafeMin)/(maxX - minX);
         rHeight = (heightSafeMax - heightSafeMin)/(maxY - minY);
-        NSLog(@"[INFO][CA][TRAN] rWith: %.2f", rWidth);
-        NSLog(@"[INFO][CA][TRAN] rHeight: %.2f", rHeight);
         
         // Transform the point's coordinates.
         // The first position is always (0, 0), and it is centered at the origin of the canvas, the upper left corner. Hence, a correction must be done in orther to center the set in the canvas. But as is not intended to display (0, 0) in the center of te canvas, but the barycenter of the set es calculated and translated to the center of the canvas. For this, the 'vector' needed for adding is the subtract of the center of the canvas minus the barycenter.
@@ -482,8 +482,6 @@
             centeredCanvasPoint.y = [[NSNumber alloc] initWithFloat:[realPoint.y floatValue] * rHeight];
             centeredCanvasPoint.z = realPoint.z;
             [centeredCanvasPoints addObject:centeredCanvasPoint];
-            NSLog(@"[INFO][CA][TRAN] Real point: (%.2f, %.2f)", [realPoint.x floatValue], [realPoint.x floatValue]);
-            NSLog(@"[INFO][CA][TRAN] Centered canvasPoint: (%.2f, %.2f)", [centeredCanvasPoint.x floatValue], [centeredCanvasPoint.x floatValue]);
         }
         // Correct the points location.
         RDPosition * barycenter = [self getBarycenterOf:centeredCanvasPoints];
@@ -491,9 +489,7 @@
         for (RDPosition * centeredCanvasPoint in centeredCanvasPoints) {
             RDPosition * correctedCanvasPoint = [self add:centeredCanvasPoint to:correction];
             [canvasPoints addObject:correctedCanvasPoint];
-            NSLog(@"[INFO][CA][TRAN] Corrected canvasPoint: (%.2f, %.2f)", [correctedCanvasPoint.x floatValue], [correctedCanvasPoint.x floatValue]);
         }
-        
     }
     return canvasPoints;
 }

@@ -115,9 +115,8 @@ if (self) {
  @discussion This method procces the acquisited data.
  */
 - (void) process {
-    // NSLog(@"; x: %f ; y: %f ; z: %f } { timestamp: ", self.gyroData.rotationRate.x, self.gyroData.rotationRate.y, self.gyroData.rotationRate.y);
-    // NSLog(@"; x: %f ; y: %f ; z: %f } { timestamp: ", self.accelerometerData.acceleration.x, self.accelerometerData.acceleration.y, self.accelerometerData.acceleration.z);
-    
+    // NSLog(@"; \"x\": %f, \"y\": %f, \"z\": %f, \"type\": \"gyroscope\"} {\"date\":", self.gyroData.rotationRate.x, self.gyroData.rotationRate.y, self.gyroData.rotationRate.y);
+    // NSLog(@"; \"x\": %f, \"y\": %f, \"z\": %f, \"type\": \"accelerometer\"} {\"date\":", self.accelerometerData.acceleration.x, self.accelerometerData.acceleration.y, self.accelerometerData.acceleration.z);
     // No valid results will be while calibration process.
     // The calibration procces calculate the average of the signals in order od subtracting them.
     if (calibration_counter < calibrationSteps) {
@@ -277,8 +276,8 @@ if (self) {
 - (void) startTravelingFrom:(RDPosition*)initialPosition {
     NSLog(@"[INFO][MM] Starting traveling from position: %@", initialPosition);
     traveling = YES;
-    float low_bound = -1.00;
-    float high_bound = 1.00;
+    float low_bound = -5.00;
+    float high_bound = 5.00;
     float rndValue1 = (((float)arc4random()/0x100000000)*(high_bound-low_bound)+low_bound);
     float rndValue2 = (((float)arc4random()/0x100000000)*(high_bound-low_bound)+low_bound);
     position.x = [NSNumber numberWithFloat:[initialPosition.x floatValue] + rndValue1];
