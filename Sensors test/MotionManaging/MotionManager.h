@@ -10,6 +10,7 @@
 #import <CoreMotion/CoreMotion.h>
 #include <stdlib.h>
 #import "ViewController.h"
+#import "SharedData.h"
 
 /*!
  @class MotionManager
@@ -19,8 +20,7 @@
     
     // Components
     ViewController * viewController;
-    
-    // Data variables
+    SharedData * sharedData;
     
     // Configuration variables
     double t;
@@ -83,8 +83,8 @@
 
 @property NSTimer *timer;
 
-- (instancetype) initWithViewController:(ViewController *) viewControllerFromStateMachine;
-- (void) configure;
+- (instancetype) initWithViewController:(ViewController *) viewControllerFromStateMachine
+                          andSharedData:(SharedData *)initSharedData;
 - (void) startAccelerometers;
 - (void) stopAccelerometers;
 - (void) startGyroscopes;

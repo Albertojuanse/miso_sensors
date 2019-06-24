@@ -63,7 +63,6 @@
         measuresDic = [data valueForKey:@"measuresDic"];
         self.canvas.measuresDic = measuresDic;
         
-        
         // Inspect dictionary for UUID names.
         // Declare the inner dictionaries.
         NSMutableDictionary * uuidDic;

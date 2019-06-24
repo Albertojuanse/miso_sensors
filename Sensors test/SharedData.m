@@ -1,14 +1,14 @@
 //
-//  LocationManagerSharedData.m
+//  SharedData.m
 //  Sensors test
 //
 //  Created by Alberto J. on 24/6/19.
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
-#import "LocationManagerSharedData.h"
+#import "SharedData.h"
 
-@implementation LocationManagerSharedData
+@implementation SharedData
 
 /*!
  @method init
@@ -27,12 +27,35 @@
     return self;
 }
 
+#pragma mark Getters
+
 /*!
  @method getMeasuresDic
  @discussion This method returns the NSDictionary with all the measures taken
  */
 - (NSMutableDictionary *) getMeasuresDic {
     return measuresDic;
+}
+
+/*!
+ @method fromMeasuresDicGetPositions
+ @discussion This method returns a 'NSMutableArray' object with all the positions where the measures were taken
+ */
+- (NSMutableArray *) fromMeasuresDicGetPositions {
+    NSArray * positionKeys = [measuresDic allKeys];
+    NSMutableArray * measurePositions = [[NSMutableArray alloc] init];
+    for (id positionKey in positionKeys) {
+        // ...get the dictionary for this position...
+        positionDic = [measuresDic objectForKey:positionKey];
+        // ...and the position.
+        RDPosition * dicPosition = positionDic[@"measurePosition"];
+        RDPosition * position = [[RDPosition alloc] init];
+        position.x = dicPosition.x;
+        position.y = dicPosition.y;
+        position.z = dicPosition.z;
+        [measurePositions addObject:position];
+    }
+    return measurePositions;
 }
 
 /*!

@@ -15,21 +15,14 @@
  @discussion Constructor.
  */
 - (instancetype)initWithViewController:(ViewController *) viewControllerFromStateMachine
+                         andSharedData:(SharedData *)initSharedData
 {
 self = [super init];
 if (self) {
     // View controller
     viewController = viewControllerFromStateMachine;
+    sharedData = initSharedData;
     RDPosition * position = [[RDPosition alloc] init];
-    }
-    return self;
-}
-
-/*!
- @method configure
- @discussion This method initializes some variables of the object and must be called when the object is created.
- */
-- (void) configure {
     t = 1.0/100.0;
     g = 9.7994;
     calibrationTime = 10;
@@ -38,6 +31,8 @@ if (self) {
     precision_threshold = 0.1;
     traveling = NO;
     position = [[RDPosition alloc] init];
+    }
+    return self;
 }
 
 /*!

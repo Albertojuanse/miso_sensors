@@ -33,11 +33,11 @@
         userWantsToStopTravel = NO;
         
         // Other components
+        sharedData = [[SharedData alloc] init];
         viewController = viewControllerFromAppDelegate;
-        motion = [[MotionManager alloc] initWithViewController:viewControllerFromAppDelegate];
-        [motion configure];
-        location = [[LocationManagerDelegate alloc] init];
-        [location configure];
+        motion = [[MotionManager alloc] initWithViewController:viewControllerFromAppDelegate
+                                                 andSharedData:sharedData];
+        location = [[LocationManagerDelegate alloc] initWithSharedData:sharedData];
         
         // Properties
         self.started = YES;

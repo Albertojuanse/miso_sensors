@@ -1,5 +1,5 @@
 //
-//  LocationManagerSharedData.h
+//  SharedData.h
 //  Sensors test
 //
 //  Created by Alberto J. on 24/6/19.
@@ -10,10 +10,10 @@
 #import "RDPosition.h"
 
 /*!
- @class LocationManagerSharedData
- @discussion This class implements the protocol CLLocationManagerDelegate and so implements the methods for attend the events of location manager.
+ @class SharedData
+ @discussion This class works as a monitor for all the aplication shared data such as locations or measures.
  */
-@interface LocationManagerSharedData: NSObject {
+@interface SharedData: NSObject {
     
     // Measures tajen at certain positions
     NSMutableDictionary * measuresDic;
@@ -35,6 +35,8 @@
 
 - (NSMutableDictionary *) getMeasuresDic;
 - (NSMutableDictionary *) getLocatedDic;
+- (NSMutableArray *) fromMeasuresDicGetPositions;
+
 - (void) inMeasuresDicSetMeasure:(NSNumber*)measure
                           ofType:(NSString*)type
                         withUUID:(NSString*)uuid

@@ -8,10 +8,6 @@
 
 #import "RDPosition.h"
 
-/*!
- @class RDPosition
- @discussion This class defines a position in space with its cartesian coordinates.
- */
 @implementation RDPosition : NSObject
 
 /*!

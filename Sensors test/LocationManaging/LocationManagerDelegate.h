@@ -9,13 +9,16 @@
 #import <CoreLocation/CoreLocation.h>
 #import "RDPosition.h"
 #import "RDRhoRhoSystem.h"
-#import "LocationManagerSharedData.h"
+#import "SharedData.h"
 
 /*!
  @class LocationManagerDelegate
  @discussion This class implements the protocol CLLocationManagerDelegate and so implements the methods for attend the events of location manager.
  */
 @interface LocationManagerDelegate: NSObject<CLLocationManagerDelegate>{
+    
+    // Components
+    SharedData * sharedData;
     
     // Variables
     RDPosition * position;
@@ -25,7 +28,6 @@
     NSMutableArray * rangedRegions;
     CLLocationManager * locationManager;
     NSMutableArray * rangedBeacons;
-    LocationManagerSharedData * sharedData;
     
     // Orchestration variables
     BOOL measuring;
@@ -33,7 +35,7 @@
     NSNumber * currentNumberOfMeasures;
 }
 
-- (void) configure;
+- (instancetype)initWithSharedData:(SharedData *)initSharedData;
 - (void) setLocated:(BOOL)newLocated;
 - (BOOL) isLocated;
 - (void) startMeasuring;

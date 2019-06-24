@@ -11,66 +11,73 @@
 @implementation LocationManagerDelegate : NSObject
 
 /*!
- @method configure
- @discussion This method is called when the app is loaded and manage some initializations and permission askings.
+ @method init
+ @discussion Constructor.
  */
-- (void) configure{
-    
-    // Set device's location at the origin
-    position = [[RDPosition alloc] init];
-    position.x = [NSNumber numberWithFloat:0.0];
-    position.y = [NSNumber numberWithFloat:0.0];
-    position.z = [NSNumber numberWithFloat:0.0];
-    
-    // Orchestration variables
-    measuring = NO;
-    located = YES;
-    currentNumberOfMeasures = [NSNumber numberWithInteger:0];
-    
-    // Other variables
-    rangedBeacons = [[NSMutableArray alloc] init];
-    sharedData =[[LocationManagerSharedData alloc] init];
-    
-    // Initialize location manager and set this class as the delegate which implement the event response's methods
-    locationManager = [[CLLocationManager alloc] init];
-    locationManager.delegate = self;
-    locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
-    locationManager.distanceFilter = kCLDistanceFilterNone;
-    //[locationManager startUpdatingLocation];
-    
-    // It seems is only for background modes
-    //locationManager.allowsBackgroundLocationUpdates = YES;
-    //locationManager.pausesLocationUpdatesAutomatically = false;
-    
-    // Ask for authorization for location services
-    switch (CLLocationManager.authorizationStatus) {
-        case kCLAuthorizationStatusNotDetermined:
-            // Request when-in-use authorization initially
-            [locationManager requestAlwaysAuthorization];
-            break;
-            
-        case kCLAuthorizationStatusRestricted:
-            // Disable location features
-            [locationManager requestAlwaysAuthorization];
-            break;
-            
-        case kCLAuthorizationStatusDenied:
-            // Disable location features
-            [locationManager requestAlwaysAuthorization];
-            break;
-            
-        case kCLAuthorizationStatusAuthorizedAlways:
-            // Enable location features
-            break;
-            
-        case kCLAuthorizationStatusAuthorizedWhenInUse:
-            // Enable location features
-            break;
-            
-        default:
-            break;
+- (instancetype)initWithSharedData:(SharedData *)sharedDataFromStateMachine
+{
+    self = [super init];
+    if (self) {
+        
+        // Components
+        sharedData = sharedDataFromStateMachine;
+        
+        // Set device's location at the origin
+        position = [[RDPosition alloc] init];
+        position.x = [NSNumber numberWithFloat:0.0];
+        position.y = [NSNumber numberWithFloat:0.0];
+        position.z = [NSNumber numberWithFloat:0.0];
+        
+        // Orchestration variables
+        measuring = NO;
+        located = YES;
+        currentNumberOfMeasures = [NSNumber numberWithInteger:0];
+        
+        // Other variables
+        rangedBeacons = [[NSMutableArray alloc] init];
+        
+        // Initialize location manager and set this class as the delegate which implement the event response's methods
+        locationManager = [[CLLocationManager alloc] init];
+        locationManager.delegate = self;
+        locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+        locationManager.distanceFilter = kCLDistanceFilterNone;
+        //[locationManager startUpdatingLocation];
+        
+        // It seems is only for background modes
+        //locationManager.allowsBackgroundLocationUpdates = YES;
+        //locationManager.pausesLocationUpdatesAutomatically = false;
+        
+        // Ask for authorization for location services
+        switch (CLLocationManager.authorizationStatus) {
+            case kCLAuthorizationStatusNotDetermined:
+                // Request when-in-use authorization initially
+                [locationManager requestAlwaysAuthorization];
+                break;
+                
+            case kCLAuthorizationStatusRestricted:
+                // Disable location features
+                [locationManager requestAlwaysAuthorization];
+                break;
+                
+            case kCLAuthorizationStatusDenied:
+                // Disable location features
+                [locationManager requestAlwaysAuthorization];
+                break;
+                
+            case kCLAuthorizationStatusAuthorizedAlways:
+                // Enable location features
+                break;
+                
+            case kCLAuthorizationStatusAuthorizedWhenInUse:
+                // Enable location features
+                break;
+                
+            default:
+                break;
+        }
+        NSLog(@"[INFO][LM] LocationManager prepared");
     }
-    NSLog(@"[INFO][LM] LocationManager prepared");
+    return self;
 }
 
 /*!
@@ -228,7 +235,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             measurePosition.x = position.x;
             measurePosition.y = position.y;
             measurePosition.z = position.z;
-            
             
             // ...and save it in dictionary 'measuresDic'.
             

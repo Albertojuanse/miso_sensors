@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <math.h>
 #import "RDPosition.h"
+#import "SharedData.h"
 
 /*!
  @class RDRhoRhoSystem
@@ -18,15 +19,14 @@
     NSMutableArray * rssiMeasures;
 }
 
-/*!
- @method get2DPositionWithRssi1:andRssi2:andReference1:andReference2:andPrediction:
- @discussion This method calculates the position in 2D space given other two reference positions and two measured RSSI values.
- */
 - (RDPosition *) get2DPositionWithRssi1:(NSInteger) rssi1
                                andRssi2:(NSInteger) rssi1
                           andReference1:(RDPosition *) ref1
                           andReference2:(RDPosition *) ref2
                           andPrediction:(RDPosition *) pred;
+
+- (NSMutableArray *) getLocationsUsingGridAproximationWithMeasures:(NSMutableDictionary*)measuresDic
+                                                      andPrecision:(NSNumber*)precision;
 
 + (NSNumber *) calculateDistanceWithRssi:(NSInteger) rssi;
 

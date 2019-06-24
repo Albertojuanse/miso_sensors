@@ -11,6 +11,7 @@
 #import "ViewController.h"
 #import "MotionManager.h"
 #import "LocationManagerDelegate.h"
+#import "SharedData.h"
 
 /*!
  @class StateMachine
@@ -34,6 +35,7 @@
     ViewController * viewController;
     MotionManager * motion;
     LocationManagerDelegate * location;
+    SharedData * sharedData;
     
 }
 
