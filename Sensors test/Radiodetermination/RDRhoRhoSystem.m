@@ -95,8 +95,10 @@
     
     // The grid is calculed with the positions
     NSMutableArray * measurePositions = [sharedData fromMeasuresDicGetPositions];
+    NSMutableArray * xGrid = [self generateGridUsingPosition:measurePositions
+                                            itsIthDimension:0
+                                               andPrecision:precision];
     
-    // MIN
     
     NSInteger positionIndex = 0;
     NSArray * positionKeys = [measuresDic allKeys];
@@ -106,38 +108,6 @@
         positionDic = [measuresDic objectForKey:positionKey];
         // ...but also get the transformed position.
         RDPosition * realPosition = positionDic[@"measurePosition"];
-        RDPosition * canvasPosition = [canvasPositions objectAtIndex:positionIndex];
-        NSLog(@"[INFO][CA] Real position to show: %@", realPosition);
-        NSLog(@"[INFO][CA] Canvas position to show: %@",  canvasPosition);
-        NSLog(@"[INFO][CA] rWith: %.2f", rWidth);
-        NSLog(@"[INFO][CA] rHeight: %.2f", rHeight);
-        
-        // DEFINE POSITION CANVAS REPRESENTATION (METHOD)
-        
-        // Draw the point
-        UIBezierPath *positionBezierPath = [UIBezierPath bezierPath];
-        [positionBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
-        CAShapeLayer *positionLayer = [[CAShapeLayer alloc] init];
-        [positionLayer setPath:positionBezierPath.CGPath];
-        [positionLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-        [positionLayer setFillColor:[UIColor clearColor].CGColor];
-        [[self layer] addSublayer:positionLayer];
-        
-        // Text of real position but in canvas position
-        CATextLayer *positionTextLayer = [CATextLayer layer];
-        positionTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] + 5.0);
-        positionTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 5.0,
-                                             [canvasPosition.y floatValue] + 5.0,
-                                             100,
-                                             20);
-        positionTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)", [realPosition.x floatValue], [realPosition.y floatValue]];
-        positionTextLayer.fontSize = 10;
-        positionTextLayer.alignmentMode = kCAAlignmentCenter;
-        positionTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-        positionTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
-        [[self layer] addSublayer:positionTextLayer];
-        
-        // * END * DEFINE POSITION CANVAS REPRESENTATION (METHOD)
         
         // Get the the dictionary with the UUID's dictionaries...
         uuidDicDic = positionDic[@"positionRangeMeasures"];
@@ -152,65 +122,6 @@
             // ...and get the uuid.
             NSString * uuid = [NSString stringWithString:uuidDic[@"uuid"]];
             
-            // DEFINE UUID CANVAS REPRESENTATION (METHOD)
-            
-            UIBezierPath *uuidBezierPath = [UIBezierPath bezierPath];
-            
-            // Choos a color for each UUID
-            UIColor *colorUUID;
-            switch (UUIDindex % 8) {
-                case 0:
-                    colorUUID = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
-                    break;
-                case 1:
-                    colorUUID = [UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:0.2];
-                    break;
-                case 2:
-                    colorUUID = [UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:0.2];
-                    break;
-                case 3:
-                    colorUUID = [UIColor colorWithRed:127.0/255.0 green:128.0/255.0 blue:0.0 alpha:0.2];
-                    break;
-                case 4:
-                    colorUUID = [UIColor colorWithRed:127.0/255.0 green:0.0 blue:128.0/255.0 alpha:0.2];
-                    break;
-                case 5:
-                    colorUUID = [UIColor colorWithRed:0.0 green:127.0/255.0 blue:128.0/255.0 alpha:0.2];
-                    break;
-                case 6:
-                    colorUUID = [UIColor colorWithRed:127.0/255.0 green:64.0 blue:64.0 alpha:0.2];
-                    break;
-                case 7:
-                    colorUUID = [UIColor colorWithRed:64.0 green:127.0/255.0 blue:64.0 alpha:0.2];
-                    break;
-                default:
-                    colorUUID = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
-                    break;
-            }
-            
-            // Choose a position for display the UUID
-            [uuidBezierPath moveToPoint:CGPointMake(16.0, 8.0 * (UUIDindex + 1.0) + 10.0)];
-            [uuidBezierPath addLineToPoint:CGPointMake(16.0 + 100.0, 8.0 * (UUIDindex + 1.0) + 10.0)];
-            
-            CAShapeLayer *uuidLayer = [[CAShapeLayer alloc] init];
-            [uuidLayer setPath:uuidBezierPath.CGPath];
-            [uuidLayer setStrokeColor:colorUUID.CGColor];
-            [uuidLayer setFillColor:[UIColor clearColor].CGColor];
-            [self.layer addSublayer:uuidLayer];
-            
-            // Add the description
-            CATextLayer *uuidTextLayer = [CATextLayer layer];
-            uuidTextLayer.position = CGPointMake(116.0, 8.0 * (UUIDindex + 1.0));
-            uuidTextLayer.frame = CGRectMake(116.0, 8.0 * (UUIDindex + 1.0), 400, 20);
-            uuidTextLayer.string = [NSString stringWithFormat:@"UUID: %@", uuid];
-            uuidTextLayer.fontSize = 12;
-            uuidTextLayer.alignmentMode = kCAAlignmentCenter;
-            uuidTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-            uuidTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
-            [[self layer] addSublayer:uuidTextLayer];
-            
-            // * END * DEFINE UUID CANVAS REPRESENTATION (METHOD)
-            
             // Get the the dictionary with the measures dictionaries...
             measureDicDic = uuidDic[@"uuidMeasures"];
             // ...and for every measure...
@@ -220,32 +131,6 @@
                 measureDic = [measureDicDic objectForKey:measureKey];
                 // ...and the measure.
                 NSNumber * measure = [NSNumber numberWithFloat:[measureDic[@"measure"] floatValue]];
-                
-                // DEFINE MEASURE CANVAS REPRESENTATION (METHOD)
-                RDPosition * canvasPosition = [canvasPositions objectAtIndex:positionIndex];
-                
-                //UIBezierPath *measureBezierPath = [UIBezierPath bezierPath];
-                //[measureBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:[measure floatValue]*(rWidth+rHeight)/2.0 startAngle:0 endAngle:2 * M_PI clockwise:YES];
-                //NSLog(@"[INFO][CA][TRAN] Radius measured: %.2f",  [measure floatValue]);
-                //NSLog(@"[INFO][CA][TRAN] Radius canvas: %.2f",  [measure floatValue]*(rWidth+rHeight)/2.0);
-                
-                
-                CGRect rect = CGRectMake([canvasPosition.x floatValue] - [measure floatValue] * rWidth,
-                                         [canvasPosition.y floatValue] - [measure floatValue] * rHeight,
-                                         2.0 * [measure floatValue] * rWidth,
-                                         2.0 * [measure floatValue] * rHeight);
-                UIBezierPath *measureBezierPath = [UIBezierPath bezierPathWithOvalInRect:rect];
-                NSLog(@"[INFO][CA][TRAN] Ellipse measured: %.2f, %.2f",  [measure floatValue],  [measure floatValue]);
-                NSLog(@"[INFO][CA][TRAN] Ellipse canvas: %.2f, %.2f",  [measure floatValue] * rWidth, [measure floatValue] * rHeight);
-                
-                
-                
-                CAShapeLayer *beaconLayer = [[CAShapeLayer alloc] init];
-                [beaconLayer setPath:measureBezierPath.CGPath];
-                [beaconLayer setStrokeColor:colorUUID.CGColor];
-                [beaconLayer setFillColor:[UIColor clearColor].CGColor];
-                [[self layer] addSublayer:beaconLayer];
-                // * END * DEFINE MEASURE CANVAS REPRESENTATION (METHOD)
             }
             UUIDindex++;
         }
@@ -253,6 +138,90 @@
     }
     
     
+    
+}
+
+/*!
+ @method generateGridUsingPositions:itsIthDimension:andPrecision:
+ @discussion This method generates the i-th axis of a grid using maximum and minimum coordinate values of a set of positions and a given precision for this coordinate; if 3D is used, dimensions are 0, 1, 2.
+ */
+- (NSNumber *) generateGridUsingPosition:(NSMutableArray*)measurePositions
+                         itsIthDimension:(NSInteger *)dimension
+                            andPrecision:(NSNumber *)precision
+{
+    
+    // Search for the maximum and minimum values for the i-th coordinate.
+    float minPositionValue = FLT_MAX];
+    float maxPositionValue = -FLT_MAX];
+    
+    for (RDPosition * position in measurePositions) {
+        switch (dimension) {
+            case 0:
+                if ([position.x floatValue] < minPositionValue) {
+                    minPositionValue = [position.x floatValue];
+                }
+                if ([position.x floatValue] > maxPositionValue) {
+                    maxPositionValue = [position.x floatValue];
+                }
+                break;
+                
+            case 1:
+                if ([position.y floatValue] < minPositionValue) {
+                    minPositionValue = [position.y floatValue];
+                }
+                if ([position.y floatValue] > maxPositionValue) {
+                    maxPositionValue = [position.y floatValue];
+                }
+                break;
+                
+            case 2:
+                if ([position.z floatValue] < minPositionValue) {
+                    minPositionValue = [position.y floatValue];
+                }
+                if ([position.z floatValue] > maxPositionValue) {
+                    maxPositionValue = [position.y floatValue];
+                }
+                break;
+            default:
+                NSLog(@"[ERROR][RR] i-th dimension higher than 2; 3D -> 0, 1, 2");
+                break;
+        }
+    }
+    
+    // Compose the grid
+    // Get the coordinate values for the grid's positions
+    NSMutableArray * xValues = [[NSMutableArray alloc] init];
+    NSMutableArray * yValues = [[NSMutableArray alloc] init];
+    NSMutableArray * zValues = [[NSMutableArray alloc] init];
+    
+}
+
+/*!
+ @method divideSegmentStartingAt:finishingAt:andWithPrecision:
+ @discussion This method divides a segment until reach an equally spaced precision grid axis and compose an 'NSMutableArray' with the values.
+ */
+- (float) divideSegmentStartingAt:(float)minValue
+                      finishingAt:(float)maxValue
+                    withPrecision:(float)precision
+                          inArray:(NSMutableArray*)values
+{
+    
+    // If equals
+    if (minValue == maxValue) {
+        values = [NSMutableArray arrayWithObject:minValue];
+        return values;
+    }
+    // If absolute value minor than the precision
+    if (powf( powf(maxValue - minValue , 2) , 0.5) < precision) {
+        return nil;
+    }
+    
+    // Search for middle and append it
+    float middleValue = minValue + powf( powf(maxValue - minValue , 2) , 0.5) / 2;
+    values = [NSMutableArray arrayWithObject:middleValue];
+    // Repeat for both sides of middle
+    id lowMiddle = [self divideSegmentStartingAt:minValue finishingAt:middleValue andWithPrecision:precision];
+    id highMiddle = [self divideSegmentStartingAt:minValue finishingAt:middleValue andWithPrecision:precision];
     
 }
 
@@ -267,9 +236,7 @@
     float F = 2440000000.0; // 2400 - 2480 MHz
     float G = 1.0; // typically 2.16 dBi
     // Calculate the distance
-    NSLog(@"[HOLA] aa %.2f", (float)rssi);
     NSNumber * distance = [[NSNumber alloc] initWithFloat:( (C / (4.0 * M_PI * F)) * sqrt(G * pow(10.0, (float)rssi/ 10.0)) )];
-    NSLog(@"[HOLA] aa %.2f", [distance floatValue]);
     return distance;
 }
 
