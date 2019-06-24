@@ -41,7 +41,7 @@
  */
 -(void)prepareCanvas{
     // Initialize variables
-    self.rangedBeaconsDic = [[NSMutableDictionary alloc] init];
+    self.measuresDic = [[NSMutableDictionary alloc] init];
     rHeight = 1.0;
     rWidth = 1.0;
     
@@ -166,9 +166,9 @@
     
     // Inspect dictionary from location manager for data retrieving
     //
-    // { "measurePosition1":                              //  rangedBeaconsDic
+    // { "measurePosition1":                              //  measuresDic
     //     { "measurePosition": measurePosition;          //  positionDic
-    //       "positionMeasures":
+    //       "positionRangeMeasures":
     //         { "measureUuid1":                          //  uuidDicDic
     //             { "uuid" : uuid1;                      //  uuidDic
     //               "uuidMeasures":
@@ -194,10 +194,10 @@
     
     // The positios must be scaled before its displaying
     NSMutableArray * realPositions = [[NSMutableArray alloc] init];
-    NSArray * positionKeys = [self.rangedBeaconsDic allKeys];
+    NSArray * positionKeys = [self.measuresDic allKeys];
     for (id positionKey in positionKeys) {
         // ...get the dictionary for this position...
-        positionDic = [self.rangedBeaconsDic objectForKey:positionKey];
+        positionDic = [self.measuresDic objectForKey:positionKey];
         // ...and the position.
         RDPosition * dicPosition = positionDic[@"measurePosition"];
         RDPosition * position = [[RDPosition alloc] init];
@@ -212,7 +212,7 @@
     NSInteger positionIndex = 0;
     for (id positionKey in positionKeys) {
         // ...get the dictionary for this position...
-        positionDic = [self.rangedBeaconsDic objectForKey:positionKey];
+        positionDic = [self.measuresDic objectForKey:positionKey];
         // ...but also get the transformed position.
         RDPosition * realPosition = positionDic[@"measurePosition"];
         RDPosition * canvasPosition = [canvasPositions objectAtIndex:positionIndex];
@@ -249,7 +249,7 @@
         // * END * DEFINE POSITION CANVAS REPRESENTATION (METHOD)
         
         // Get the the dictionary with the UUID's dictionaries...
-        uuidDicDic = positionDic[@"positionMeasures"];
+        uuidDicDic = positionDic[@"positionRangeMeasures"];
         // ...and for every UUID...
         NSArray * uuidKeys = [uuidDicDic allKeys];
         // Color for every UUID

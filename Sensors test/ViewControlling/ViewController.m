@@ -60,8 +60,8 @@
         
         // Save beacons
         NSDictionary *data = notification.userInfo;
-        rangedBeaconsDic = [data valueForKey:@"rangedBeaconsDic"];
-        self.canvas.rangedBeaconsDic = rangedBeaconsDic;
+        measuresDic = [data valueForKey:@"measuresDic"];
+        self.canvas.measuresDic = measuresDic;
         
         
         // Inspect dictionary for UUID names.
@@ -71,13 +71,13 @@
         NSMutableDictionary * positionDic;
         
         // For every position where measures were taken
-        NSArray *positionKeys = [rangedBeaconsDic allKeys];
+        NSArray *positionKeys = [measuresDic allKeys];
         for (id positionKey in positionKeys) {
             // ...get the dictionary for this position.
-            positionDic = [rangedBeaconsDic objectForKey:positionKey];
+            positionDic = [measuresDic objectForKey:positionKey];
             
             // Get the the dictionary with the UUID's dictionaries...
-            uuidDicDic = positionDic[@"positionMeasures"];
+            uuidDicDic = positionDic[@"positionRangeMeasures"];
             // ...and for every UUID...
             NSArray *uuidKeys = [uuidDicDic allKeys];
             BOOL found = NO;

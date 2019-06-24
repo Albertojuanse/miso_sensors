@@ -19,6 +19,7 @@
 		426501BD22A03B4300BE20B7 /* Canvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501BC22A03B4300BE20B7 /* Canvas.m */; };
 		426501C322A03B5200BE20B7 /* RDPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C022A03B5200BE20B7 /* RDPosition.m */; };
 		426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */; };
+		4276127422C0EE91007BDED8 /* LocationManagerSharedData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4276127322C0EE91007BDED8 /* LocationManagerSharedData.m */; };
 		42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 42917F02229BE12900EE6CD3 /* Blackbox.m */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +46,8 @@
 		426501C022A03B5200BE20B7 /* RDPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDPosition.m; sourceTree = "<group>"; };
 		426501C122A03B5200BE20B7 /* RDRhoRhoSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDRhoRhoSystem.h; sourceTree = "<group>"; };
 		426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDRhoRhoSystem.m; sourceTree = "<group>"; };
+		4276127222C0EE71007BDED8 /* LocationManagerSharedData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationManagerSharedData.h; sourceTree = "<group>"; };
+		4276127322C0EE91007BDED8 /* LocationManagerSharedData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocationManagerSharedData.m; sourceTree = "<group>"; };
 		42917F02229BE12900EE6CD3 /* Blackbox.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Blackbox.m; sourceTree = "<group>"; };
 		42917F04229BE16500EE6CD3 /* Blackbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Blackbox.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -100,6 +103,8 @@
 			children = (
 				426501B822A03B2A00BE20B7 /* LocationManagerDelegate.h */,
 				426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */,
+				4276127222C0EE71007BDED8 /* LocationManagerSharedData.h */,
+				4276127322C0EE91007BDED8 /* LocationManagerSharedData.m */,
 			);
 			path = LocationManaging;
 			sourceTree = "<group>";
@@ -223,6 +228,7 @@
 				422798882271F37800E07C39 /* ViewController.m in Sources */,
 				422798932271F37800E07C39 /* main.m in Sources */,
 				422798852271F37800E07C39 /* AppDelegate.m in Sources */,
+				4276127422C0EE91007BDED8 /* LocationManagerSharedData.m in Sources */,
 				426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */,
 				4227989B2271F60700E07C39 /* MotionManager.m in Sources */,
 				426501BA22A03B3000BE20B7 /* LocationManagerDelegate.m in Sources */,

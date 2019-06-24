@@ -30,7 +30,7 @@
 
 typedef CGPoint NSPoint;
 
-@property NSMutableDictionary * rangedBeaconsDic;
+@property NSMutableDictionary * measuresDic;
 @property NSMutableArray * currentLayers;
 
 - (void) prepareCanvas;

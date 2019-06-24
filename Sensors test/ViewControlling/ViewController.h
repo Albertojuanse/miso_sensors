@@ -16,7 +16,7 @@
  */
 @interface ViewController : UIViewController{
     // For update canvas
-    NSMutableDictionary * rangedBeaconsDic;
+    NSMutableDictionary * measuresDic;
     NSMutableArray * displayedUUID;
     NSString * displayedUUIDString;
 }

@@ -9,7 +9,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import "RDPosition.h"
 #import "RDRhoRhoSystem.h"
-#import "MotionManager.h"
+#import "LocationManagerSharedData.h"
 
 /*!
  @class LocationManagerDelegate
@@ -25,12 +25,7 @@
     NSMutableArray * rangedRegions;
     CLLocationManager * locationManager;
     NSMutableArray * rangedBeacons;
-    
-    // Data shared
-    NSMutableDictionary * rangedBeaconsDic;
-    NSNumber * positionIdNumber;
-    NSNumber * uuidIdNumber;
-    NSNumber * measureIdNumber;
+    LocationManagerSharedData * sharedData;
     
     // Orchestration variables
     BOOL measuring;
