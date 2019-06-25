@@ -26,9 +26,8 @@
                           andReference2:(RDPosition *) ref2
                           andPrediction:(RDPosition *) pred;
 
-- (NSMutableArray *) getLocationsUsingGridAproximationWithMeasures:(NSMutableDictionary*)measuresDic
-                                                      andPrecision:(NSNumber*)precision;
-
+- (NSMutableArray *) getLocationsUsingGridAproximationWithMeasures:(SharedData*)sharedData
+                                                     andPrecisions:(NSDictionary*)precisions;
 + (NSNumber *) calculateDistanceWithRssi:(NSInteger) rssi;
 
 @end
