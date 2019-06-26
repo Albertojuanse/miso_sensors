@@ -19,6 +19,7 @@
     
     // Components
     SharedData * sharedData;
+    RDRhoRhoSystem * rhoRhoSystem;
     
     // Variables
     RDPosition * position;

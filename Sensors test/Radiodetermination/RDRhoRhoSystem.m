@@ -42,7 +42,7 @@
 
 /*!
  @method divideSegmentStartingAt:finishingAt:andWithPrecision:
- @discussion This method saves in the parameter 'NSMutableArray' type 'values' the middle value between two given values; if the divisions are greater than the precision, the method is recursively called until it happens. The maximum or minimum value given as parameter is not included in final 'values' array.
+ @discussion This method saves in the parameter 'NSMutableArray' type 'values' the middle value between two given values; if the divisions are greater than the precision, the method is recursively called until reached. The maximum or minimum value given as parameter is not included in final 'values' array. This method is used for composing the grid.
  */
 - (void) recursiveDivideSegmentStartingAt:(NSNumber*)minValue
                               finishingAt:(NSNumber*)maxValue
@@ -85,7 +85,7 @@
 
 /*!
  @method generateGridUsingPositions:andPrecisions:
- @discussion This method generates a grid using maximum and minimum coordinate values of a set of positions and a given precisions for this coordinate; if 3D is used, dimensions are 0, 1, 2.
+ @discussion This method generates a grid using maximum and minimum coordinate values of a set of positions. It is used for sampling the space and perform thus some optimization calculus such as the one on method 'getLocationsUsingGridAproximationWithMeasures:andPrecisions:'.
  */
 - (NSMutableArray *) generateGridUsingPositions:(NSMutableArray*)measurePositions
                                   andPrecisions:(NSDictionary*)precisions
@@ -162,9 +162,9 @@
 }
 
 /*!
- @method getLocationsUsingGridAproximationWithMeasures:
+ @method getLocationsUsingGridAproximationWithMeasures:andPrecisions:
  precision:
- @discussion This method calculates any posible location with the measures taken from each beacon at different positions; it uses a simple grid search of the minimum of the least square of distances from positions were the measures were taken to the grid and the measures and the same point in the grid.
+ @discussion This method calculates any posible location with the measures taken from each beacon at different positions; it uses a simple grid search of the minimum of the least square of distances from positions were the measures were taken to the grid and the measures and the same point in the grid. In the '('NSDictionary' object 'precisions' must be defined the minimum requirement of precision for each axe, with floats in objects 'NSNumbers' set in the keys "xPrecision", "yPrecision" and "zPrecision".
  */
 - (NSMutableArray *) getLocationsUsingGridAproximationWithMeasures:(SharedData*)sharedData
                                                      andPrecisions:(NSDictionary*)precisions
@@ -243,6 +243,9 @@
             
             NSNumber * sum = [NSNumber numberWithFloat:0.0];
             
+            // Measures are only feasible if measures were take from at least 2 positions with measures.
+            NSInteger positionsWithMeasures = 0;
+            
             // ...and for every position where measures were taken
             NSArray * positionKeys = [measuresDic allKeys];
             for (id positionKey in positionKeys) {
@@ -285,6 +288,10 @@
                         NSNumber * measuresAverage = [NSNumber numberWithFloat:
                                                       [measuresAcumulation floatValue] / [measureIndexFloat floatValue]
                                                       ];
+                        // Count as valid position with measures
+                        if (measureIndex > 0) {
+                            positionsWithMeasures++;
+                        }
                         
                         // And perform the calculus to minimizate
                         sum = [NSNumber numberWithFloat:
@@ -296,17 +303,27 @@
                     UUIDsubIndex++;
                 }
             }
-            // Minimization
-            if ([sum floatValue] <[minarg floatValue]) {
-                minarg = [NSNumber numberWithFloat:[sum floatValue]];
-                minargPosition = [[RDPosition alloc] init];
-                minargPosition.x = gridPosition.x;
-                minargPosition.y = gridPosition.y;
-                minargPosition.z = gridPosition.z;
+            // Evaluate feasibility
+            if (positionsWithMeasures > 1) {
+                
+                // Minimization
+                if ([sum floatValue] <[minarg floatValue]) {
+                    minarg = [NSNumber numberWithFloat:[sum floatValue]];
+                    minargPosition = [[RDPosition alloc] init];
+                    minargPosition.x = gridPosition.x;
+                    minargPosition.y = gridPosition.y;
+                    minargPosition.z = gridPosition.z;
+                }
+                
+            } else {
+                minargPosition = nil;
             }
         }
         // Add the minimum position for this UUID
-        [locatedPositions addObject:minargPosition];
+        if (minargPosition) {
+            NSLog(@"[INFO][RR] Beacon radiolocated at %@", minargPosition);
+            [locatedPositions addObject:minargPosition];
+        }
     }
     return locatedPositions;
 }

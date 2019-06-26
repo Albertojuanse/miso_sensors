@@ -21,6 +21,7 @@
         
         // Components
         sharedData = sharedDataFromStateMachine;
+        rhoRhoSystem = [[RDRhoRhoSystem alloc] init];
         
         // Set device's location at the origin
         position = [[RDPosition alloc] init];
@@ -245,6 +246,22 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                        withUUID:uuid
                                      atPosition:measurePosition
                                    andWithState:measuring];
+            /*
+            // Ask radiolocation of beacons if posible.
+            // Precision is arbitrary set to 5 cm
+            NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
+                                         [NSNumber numberWithFloat:0.05], @"xPrecision",
+                                         [NSNumber numberWithFloat:0.05], @"yPrecision",
+                                         [NSNumber numberWithFloat:0.05], @"zPrecision",
+                                         nil];
+            
+            NSMutableArray * locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithMeasures:sharedData
+                                                                                              andPrecisions:precisions];
+            
+            NSLog(@"[INFO][LM] Radiolocated positions:");
+            NSLog(@"[INFO][LM]  -> %@", locatedPositions);
+             */
+            
         }
         
         NSLog(@"[INFO][LM] Generated dictionary:");
