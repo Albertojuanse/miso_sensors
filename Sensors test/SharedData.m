@@ -19,6 +19,7 @@
     self = [super init];
     if (self) {
         measuresDic = [[NSMutableDictionary alloc] init];
+        locatedDic = [[NSMutableDictionary alloc] init];
         positionIdNumber = [NSNumber numberWithInt:0];
         uuidIdNumber = [NSNumber numberWithInt:0];
         measureIdNumber = [NSNumber numberWithInt:0];

@@ -247,20 +247,31 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                      atPosition:measurePosition
                                    andWithState:measuring];
 
-            // Ask radiolocation of beacons if posible.
+            // Ask radiolocation of beacons if posible...
             // Precision is arbitrary set to 5 cm
             NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                         [NSNumber numberWithFloat:0.05], @"xPrecision",
-                                         [NSNumber numberWithFloat:0.05], @"yPrecision",
-                                         [NSNumber numberWithFloat:0.05], @"zPrecision",
+                                         [NSNumber numberWithFloat:0.5], @"xPrecision",
+                                         [NSNumber numberWithFloat:0.5], @"yPrecision",
+                                         [NSNumber numberWithFloat:0.5], @"zPrecision",
                                          nil];
             
-            NSMutableArray * locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithMeasures:sharedData
-                                                                                              andPrecisions:precisions];
+            NSMutableDictionary * locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithMeasures:sharedData
+                                                                                                   andPrecisions:precisions];
+            // ...and save it in dictionary 'locatedDic'.
+            // In this dictionary keys are the UUID.
+            
+            NSArray *positionKeys = [locatedPositions allKeys];
+            for (id positionKey in positionKeys) {
+                [sharedData inLocatedDicSetPosition:[locatedPositions objectForKey:positionKey]
+                                           fromUUID:positionKey];
+            }
+            
+            NSLog(@"[INFO][LM] Generated locations dictionary:");
+            NSLog(@"[INFO][LM]  -> %@", locatedPositions);
             
         }
         
-        NSLog(@"[INFO][LM] Generated dictionary:");
+        NSLog(@"[INFO][LM] Generated measures dictionary:");
         NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDic]);
     }
     
@@ -268,6 +279,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     if(beacons.count > 0) {
         NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
         NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+        [data setObject:[sharedData getMeasuresDic] forKey:@"measuresDic"];
         [data setObject:[sharedData getMeasuresDic] forKey:@"measuresDic"];
         [[NSNotificationCenter defaultCenter]
          postNotificationName:@"refreshCanvas"
