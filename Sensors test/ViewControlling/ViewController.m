@@ -61,7 +61,9 @@
         // Save beacons
         NSDictionary *data = notification.userInfo;
         measuresDic = [data valueForKey:@"measuresDic"];
+        locatedDic = [data valueForKey:@"locatedDic"];
         self.canvas.measuresDic = measuresDic;
+        self.canvas.locatedDic = locatedDic;
         
         // Inspect dictionary for UUID names.
         // Declare the inner dictionaries.

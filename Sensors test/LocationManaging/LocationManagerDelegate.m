@@ -267,7 +267,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             }
             
             NSLog(@"[INFO][LM] Generated locations dictionary:");
-            NSLog(@"[INFO][LM]  -> %@", locatedPositions);
+            NSLog(@"[INFO][LM]  -> %@", [sharedData getLocatedDic]);
             
         }
         
@@ -280,7 +280,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
         NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
         [data setObject:[sharedData getMeasuresDic] forKey:@"measuresDic"];
-        [data setObject:[sharedData getMeasuresDic] forKey:@"measuresDic"];
+        [data setObject:[sharedData getLocatedDic] forKey:@"locatedDic"];
         [[NSNotificationCenter defaultCenter]
          postNotificationName:@"refreshCanvas"
          object:nil

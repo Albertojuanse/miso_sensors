@@ -31,6 +31,7 @@
 typedef CGPoint NSPoint;
 
 @property NSMutableDictionary * measuresDic;
+@property NSMutableDictionary * locatedDic;
 @property NSMutableArray * currentLayers;
 
 - (void) prepareCanvas;

@@ -17,6 +17,7 @@
 @interface ViewController : UIViewController{
     // For update canvas
     NSMutableDictionary * measuresDic;
+    NSMutableDictionary * locatedDic;
     NSMutableArray * displayedUUID;
     NSString * displayedUUIDString;
 }

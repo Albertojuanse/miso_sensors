@@ -206,6 +206,32 @@
         position.z = dicPosition.z;
         [realPositions addObject:position];
     }
+    
+    /* ************************** LOCATED DIC ****************************** */
+    // Add the located positions
+    // The schema of the locatedDic object is:
+    //
+    // { "locatedPosition1":                              //  locatedDic
+    //     { "locatedUUID": locatedUUID;                  //  positionDic
+    //       "locatedPosition": locatedPosition;
+    //     };
+    //   "locatedPosition2": { (···) }
+    // }
+    //
+    NSArray * locatedKeys = [self.locatedDic allKeys];
+    for (id locatedKey in locatedKeys) {
+        // ...get the dictionary for this position...
+        positionDic = [self.measuresDic objectForKey:locatedKey];
+        // ...and the position.
+        RDPosition * dicPosition = positionDic[@"locatedPosition"];
+        RDPosition * position = [[RDPosition alloc] init];
+        position.x = dicPosition.x;
+        position.y = dicPosition.y;
+        position.z = dicPosition.z;
+        [realPositions addObject:position];
+    }
+    /* ************************** END LOCATED DIC **************************** */
+    
     NSMutableArray * canvasPositions = [self transformRealPointsToCanvasPoints:realPositions];
     
     // For every (canvas) position where measures were taken
@@ -261,11 +287,66 @@
             // ...and get the uuid.
             NSString * uuid = [NSString stringWithString:uuidDic[@"uuid"]];
             
+            
+            /* ************************** SEARCH LOCATED UUID **************************** */
+            NSArray * locatedKeys = [self.locatedDic allKeys];
+            for (id locatedKey in locatedKeys) {
+                // ...get the dictionary for this position...
+                positionDic = [self.measuresDic objectForKey:locatedKey];
+                // ...and the UUID. If it is equal, draw the located position
+                NSString * locatedUUID = positionDic[@"locatedUUID"];
+                if ([locatedUUID isEqualToString:uuid]) {
+                    RDPosition * locatedPosition = positionDic[@"locatedPosition"];
+                    UIBezierPath *uuidBezierPath = [UIBezierPath bezierPath];
+                    
+                    // Choose a color for each UUID
+                    UIColor *colorUUID;
+                    switch (UUIDindex % 8) {
+                        case 0:
+                            colorUUID = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
+                            break;
+                        case 1:
+                            colorUUID = [UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:0.2];
+                            break;
+                        case 2:
+                            colorUUID = [UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:0.2];
+                            break;
+                        case 3:
+                            colorUUID = [UIColor colorWithRed:127.0/255.0 green:128.0/255.0 blue:0.0 alpha:0.2];
+                            break;
+                        case 4:
+                            colorUUID = [UIColor colorWithRed:127.0/255.0 green:0.0 blue:128.0/255.0 alpha:0.2];
+                            break;
+                        case 5:
+                            colorUUID = [UIColor colorWithRed:0.0 green:127.0/255.0 blue:128.0/255.0 alpha:0.2];
+                            break;
+                        case 6:
+                            colorUUID = [UIColor colorWithRed:127.0/255.0 green:64.0 blue:64.0 alpha:0.2];
+                            break;
+                        case 7:
+                            colorUUID = [UIColor colorWithRed:64.0 green:127.0/255.0 blue:64.0 alpha:0.2];
+                            break;
+                        default:
+                            colorUUID = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
+                            break;
+                    }
+                    
+                    // Choose a position for display the located position
+                    [positionBezierPath addArcWithCenter:[locatedPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+                    CAShapeLayer *locatedLayer = [[CAShapeLayer alloc] init];
+                    [locatedLayer setPath:uuidBezierPath.CGPath];
+                    [locatedLayer setStrokeColor:colorUUID.CGColor];
+                    [locatedLayer setFillColor:[UIColor clearColor].CGColor];
+                    [[self layer] addSublayer:locatedLayer];
+                }
+            }
+            /* ************************** END SEARCH LOCATED UUID **************************** */
+            
             // DEFINE UUID CANVAS REPRESENTATION (METHOD)
             
             UIBezierPath *uuidBezierPath = [UIBezierPath bezierPath];
             
-            // Choos a color for each UUID
+            // Choose a color for each UUID
             UIColor *colorUUID;
             switch (UUIDindex % 8) {
                 case 0:
