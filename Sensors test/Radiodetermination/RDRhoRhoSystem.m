@@ -243,7 +243,7 @@
             
             NSNumber * sum = [NSNumber numberWithFloat:0.0];
             
-            // Measures are only feasible if measures were take from at least 2 positions with measures.
+            // Measures are only feasible if measures were take from at least 3 positions with measures.
             NSInteger positionsWithMeasures = 0;
             
             // ...and for every position where measures were taken
@@ -304,7 +304,7 @@
                 }
             }
             // Evaluate feasibility
-            if (positionsWithMeasures > 1) {
+            if (positionsWithMeasures > 2) {
                 
                 // Minimization
                 if ([sum floatValue] <[minarg floatValue]) {

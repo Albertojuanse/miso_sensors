@@ -22,7 +22,6 @@ if (self) {
     // View controller
     viewController = viewControllerFromStateMachine;
     sharedData = initSharedData;
-    RDPosition * position = [[RDPosition alloc] init];
     t = 1.0/100.0;
     g = 9.7994;
     calibrationTime = 10;

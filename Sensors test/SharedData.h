@@ -15,7 +15,7 @@
  */
 @interface SharedData: NSObject {
     
-    // Measures tajen at certain positions
+    // Measures taken at certain positions
     NSMutableDictionary * measuresDic;
     NSNumber * positionIdNumber;
     NSNumber * uuidIdNumber;
@@ -36,12 +36,14 @@
 - (NSMutableDictionary *) getMeasuresDic;
 - (NSMutableDictionary *) getLocatedDic;
 - (NSMutableArray *) fromMeasuresDicGetPositions;
+- (NSMutableArray *) fromLocatedDicGetPositions;
 
 - (void) inMeasuresDicSetMeasure:(NSNumber*)measure
                           ofType:(NSString*)type
                         withUUID:(NSString*)uuid
                       atPosition:(RDPosition*)measurePosition
                     andWithState:(BOOL)measuring;
-- (void) inLocatedDicSetLocation;
+- (void) inLocatedDicSetPosition:(RDPosition*)locatedPosition
+                        fromUUID:(NSString*)locatedUUID;
 
 @end

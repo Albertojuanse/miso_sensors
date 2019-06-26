@@ -246,7 +246,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                        withUUID:uuid
                                      atPosition:measurePosition
                                    andWithState:measuring];
-            /*
+
             // Ask radiolocation of beacons if posible.
             // Precision is arbitrary set to 5 cm
             NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -257,10 +257,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             
             NSMutableArray * locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithMeasures:sharedData
                                                                                               andPrecisions:precisions];
-            
-            NSLog(@"[INFO][LM] Radiolocated positions:");
-            NSLog(@"[INFO][LM]  -> %@", locatedPositions);
-             */
             
         }
         

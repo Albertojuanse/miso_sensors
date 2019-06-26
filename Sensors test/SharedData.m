@@ -27,7 +27,7 @@
     return self;
 }
 
-#pragma mark Getters
+#pragma mark Measures getters
 
 /*!
  @method getMeasuresDic
@@ -58,14 +58,12 @@
     return measurePositions;
 }
 
+#pragma mark Measures getters
+
 /*!
  @method inMeasuresDicSetMeasure:ofType:withUUID:atPosition:andWithState:
  @discussion This method saves in the NSDictionary with the measures information a new one; if the state MEASURING is not true, is saved the position without any measure.
  */
-- (NSMutableDictionary *) getLocatedDic {
-    return locatedDic;
-}
-
 - (void) inMeasuresDicSetMeasure:(NSNumber*)measure
                           ofType:(NSString*)type
                         withUUID:(NSString*)uuid
@@ -245,6 +243,99 @@
             positionIdNumber = [NSNumber numberWithInt:[positionIdNumber intValue] + 1];
             NSString * positionId = [@"measurePosition" stringByAppendingString:[positionIdNumber stringValue]];
             measuresDic[positionId] = positionDic;
+        }
+    }
+}
+
+#pragma mark Located getters
+
+/*!
+ @method inMeasuresDicSetMeasure:ofType:withUUID:atPosition:andWithState:
+ @discussion This method saves in the NSDictionary with the measures information a new one; if the state MEASURING is not true, is saved the position without any measure.
+ */
+- (NSMutableDictionary *) getLocatedDic {
+    return locatedDic;
+}
+
+/*!
+ @method fromLocatedDicGetPositions
+ @discussion This method returns a 'NSMutableArray' object with all the positions where the measures were taken
+ */
+- (NSMutableArray *) fromLocatedDicGetPositions {
+    NSArray * positionKeys = [locatedDic allKeys];
+    NSMutableArray * locatedPositions = [[NSMutableArray alloc] init];
+    for (id positionKey in positionKeys) {
+        // ...get the dictionary for this position...
+        positionDic = [measuresDic objectForKey:positionKey];
+        // ...and the position.
+        RDPosition * dicPosition = positionDic[@"locatedPosition"];
+        RDPosition * position = [[RDPosition alloc] init];
+        position.x = dicPosition.x;
+        position.y = dicPosition.y;
+        position.z = dicPosition.z;
+        [locatedPositions addObject:position];
+    }
+    return locatedPositions;
+}
+
+#pragma mark Located setters
+
+/*!
+ @method inLocatedDicSetPosition:fromUUID:
+ @discussion This method saves in the NSDictionary with the located positions information a new one.
+ */
+- (void) inLocatedDicSetPosition:(RDPosition*)locatedPosition
+                        fromUUID:(NSString*)locatedUUID
+{
+    
+    // The schema of the locatedDic object is:
+    //
+    // { "locatedPosition1":                              //  locatedDic
+    //     { "locatedUUID": locatedUUID;                  //  positionDic
+    //       "locatedPosition": locatedPosition;
+    //     };
+    //   "locatedPosition2": { (···) }
+    // }
+    //
+    
+    if (locatedDic.count == 0) {
+        // First initialization
+        
+        // Compose the dictionary from the innermost to the outermost
+        // Wrap locatedPosition in a dictionary with its UUID
+        positionDic = [[NSMutableDictionary alloc] init];
+        positionDic[@"locatedPosition"] = locatedPosition;
+        positionDic[@"locatedUUID"] = locatedUUID;
+        
+        // Set it into locatedDic
+        locatedIdNumber = [NSNumber numberWithInt:[locatedIdNumber intValue] + 1];
+        NSString * locatedId = [@"locatedPosition" stringByAppendingString:[measureIdNumber stringValue]];
+        locatedDic[locatedId] = positionDic;
+        
+    } else {
+        // Find if already exists the position or its UUID and create it if not; a beacon only can exists in a position, hence no mobility solutions are considered
+        
+        // If UUID exists, position is actualized; if UUID does not exist, it will be created.
+        // For each position already saved...
+        NSArray *positionKeys = [locatedDic allKeys];
+        for (id positionKey in positionKeys) {
+            // ...get the dictionary for this position...
+            positionDic = [locatedDic objectForKey:positionKey];
+            // ...and checks if the current UUID's locatedUUID already exists comparing it with the saved ones.
+            NSString * savedUUID = positionDic[@"locatedUUID"];
+            if ([savedUUID isEqualToString:locatedUUID]) { // UUID already exists
+                positionDic[@"locatedPosition"] = locatedPosition;
+            } else { // UUID new
+                // Wrap locatedPosition in a dictionary with its UUID
+                positionDic = [[NSMutableDictionary alloc] init];
+                positionDic[@"locatedPosition"] = locatedPosition;
+                positionDic[@"locatedUUID"] = locatedUUID;
+                
+                // Set it into locatedDic
+                locatedIdNumber = [NSNumber numberWithInt:[locatedIdNumber intValue] + 1];
+                NSString * locatedId = [@"locatedPosition" stringByAppendingString:[measureIdNumber stringValue]];
+                locatedDic[locatedId] = positionDic;
+            }
         }
     }
 }
