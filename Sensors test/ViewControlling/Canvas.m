@@ -44,6 +44,10 @@
     self.measuresDic = [[NSMutableDictionary alloc] init];
     rHeight = 1.0;
     rWidth = 1.0;
+    barycenter = [[RDPosition alloc] init];
+    barycenter.x = [NSNumber numberWithFloat:0.0];
+    barycenter.y = [NSNumber numberWithFloat:0.0];
+    barycenter.z = [NSNumber numberWithFloat:0.0];
     
     // Canvas configurations
     [self setUserInteractionEnabled:NO];
@@ -232,16 +236,18 @@
     }
     /* ************************** END LOCATED DIC **************************** */
     
-    NSMutableArray * canvasPositions = [self transformRealPointsToCanvasPoints:realPositions];
+    // Transform the real positions to an apropiate canvas ones, with the barycenter of the set of points in the center of the canvas
+    // This method sets the ratios in the class variables 'rWidth' and 'rHeight'; then, they will be used for transform every single point
+    [self calculateRatiosOfTransformationFromRealPointsToCanvasPoints:realPositions
+                                                    withSafeAreaRatio:[NSNumber numberWithFloat:0.4]];
     
     // For every (canvas) position where measures were taken
-    NSInteger positionIndex = 0;
     for (id positionKey in positionKeys) {
         // ...get the dictionary for this position...
         positionDic = [self.measuresDic objectForKey:positionKey];
         // ...but also get the transformed position.
         RDPosition * realPosition = positionDic[@"measurePosition"];
-        RDPosition * canvasPosition = [canvasPositions objectAtIndex:positionIndex];
+        RDPosition * canvasPosition = [self transformSingleRealPointToCanvasPoint:realPosition];
         NSLog(@"[INFO][CA] Real position to show: %@", realPosition);
         NSLog(@"[INFO][CA] Canvas position to show: %@",  canvasPosition);
         NSLog(@"[INFO][CA] rWith: %.2f", rWidth);
@@ -292,11 +298,14 @@
             NSArray * locatedKeys = [self.locatedDic allKeys];
             for (id locatedKey in locatedKeys) {
                 // ...get the dictionary for this position...
-                positionDic = [self.measuresDic objectForKey:locatedKey];
+                positionDic = [self.locatedDic objectForKey:locatedKey];
                 // ...and the UUID. If it is equal, draw the located position
                 NSString * locatedUUID = positionDic[@"locatedUUID"];
                 if ([locatedUUID isEqualToString:uuid]) {
                     RDPosition * locatedPosition = positionDic[@"locatedPosition"];
+                    NSLog(@"[INFO][CA] Real located position to show: %@", locatedPosition);
+                    NSLog(@"[INFO][CA] Canvas located position to show: %@", locatedPosition);
+                    RDPosition * canvasLocatedPosition = [self transformSingleRealPointToCanvasPoint:locatedPosition];
                     UIBezierPath *uuidBezierPath = [UIBezierPath bezierPath];
                     
                     // Choose a color for each UUID
@@ -332,7 +341,7 @@
                     }
                     
                     // Choose a position for display the located position
-                    [positionBezierPath addArcWithCenter:[locatedPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+                    [positionBezierPath addArcWithCenter:[canvasLocatedPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
                     CAShapeLayer *locatedLayer = [[CAShapeLayer alloc] init];
                     [locatedLayer setPath:uuidBezierPath.CGPath];
                     [locatedLayer setStrokeColor:colorUUID.CGColor];
@@ -412,7 +421,7 @@
                 NSNumber * measure = [NSNumber numberWithFloat:[measureDic[@"measure"] floatValue]];
                 
                 // DEFINE MEASURE CANVAS REPRESENTATION (METHOD)
-                RDPosition * canvasPosition = [canvasPositions objectAtIndex:positionIndex];
+                RDPosition * canvasPosition = [self transformSingleRealPointToCanvasPoint:realPosition];
                 
                 //UIBezierPath *measureBezierPath = [UIBezierPath bezierPath];
                 //[measureBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:[measure floatValue]*(rWidth+rHeight)/2.0 startAngle:0 endAngle:2 * M_PI clockwise:YES];
@@ -439,7 +448,6 @@
             }
             UUIDindex++;
         }
-        positionIndex++;
     }
     [self setNeedsDisplay];
 }
@@ -565,7 +573,7 @@
             [centeredCanvasPoints addObject:centeredCanvasPoint];
         }
         // Correct the points location.
-        RDPosition * barycenter = [self getBarycenterOf:centeredCanvasPoints];
+        barycenter = [self getBarycenterOf:centeredCanvasPoints];
         RDPosition * correction = [self subtract:RDcenter from:barycenter];
         for (RDPosition * centeredCanvasPoint in centeredCanvasPoints) {
             RDPosition * correctedCanvasPoint = [self add:centeredCanvasPoint to:correction];
@@ -574,5 +582,103 @@
     }
     return canvasPoints;
 }
+
+/*!
+ @method calculateRatiosOfTransformationFromRealPointsToCanvasPoints:withSafeAreaRatio:
+ @discussion This method calculate the ratios needed for showing a set of real points in the canvas; the 'safeAreaRatio' defines a safe area near the canvas' boundaries in wich the points won't be allocated, and it is tipically 0.4, and only the centered 20% of the canvas will allocate the points.
+ */
+- (void) calculateRatiosOfTransformationFromRealPointsToCanvasPoints:(NSMutableArray *)realPoints
+                                                               withSafeAreaRatio:(NSNumber*)safeAreaRatio
+{
+    // Get the canvas dimensions and its center
+    float canvasWidth = self.frame.size.width;
+    float canvasHeight = self.frame.size.height;
+    RDPosition * RDcenter = [[RDPosition alloc] init];
+    RDcenter.x = [[NSNumber alloc] initWithFloat:center.x];
+    RDcenter.y = [[NSNumber alloc] initWithFloat:center.y];
+    
+    // Case only one point
+    if (realPoints.count == 1) {
+        
+        rWidth = 1.0;
+        rHeight = 1.0;
+        
+    } else {
+        
+        // Define a safe area
+        float widthSafe = canvasWidth * [safeAreaRatio floatValue];
+        float heightSafe = canvasHeight * [safeAreaRatio floatValue];
+        float widthSafeMin = 0 + widthSafe;
+        float widthSafeMax = canvasWidth - widthSafe;
+        float heightSafeMin = 0 + heightSafe;
+        float heightSafeMax = canvasHeight - heightSafe;
+        
+        // Get the minimum and maximum x and y values
+        float maxX = -FLT_MAX;
+        float minX = FLT_MAX;
+        float maxY = -FLT_MAX;
+        float minY = FLT_MAX;
+        for (RDPosition * realPoint in realPoints) {
+            if ([realPoint.x floatValue] > maxX) {
+                maxX = [realPoint.x floatValue];
+            }
+            if ([realPoint.x floatValue] < minX) {
+                minX = [realPoint.x floatValue];
+            }
+            if ([realPoint.y floatValue] > maxY) {
+                maxY = [realPoint.y floatValue];
+            }
+            if ([realPoint.y floatValue] < minY) {
+                minY = [realPoint.y floatValue];
+            }
+        }
+        
+        // Get the relations of the transformation
+        rWidth = (widthSafeMax - widthSafeMin)/(maxX - minX);
+        rHeight = (heightSafeMax - heightSafeMin)/(maxY - minY);
+        
+        // Transform the point's coordinates.
+        // The first position is always (0, 0), and it is centered at the origin of the canvas, the upper left corner. Hence, a correction must be done in orther to center the set in the canvas. But as is not intended to display (0, 0) in the center of te canvas, but the barycenter of the set es calculated and translated to the center of the canvas. For this, the 'vector' needed for adding is the subtract of the center of the canvas minus the barycenter.
+        
+        // Get the proportionate set of canvas points with centered at the orgin of the canvas
+        NSMutableArray * centeredCanvasPoints = [[NSMutableArray alloc] init];
+        for (RDPosition * realPoint in realPoints) {
+            RDPosition * centeredCanvasPoint = [[RDPosition alloc] init];
+            centeredCanvasPoint.x = [[NSNumber alloc] initWithFloat:[realPoint.x floatValue] * rWidth];
+            centeredCanvasPoint.y = [[NSNumber alloc] initWithFloat:[realPoint.y floatValue] * rHeight];
+            centeredCanvasPoint.z = realPoint.z;
+            [centeredCanvasPoints addObject:centeredCanvasPoint];
+        }
+        // Correct the points location.
+        barycenter = [self getBarycenterOf:centeredCanvasPoints];
+        NSLog(@"[INFO][CA][TRAN] barycenter: %.2f, %.2f",  [barycenter.y floatValue],  [barycenter.x floatValue]);
+    }
+}
+
+/*!
+ @method transformSingleRealPointToCanvasPoint:
+ @discussion This method transform a 3D RDPosition that represents a physical location to a canvas point; z coordinate is not transformed. The method 'calculateRatiosOfTransformationFromRealPointsToCanvasPoints:withSafeAreaRatio:' must be called before.
+ */
+- (RDPosition *) transformSingleRealPointToCanvasPoint:(RDPosition *)realPoint
+{
+    // Get the canvas' center
+    RDPosition * RDcenter = [[RDPosition alloc] init];
+    RDcenter.x = [[NSNumber alloc] initWithFloat:center.x];
+    RDcenter.y = [[NSNumber alloc] initWithFloat:center.y];
+        
+    // Transform the point's coordinates.
+    // The first position is always (0, 0), and it is centered at the origin of the canvas, the upper left corner. Hence, a correction must be done in orther to center the set in the canvas. But as is not intended to display (0, 0) in the center of te canvas, but the barycenter of the set es calculated and translated to the center of the canvas. For this, the 'vector' needed for adding is the subtract of the center of the canvas minus the barycenter.
+    
+    // Get the proportionate canvas point centered at the orgin of the canvas
+    RDPosition * centeredCanvasPoint = [[RDPosition alloc] init];
+    centeredCanvasPoint.x = [[NSNumber alloc] initWithFloat:[realPoint.x floatValue] * rWidth];
+    centeredCanvasPoint.y = [[NSNumber alloc] initWithFloat:[realPoint.y floatValue] * rHeight];
+    centeredCanvasPoint.z = realPoint.z;
+    // Correct the points location.
+    RDPosition * correction = [self subtract:RDcenter from:barycenter];
+    RDPosition * correctedCanvasPoint = [self add:centeredCanvasPoint to:correction];
+    return correctedCanvasPoint;
+}
+
 
 @end

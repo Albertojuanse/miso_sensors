@@ -241,7 +241,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             
             // TO DO: Heading measures. Alberto J. 2019-06-04.
             
-            [sharedData inMeasuresDicSetMeasure:[RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue]]
+            // TO DO. Calibration. Alberto J.
+            NSInteger calibration = -30;
+            [sharedData inMeasuresDicSetMeasure:[RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue] + calibration]
                                          ofType:@"rssi"
                                        withUUID:uuid
                                      atPosition:measurePosition
@@ -259,6 +261,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                                                                                    andPrecisions:precisions];
             // ...and save it in dictionary 'locatedDic'.
             // In this dictionary keys are the UUID.
+            
+            
             
             NSArray *positionKeys = [locatedPositions allKeys];
             for (id positionKey in positionKeys) {

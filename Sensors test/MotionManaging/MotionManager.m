@@ -270,8 +270,8 @@ if (self) {
 - (void) startTravelingFrom:(RDPosition*)initialPosition {
     NSLog(@"[INFO][MM] Starting traveling from position: %@", initialPosition);
     traveling = YES;
-    float low_bound = -5.00;
-    float high_bound = 5.00;
+    float low_bound = -1.00;
+    float high_bound = 1.00;
     float rndValue1 = (((float)arc4random()/0x100000000)*(high_bound-low_bound)+low_bound);
     float rndValue2 = (((float)arc4random()/0x100000000)*(high_bound-low_bound)+low_bound);
     position.x = [NSNumber numberWithFloat:[initialPosition.x floatValue] + rndValue1];

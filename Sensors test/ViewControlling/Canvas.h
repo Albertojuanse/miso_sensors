@@ -26,6 +26,7 @@
     CGPoint center;
     float rWidth;
     float rHeight;
+    RDPosition * barycenter;
 }
 
 typedef CGPoint NSPoint;
