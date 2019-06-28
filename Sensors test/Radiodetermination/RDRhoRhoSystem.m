@@ -84,10 +84,11 @@
 }
 
 /*!
- @method generateGridUsingPositions:andPrecisions:
- @discussion This method generates a grid using maximum and minimum coordinate values of a set of positions. It is used for sampling the space and perform thus some optimization calculus such as the one on method 'getLocationsUsingGridAproximationWithMeasures:andPrecisions:'.
+ @method generateGridUsingPositions:andMaxMeasure:andPrecisions:
+ @discussion This method generates a grid using maximum and minimum coordinate values of a set of positions and the maximum of the measures taken. It is used for sampling the space and perform thus some optimization calculus such as the one on method 'getLocationsUsingGridAproximationWithMeasures:andPrecisions:'.
  */
 - (NSMutableArray *) generateGridUsingPositions:(NSMutableArray*)measurePositions
+                                  andMaxMeasure:(NSNumber *)maxMeasure
                                   andPrecisions:(NSDictionary*)precisions
 {
     
@@ -100,22 +101,22 @@
     NSNumber * maxPositionsZvalue = [NSNumber numberWithFloat:-FLT_MAX];
     
     for (RDPosition * position in measurePositions) {
-        if ([position.x floatValue] < [minPositionsXvalue floatValue]) {
+        if (([position.x floatValue] - [maxMeasure floatValue]) < [minPositionsXvalue floatValue]) {
             minPositionsXvalue = position.x;
         }
-        if ([position.x floatValue] > [maxPositionsXvalue floatValue]) {
+        if (([position.x floatValue] + [maxMeasure floatValue]) > [maxPositionsXvalue floatValue]) {
             maxPositionsXvalue = position.x;
         }
-        if ([position.y floatValue] < [minPositionsYvalue floatValue]) {
+        if (([position.y floatValue] - [maxMeasure floatValue]) < [minPositionsYvalue floatValue]) {
             minPositionsYvalue = position.y;
         }
-        if ([position.y floatValue] > [maxPositionsYvalue floatValue]) {
+        if (([position.y floatValue] + [maxMeasure floatValue]) > [maxPositionsYvalue floatValue]) {
             maxPositionsYvalue = position.y;
         }
-        if ([position.z floatValue] < [minPositionsZvalue floatValue]) {
+        if (([position.y floatValue] - [maxMeasure floatValue]) < [minPositionsZvalue floatValue]) {
             minPositionsZvalue = position.z;
         }
-        if ([position.z floatValue] > [maxPositionsZvalue floatValue]) {
+        if (([position.z floatValue] + [maxMeasure floatValue]) > [maxPositionsZvalue floatValue]) {
             maxPositionsZvalue = position.z;
         }
     }
@@ -178,7 +179,7 @@
  @discussion This method calculates any posible location with the measures taken from each beacon at different positions; it uses a simple grid search of the minimum of the least square of distances from positions were the measures were taken to the grid and the measures and the same point in the grid. In the '('NSDictionary' object 'precisions' must be defined the minimum requirement of precision for each axe, with floats in objects 'NSNumbers' set in the keys "xPrecision", "yPrecision" and "zPrecision".
  */
 - (NSMutableDictionary *) getLocationsUsingGridAproximationWithMeasures:(SharedData*)sharedData
-                                                     andPrecisions:(NSDictionary*)precisions
+                                                          andPrecisions:(NSDictionary*)precisions
 {
     NSLog(@"[INFO][RR] Start Radiolocating beacons");
     NSMutableDictionary * locatedPositions = [[NSMutableDictionary alloc] init];
@@ -228,7 +229,9 @@
     
     // The grid is calculed with the positions
     NSMutableArray * measurePositions = [sharedData fromMeasuresDicGetPositions];
+    NSNumber * maxMeasure = [sharedData fromMeasuresDicGetMaxMeasure];
     NSMutableArray * grid = [self generateGridUsingPositions:measurePositions
+                                               andMaxMeasure:maxMeasure
                                                andPrecisions:precisions];
     
     

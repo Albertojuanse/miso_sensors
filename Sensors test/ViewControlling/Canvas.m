@@ -239,7 +239,7 @@
     // Transform the real positions to an apropiate canvas ones, with the barycenter of the set of points in the center of the canvas
     // This method sets the ratios in the class variables 'rWidth' and 'rHeight'; then, they will be used for transform every single point
     [self calculateRatiosOfTransformationFromRealPointsToCanvasPoints:realPositions
-                                                    withSafeAreaRatio:[NSNumber numberWithFloat:0.4]];
+                                                    withSafeAreaRatio:[NSNumber numberWithFloat:0.35]];
     
     // For every (canvas) position where measures were taken
     for (id positionKey in positionKeys) {
@@ -250,8 +250,8 @@
         RDPosition * canvasPosition = [self transformSingleRealPointToCanvasPoint:realPosition];
         NSLog(@"[INFO][CA] Real position to show: %@", realPosition);
         NSLog(@"[INFO][CA] Canvas position to show: %@",  canvasPosition);
-        NSLog(@"[INFO][CA] rWith: %.2f", rWidth);
-        NSLog(@"[INFO][CA] rHeight: %.2f", rHeight);
+        //NSLog(@"[INFO][CA] rWith: %.2f", rWidth);
+        //NSLog(@"[INFO][CA] rHeight: %.2f", rHeight);
         
         /* *******  DEFINE POSITION CANVAS REPRESENTATION (METHOD)  ************ */
         

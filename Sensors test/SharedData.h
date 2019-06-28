@@ -36,6 +36,7 @@
 - (NSMutableDictionary *) getMeasuresDic;
 - (NSMutableDictionary *) getLocatedDic;
 - (NSMutableArray *) fromMeasuresDicGetPositions;
+- (NSNumber *) fromMeasuresDicGetMaxMeasure;
 - (NSMutableArray *) fromLocatedDicGetPositions;
 
 - (void) inMeasuresDicSetMeasure:(NSNumber*)measure

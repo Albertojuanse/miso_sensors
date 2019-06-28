@@ -40,7 +40,7 @@
 
 /*!
  @method fromMeasuresDicGetPositions
- @discussion This method returns a 'NSMutableArray' object with all the positions where the measures were taken
+ @discussion This method returns a 'NSMutableArray' object with all the positions where the measures were taken.
  */
 - (NSMutableArray *) fromMeasuresDicGetPositions {
     NSArray * positionKeys = [measuresDic allKeys];
@@ -59,7 +59,50 @@
     return measurePositions;
 }
 
-#pragma mark Measures getters
+/*!
+ @method fromMeasuresDicGetMaxMeasure
+ @discussion This method returns a 'NSNumber' that contains the maximum of the measures taken.
+ */
+- (NSNumber *) fromMeasuresDicGetMaxMeasure {
+    NSNumber * maxMeasure = [NSNumber numberWithFloat:0.0];
+    if (measuresDic.count == 0) {
+        // Do nothing
+    } else {
+        // For every position where measures were taken...
+        NSArray * positionKeys = [measuresDic allKeys];
+        for (id positionKey in positionKeys) {
+            // ...get the dictionary for this position.
+            positionDic = [measuresDic objectForKey:positionKey];
+            
+            // Get the the dictionary with the UUID's dictionaries...
+            uuidDicDic = positionDic[@"positionRangeMeasures"];
+            // ...and for every UUID...
+            NSArray * uuidKeys = [uuidDicDic allKeys];
+            for (id uuidKey in uuidKeys) {
+                // ...get the dictionary.
+                uuidDic = [uuidDicDic objectForKey:uuidKey];
+                
+                // Get the the dictionary with the measures dictionaries...
+                measureDicDic = uuidDic[@"uuidMeasures"];
+                // ...and for every measure...
+                NSArray * measuresKeys = [measureDicDic allKeys];
+                for (id measureKey in measuresKeys) {
+                    // ...get the dictionary for this measure...
+                    measureDic = [measureDicDic objectForKey:measureKey];
+                    // ...and the measure.
+                    NSNumber * measure = [NSNumber numberWithFloat:[measureDic[@"measure"] floatValue]];
+                    
+                    if ([measure floatValue] > [maxMeasure floatValue]) {
+                        maxMeasure = measure;
+                    }
+                }
+            }
+        }
+    }
+    return maxMeasure;
+}
+
+#pragma mark Measures setters
 
 /*!
  @method inMeasuresDicSetMeasure:ofType:withUUID:atPosition:andWithState:
