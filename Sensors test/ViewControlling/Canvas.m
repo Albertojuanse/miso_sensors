@@ -253,7 +253,7 @@
         NSLog(@"[INFO][CA] rWith: %.2f", rWidth);
         NSLog(@"[INFO][CA] rHeight: %.2f", rHeight);
         
-        // DEFINE POSITION CANVAS REPRESENTATION (METHOD)
+        /* *******  DEFINE POSITION CANVAS REPRESENTATION (METHOD)  ************ */
         
         // Draw the point
         UIBezierPath *positionBezierPath = [UIBezierPath bezierPath];
@@ -278,7 +278,7 @@
         positionTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
         [[self layer] addSublayer:positionTextLayer];
         
-        // * END * DEFINE POSITION CANVAS REPRESENTATION (METHOD)
+        /* *******  END * DEFINE POSITION CANVAS REPRESENTATION (METHOD)  ************ */
         
         // Get the the dictionary with the UUID's dictionaries...
         uuidDicDic = positionDic[@"positionRangeMeasures"];
@@ -379,7 +379,7 @@
             }
             /* ************************** END SEARCH LOCATED UUID **************************** */
             
-            // DEFINE UUID CANVAS REPRESENTATION (METHOD)
+            /* *********  DEFINE UUID CANVAS REPRESENTATION (METHOD)  ************ */
             
             UIBezierPath * uuidBezierPath = [UIBezierPath bezierPath];
             
@@ -436,7 +436,7 @@
             uuidTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
             [[self layer] addSublayer:uuidTextLayer];
             
-            // * END * DEFINE UUID CANVAS REPRESENTATION (METHOD)
+            /* *********  * END * DEFINE UUID CANVAS REPRESENTATION (METHOD)  ************ */
             
             // Get the the dictionary with the measures dictionaries...
             measureDicDic = uuidDic[@"uuidMeasures"];
@@ -448,7 +448,7 @@
                 // ...and the measure.
                 NSNumber * measure = [NSNumber numberWithFloat:[measureDic[@"measure"] floatValue]];
                 
-                // DEFINE MEASURE CANVAS REPRESENTATION (METHOD)
+                /* *********  DEFINE MEASURE CANVAS REPRESENTATION (METHOD)  ************ */
                 RDPosition * canvasPosition = [self transformSingleRealPointToCanvasPoint:realPosition];
                 
                 //UIBezierPath *measureBezierPath = [UIBezierPath bezierPath];
@@ -472,7 +472,7 @@
                 [beaconLayer setStrokeColor:colorUUID.CGColor];
                 [beaconLayer setFillColor:[UIColor clearColor].CGColor];
                 [[self layer] addSublayer:beaconLayer];
-                // * END * DEFINE MEASURE CANVAS REPRESENTATION (METHOD)
+                /* *********  * END * DEFINE MEASURE CANVAS REPRESENTATION (METHOD)  ************ */
             }
             UUIDindex++;
         }
