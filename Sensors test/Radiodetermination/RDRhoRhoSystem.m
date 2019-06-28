@@ -298,44 +298,51 @@
                         // ...and for every measure calculate its mean average.
                         // TO DO Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
                         
-                        NSNumber * measuresAcumulation = [NSNumber numberWithFloat:0.0];
-                        NSInteger measureIndex = 0;
-                        NSArray * measuresKeys = [measureDicDic allKeys];
-                        for (id measureKey in measuresKeys) {
-                            measureDic = [measureDicDic objectForKey:measureKey];
-                            measuresAcumulation = [NSNumber numberWithFloat:
-                                                   [measuresAcumulation floatValue] +
-                                                   [measureDic[@"measure"] floatValue]
-                                                   ];
-                            measureIndex++;
-                        }
-                        NSNumber * measureIndexFloat = [NSNumber numberWithInteger:measureIndex];
-                        NSNumber * measuresAverage = [NSNumber numberWithFloat:
-                                                      [measuresAcumulation floatValue] / [measureIndexFloat floatValue]
-                                                      ];
-                        // Count as valid position with measures
-                        if (measureIndex > 0) {
-                            positionsWithMeasures++;
-                        }
+                        // But only do this if the 'measureDicDic' exists
+                        if (measureDicDic.count == 0) {
+                            // Not evaluate
+                        } else {
+                            
+                            NSNumber * measuresAcumulation = [NSNumber numberWithFloat:0.0];
+                            NSInteger measureIndex = 0;
+                            NSArray * measuresKeys = [measureDicDic allKeys];
+                            for (id measureKey in measuresKeys) {
+                                measureDic = [measureDicDic objectForKey:measureKey];
+                                measuresAcumulation = [NSNumber numberWithFloat:
+                                                       [measuresAcumulation floatValue] +
+                                                       [measureDic[@"measure"] floatValue]
+                                                       ];
+                                measureIndex++;
+                            }
+                            NSNumber * measureIndexFloat = [NSNumber numberWithInteger:measureIndex];
+                            NSNumber * measuresAverage = [NSNumber numberWithFloat:
+                                                          [measuresAcumulation floatValue] / [measureIndexFloat floatValue]
+                                                          ];
+                            // Count as valid position with measures
+                            if (measureIndex > 0) {
+                                positionsWithMeasures++;
+                            }
                         
-                        // And perform the calculus to minimizate; is squared difference.
-                        sum = [NSNumber numberWithFloat:
-                               (
-                                [sum floatValue] +
-                                [positionsDistance floatValue] -
-                                [measuresAverage floatValue]) *
-                               (
-                                [sum floatValue] +
-                                [positionsDistance floatValue] -
-                                [measuresAverage floatValue]
-                                )
-                               ];
+                            // And perform the calculus to minimizate; is squared difference.
+                            sum = [NSNumber numberWithFloat:
+                                   (
+                                    [sum floatValue] +
+                                    [positionsDistance floatValue] -
+                                    [measuresAverage floatValue]) *
+                                   (
+                                    [sum floatValue] +
+                                    [positionsDistance floatValue] -
+                                    [measuresAverage floatValue]
+                                    )
+                                   ];
+                        }
                     }
                 }
             }
             // Evaluate feasibility
             if (positionsWithMeasures > 2) {
                 // Minimization
+                
                 if ([sum floatValue] < [minarg floatValue]) {
                     minarg = [NSNumber numberWithFloat:[sum floatValue]];
                     minargPosition = [[RDPosition alloc] init];

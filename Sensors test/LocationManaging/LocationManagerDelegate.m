@@ -243,29 +243,34 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             
             // TO DO. Calibration. Alberto J.
             NSInteger calibration = -30;
-            [sharedData inMeasuresDicSetMeasure:[RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue] + calibration]
-                                         ofType:@"rssi"
-                                       withUUID:uuid
-                                     atPosition:measurePosition
-                                   andWithState:measuring];
+            NSNumber * RSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue] + calibration];
+            
+            // Minimum sensibility 5 cm; Ipad often gives unreal values near to cero
+            if ([RSSIdistance floatValue] > 0.05) {
+                [sharedData inMeasuresDicSetMeasure:RSSIdistance
+                                             ofType:@"rssi"
+                                           withUUID:uuid
+                                         atPosition:measurePosition
+                                       andWithState:measuring];
 
-            // Ask radiolocation of beacons if posible...
-            // Precision is arbitrary set to 5 cm
-            NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                         [NSNumber numberWithFloat:0.5], @"xPrecision",
-                                         [NSNumber numberWithFloat:0.5], @"yPrecision",
-                                         [NSNumber numberWithFloat:0.5], @"zPrecision",
-                                         nil];
-            
-            NSMutableDictionary * locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithMeasures:sharedData
-                                                                                                   andPrecisions:precisions];
-            
-            // ...and save it in dictionary 'locatedDic'.
-            // In this dictionary keys are the UUID.
-            NSArray *positionKeys = [locatedPositions allKeys];
-            for (id positionKey in positionKeys) {
-                [sharedData inLocatedDicSetPosition:[locatedPositions objectForKey:positionKey]
-                                           fromUUID:positionKey];
+                // Ask radiolocation of beacons if posible...
+                // Precision is arbitrary set to 5 cm
+                NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
+                                             [NSNumber numberWithFloat:0.5], @"xPrecision",
+                                             [NSNumber numberWithFloat:0.5], @"yPrecision",
+                                             [NSNumber numberWithFloat:0.5], @"zPrecision",
+                                             nil];
+                
+                NSMutableDictionary * locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithMeasures:sharedData
+                                                                                                       andPrecisions:precisions];
+                
+                // ...and save it in dictionary 'locatedDic'.
+                // In this dictionary keys are the UUID.
+                NSArray *positionKeys = [locatedPositions allKeys];
+                for (id positionKey in positionKeys) {
+                    [sharedData inLocatedDicSetPosition:[locatedPositions objectForKey:positionKey]
+                                               fromUUID:positionKey];
+                }
             }
             
             NSLog(@"[INFO][LM] Generated locations dictionary:");
