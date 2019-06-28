@@ -341,13 +341,22 @@
                             break;
                     }
                     
-                    // Choose a position for display the located position
-                    [positionBezierPath addArcWithCenter:[canvasLocatedPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+                    // Display the located position
+                    [locatedBezierPath moveToPoint:CGPointMake([canvasLocatedPosition.x floatValue] - 3.0,
+                                                               [canvasLocatedPosition.y floatValue]  - 3.0)];
+                    [locatedBezierPath addLineToPoint:CGPointMake([canvasLocatedPosition.x floatValue] + 3.0,
+                                                                  [canvasLocatedPosition.y floatValue] + 3.0)];
+                    [locatedBezierPath moveToPoint:CGPointMake([canvasLocatedPosition.x floatValue] + 3.0,
+                                                               [canvasLocatedPosition.y floatValue] - 3.0)];
+                    [locatedBezierPath addLineToPoint:CGPointMake([canvasLocatedPosition.x floatValue] - 3.0,
+                                                                  [canvasLocatedPosition.y floatValue] + 3.0)];
+                    
                     CAShapeLayer *locatedLayer = [[CAShapeLayer alloc] init];
                     [locatedLayer setPath:locatedBezierPath.CGPath];
                     [locatedLayer setStrokeColor:colorUUID.CGColor];
                     [locatedLayer setFillColor:[UIColor clearColor].CGColor];
-                    [[self layer] addSublayer:locatedLayer];
+                    [self.layer addSublayer:locatedLayer];
+                    
                     
                     // Text of real located position but in located canvas position
                     CATextLayer *locatedTextLayer = [CATextLayer layer];
