@@ -231,30 +231,38 @@
     NSMutableArray * grid = [self generateGridUsingPositions:measurePositions
                                                andPrecisions:precisions];
     
+    
     // Each UUID groups the measures taken from a certain beacon and so, for every one of them a RDPosition would be found. It is needed the info about how many beacons there are.
-    // For every position in the grid...
-    NSInteger UUIDfound = 0;
     NSArray * positionKeys = [measuresDic allKeys];
+    NSMutableArray * diferentUUID = [[NSMutableArray alloc] init];
     for (id positionKey in positionKeys) {
-        NSInteger UUIDeachPositionFound = 0;
         positionDic = [measuresDic objectForKey:positionKey];
         uuidDicDic = positionDic[@"positionRangeMeasures"];
         NSArray * uuidKeys = [uuidDicDic allKeys];
         for (id uuidKey in uuidKeys) {
-            UUIDeachPositionFound++;
-        }
-        if (UUIDeachPositionFound > UUIDfound) {
-            UUIDfound = UUIDeachPositionFound;
+            NSString * uuid = uuidDicDic[uuidKey][@"uuid"];
+            if(diferentUUID.count == 0) {
+                [diferentUUID addObject:uuid];
+            } else {
+                for (NSString * existingUUID in diferentUUID) {
+                    if ([existingUUID isEqualToString:uuid]) {
+                        // not add
+                    } else {
+                        [diferentUUID addObject:uuid];
+                    }
+                }
+            }
         }
     }
     
     // And thus, for every beacon that must be located with it unique UUID.
-    for (NSInteger UUIDindex = 0; UUIDindex < UUIDfound; UUIDindex++) {
+    for (NSString * UUIDtoLocate in diferentUUID) {
+        
         // Optimization search over the grid
         NSNumber * minarg = [NSNumber numberWithFloat:FLT_MAX];
         RDPosition * minargPosition;
         NSString * minargUUID;
-    
+        
         // For every position in the grid...
         for (RDPosition * gridPosition in grid) {
             
@@ -276,20 +284,20 @@
                 
                 // Get the the dictionary with the UUID's dictionaries...
                 uuidDicDic = positionDic[@"positionRangeMeasures"];
-                // ...and for the current UUID...
-                NSInteger UUIDsubIndex = 0;
                 NSArray * uuidKeys = [uuidDicDic allKeys];
                 for (id uuidKey in uuidKeys) {
-                    if (UUIDsubIndex == UUIDindex) {
-                        // ...get the dictionary and the UUID.
-                        uuidDic = [uuidDicDic objectForKey:uuidKey];
-                        minargUUID = uuidDic[@"uuid"];
+                    // ...get the dictionary and the UUID...
+                    uuidDic = [uuidDicDic objectForKey:uuidKey];
+                    minargUUID = uuidDic[@"uuid"];
+                    
+                    // ...and only perform the calculus if is the current searched UUID...
+                    if ([UUIDtoLocate isEqualToString:minargUUID]) {
                     
                         // Get the the dictionary with the measures dictionaries...
                         measureDicDic = uuidDic[@"uuidMeasures"];
                         // ...and for every measure calculate its mean average.
                         // TO DO Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
-                    
+                        
                         NSNumber * measuresAcumulation = [NSNumber numberWithFloat:0.0];
                         NSInteger measureIndex = 0;
                         NSArray * measuresKeys = [measureDicDic allKeys];
@@ -323,7 +331,6 @@
                                 )
                                ];
                     }
-                    UUIDsubIndex++;
                 }
             }
             // Evaluate feasibility
