@@ -274,7 +274,6 @@
                 NSNumber * positionsDistance = [measurePosition euclideanDistance3Dto:gridPosition];
                 // ...this will be used for comparing with each beacon's measures and minimization.
                 
-                
                 // Get the the dictionary with the UUID's dictionaries...
                 uuidDicDic = positionDic[@"positionRangeMeasures"];
                 // ...and for the current UUID...

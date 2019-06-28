@@ -304,9 +304,10 @@
                 if ([locatedUUID isEqualToString:uuid]) {
                     RDPosition * locatedPosition = positionDic[@"locatedPosition"];
                     NSLog(@"[INFO][CA] Real located position to show: %@", locatedPosition);
-                    NSLog(@"[INFO][CA] Canvas located position to show: %@", locatedPosition);
                     RDPosition * canvasLocatedPosition = [self transformSingleRealPointToCanvasPoint:locatedPosition];
-                    UIBezierPath *uuidBezierPath = [UIBezierPath bezierPath];
+                    NSLog(@"[INFO][CA] Canvas located position to show: %@", canvasLocatedPosition);
+                    
+                    UIBezierPath * locatedBezierPath = [UIBezierPath bezierPath];
                     
                     // Choose a color for each UUID
                     UIColor *colorUUID;
@@ -343,17 +344,35 @@
                     // Choose a position for display the located position
                     [positionBezierPath addArcWithCenter:[canvasLocatedPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
                     CAShapeLayer *locatedLayer = [[CAShapeLayer alloc] init];
-                    [locatedLayer setPath:uuidBezierPath.CGPath];
+                    [locatedLayer setPath:locatedBezierPath.CGPath];
                     [locatedLayer setStrokeColor:colorUUID.CGColor];
                     [locatedLayer setFillColor:[UIColor clearColor].CGColor];
                     [[self layer] addSublayer:locatedLayer];
+                    
+                    // Text of real located position but in located canvas position
+                    CATextLayer *locatedTextLayer = [CATextLayer layer];
+                    locatedTextLayer.position = CGPointMake([canvasLocatedPosition.x floatValue] + 5.0,
+                                                            [canvasLocatedPosition.y floatValue] + 5.0);
+                    locatedTextLayer.frame = CGRectMake([canvasLocatedPosition.x floatValue] + 5.0,
+                                                         [canvasLocatedPosition.y floatValue] + 5.0,
+                                                         100,
+                                                         20);
+                    locatedTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)",
+                                               [locatedPosition.x floatValue],
+                                               [locatedPosition.y floatValue]];
+                    locatedTextLayer.fontSize = 10;
+                    locatedTextLayer.alignmentMode = kCAAlignmentCenter;
+                    locatedTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+                    locatedTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
+                    [[self layer] addSublayer:locatedTextLayer];
+
                 }
             }
             /* ************************** END SEARCH LOCATED UUID **************************** */
             
             // DEFINE UUID CANVAS REPRESENTATION (METHOD)
             
-            UIBezierPath *uuidBezierPath = [UIBezierPath bezierPath];
+            UIBezierPath * uuidBezierPath = [UIBezierPath bezierPath];
             
             // Choose a color for each UUID
             UIColor *colorUUID;
@@ -434,8 +453,8 @@
                                          2.0 * [measure floatValue] * rWidth,
                                          2.0 * [measure floatValue] * rHeight);
                 UIBezierPath *measureBezierPath = [UIBezierPath bezierPathWithOvalInRect:rect];
-                NSLog(@"[INFO][CA][TRAN] Ellipse measured: %.2f, %.2f",  [measure floatValue],  [measure floatValue]);
-                NSLog(@"[INFO][CA][TRAN] Ellipse canvas: %.2f, %.2f",  [measure floatValue] * rWidth, [measure floatValue] * rHeight);
+                //NSLog(@"[INFO][CA][TRAN] Ellipse measured: %.2f, %.2f",  [measure floatValue],  [measure floatValue]);
+                //NSLog(@"[INFO][CA][TRAN] Ellipse canvas: %.2f, %.2f",  [measure floatValue] * rWidth, [measure floatValue] * rHeight);
                 
 
                 
@@ -603,6 +622,11 @@
         rWidth = 1.0;
         rHeight = 1.0;
         
+        barycenter = [[RDPosition alloc] init];
+        barycenter.x = [[NSNumber alloc] initWithFloat:0.0];
+        barycenter.y = [[NSNumber alloc] initWithFloat:0.0];
+        barycenter.z = [[NSNumber alloc] initWithFloat:0.0];
+        
     } else {
         
         // Define a safe area
@@ -651,7 +675,6 @@
         }
         // Correct the points location.
         barycenter = [self getBarycenterOf:centeredCanvasPoints];
-        NSLog(@"[INFO][CA][TRAN] barycenter: %.2f, %.2f",  [barycenter.y floatValue],  [barycenter.x floatValue]);
     }
 }
 
@@ -677,6 +700,7 @@
     // Correct the points location.
     RDPosition * correction = [self subtract:RDcenter from:barycenter];
     RDPosition * correctedCanvasPoint = [self add:centeredCanvasPoint to:correction];
+    
     return correctedCanvasPoint;
 }
 

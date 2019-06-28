@@ -259,11 +259,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             
             NSMutableDictionary * locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithMeasures:sharedData
                                                                                                    andPrecisions:precisions];
+            
             // ...and save it in dictionary 'locatedDic'.
             // In this dictionary keys are the UUID.
-            
-            
-            
             NSArray *positionKeys = [locatedPositions allKeys];
             for (id positionKey in positionKeys) {
                 [sharedData inLocatedDicSetPosition:[locatedPositions objectForKey:positionKey]
