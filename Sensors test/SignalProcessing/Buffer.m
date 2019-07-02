@@ -98,7 +98,7 @@
 }
 
 /*!
- @method executeWithInput:andThreshold:
+ @method isOutput
  @discussion This method is called to check if there is a valid value in the output.
  */
 - (BOOL) isOutput {
