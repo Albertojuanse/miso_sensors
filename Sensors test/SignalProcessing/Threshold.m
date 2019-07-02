@@ -54,8 +54,8 @@
 - (void) execute
 {
     isOutput = NO;
-    NSNumber * difference = [NSNumber numberWithFloat:[self.input floatValue] + [lastValue floatValue]];
-    
+    // Euclidean distance; absolute value
+    NSNumber * difference = [NSNumber numberWithFloat:powf(powf([self.input floatValue] - [lastValue floatValue], 2) , 0.5)];
     if ([difference floatValue] < [self.threshold floatValue]) {
         self.enabling = YES;
     } else {

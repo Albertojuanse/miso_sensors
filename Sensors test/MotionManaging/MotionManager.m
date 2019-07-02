@@ -19,15 +19,78 @@
 {
 self = [super init];
 if (self) {
-    // View controller
+    // Components
     viewController = viewControllerFromStateMachine;
     sharedData = initSharedData;
-    t = 1.0/100.0;
-    g = 9.7994;
-    calibrationTime = 10;
-    calibrationSteps = calibrationTime * 1/t;
-    calibration_counter = 0;
-    precision_threshold = 0.1;
+    
+    // Configuration variables
+    t = [NSNumber numberWithFloat:1.0/100.0];
+    gx = [NSNumber numberWithFloat:0.0];
+    gy = [NSNumber numberWithFloat:0.0];
+    gz = [NSNumber numberWithFloat:-9.7994];
+    
+    //  Signal processing configuration variables
+    self.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
+    self.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
+    self.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
+    self.acce_biasBuffer_capacity = [NSNumber numberWithInt:500];
+    self.gyro_measuresBuffer_capacity = [NSNumber numberWithInt:500];
+    self.gyro_biasBuffer_capacity = [NSNumber numberWithInt:500];
+    
+    // Signal processing variables
+    acce_mea_x = [NSNumber numberWithFloat:0.0];
+    acce_mea_y = [NSNumber numberWithFloat:0.0];
+    acce_mea_z = [NSNumber numberWithFloat:0.0];
+    
+    acce_bias_x = [NSNumber numberWithFloat:0.0];
+    acce_bias_y = [NSNumber numberWithFloat:0.0];
+    acce_bias_z = [NSNumber numberWithFloat:0.0];
+    
+    
+    // Signal processing components
+    acce_threshold_x = [[Threshold alloc] initWithThreshold:self.acce_sensitivity_threshold];
+    acce_gravityAdder_x = [[Adder alloc] init];
+    acce_measuresBuffer_x = [[Buffer alloc] initWithCapacity:self.acce_measuresBuffer_capacity];
+    acce_measuresBuffer_x.enabled = YES;
+    acce_biasBuffer_x = [[Buffer alloc] initWithCapacity:self.acce_biasBuffer_capacity];
+    acce_averager_x = [[Averager alloc] init];
+    
+    gyro_threshold_x = [[Threshold alloc] initWithThreshold:self.gyro_sensitivity_threshold];
+    gyro_measuresBuffer_x = [[Buffer alloc] initWithCapacity:self.gyro_measuresBuffer_capacity];
+    gyro_measuresBuffer_x.enabled = YES;
+    gyro_biasBuffer_x = [[Buffer alloc] initWithCapacity:self.gyro_biasBuffer_capacity];
+    gyro_averager_x = [[Averager alloc] init];
+    gyro_biasAdder_x = [[Adder alloc] init]; // This will subtract using a inversed input
+    
+    acce_threshold_y = [[Threshold alloc] initWithThreshold:self.acce_sensitivity_threshold];
+    acce_gravityAdder_y = [[Adder alloc] init];
+    acce_measuresBuffer_y = [[Buffer alloc] initWithCapacity:self.acce_measuresBuffer_capacity];
+    acce_measuresBuffer_y.enabled = YES;
+    acce_biasBuffer_y = [[Buffer alloc] initWithCapacity:self.acce_biasBuffer_capacity];
+    acce_averager_y = [[Averager alloc] init];
+    
+    gyro_threshold_y = [[Threshold alloc] initWithThreshold:self.gyro_sensitivity_threshold];
+    gyro_measuresBuffer_y = [[Buffer alloc] initWithCapacity:self.gyro_measuresBuffer_capacity];
+    gyro_measuresBuffer_y.enabled = YES;
+    gyro_biasBuffer_y = [[Buffer alloc] initWithCapacity:self.gyro_biasBuffer_capacity];
+    gyro_averager_y = [[Averager alloc] init];
+    gyro_biasAdder_y = [[Adder alloc] init]; // This will subtract using a inversed input
+    
+    acce_threshold_z = [[Threshold alloc] initWithThreshold:self.acce_sensitivity_threshold];
+    acce_gravityAdder_z = [[Adder alloc] init];
+    acce_measuresBuffer_z = [[Buffer alloc] initWithCapacity:self.acce_measuresBuffer_capacity];
+    acce_measuresBuffer_z.enabled = YES;
+    acce_biasBuffer_z = [[Buffer alloc] initWithCapacity:self.acce_biasBuffer_capacity];
+    acce_averager_z = [[Averager alloc] init];
+    
+    gyro_threshold_z = [[Threshold alloc] initWithThreshold:self.gyro_sensitivity_threshold];
+    gyro_measuresBuffer_z = [[Buffer alloc] initWithCapacity:self.gyro_measuresBuffer_capacity];
+    gyro_measuresBuffer_z.enabled = YES;
+    gyro_biasBuffer_z = [[Buffer alloc] initWithCapacity:self.gyro_biasBuffer_capacity];
+    gyro_averager_z = [[Averager alloc] init];
+    gyro_biasAdder_z = [[Adder alloc] init]; // This will subtract using a inversed input
+    
+    // Orchestration variables
     traveling = NO;
     position = [[RDPosition alloc] init];
     }
@@ -43,11 +106,16 @@ if (self) {
     // Make sure the accelerometer hardware is available.
     if (self.isAccelerometerAvailable) {
         NSLog(@"[INFO][MM] Accelerometer avalible");
-        self.accelerometerUpdateInterval = t;
+        self.accelerometerUpdateInterval = [t doubleValue];
         [self startAccelerometerUpdates];
         if (self.timer == nil){
         // Configure a timer to fetch the data.
-            self.timer = [[NSTimer alloc] initWithFireDate:[NSDate date] interval:(t) target:self selector:@selector(process) userInfo:nil repeats:YES];
+            self.timer = [[NSTimer alloc] initWithFireDate:[NSDate date]
+                                                  interval:([t doubleValue])
+                                                    target:self
+                                                  selector:@selector(process)
+                                                  userInfo:nil
+                                                   repeats:YES];
         
             // Add the timer to the current run loop.
             [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
@@ -77,12 +145,17 @@ if (self) {
     // Make sure the gyroscope hardware is available.
     if (self.isGyroAvailable) {
         NSLog(@"[INFO][MM] Gyroscope avalible");
-        self.gyroUpdateInterval = t;
+        self.gyroUpdateInterval = [t doubleValue];
         [self startGyroUpdates];
         
         if (self.timer == nil){
             // Configure a timer to fetch the data.
-            self.timer = [[NSTimer alloc] initWithFireDate:[NSDate date] interval:(t) target:self selector:@selector(process) userInfo:nil repeats:YES];
+            self.timer = [[NSTimer alloc] initWithFireDate:[NSDate date]
+                                                  interval:([t doubleValue])
+                                                    target:self
+                                                  selector:@selector(process)
+                                                  userInfo:nil
+                                                   repeats:YES];
             
             // Add the timer to the current run loop.
             [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
@@ -111,156 +184,146 @@ if (self) {
 - (void) process {
     // NSLog(@"; \"x\": %f, \"y\": %f, \"z\": %f, \"type\": \"gyroscope\"} {\"date\":", self.gyroData.rotationRate.x, self.gyroData.rotationRate.y, self.gyroData.rotationRate.y);
     // NSLog(@"; \"x\": %f, \"y\": %f, \"z\": %f, \"type\": \"accelerometer\"} {\"date\":", self.accelerometerData.acceleration.x, self.accelerometerData.acceleration.y, self.accelerometerData.acceleration.z);
-    // No valid results will be while calibration process.
-    // The calibration procces calculate the average of the signals in order od subtracting them.
-    if (calibration_counter < calibrationSteps) {
+    
+    /*
+    viewController.labelAX.text = [NSString stringWithFormat:@"%.2f", ax0 - ax_ave];
+    viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", gp0 - gp_ave];
+    viewController.labelCalibrated.text = @"Calibrated";
+    NSLog(@"[INFO][MM] Calibrated.");
+    viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", gp];
+    viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", dp * 180 / M_PI];
+    viewController.labelPosX.text = [NSString stringWithFormat:@"%.2f", rx];
+    */
+    
+    /*
+    ax_ave = ax_ave_t * cos(gyt) * cos(gpt) + ay_ave_t * (cos(gyt) * sin(gpt) * sin(grt) - sin(gyt) * cos(grt)) + az_ave_t * (cos(gyt) * sin(gpt) * cos(grt) + sin(gyt) * sin(grt));
+    ay_ave = ax_ave_t * sin(gyt) * cos(gpt) + ay_ave_t * (sin(gyt) * sin(gpt) * sin(grt) + cos(gyt) * cos(grt)) + az_ave_t * (sin(gyt) * sin(gpt) * cos(grt) - cos(gyt) * sin(grt));
+    az_ave = ax_ave_t * -sin(gpt) + ay_ave_t * cos(gpt) * sin(grt) + az_ave_t * cos(gpt) * cos(grt);
+    
+    
+    ax_ave = ax_ave_t * (cos(gyt) * cos(gpt) * cos(grt) - sin(gyt) * sin(grt)) + ay_ave_t * (-cos(grt) * sin(gyt) - cos(gyt) * cos(gpt) * sin(grt)) + az_ave_t * (cos(gyt) * sin(gpt));
+    ay_ave = ax_ave_t * (cos(gyt) * sin(grt) + cos(gpt) * cos(grt) * sin(gyt)) + ay_ave_t * (cos(gyt) * cos(grt) - cos(gpt) * sin(gyt) * sin(grt)) + az_ave_t * (sin(gyt) * sin(gpt));
+    az_ave = ax_ave_t * (-cos(grt) * sin(gpt)) + ay_ave_t * (sin(gpt) * sin (grt)) + az_ave_t * (cos(gpt));
+    */
+    
+    // TO DO. Rotation matrix
+    NSNumber * gravity_rotated_x = [NSNumber numberWithFloat:[gx floatValue]];
+    NSNumber * gravity_rotated_y = [NSNumber numberWithFloat:[gx floatValue]];
+    NSNumber * gravity_rotated_z = [NSNumber numberWithFloat:[gx floatValue]];
+    
+    // There will be necesary 6 processing channels: 3 for accelerometers and 3 for gyroscopes
+    
+    // First channel: accelerometer in x axis
+    acce_mea_x = [NSNumber numberWithFloat:self.accelerometerData.acceleration.x];
+    
+    [acce_threshold_x executeWithInput:acce_mea_x];
+    
+    [acce_measuresBuffer_x executeWithInput:acce_mea_x];
+    
+    if([acce_threshold_x isOutput]) {
+        [acce_gravityAdder_x executeWithInput1:gravity_rotated_x andInput2:acce_mea_x];
         
-        // Starts at zero; is needed to increase the counter here.
-        calibration_counter++;
-        
-        // Accelerometer calibration
-        ax0 = self.accelerometerData.acceleration.x * g;
-        ax_ave_sum += ax0;
-        ax_ave = ax_ave_sum / calibration_counter;
-        
-        ay0 = self.accelerometerData.acceleration.y * g;
-        ay_ave_sum += ay0;
-        ay_ave = ay_ave_sum / calibration_counter;
-        
-        az0 = self.accelerometerData.acceleration.z * g;
-        az_ave_sum += az0;
-        az_ave = az_ave_sum / calibration_counter;
-        
-        // Gyroscope calibration
-        gp0 = self.gyroData.rotationRate.x;
-        gp_ave_sum += gp0;
-        gp_ave = gp_ave_sum / calibration_counter;
-        
-        gr0 = self.gyroData.rotationRate.y;
-        gr_ave_sum += gr0;
-        gr_ave = gr_ave_sum / calibration_counter;
-        
-        gy0 = self.gyroData.rotationRate.z;
-        gy_ave_sum += gy0;
-        gy_ave = gy_ave_sum / calibration_counter;
-        
-        viewController.labelAX.text = [NSString stringWithFormat:@"%.2f", ax0 - ax_ave];
-        viewController.labelAY.text = [NSString stringWithFormat:@"%.2f", ay0 - ay_ave];
-        viewController.labelAZ.text = [NSString stringWithFormat:@"%.2f", az0 - az_ave];
-        
-        viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", gp0 - gp_ave];
-        viewController.labelGY.text = [NSString stringWithFormat:@"%.2f", gr0 - gr_ave];
-        viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", gy0 - gy_ave];
-    } else if (calibration_counter == calibrationSteps) {
-        viewController.labelCalibrated.text = @"Calibrated";
-        NSLog(@"[INFO][MM] Calibrated.");
-        calibration_counter++;
-    } else if (calibration_counter > calibrationSteps) {
-        calibration_counter++;
-        
-        // Gyroscope acquisition
-        gp = self.gyroData.rotationRate.x - gp_ave;
-        gr = self.gyroData.rotationRate.y - gr_ave;
-        gy = self.gyroData.rotationRate.z - gy_ave;
-        
-        viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", gp];
-        viewController.labelGY.text = [NSString stringWithFormat:@"%.2f", gr];
-        viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", gy];
-        
-        // Attitude
-        if (gp > (precision_threshold/10)) {
-            dp = dp + gp * t;
-            viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", dp * 180 / M_PI];
-        }
-        if (gp < -(precision_threshold/10)) {
-            dp = dp + gp * t;
-            viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", dp * 180 / M_PI];
-        }
-        if (gr > (precision_threshold/10)) {
-            dr = dr + gr * t;
-            viewController.labelDegR.text = [NSString stringWithFormat:@"%.2f", dr * 180 / M_PI];
-        }
-        if (gr < -(precision_threshold/10)) {
-            dr = dr + gr * t;
-            viewController.labelDegR.text = [NSString stringWithFormat:@"%.2f", dr * 180 / M_PI];
-        }
-        if (gy > (precision_threshold/10)) {
-            dy = dy + gy * t;
-            viewController.labelDegY.text = [NSString stringWithFormat:@"%.2f", dy * 180 / M_PI];
-        }
-        if (gy < -(precision_threshold/10)) {
-            dy = dy + gy * t;
-            viewController.labelDegY.text = [NSString stringWithFormat:@"%.2f", dy * 180 / M_PI];
-        }
-        
-        // Inertial compensation; the matrix is in order: dy, dp, dr
-        // http://planning.cs.uiuc.edu/node102.html
-        double ax_ave_t = ax_ave;
-        double ay_ave_t = ay_ave;
-        double az_ave_t = az_ave;
-        double gyt = gy * t;
-        double gpt = gp * t;
-        double grt = gr * t;
-        
-        ax_ave = ax_ave_t * (1 + sin(grt));
-        az_ave = az_ave_t * (1 - sin(grt));
-        
-        /*
-        ax_ave = ax_ave_t * cos(gyt) * cos(gpt) + ay_ave_t * (cos(gyt) * sin(gpt) * sin(grt) - sin(gyt) * cos(grt)) + az_ave_t * (cos(gyt) * sin(gpt) * cos(grt) + sin(gyt) * sin(grt));
-        ay_ave = ax_ave_t * sin(gyt) * cos(gpt) + ay_ave_t * (sin(gyt) * sin(gpt) * sin(grt) + cos(gyt) * cos(grt)) + az_ave_t * (sin(gyt) * sin(gpt) * cos(grt) - cos(gyt) * sin(grt));
-        az_ave = ax_ave_t * -sin(gpt) + ay_ave_t * cos(gpt) * sin(grt) + az_ave_t * cos(gpt) * cos(grt);
-        
-        
-        ax_ave = ax_ave_t * (cos(gyt) * cos(gpt) * cos(grt) - sin(gyt) * sin(grt)) + ay_ave_t * (-cos(grt) * sin(gyt) - cos(gyt) * cos(gpt) * sin(grt)) + az_ave_t * (cos(gyt) * sin(gpt));
-        ay_ave = ax_ave_t * (cos(gyt) * sin(grt) + cos(gpt) * cos(grt) * sin(gyt)) + ay_ave_t * (cos(gyt) * cos(grt) - cos(gpt) * sin(gyt) * sin(grt)) + az_ave_t * (sin(gyt) * sin(gpt));
-        az_ave = ax_ave_t * (-cos(grt) * sin(gpt)) + ay_ave_t * (sin(gpt) * sin (grt)) + az_ave_t * (cos(gpt));
-        */
-        
-        // Accelerometer acquisition
-        ax = self.accelerometerData.acceleration.x * g - ax_ave;
-        ay = self.accelerometerData.acceleration.y * g - ay_ave;
-        az = self.accelerometerData.acceleration.z * g - az_ave;
-        
-        viewController.labelAX.text = [NSString stringWithFormat:@"%.2f", ax];
-        viewController.labelAY.text = [NSString stringWithFormat:@"%.2f", ay];
-        viewController.labelAZ.text = [NSString stringWithFormat:@"%.2f", az];
-        
-        // Position
-        // If the refenrence system is the one described by Apple in documentation, the acceleration measures are negative.
-        // https://developer.apple.com/documentation/coremotion/getting_raw_gyroscope_events?language=objc
-        if (ax < - precision_threshold) {
-            vx = vx - ax * t;
-            rx = rx + (1.0/2.0) * vx * t;
-            viewController.labelPosX.text = [NSString stringWithFormat:@"%.2f", rx];
-        }
-        if (ax > precision_threshold) {
-            vx = vx - ax * t;
-            rx = rx + (1.0/2.0) * vx * t;
-            viewController.labelPosX.text = [NSString stringWithFormat:@"%.2f", rx];
-        }
-        
-        if (ay < - precision_threshold) {
-            vy = vy - ay * t;
-            ry = ry + (1.0/2.0) * vy * t;
-            viewController.labelPosY.text = [NSString stringWithFormat:@"%.2f", ry];
-        }
-        if (ay > precision_threshold) {
-            vy = vy - ay * t;
-            ry = ry + (1.0/2.0) * vy * t;
-            viewController.labelPosY.text = [NSString stringWithFormat:@"%.2f", ry];
-        }
-        
-        if (az < -precision_threshold) {
-            vz = vz - az * t;
-            rz = rz + (1.0/2.0) * vz * t;
-            viewController.labelPosZ.text = [NSString stringWithFormat:@"%.2f", rz];
-        }
-        if (az > precision_threshold) {
-            vz = vz - az * t;
-            rz = rz + (1.0/2.0) * vz * t;
-            viewController.labelPosZ.text = [NSString stringWithFormat:@"%.2f", rz];
+        if ([acce_gravityAdder_x isOutput]) {
+            [acce_biasBuffer_x executeWithInput:acce_gravityAdder_x.output
+                                    andEnabling:acce_threshold_x.enabling];
+            
+            if ([acce_biasBuffer_x isOutput]) {
+                [acce_averager_x executeWithInput:acce_biasBuffer_x.arrayOutput];
+                
+                if ([acce_averager_x isOutput]) {
+                    acce_bias_x = [NSNumber numberWithFloat:[acce_averager_x.output floatValue]];
+                    acce_biasBuffer_x.disabledInput = [NSNumber numberWithFloat:[acce_averager_x.output floatValue]];
+                    viewController.labelAX.text = [NSString stringWithFormat:@"%.3f", [acce_mea_x floatValue]];
+                }
+            }
         }
     }
+    
+    
+    // Second channel: accelerometer in y axis
+    acce_mea_y = [NSNumber numberWithFloat:self.accelerometerData.acceleration.y];
+    
+    [acce_threshold_y executeWithInput:acce_mea_y];
+    
+    [acce_measuresBuffer_y executeWithInput:acce_mea_y];
+    
+    if([acce_threshold_y isOutput]) {
+        [acce_gravityAdder_y executeWithInput1:gravity_rotated_y andInput2:acce_mea_y];
+        
+        if ([acce_gravityAdder_y isOutput]) {
+            [acce_biasBuffer_y executeWithInput:acce_gravityAdder_y.output
+                                    andEnabling:acce_threshold_y.enabling];
+            
+            if ([acce_biasBuffer_y isOutput]) {
+                [acce_averager_y executeWithInput:acce_biasBuffer_y.arrayOutput];
+                
+                if ([acce_averager_y isOutput]) {
+                    acce_bias_y = [NSNumber numberWithFloat:[acce_averager_y.output floatValue]];
+                    acce_biasBuffer_y.disabledInput = [NSNumber numberWithFloat:[acce_averager_y.output floatValue]];
+                    viewController.labelAY.text = [NSString stringWithFormat:@"%.3f", [acce_mea_y floatValue]];
+                }
+            }
+        }
+    }
+    
+    
+    // Third channel: accelerometer in z axis
+    acce_mea_z = [NSNumber numberWithFloat:self.accelerometerData.acceleration.z];
+    
+    [acce_threshold_z executeWithInput:acce_mea_z];
+    
+    [acce_measuresBuffer_z executeWithInput:acce_mea_z];
+    
+    if([acce_threshold_z isOutput]) {
+        [acce_gravityAdder_z executeWithInput1:gravity_rotated_z andInput2:acce_mea_z];
+        
+        if ([acce_gravityAdder_z isOutput]) {
+            [acce_biasBuffer_z executeWithInput:acce_gravityAdder_z.output
+                                    andEnabling:acce_threshold_z.enabling];
+            
+            if ([acce_biasBuffer_z isOutput]) {
+                [acce_averager_z executeWithInput:acce_biasBuffer_z.arrayOutput];
+                
+                if ([acce_averager_z isOutput]) {
+                    acce_bias_z = [NSNumber numberWithFloat:[acce_averager_z.output floatValue]];
+                    acce_biasBuffer_z.disabledInput = [NSNumber numberWithFloat:[acce_averager_z.output floatValue]];
+                    [gyro_biasAdder_x executeWithInput1:gyro_measuresBuffer_x.singleOutput
+                                              andInput2:[NSNumber numberWithFloat:-[gyro_bias_x floatValue]]];
+                    
+                    if ([gyro_biasAdder_x isOutput]) {
+                        gyro_angularSpeed_x = [NSNumber numberWithFloat:[gyro_biasAdder_x.output floatValue]];
+                        viewController.labelGX.text = [NSString stringWithFormat:@"%.3f", [gyro_angularSpeed_x floatValue]];
+                        viewController.labelDegP.text = [NSString stringWithFormat:@"%.3f", [gyro_biasAdder_x.output floatValue]];
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    // Fourth channel: gyroscope in x axis
+    gyro_mea_x = [NSNumber numberWithFloat:self.gyroData.rotationRate.x];
+    
+    [gyro_threshold_x executeWithInput:gyro_mea_x];
+    
+    [gyro_measuresBuffer_x executeWithInput:gyro_mea_x];
+    
+    if([gyro_threshold_x isOutput]) {
+        [gyro_biasBuffer_x executeWithInput:gyro_threshold_x.output
+                                andEnabling:gyro_threshold_x.enabling];
+        
+        if ([gyro_biasBuffer_x isOutput]) {
+            [gyro_averager_x executeWithInput:gyro_biasBuffer_x.arrayOutput];
+            
+            if ([gyro_averager_x isOutput]) {
+                gyro_bias_x = [NSNumber numberWithFloat:[gyro_averager_x.output floatValue]];
+                gyro_biasBuffer_x.disabledInput = [NSNumber numberWithFloat:[gyro_averager_x.output floatValue]];
+                viewController.labelAX.text = [NSString stringWithFormat:@"%.3f", [acce_mea_x floatValue]];
+            }
+        }
+    }
+    
+    
 }
 
 /*!

@@ -37,6 +37,14 @@
         viewController = viewControllerFromAppDelegate;
         motion = [[MotionManager alloc] initWithViewController:viewControllerFromAppDelegate
                                                  andSharedData:sharedData];
+        
+        motion.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
+        motion.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
+        motion.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.acce_biasBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.gyro_measuresBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.gyro_biasBuffer_capacity = [NSNumber numberWithInt:500];
+        
         location = [[LocationManagerDelegate alloc] initWithSharedData:sharedData];
         
         // Properties

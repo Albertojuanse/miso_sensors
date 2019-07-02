@@ -11,6 +11,10 @@
 #include <stdlib.h>
 #import "ViewController.h"
 #import "SharedData.h"
+#import "Threshold.h"
+#import "Buffer.h"
+#import "Adder.h"
+#import "Averager.h"
 
 /*!
  @class MotionManager
@@ -23,66 +27,88 @@
     SharedData * sharedData;
     
     // Configuration variables
-    double t;
-    double g;
-    double calibrationTime;
-    int calibrationSteps;
-    double precision_threshold;
+    NSNumber * t;
+    NSNumber * gx;
+    NSNumber * gy;
+    NSNumber * gz;
     
-    // Correction variables
-    double calibration_counter;
+    // Signal processing variables
+    NSNumber * acce_mea_x;
+    NSNumber * acce_mea_y;
+    NSNumber * acce_mea_z;
     
-    double ax0;
-    double ay0;
-    double az0;
+    NSNumber * acce_bias_x;
+    NSNumber * acce_bias_y;
+    NSNumber * acce_bias_z;
     
-    double gp0;
-    double gr0;
-    double gy0;
+    NSNumber * gyro_mea_x;
+    NSNumber * gyro_mea_y;
+    NSNumber * gyro_mea_z;
     
-    double ax_ave_sum;
-    double ay_ave_sum;
-    double az_ave_sum;
+    NSNumber * gyro_bias_x;
+    NSNumber * gyro_bias_y;
+    NSNumber * gyro_bias_z;
     
-    double ax_ave;
-    double ay_ave;
-    double az_ave;
+    NSNumber * gyro_angularSpeed_x;
+    NSNumber * gyro_angularSpeed_y;
+    NSNumber * gyro_angularSpeed_z;
     
-    double gp_ave_sum;
-    double gr_ave_sum;
-    double gy_ave_sum;
+    // Signal processing components
+    Threshold * acce_threshold_x;
+    Adder * acce_gravityAdder_x;
+    Buffer * acce_measuresBuffer_x;
+    Buffer * acce_biasBuffer_x;
+    Averager * acce_averager_x;
     
-    double gp_ave;
-    double gr_ave;
-    double gy_ave;
+    Threshold * gyro_threshold_x;
+    Buffer * gyro_measuresBuffer_x;
+    Buffer * gyro_biasBuffer_x;
+    Averager * gyro_averager_x;
+    Adder * gyro_biasAdder_x; // This will subtract using a inversed input
+    
+    Threshold * acce_threshold_y;
+    Adder * acce_gravityAdder_y;
+    Buffer * acce_measuresBuffer_y;
+    Buffer * acce_biasBuffer_y;
+    Averager * acce_averager_y;
+    
+    Threshold * gyro_threshold_y;
+    Buffer * gyro_measuresBuffer_y;
+    Buffer * gyro_biasBuffer_y;
+    Averager * gyro_averager_y;
+    Adder * gyro_biasAdder_y; // This will subtract using a inversed input
+    
+    Threshold * acce_threshold_z;
+    Adder * acce_gravityAdder_z;
+    Buffer * acce_measuresBuffer_z;
+    Buffer * acce_biasBuffer_z;
+    Averager * acce_averager_z;
+    
+    Threshold * gyro_threshold_z;
+    Buffer * gyro_measuresBuffer_z;
+    Buffer * gyro_biasBuffer_z;
+    Averager * gyro_averager_z;
+    Adder * gyro_biasAdder_z; // This will subtract using a inversed input
     
     // Kinematic variables
-    double ax;
-    double ay;
-    double az;
     
-    double gp;
-    double gr;
-    double gy;
-    
-    double vx;
-    double vy;
-    double vz;
-    
-    double rx;
-    double ry;
-    double rz;
-    
-    double dp;
-    double dr;
-    double dy;
-    
+    // Orchestration variables
     BOOL traveling;
     RDPosition * position;
 }
 
 @property NSTimer *timer;
 
+//  Signal processing configuration variables
+@property NSNumber * acce_sensitivity_threshold;
+@property NSNumber * gyro_sensitivity_threshold;
+
+@property NSNumber * acce_measuresBuffer_capacity;
+@property NSNumber * acce_biasBuffer_capacity;
+@property NSNumber * gyro_measuresBuffer_capacity;
+@property NSNumber * gyro_biasBuffer_capacity;
+
+// Methods
 - (instancetype) initWithViewController:(ViewController *) viewControllerFromStateMachine
                           andSharedData:(SharedData *)initSharedData;
 - (void) startAccelerometers;

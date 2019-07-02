@@ -19,11 +19,11 @@
     self = [super init];
     if (self) {
         self.capacity = [NSNumber numberWithInt:100];
-        values = [NSMutableArray arrayWithCapacity:[self.capacity unsignedIntegerValue]];
+        values = [[NSMutableArray alloc] init];
         self.input = [NSNumber numberWithFloat:0.0];
         self.disabledInput = [NSNumber numberWithFloat:0.0];
         self.singleOutput = [NSNumber numberWithFloat:0.0];
-        self.arrayOutput = [NSMutableArray arrayWithCapacity:[self.capacity unsignedIntegerValue]];
+        self.arrayOutput = [[NSMutableArray alloc] init];
         self.enabled = NO;
         isOutput = NO;
     }
@@ -39,10 +39,11 @@
     self = [super init];
     if (self) {
         self.capacity = capacity;
-        values = [NSMutableArray arrayWithCapacity:[self.capacity unsignedIntegerValue]];
+        values = [[NSMutableArray alloc] init];
         self.input = [NSNumber numberWithFloat:0.0];
         self.disabledInput = [NSNumber numberWithFloat:0.0];
         self.singleOutput = [NSNumber numberWithFloat:0.0];
+        self.arrayOutput = [[NSMutableArray alloc] init];
         self.enabled = NO;
         isOutput = NO;
     }
