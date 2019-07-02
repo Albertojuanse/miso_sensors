@@ -10,7 +10,7 @@
 
 /*!
  @class Buffer
- @discussion This class defines a signal processin block that given a value stores it until a its capacity is reached; then, the oldest one is popped to the output property
+ @discussion This class defines a signal processin block that given a value stores it until a its capacity is reached; then, the oldest one is popped to the output property; is disabled by default.
  */
 @interface Buffer: NSObject {
     NSMutableArray * values;
