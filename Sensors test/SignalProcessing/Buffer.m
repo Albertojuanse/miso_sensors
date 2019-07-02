@@ -22,7 +22,8 @@
         values = [NSMutableArray arrayWithCapacity:[self.capacity unsignedIntegerValue]];
         self.input = [NSNumber numberWithFloat:0.0];
         self.disabledInput = [NSNumber numberWithFloat:0.0];
-        self.output = [NSNumber numberWithFloat:0.0];
+        self.singleOutput = [NSNumber numberWithFloat:0.0];
+        self.arrayOutput = [NSMutableArray arrayWithCapacity:[self.capacity unsignedIntegerValue]];
         self.enabled = NO;
         isOutput = NO;
     }
@@ -41,7 +42,7 @@
         values = [NSMutableArray arrayWithCapacity:[self.capacity unsignedIntegerValue]];
         self.input = [NSNumber numberWithFloat:0.0];
         self.disabledInput = [NSNumber numberWithFloat:0.0];
-        self.output = [NSNumber numberWithFloat:0.0];
+        self.singleOutput = [NSNumber numberWithFloat:0.0];
         self.enabled = NO;
         isOutput = NO;
     }
@@ -59,7 +60,11 @@
             [values addObject:[NSNumber numberWithFloat:[self.input floatValue]]];
             isOutput = NO;
         } else {
-            self.output = [NSNumber numberWithFloat:[[values objectAtIndex:0]floatValue]];
+            self.singleOutput = [NSNumber numberWithFloat:[[values objectAtIndex:0]floatValue]];
+            self.arrayOutput = [NSMutableArray arrayWithCapacity:[self.capacity unsignedIntegerValue]];
+            for(NSNumber * item in values) {
+                [self.arrayOutput addObject:item];
+            }
             [values addObject:[NSNumber numberWithFloat:[self.input floatValue]]];
             isOutput = YES;
         }
@@ -68,7 +73,11 @@
             [values addObject:[NSNumber numberWithFloat:[self.disabledInput floatValue]]];
             isOutput = NO;
         } else {
-            self.output = [NSNumber numberWithFloat:[[values objectAtIndex:0]floatValue]];
+            self.singleOutput = [NSNumber numberWithFloat:[[values objectAtIndex:0]floatValue]];
+            self.arrayOutput = [NSMutableArray arrayWithCapacity:[self.capacity unsignedIntegerValue]];
+            for(NSNumber * item in values) {
+                [self.arrayOutput addObject:item];
+            }
             [values addObject:[NSNumber numberWithFloat:[self.disabledInput floatValue]]];
             isOutput = YES;
         }
@@ -99,7 +108,7 @@
 
 /*!
  @method isOutput
- @discussion This method is called to check if there is a valid value in the output.
+ @discussion This method is called to check if there is a valid value in the singleOutput.
  */
 - (BOOL) isOutput {
     return isOutput;
