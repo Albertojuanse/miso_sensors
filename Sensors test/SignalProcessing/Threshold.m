@@ -23,6 +23,7 @@
         self.output = [NSNumber numberWithFloat:0.0];
         self.threshold = [NSNumber numberWithFloat:0.01];
         self.enabling = NO;
+        isOutput = NO;
     }
     return self;
 }
@@ -33,6 +34,7 @@
  */
 - (void) execute
 {
+    isOutput = NO;
     NSNumber * difference = [NSNumber numberWithFloat:[self.input floatValue] + [lastValue floatValue]];
     
     if ([difference floatValue] < [self.threshold floatValue]) {
@@ -40,7 +42,7 @@
     } else {
         self.enabling = NO;
     }
-    
+    isOutput = YES;
     self.output = self.input;
 }
 
@@ -64,6 +66,14 @@
     self.threshold = threshold;
     self.input = input;
     [self execute];
+}
+
+/*!
+ @method executeWithInput:andThreshold:
+ @discussion This method is called to check if there is a valid value in the output.
+ */
+- (BOOL) isOutput {
+    return isOutput;
 }
 
 @end

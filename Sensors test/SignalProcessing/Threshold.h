@@ -14,6 +14,7 @@
  */
 @interface Threshold: NSObject {
     NSNumber * lastValue;
+    BOOL isOutput;
 }
 
 @property NSNumber * input;
@@ -25,5 +26,6 @@
 - (void) executeWithInput:(NSNumber *)input;
 - (void) executeWithInput:(NSNumber *)input
              andThreshold:(NSNumber *)threshold;
+- (BOOL) isOutput;
 
 @end
