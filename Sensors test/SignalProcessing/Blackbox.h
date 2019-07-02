@@ -6,16 +6,13 @@
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
-/*!
- @class Blackbox
- @discussion This class defines the protocol of a blackbox type system.
- */
-@interface Blackbox {
-    
-}
+#import <Foundation/Foundation.h>
 
-//@property input;
-//@property output;
+/*!
+ @protocol Blackbox
+ @discussion This protocol defines the protocol of a blackbox type system.
+ */
+@protocol Blackbox
 
 - (void) queueInput;
 - (void) dequeueOutput;
