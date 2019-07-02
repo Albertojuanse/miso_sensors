@@ -23,6 +23,8 @@
 @property BOOL enabled;
 @property NSNumber * capacity;
 
+- (instancetype)init;
+- (instancetype)initWithCapacity:(NSNumber *)capacity;
 - (void) execute;
 - (void) executeWithInput:(NSNumber *)input;
 - (void) executeWithInput:(NSNumber *)input
