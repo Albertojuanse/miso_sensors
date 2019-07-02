@@ -61,6 +61,7 @@
     } else {
         self.enabling = NO;
     }
+    lastValue = self.input;
     isOutput = YES;
     self.output = self.input;
 }
