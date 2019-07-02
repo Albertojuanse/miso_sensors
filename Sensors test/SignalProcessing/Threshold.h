@@ -23,6 +23,7 @@
 @property BOOL enabling;
 
 - (instancetype)init;
+- (instancetype)initWithThreshold:(NSNumber *)threshold;
 - (void) execute;
 - (void) executeWithInput:(NSNumber *)input;
 - (void) executeWithInput:(NSNumber *)input

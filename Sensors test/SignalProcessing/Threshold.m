@@ -28,6 +28,25 @@
     return self;
 }
 
+
+/*!
+ @method initWithThreshold:
+ @discussion Constructor.
+ */
+- (instancetype)initWithThreshold:(NSNumber *)threshold
+{
+    self = [super init];
+    if (self) {
+        lastValue = [NSNumber numberWithFloat:0.0];
+        self.input = [NSNumber numberWithFloat:0.0];
+        self.output = [NSNumber numberWithFloat:0.0];
+        self.threshold = threshold;
+        self.enabling = NO;
+        isOutput = NO;
+    }
+    return self;
+}
+
 /*!
  @method execute
  @discussion This method execute the calculus performed by this class; input must be asigned before.
