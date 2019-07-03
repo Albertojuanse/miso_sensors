@@ -90,8 +90,34 @@ if (self) {
     gyro_averager_z = [[Averager alloc] init];
     gyro_biasAdder_z = [[Adder alloc] init]; // This will subtract using a inversed input
     
+    // Kinematic variables
+    pos_x = [NSNumber numberWithFloat:0.0];
+    pos_y = [NSNumber numberWithFloat:0.0];
+    pos_z = [NSNumber numberWithFloat:0.0];
+    
+    vel_x = [NSNumber numberWithFloat:0.0];
+    vel_y = [NSNumber numberWithFloat:0.0];
+    vel_z = [NSNumber numberWithFloat:0.0];
+    
+    Rnb_11 = [NSNumber numberWithFloat:1.0];
+    Rnb_12 = [NSNumber numberWithFloat:0.0];
+    Rnb_13 = [NSNumber numberWithFloat:0.0];
+    
+    Rnb_21 = [NSNumber numberWithFloat:0.0];
+    Rnb_22 = [NSNumber numberWithFloat:1.0];
+    Rnb_23 = [NSNumber numberWithFloat:0.0];
+    
+    Rnb_31 = [NSNumber numberWithFloat:0.0];
+    Rnb_32 = [NSNumber numberWithFloat:0.0];
+    Rnb_33 = [NSNumber numberWithFloat:1.0];
+    
+    attitude_x = [NSNumber numberWithFloat:0.0]; // Pitch
+    attitude_y = [NSNumber numberWithFloat:0.0]; // Roll
+    attitude_z = [NSNumber numberWithFloat:0.0]; // Yaw
+    
     // Orchestration variables
     traveling = NO;
+    calibrated = NO;
     position = [[RDPosition alloc] init];
     }
     return self;
@@ -108,17 +134,17 @@ if (self) {
         NSLog(@"[INFO][MM] Accelerometer avalible");
         self.accelerometerUpdateInterval = [t doubleValue];
         [self startAccelerometerUpdates];
-        if (self.timer == nil){
-        // Configure a timer to fetch the data.
-            self.timer = [[NSTimer alloc] initWithFireDate:[NSDate date]
+        if (self.tr == nil){
+        // Configure a tr to fetch the data.
+            self.tr = [[NSTimer alloc] initWithFireDate:[NSDate date]
                                                   interval:([t doubleValue])
                                                     target:self
                                                   selector:@selector(process)
                                                   userInfo:nil
                                                    repeats:YES];
         
-            // Add the timer to the current run loop.
-            [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
+            // Add the tr to the current run loop.
+            [[NSRunLoop currentRunLoop] addTimer:self.tr forMode:NSDefaultRunLoopMode];
         }
     } else {
         NSLog(@"[ERROR][MM] Accelerometer not avalible");
@@ -131,8 +157,8 @@ if (self) {
  @discussion This method manages how the accelerometer status acquisition stops and its error's control.
  */
 - (void) stopAccelerometers {
-    [self.timer invalidate];
-    self.timer = nil;
+    [self.tr invalidate];
+    self.tr = nil;
     [self stopAccelerometerUpdates];
     NSLog(@"[INFO][MM] Accelerometer stopped");
 }
@@ -148,17 +174,17 @@ if (self) {
         self.gyroUpdateInterval = [t doubleValue];
         [self startGyroUpdates];
         
-        if (self.timer == nil){
-            // Configure a timer to fetch the data.
-            self.timer = [[NSTimer alloc] initWithFireDate:[NSDate date]
+        if (self.tr == nil){
+            // Configure a tr to fetch the data.
+            self.tr = [[NSTimer alloc] initWithFireDate:[NSDate date]
                                                   interval:([t doubleValue])
                                                     target:self
                                                   selector:@selector(process)
                                                   userInfo:nil
                                                    repeats:YES];
             
-            // Add the timer to the current run loop.
-            [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
+            // Add the tr to the current run loop.
+            [[NSRunLoop currentRunLoop] addTimer:self.tr forMode:NSDefaultRunLoopMode];
         }
     } else {
         NSLog(@"[ERROR][MM] Gyroscope not avalible");
@@ -171,8 +197,8 @@ if (self) {
  @discussion This method manages how the gyroscope status acquisition stops and its error's control.
  */
 - (void) stopGyroscopes {
-    [self.timer invalidate];
-    self.timer = nil;
+    [self.tr invalidate];
+    self.tr = nil;
     [self stopGyroUpdates];
     NSLog(@"[INFO] Gyroscope stopped");
 }
@@ -185,28 +211,6 @@ if (self) {
     // NSLog(@"; \"x\": %f, \"y\": %f, \"z\": %f, \"type\": \"gyroscope\"} {\"date\":", self.gyroData.rotationRate.x, self.gyroData.rotationRate.y, self.gyroData.rotationRate.y);
     // NSLog(@"; \"x\": %f, \"y\": %f, \"z\": %f, \"type\": \"accelerometer\"} {\"date\":", self.accelerometerData.acceleration.x, self.accelerometerData.acceleration.y, self.accelerometerData.acceleration.z);
     
-    /*
-    viewController.labelAX.text = [NSString stringWithFormat:@"%.2f", ax0 - ax_ave];
-    viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", gp0 - gp_ave];
-    viewController.labelCalibrated.text = @"Calibrated";
-    NSLog(@"[INFO][MM] Calibrated.");
-    viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", gp];
-    viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", dp * 180 / M_PI];
-    viewController.labelPosX.text = [NSString stringWithFormat:@"%.2f", rx];
-    */
-    
-    /*
-    ax_ave = ax_ave_t * cos(gyt) * cos(gpt) + ay_ave_t * (cos(gyt) * sin(gpt) * sin(grt) - sin(gyt) * cos(grt)) + az_ave_t * (cos(gyt) * sin(gpt) * cos(grt) + sin(gyt) * sin(grt));
-    ay_ave = ax_ave_t * sin(gyt) * cos(gpt) + ay_ave_t * (sin(gyt) * sin(gpt) * sin(grt) + cos(gyt) * cos(grt)) + az_ave_t * (sin(gyt) * sin(gpt) * cos(grt) - cos(gyt) * sin(grt));
-    az_ave = ax_ave_t * -sin(gpt) + ay_ave_t * cos(gpt) * sin(grt) + az_ave_t * cos(gpt) * cos(grt);
-    
-    
-    ax_ave = ax_ave_t * (cos(gyt) * cos(gpt) * cos(grt) - sin(gyt) * sin(grt)) + ay_ave_t * (-cos(grt) * sin(gyt) - cos(gyt) * cos(gpt) * sin(grt)) + az_ave_t * (cos(gyt) * sin(gpt));
-    ay_ave = ax_ave_t * (cos(gyt) * sin(grt) + cos(gpt) * cos(grt) * sin(gyt)) + ay_ave_t * (cos(gyt) * cos(grt) - cos(gpt) * sin(gyt) * sin(grt)) + az_ave_t * (sin(gyt) * sin(gpt));
-    az_ave = ax_ave_t * (-cos(grt) * sin(gpt)) + ay_ave_t * (sin(gpt) * sin (grt)) + az_ave_t * (cos(gpt));
-    */
-    
-    // TO DO. Rotation matrix
     NSNumber * gravity_rotated_x = [NSNumber numberWithFloat:[gx floatValue]];
     NSNumber * gravity_rotated_y = [NSNumber numberWithFloat:[gx floatValue]];
     NSNumber * gravity_rotated_z = [NSNumber numberWithFloat:[gx floatValue]];
@@ -228,12 +232,13 @@ if (self) {
                                     andEnabling:acce_threshold_x.enabling];
             
             if ([acce_biasBuffer_x isOutput]) {
+                calibrated = YES; // If there is output in buasBuffer means that the t of calibrating is finished
                 [acce_averager_x executeWithInput:acce_biasBuffer_x.arrayOutput];
                 
                 if ([acce_averager_x isOutput]) {
                     acce_bias_x = [NSNumber numberWithFloat:[acce_averager_x.output floatValue]];
                     acce_biasBuffer_x.disabledInput = [NSNumber numberWithFloat:[acce_averager_x.output floatValue]];
-                    viewController.labelAX.text = [NSString stringWithFormat:@"%.3f", [acce_mea_x floatValue]];
+                    viewController.labelAX.text = [NSString stringWithFormat:@"%.2f", [acce_measuresBuffer_x.singleOutput floatValue] - [acce_averager_x.output floatValue]];
                 }
             }
         }
@@ -260,7 +265,7 @@ if (self) {
                 if ([acce_averager_y isOutput]) {
                     acce_bias_y = [NSNumber numberWithFloat:[acce_averager_y.output floatValue]];
                     acce_biasBuffer_y.disabledInput = [NSNumber numberWithFloat:[acce_averager_y.output floatValue]];
-                    viewController.labelAY.text = [NSString stringWithFormat:@"%.3f", [acce_mea_y floatValue]];
+                    viewController.labelAY.text = [NSString stringWithFormat:@"%.2f", [acce_measuresBuffer_y.singleOutput floatValue] - [acce_averager_y.output floatValue]];
                 }
             }
         }
@@ -287,7 +292,7 @@ if (self) {
                 if ([acce_averager_z isOutput]) {
                     acce_bias_z = [NSNumber numberWithFloat:[acce_averager_z.output floatValue]];
                     acce_biasBuffer_z.disabledInput = [NSNumber numberWithFloat:[acce_averager_z.output floatValue]];
-                    viewController.labelAZ.text = [NSString stringWithFormat:@"%.3f", [acce_mea_z floatValue]];
+                    viewController.labelAZ.text = [NSString stringWithFormat:@"%.2f", [acce_measuresBuffer_z.singleOutput floatValue] - [acce_averager_z.output floatValue]];
                     
                 }
             }
@@ -299,49 +304,371 @@ if (self) {
     gyro_mea_x = [NSNumber numberWithFloat:self.gyroData.rotationRate.x];
     
     [gyro_threshold_x executeWithInput:gyro_mea_x];
-    NSLog(@"[INFO][MM] -- gyro_mea_x: %.3f", [gyro_mea_x floatValue]);
     
     [gyro_measuresBuffer_x executeWithInput:gyro_mea_x];
     
-    NSLog([gyro_threshold_x isOutput] ? @"[INFO][MM]  [gyro_threshold_x isOutput] is YES" :
-          @"[INFO][MM]  [gyro_threshold_x isOutput] is NO");
     if([gyro_threshold_x isOutput]) {
-        NSLog(@"[INFO][MM]  [gyro_threshold_x.output floatValue]: %.3f",  [gyro_threshold_x.output floatValue]);
-        NSLog(gyro_threshold_x.enabling ? @"[INFO][MM]  gyro_threshold_x.enabling is YES" :
-              @"[INFO][MM]  gyro_threshold_x.enablingis NO");
         [gyro_biasBuffer_x executeWithInput:gyro_threshold_x.output
                                 andEnabling:gyro_threshold_x.enabling];
         
-        NSLog([gyro_biasBuffer_x isOutput] ? @"[INFO][MM]  [gyro_biasBuffer_x isOutput] is YES" :
-              @"[INFO][MM]  [gyro_biasBuffer_x isOutput] is NO");
         if ([gyro_biasBuffer_x isOutput]) {
             [gyro_averager_x executeWithInput:gyro_biasBuffer_x.arrayOutput];
             
-            NSLog([gyro_averager_x isOutput] ? @"[INFO][MM]  [gyro_averager_x isOutput] is YES" :
-                  @"[INFO][MM]  [gyro_averager_x isOutput] is NO");
             if ([gyro_averager_x isOutput]) {
-                NSLog(@"[INFO][MM]  [gyro_averager_x.output floatValue]: %.3f",  [gyro_averager_x.output floatValue]);
+                
                 gyro_bias_x = [NSNumber numberWithFloat:[gyro_averager_x.output floatValue]];
                 gyro_biasBuffer_x.disabledInput = [NSNumber numberWithFloat:[gyro_averager_x.output floatValue]];
                 
-                NSLog(@"[INFO][MM]  [gyro_measuresBuffer_x.singleOutput floatValue]: %.3f",  [gyro_measuresBuffer_x.singleOutput floatValue]);
                 [gyro_biasAdder_x executeWithInput1:gyro_measuresBuffer_x.singleOutput
                                           andInput2:[NSNumber numberWithFloat:-[gyro_bias_x floatValue]]];
                 
-                NSLog([gyro_biasAdder_x isOutput] ? @"[INFO][MM]  [gyro_biasAdder_x isOutput] is YES" :
-                      @"[INFO][MM]  [gyro_biasAdder_x isOutput] is NO");
                 if ([gyro_biasAdder_x isOutput]) {
-                    gyro_angularSpeed_x = [NSNumber numberWithFloat:[gyro_biasAdder_x.output floatValue]];
-                    viewController.labelGX.text = [NSString stringWithFormat:@"%.3f", [gyro_mea_x floatValue]];
-                    viewController.labelDegP.text = [NSString stringWithFormat:@"%.3f", [gyro_angularSpeed_x floatValue]];
                     
-                    NSLog(@"[INFO][MM] [gyro_angularSpeed_x floatValue]: %.3f", [gyro_angularSpeed_x floatValue]);
-                    NSLog(@"[INFO][MM] [gyro_mea_x floatValue]: %.3f",  [gyro_mea_x floatValue]);
+                    // Only reasing if is not noise
+                    if (!gyro_threshold_x.enabling) {
+                        gyro_angularSpeed_x = [NSNumber numberWithFloat:[gyro_biasAdder_x.output floatValue]];
+                    }
+                    viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", [gyro_angularSpeed_x floatValue]];
+                    
                 }
             }
         }
     }
     
+    // Fifth channel: gyroscope in y axis
+    gyro_mea_y = [NSNumber numberWithFloat:self.gyroData.rotationRate.y];
+    
+    [gyro_threshold_y executeWithInput:gyro_mea_y];
+    
+    [gyro_measuresBuffer_y executeWithInput:gyro_mea_y];
+    
+    if([gyro_threshold_y isOutput]) {
+        [gyro_biasBuffer_y executeWithInput:gyro_threshold_y.output
+                                andEnabling:gyro_threshold_y.enabling];
+        
+        if ([gyro_biasBuffer_y isOutput]) {
+            [gyro_averager_y executeWithInput:gyro_biasBuffer_y.arrayOutput];
+            
+            if ([gyro_averager_y isOutput]) {
+                
+                gyro_bias_y = [NSNumber numberWithFloat:[gyro_averager_y.output floatValue]];
+                gyro_biasBuffer_y.disabledInput = [NSNumber numberWithFloat:[gyro_averager_y.output floatValue]];
+                
+                [gyro_biasAdder_y executeWithInput1:gyro_measuresBuffer_y.singleOutput
+                                          andInput2:[NSNumber numberWithFloat:-[gyro_bias_y floatValue]]];
+                
+                if ([gyro_biasAdder_y isOutput]) {
+                    
+                    // Only reasing if is not noise
+                    if (!gyro_threshold_y.enabling) {
+                        gyro_angularSpeed_y = [NSNumber numberWithFloat:[gyro_biasAdder_y.output floatValue]];
+                    }
+                    viewController.labelGY.text = [NSString stringWithFormat:@"%.2f", [gyro_angularSpeed_y floatValue]];
+                    
+                }
+            }
+        }
+    }
+    
+    // Sixth channel: gyroscope in z axis
+    gyro_mea_z = [NSNumber numberWithFloat:self.gyroData.rotationRate.y];
+    
+    [gyro_threshold_z executeWithInput:gyro_mea_z];
+    
+    [gyro_measuresBuffer_z executeWithInput:gyro_mea_z];
+    
+    if([gyro_threshold_z isOutput]) {
+        [gyro_biasBuffer_z executeWithInput:gyro_threshold_z.output
+                                andEnabling:gyro_threshold_z.enabling];
+        
+        if ([gyro_biasBuffer_z isOutput]) {
+            [gyro_averager_z executeWithInput:gyro_biasBuffer_z.arrayOutput];
+            
+            if ([gyro_averager_z isOutput]) {
+                
+                gyro_bias_z = [NSNumber numberWithFloat:[gyro_averager_z.output floatValue]];
+                gyro_biasBuffer_z.disabledInput = [NSNumber numberWithFloat:[gyro_averager_z.output floatValue]];
+                
+                [gyro_biasAdder_z executeWithInput1:gyro_measuresBuffer_z.singleOutput
+                                          andInput2:[NSNumber numberWithFloat:-[gyro_bias_z floatValue]]];
+                
+                if ([gyro_biasAdder_z isOutput]) {
+                    
+                    // Only reasing if is not noise
+                    if (!gyro_threshold_z.enabling) {
+                        gyro_angularSpeed_z = [NSNumber numberWithFloat:[gyro_biasAdder_z.output floatValue]];
+                    }
+                    viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", [gyro_angularSpeed_z floatValue]];
+                }
+            }
+        }
+    }
+    
+    if (calibrated) {
+        viewController.labelCalibrated.text = @"Calibrated";
+        // Calculate the velocity and position; explicit matricial calculations
+        // Pt+1 = Pt + t * vt + T^2/2 ( Rnb_t (measures - bias) + g )
+        if (!acce_threshold_x.enabling) {
+            pos_x = [NSNumber numberWithFloat:
+                     [pos_x floatValue] +
+                     [t floatValue] * [vel_x floatValue] +
+                     [t floatValue] * [t floatValue] * 0.5 *
+                     (
+                      [Rnb_11 floatValue] * ([acce_measuresBuffer_x.singleOutput floatValue] - [acce_averager_x.output floatValue]) +
+                      [Rnb_12 floatValue] * ([acce_measuresBuffer_y.singleOutput floatValue] - [acce_averager_y.output floatValue]) +
+                      [Rnb_13 floatValue] * ([acce_measuresBuffer_z.singleOutput floatValue] - [acce_averager_z.output floatValue]) +
+                      [gx floatValue]
+                      )
+                     ];
+        }
+    
+        viewController.labelPosX.text = [NSString stringWithFormat:@"%.2f", [pos_x floatValue]];
+    
+        if (!acce_threshold_y.enabling) {
+            pos_y = [NSNumber numberWithFloat:
+                     [pos_y  floatValue] +
+                     [t floatValue] * [vel_y floatValue] +
+                     [t floatValue] * [t floatValue] * 0.5 *
+                     (
+                      [Rnb_21 floatValue] * ([acce_measuresBuffer_x.singleOutput floatValue] - [acce_averager_x.output floatValue]) +
+                      [Rnb_22 floatValue] * ([acce_measuresBuffer_y.singleOutput floatValue] - [acce_averager_y.output floatValue]) +
+                      [Rnb_23 floatValue] * ([acce_measuresBuffer_z.singleOutput floatValue] - [acce_averager_z.output floatValue]) +
+                      [gy floatValue]
+                      )
+                     ];
+        }
+    
+        viewController.labelPosY.text = [NSString stringWithFormat:@"%.2f", [pos_y floatValue]];
+    
+        if (!acce_threshold_z.enabling) {
+            pos_z = [NSNumber numberWithFloat:
+                     [pos_z  floatValue] +
+                     [t floatValue] * [vel_z floatValue] +
+                     [t floatValue] * [t floatValue] * 0.5 *
+                     (
+                      [Rnb_31 floatValue] * ([acce_measuresBuffer_x.singleOutput floatValue] - [acce_averager_x.output floatValue]) +
+                      [Rnb_32 floatValue] * ([acce_measuresBuffer_y.singleOutput floatValue] - [acce_averager_y.output floatValue]) +
+                      [Rnb_33 floatValue] * ([acce_measuresBuffer_z.singleOutput floatValue] - [acce_averager_z.output floatValue]) +
+                      [gz floatValue]
+                      )
+                     ];
+        }
+    
+        viewController.labelPosZ.text = [NSString stringWithFormat:@"%.2f", [pos_z floatValue]];
+    
+        // Vt+1 = Vt + t * ( Rnb_t (measures - bias) + g )
+    
+        if (!acce_threshold_x.enabling) {
+            vel_x = [NSNumber numberWithFloat:
+                     [vel_x floatValue] +
+                     [t floatValue] *
+                     (
+                      [Rnb_11 floatValue] * ([acce_measuresBuffer_x.singleOutput floatValue] - [acce_averager_x.output floatValue]) +
+                      [Rnb_12 floatValue] * ([acce_measuresBuffer_y.singleOutput floatValue] - [acce_averager_y.output floatValue]) +
+                      [Rnb_13 floatValue] * ([acce_measuresBuffer_z.singleOutput floatValue] - [acce_averager_z.output floatValue]) +
+                      [gx floatValue]
+                      )
+                     ];
+        }
+    
+        if (!acce_threshold_y.enabling) {
+            vel_y = [NSNumber numberWithFloat:
+                     [vel_y floatValue] +
+                     [t floatValue] *
+                     (
+                      [Rnb_21 floatValue] * ([acce_measuresBuffer_x.singleOutput floatValue] - [acce_averager_x.output floatValue]) +
+                      [Rnb_22 floatValue] * ([acce_measuresBuffer_y.singleOutput floatValue] - [acce_averager_y.output floatValue]) +
+                      [Rnb_23 floatValue] * ([acce_measuresBuffer_z.singleOutput floatValue] - [acce_averager_z.output floatValue]) +
+                      [gy floatValue]
+                      )
+                     ];
+        }
+    
+        if (!acce_threshold_z.enabling) {
+            vel_z = [NSNumber numberWithFloat:
+                     [vel_z floatValue] +
+                     [t floatValue] *
+                     (
+                      [Rnb_31 floatValue] * ([acce_measuresBuffer_x.singleOutput floatValue] - [acce_averager_x.output floatValue]) +
+                      [Rnb_32 floatValue] * ([acce_measuresBuffer_y.singleOutput floatValue] - [acce_averager_y.output floatValue]) +
+                      [Rnb_33 floatValue] * ([acce_measuresBuffer_z.singleOutput floatValue] - [acce_averager_z.output floatValue]) +
+                      [gz floatValue]
+                      )
+                     ];
+        }
+        
+        // Rotation matrix; the rotation matrix of this samplig t is composed with the saved matrix
+        /*
+         ax_ave = ax_ave_t * cos(gyt) * cos(gpt) + ay_ave_t * (cos(gyt) * sin(gpt) * sin(grt) - sin(gyt) * cos(grt)) + az_ave_t * (cos(gyt) * sin(gpt) * cos(grt) + sin(gyt) * sin(grt));
+         ay_ave = ax_ave_t * sin(gyt) * cos(gpt) + ay_ave_t * (sin(gyt) * sin(gpt) * sin(grt) + cos(gyt) * cos(grt)) + az_ave_t * (sin(gyt) * sin(gpt) * cos(grt) - cos(gyt) * sin(grt));
+         az_ave = ax_ave_t * -sin(gpt) + ay_ave_t * cos(gpt) * sin(grt) + az_ave_t * cos(gpt) * cos(grt);
+         
+         
+         ax_ave = ax_ave_t * (cos(gyt) * cos(gpt) * cos(grt) - sin(gyt) * sin(grt)) + ay_ave_t * (-cos(grt) * sin(gyt) - cos(gyt) * cos(gpt) * sin(grt)) + az_ave_t * (cos(gyt) * sin(gpt));
+         ay_ave = ax_ave_t * (cos(gyt) * sin(grt) + cos(gpt) * cos(grt) * sin(gyt)) + ay_ave_t * (cos(gyt) * cos(grt) - cos(gpt) * sin(gyt) * sin(grt)) + az_ave_t * (sin(gyt) * sin(gpt));
+         az_ave = ax_ave_t * (-cos(grt) * sin(gpt)) + ay_ave_t * (sin(gpt) * sin (grt)) + az_ave_t * (cos(gpt));
+         
+         cos([t floatValue] * [gyro_angularSpeed_y floatValue]) * cos([t floatValue] * [gyro_angularSpeed_z floatValue])
+         cos([t floatValue] * [gyro_angularSpeed_y floatValue]) * sin([t floatValue] * [gyro_angularSpeed_z floatValue])
+         -sin([t floatValue] * [gyro_angularSpeed_y floatValue])
+         
+         sin([t floatValue] * [gyro_angularSpeed_x floatValue]) * sin([t floatValue] * [gyro_angularSpeed_y floatValue]) * cos([t floatValue] * [gyro_angularSpeed_z floatValue]) - cos([t floatValue] * [gyro_angularSpeed_x floatValue]) * sin([t floatValue] * [gyro_angularSpeed_z floatValue])
+         sin([t floatValue] * [gyro_angularSpeed_x floatValue]) * sin([t floatValue] * [gyro_angularSpeed_y floatValue]) * sin([t floatValue] * [gyro_angularSpeed_z floatValue]) + cos([t floatValue] * [gyro_angularSpeed_x floatValue]) * cos([t floatValue] * [gyro_angularSpeed_z floatValue])
+         sin([t floatValue] * [gyro_angularSpeed_x floatValue]) * cos([t floatValue] * [gyro_angularSpeed_y floatValue])
+         
+         cos([t floatValue] * [gyro_angularSpeed_x floatValue]) * sin([t floatValue] * [gyro_angularSpeed_y floatValue]) * cos([t floatValue] * [gyro_angularSpeed_z floatValue]) + sin([t floatValue] * [gyro_angularSpeed_x floatValue]) * sin([t floatValue] * [gyro_angularSpeed_z floatValue])
+         cos([t floatValue] * [gyro_angularSpeed_x floatValue]) * sin([t floatValue] * [gyro_angularSpeed_y floatValue]) * sin([t floatValue] * [gyro_angularSpeed_z floatValue]) - sin([t floatValue] * [gyro_angularSpeed_x floatValue]) * cos([t floatValue] * [gyro_angularSpeed_z floatValue])
+         cos([t floatValue] * [gyro_angularSpeed_x floatValue]) * cos([t floatValue] * [gyro_angularSpeed_y floatValue])
+         
+         */
+        if (!gyro_threshold_x.enabling || !gyro_threshold_y.enabling || !gyro_threshold_z.enabling) {
+            NSNumber * Rnb_11_i = [NSNumber numberWithFloat:
+                                   cos([t floatValue] * [gyro_angularSpeed_y floatValue]) *
+                                   cos([t floatValue] * [gyro_angularSpeed_z floatValue])
+                                   ];
+            NSNumber * Rnb_12_i = [NSNumber numberWithFloat:
+                                   cos([t floatValue] * [gyro_angularSpeed_y floatValue]) *
+                                   sin([t floatValue] * [gyro_angularSpeed_z floatValue])
+                                   ];
+            NSNumber * Rnb_13_i = [NSNumber numberWithFloat:
+                                   -sin([t floatValue] * [gyro_angularSpeed_y floatValue])
+                                   ];
+            
+            NSNumber * Rnb_21_i = [NSNumber numberWithFloat:
+                                   sin([t floatValue] * [gyro_angularSpeed_x floatValue]) *
+                                   sin([t floatValue] * [gyro_angularSpeed_y floatValue]) *
+                                   cos([t floatValue] * [gyro_angularSpeed_z floatValue]) -
+                                   cos([t floatValue] * [gyro_angularSpeed_x floatValue]) *
+                                   sin([t floatValue] * [gyro_angularSpeed_z floatValue])
+                                   ];
+            NSNumber * Rnb_22_i = [NSNumber numberWithFloat:
+                                   sin([t floatValue] * [gyro_angularSpeed_x floatValue]) *
+                                   sin([t floatValue] * [gyro_angularSpeed_y floatValue]) *
+                                   sin([t floatValue] * [gyro_angularSpeed_z floatValue]) +
+                                   cos([t floatValue] * [gyro_angularSpeed_x floatValue]) *
+                                   cos([t floatValue] * [gyro_angularSpeed_z floatValue])
+                                   ];
+            NSNumber * Rnb_23_i = [NSNumber numberWithFloat:
+                                   sin([t floatValue] * [gyro_angularSpeed_x floatValue]) *
+                                   cos([t floatValue] * [gyro_angularSpeed_y floatValue])
+                                   ];
+            
+            NSNumber * Rnb_31_i = [NSNumber numberWithFloat:
+                                   cos([t floatValue] * [gyro_angularSpeed_x floatValue]) *
+                                   sin([t floatValue] * [gyro_angularSpeed_y floatValue]) *
+                                   cos([t floatValue] * [gyro_angularSpeed_z floatValue]) +
+                                   sin([t floatValue] * [gyro_angularSpeed_x floatValue]) *
+                                   sin([t floatValue] * [gyro_angularSpeed_z floatValue])
+                                   ];
+            NSNumber * Rnb_32_i = [NSNumber numberWithFloat:
+                                   cos([t floatValue] * [gyro_angularSpeed_x floatValue]) *
+                                   sin([t floatValue] * [gyro_angularSpeed_y floatValue]) *
+                                   sin([t floatValue] * [gyro_angularSpeed_z floatValue]) -
+                                   sin([t floatValue] * [gyro_angularSpeed_x floatValue]) *
+                                   cos([t floatValue] * [gyro_angularSpeed_z floatValue])
+                                   ];
+            NSNumber * Rnb_33_i = [NSNumber numberWithFloat:
+                                   cos([t floatValue] * [gyro_angularSpeed_x floatValue]) *
+                                   cos([t floatValue] * [gyro_angularSpeed_y floatValue])
+                                   ];
+            
+            NSNumber * Rnb_11_new = [NSNumber numberWithFloat:
+                                     [Rnb_11 floatValue] * [Rnb_11_i floatValue] +
+                                     [Rnb_12 floatValue] * [Rnb_21_i floatValue] +
+                                     [Rnb_13 floatValue] * [Rnb_31_i floatValue]
+                                     ];
+            NSNumber * Rnb_12_new = [NSNumber numberWithFloat:
+                                     [Rnb_11 floatValue] * [Rnb_12_i floatValue] +
+                                     [Rnb_12 floatValue] * [Rnb_22_i floatValue] +
+                                     [Rnb_13 floatValue] * [Rnb_32_i floatValue]
+                                     ];
+            NSNumber * Rnb_13_new = [NSNumber numberWithFloat:
+                                     [Rnb_11 floatValue] * [Rnb_13_i floatValue] +
+                                     [Rnb_12 floatValue] * [Rnb_23_i floatValue] +
+                                     [Rnb_13 floatValue] * [Rnb_33_i floatValue]
+                                     ];
+            
+            NSNumber * Rnb_21_new = [NSNumber numberWithFloat:
+                                     [Rnb_21 floatValue] * [Rnb_11_i floatValue] +
+                                     [Rnb_22 floatValue] * [Rnb_21_i floatValue] +
+                                     [Rnb_23 floatValue] * [Rnb_31_i floatValue]
+                                     ];
+            NSNumber * Rnb_22_new = [NSNumber numberWithFloat:
+                                     [Rnb_21 floatValue] * [Rnb_12_i floatValue] +
+                                     [Rnb_22 floatValue] * [Rnb_22_i floatValue] +
+                                     [Rnb_23 floatValue] * [Rnb_32_i floatValue]
+                                     ];
+            NSNumber * Rnb_23_new = [NSNumber numberWithFloat:
+                                     [Rnb_21 floatValue] * [Rnb_13_i floatValue] +
+                                     [Rnb_22 floatValue] * [Rnb_23_i floatValue] +
+                                     [Rnb_23 floatValue] * [Rnb_33_i floatValue]
+                                     ];
+            
+            NSNumber * Rnb_31_new = [NSNumber numberWithFloat:
+                                     [Rnb_31 floatValue] * [Rnb_11_i floatValue] +
+                                     [Rnb_32 floatValue] * [Rnb_21_i floatValue] +
+                                     [Rnb_33 floatValue] * [Rnb_31_i floatValue]
+                                     ];
+            NSNumber * Rnb_32_new = [NSNumber numberWithFloat:
+                                     [Rnb_31 floatValue] * [Rnb_12_i floatValue] +
+                                     [Rnb_32 floatValue] * [Rnb_22_i floatValue] +
+                                     [Rnb_33 floatValue] * [Rnb_32_i floatValue]
+                                     ];
+            NSNumber * Rnb_33_new = [NSNumber numberWithFloat:
+                                     [Rnb_31 floatValue] * [Rnb_13_i floatValue] +
+                                     [Rnb_32 floatValue] * [Rnb_23_i floatValue] +
+                                     [Rnb_33 floatValue] * [Rnb_33_i floatValue]
+                                     ];
+            
+            Rnb_11 = [NSNumber numberWithFloat:[Rnb_11_new floatValue]];
+            Rnb_12 = [NSNumber numberWithFloat:[Rnb_12_new floatValue]];
+            Rnb_13 = [NSNumber numberWithFloat:[Rnb_13_new floatValue]];
+            
+            Rnb_21 = [NSNumber numberWithFloat:[Rnb_21_new floatValue]];
+            Rnb_22 = [NSNumber numberWithFloat:[Rnb_22_new floatValue]];
+            Rnb_23 = [NSNumber numberWithFloat:[Rnb_23_new floatValue]];
+            
+            Rnb_31 = [NSNumber numberWithFloat:[Rnb_31_new floatValue]];
+            Rnb_32 = [NSNumber numberWithFloat:[Rnb_32_new floatValue]];
+            Rnb_33 = [NSNumber numberWithFloat:[Rnb_33_new floatValue]];
+            
+            attitude_x = [NSNumber numberWithFloat:
+                          [attitude_x floatValue] + [t floatValue] * [gyro_angularSpeed_x floatValue]
+                          ]; // Pitch
+            attitude_y = [NSNumber numberWithFloat:
+                          [attitude_y floatValue] + [t floatValue] * [gyro_angularSpeed_y floatValue]
+                          ]; // Roll
+            attitude_z = [NSNumber numberWithFloat:
+                          [attitude_z floatValue] + [t floatValue] * [gyro_angularSpeed_z floatValue]
+                          ]; // Yaw
+        }
+        
+        viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", [attitude_x floatValue] * 180.0 / M_PI];
+        viewController.labelDegR.text = [NSString stringWithFormat:@"%.2f", [attitude_y floatValue] * 180.0 / M_PI];
+        viewController.labelDegY.text = [NSString stringWithFormat:@"%.2f", [attitude_z floatValue] * 180.0 / M_PI];
+    }
+    
+    NSLog(@"--pos_x: %.2f", [pos_x floatValue]);
+    NSLog(@"pos_y: %.2f", [pos_y floatValue]);
+    NSLog(@"pos_z: %.2f", [pos_z floatValue]);
+    
+    NSLog(@"vel_x: %.2f", [vel_x floatValue]);
+    NSLog(@"vel_y: %.2f", [vel_y floatValue]);
+    NSLog(@"vel_z: %.2f", [vel_z floatValue]);
+    
+    NSLog(@"Rnb_11: %.2f", [Rnb_11 floatValue]);
+    NSLog(@"Rnb_12: %.2f", [Rnb_12 floatValue]);
+    NSLog(@"Rnb_13: %.2f", [Rnb_13 floatValue]);
+    NSLog(@"Rnb_21: %.2f", [Rnb_21 floatValue]);
+    NSLog(@"Rnb_22: %.2f", [Rnb_22 floatValue]);
+    NSLog(@"Rnb_23: %.2f", [Rnb_23 floatValue]);
+    NSLog(@"Rnb_31: %.2f", [Rnb_31 floatValue]);
+    NSLog(@"Rnb_32: %.2f", [Rnb_32 floatValue]);
+    NSLog(@"Rnb_33: %.2f", [Rnb_33 floatValue]);
+    
+    NSLog(@"attitude_x: %.2f", [attitude_x floatValue]);
+    NSLog(@"attitude_y: %.2f", [attitude_y floatValue]);
+    NSLog(@"attitude_z: %.2f", [attitude_z floatValue]);
     
 }
 

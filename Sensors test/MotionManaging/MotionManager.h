@@ -91,13 +91,35 @@
     Adder * gyro_biasAdder_z; // This will subtract using a inversed input
     
     // Kinematic variables
+    NSNumber * pos_x;
+    NSNumber * pos_y;
+    NSNumber * pos_z;
+    
+    NSNumber * vel_x;
+    NSNumber * vel_y;
+    NSNumber * vel_z;
+    
+    NSNumber * Rnb_11; // Rotation matrix coefficient 11: first row, first column
+    NSNumber * Rnb_12;
+    NSNumber * Rnb_13;
+    NSNumber * Rnb_21;
+    NSNumber * Rnb_22;
+    NSNumber * Rnb_23;
+    NSNumber * Rnb_31;
+    NSNumber * Rnb_32;
+    NSNumber * Rnb_33;
+    
+    NSNumber * attitude_x; // Pitch
+    NSNumber * attitude_y; // Roll
+    NSNumber * attitude_z; // Yaw
     
     // Orchestration variables
     BOOL traveling;
+    BOOL calibrated;
     RDPosition * position;
 }
 
-@property NSTimer *timer;
+@property NSTimer *tr;
 
 //  Signal processing configuration variables
 @property NSNumber * acce_sensitivity_threshold;
