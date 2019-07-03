@@ -287,14 +287,8 @@ if (self) {
                 if ([acce_averager_z isOutput]) {
                     acce_bias_z = [NSNumber numberWithFloat:[acce_averager_z.output floatValue]];
                     acce_biasBuffer_z.disabledInput = [NSNumber numberWithFloat:[acce_averager_z.output floatValue]];
-                    [gyro_biasAdder_x executeWithInput1:gyro_measuresBuffer_x.singleOutput
-                                              andInput2:[NSNumber numberWithFloat:-[gyro_bias_x floatValue]]];
+                    viewController.labelAZ.text = [NSString stringWithFormat:@"%.3f", [acce_mea_z floatValue]];
                     
-                    if ([gyro_biasAdder_x isOutput]) {
-                        gyro_angularSpeed_x = [NSNumber numberWithFloat:[gyro_biasAdder_x.output floatValue]];
-                        viewController.labelGX.text = [NSString stringWithFormat:@"%.3f", [gyro_angularSpeed_x floatValue]];
-                        viewController.labelDegP.text = [NSString stringWithFormat:@"%.3f", [gyro_biasAdder_x.output floatValue]];
-                    }
                 }
             }
         }
@@ -305,20 +299,45 @@ if (self) {
     gyro_mea_x = [NSNumber numberWithFloat:self.gyroData.rotationRate.x];
     
     [gyro_threshold_x executeWithInput:gyro_mea_x];
+    NSLog(@"[INFO][MM] -- gyro_mea_x: %.3f", [gyro_mea_x floatValue]);
     
     [gyro_measuresBuffer_x executeWithInput:gyro_mea_x];
     
+    NSLog([gyro_threshold_x isOutput] ? @"[INFO][MM]  [gyro_threshold_x isOutput] is YES" :
+          @"[INFO][MM]  [gyro_threshold_x isOutput] is NO");
     if([gyro_threshold_x isOutput]) {
+        NSLog(@"[INFO][MM]  [gyro_threshold_x.output floatValue]: %.3f",  [gyro_threshold_x.output floatValue]);
+        NSLog(gyro_threshold_x.enabling ? @"[INFO][MM]  gyro_threshold_x.enabling is YES" :
+              @"[INFO][MM]  gyro_threshold_x.enablingis NO");
         [gyro_biasBuffer_x executeWithInput:gyro_threshold_x.output
                                 andEnabling:gyro_threshold_x.enabling];
         
+        NSLog([gyro_biasBuffer_x isOutput] ? @"[INFO][MM]  [gyro_biasBuffer_x isOutput] is YES" :
+              @"[INFO][MM]  [gyro_biasBuffer_x isOutput] is NO");
         if ([gyro_biasBuffer_x isOutput]) {
             [gyro_averager_x executeWithInput:gyro_biasBuffer_x.arrayOutput];
             
+            NSLog([gyro_averager_x isOutput] ? @"[INFO][MM]  [gyro_averager_x isOutput] is YES" :
+                  @"[INFO][MM]  [gyro_averager_x isOutput] is NO");
             if ([gyro_averager_x isOutput]) {
+                NSLog(@"[INFO][MM]  [gyro_averager_x.output floatValue]: %.3f",  [gyro_averager_x.output floatValue]);
                 gyro_bias_x = [NSNumber numberWithFloat:[gyro_averager_x.output floatValue]];
                 gyro_biasBuffer_x.disabledInput = [NSNumber numberWithFloat:[gyro_averager_x.output floatValue]];
-                viewController.labelAX.text = [NSString stringWithFormat:@"%.3f", [acce_mea_x floatValue]];
+                
+                NSLog(@"[INFO][MM]  [gyro_measuresBuffer_x.singleOutput floatValue]: %.3f",  [gyro_measuresBuffer_x.singleOutput floatValue]);
+                [gyro_biasAdder_x executeWithInput1:gyro_measuresBuffer_x.singleOutput
+                                          andInput2:[NSNumber numberWithFloat:-[gyro_bias_x floatValue]]];
+                
+                NSLog([gyro_biasAdder_x isOutput] ? @"[INFO][MM]  [gyro_biasAdder_x isOutput] is YES" :
+                      @"[INFO][MM]  [gyro_biasAdder_x isOutput] is NO");
+                if ([gyro_biasAdder_x isOutput]) {
+                    gyro_angularSpeed_x = [NSNumber numberWithFloat:[gyro_biasAdder_x.output floatValue]];
+                    viewController.labelGX.text = [NSString stringWithFormat:@"%.3f", [gyro_mea_x floatValue]];
+                    viewController.labelDegP.text = [NSString stringWithFormat:@"%.3f", [gyro_angularSpeed_x floatValue]];
+                    
+                    NSLog(@"[INFO][MM] [gyro_angularSpeed_x floatValue]: %.3f", [gyro_angularSpeed_x floatValue]);
+                    NSLog(@"[INFO][MM] [gyro_mea_x floatValue]: %.3f",  [gyro_mea_x floatValue]);
+                }
             }
         }
     }

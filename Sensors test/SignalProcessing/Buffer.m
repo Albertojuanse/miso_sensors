@@ -66,6 +66,7 @@
             for(NSNumber * item in values) {
                 [self.arrayOutput addObject:item];
             }
+            [values removeObjectAtIndex:0];
             [values addObject:[NSNumber numberWithFloat:[self.input floatValue]]];
             isOutput = YES;
         }
@@ -79,6 +80,7 @@
             for(NSNumber * item in values) {
                 [self.arrayOutput addObject:item];
             }
+            [values removeObjectAtIndex:0];
             [values addObject:[NSNumber numberWithFloat:[self.disabledInput floatValue]]];
             isOutput = YES;
         }
