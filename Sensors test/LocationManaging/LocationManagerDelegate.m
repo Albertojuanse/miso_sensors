@@ -141,6 +141,8 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         // Create a NSUUID with proximity UUID of the broadcasting beacons
         NSUUID *uuidRaspi = [[NSUUID alloc] initWithUUIDString:@"25DC8A73-F3C9-4111-A7DD-C39CD4B828C7"];
         NSUUID *uuidBeacon1 = [[NSUUID alloc] initWithUUIDString:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825"];
+        NSUUID *uuidBeacon2 = [[NSUUID alloc] initWithUUIDString:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824"];
+        NSUUID *uuidBeacon3 = [[NSUUID alloc] initWithUUIDString:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823"];
         
         // Setup searching region with proximity UUID as the broadcasting beacon
         monitoredRegions = [[NSMutableArray alloc] init];
@@ -148,6 +150,10 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         [monitoredRegions addObject:RaspiRegion];
         CLBeaconRegion * Beacon1Region = [[CLBeaconRegion alloc] initWithProximityUUID:uuidBeacon1 major:1 minor:1 identifier:@"beacon1@miso.uam.es"];
         [monitoredRegions addObject:Beacon1Region];
+        CLBeaconRegion * Beacon2Region = [[CLBeaconRegion alloc] initWithProximityUUID:uuidBeacon2 major:1 minor:1 identifier:@"beacon2@miso.uam.es"];
+        [monitoredRegions addObject:Beacon2Region];
+        CLBeaconRegion * Beacon3Region = [[CLBeaconRegion alloc] initWithProximityUUID:uuidBeacon3 major:1 minor:1 identifier:@"beacon3@miso.uam.es"];
+        [monitoredRegions addObject:Beacon3Region];
         
         // Info to radiolocator
         NSMutableArray *rssiMeasures = [[NSMutableArray alloc] init];
@@ -172,11 +178,19 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         [locationManager startRangingBeaconsInRegion:RaspiRegion];
         [rangedRegions addObject:Beacon1Region];
         [locationManager startRangingBeaconsInRegion:Beacon1Region];
+        [rangedRegions addObject:Beacon2Region];
+        [locationManager startRangingBeaconsInRegion:Beacon2Region];
+        [rangedRegions addObject:Beacon3Region];
+        [locationManager startRangingBeaconsInRegion:Beacon3Region];
         
         NSLog(@"[INFO][LM] Device monitorizes a region:");
         NSLog(@"[INFO][LM] -> %@", [[RaspiRegion proximityUUID] UUIDString]);
         NSLog(@"[INFO][LM] Device monitorizes a region:");
         NSLog(@"[INFO][LM] -> %@", [[Beacon1Region proximityUUID] UUIDString]);
+        NSLog(@"[INFO][LM] Device monitorizes a region:");
+        NSLog(@"[INFO][LM] -> %@", [[Beacon2Region proximityUUID] UUIDString]);
+        NSLog(@"[INFO][LM] Device monitorizes a region:");
+        NSLog(@"[INFO][LM] -> %@", [[Beacon3Region proximityUUID] UUIDString]);
         
         NSLog(@"[INFO][LM] Start monitoring regions.");
     }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied || CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted){
