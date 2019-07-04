@@ -247,12 +247,16 @@
             if(diferentUUID.count == 0) {
                 [diferentUUID addObject:uuid];
             } else {
+                BOOL foundUUID = NO;
                 for (NSString * existingUUID in diferentUUID) {
                     if ([existingUUID isEqualToString:uuid]) {
-                        // not add
+                        foundUUID = YES;
                     } else {
-                        [diferentUUID addObject:uuid];
+                        
                     }
+                }
+                if (!foundUUID) {
+                    [diferentUUID addObject:uuid];
                 }
             }
         }
@@ -305,7 +309,6 @@
                         if (measureDicDic.count == 0) {
                             // Not evaluate
                         } else {
-                            
                             NSNumber * measuresAcumulation = [NSNumber numberWithFloat:0.0];
                             NSInteger measureIndex = 0;
                             NSArray * measuresKeys = [measureDicDic allKeys];

@@ -648,6 +648,7 @@ if (self) {
         viewController.labelDegY.text = [NSString stringWithFormat:@"%.2f", [attitude_z floatValue] * 180.0 / M_PI];
     }
     
+    /*
     NSLog(@"--pos_x: %.2f", [pos_x floatValue]);
     NSLog(@"pos_y: %.2f", [pos_y floatValue]);
     NSLog(@"pos_z: %.2f", [pos_z floatValue]);
@@ -669,7 +670,7 @@ if (self) {
     NSLog(@"attitude_x: %.2f", [attitude_x floatValue]);
     NSLog(@"attitude_y: %.2f", [attitude_y floatValue]);
     NSLog(@"attitude_z: %.2f", [attitude_z floatValue]);
-    
+    */
 }
 
 /*!

@@ -316,10 +316,10 @@
                             colorUUID = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
                             break;
                         case 1:
-                            colorUUID = [UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:0.2];
+                            colorUUID = [UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:0.2];
                             break;
                         case 2:
-                            colorUUID = [UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:0.2];
+                            colorUUID = [UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:0.2];
                             break;
                         case 3:
                             colorUUID = [UIColor colorWithRed:127.0/255.0 green:128.0/255.0 blue:0.0 alpha:0.2];
@@ -390,10 +390,10 @@
                     colorUUID = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
                     break;
                 case 1:
-                    colorUUID = [UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:0.2];
+                    colorUUID = [UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:0.2];
                     break;
                 case 2:
-                    colorUUID = [UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:0.2];
+                    colorUUID = [UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:0.2];
                     break;
                 case 3:
                     colorUUID = [UIColor colorWithRed:127.0/255.0 green:128.0/255.0 blue:0.0 alpha:0.2];
@@ -416,8 +416,8 @@
             }
             
             // Choose a position for display the UUID
-            [uuidBezierPath moveToPoint:CGPointMake(16.0, 8.0 * (UUIDindex + 1.0) + 10.0)];
-            [uuidBezierPath addLineToPoint:CGPointMake(16.0 + 100.0, 8.0 * (UUIDindex + 1.0) + 10.0)];
+            [uuidBezierPath moveToPoint:CGPointMake(16.0, 16.0 * (UUIDindex + 1.0) + 2.0 + 10.0)];
+            [uuidBezierPath addLineToPoint:CGPointMake(16.0 + 100.0, 16.0 * (UUIDindex + 1.0) + 2.0 + 10.0)];
             
             CAShapeLayer *uuidLayer = [[CAShapeLayer alloc] init];
             [uuidLayer setPath:uuidBezierPath.CGPath];
@@ -427,8 +427,8 @@
             
             // Add the description
             CATextLayer *uuidTextLayer = [CATextLayer layer];
-            uuidTextLayer.position = CGPointMake(116.0, 8.0 * (UUIDindex + 1.0));
-            uuidTextLayer.frame = CGRectMake(116.0, 8.0 * (UUIDindex + 1.0), 400, 20);
+            uuidTextLayer.position = CGPointMake(116.0, 16.0 * (UUIDindex + 1.0));
+            uuidTextLayer.frame = CGRectMake(116.0, 16.0 * (UUIDindex + 1.0), 400, 20);
             uuidTextLayer.string = [NSString stringWithFormat:@"UUID: %@", uuid];
             uuidTextLayer.fontSize = 12;
             uuidTextLayer.alignmentMode = kCAAlignmentCenter;
