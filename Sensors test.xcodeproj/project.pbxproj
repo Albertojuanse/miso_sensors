@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		421FCEB922CF5C8E00C62E5E /* miso.png in Resources */ = {isa = PBXBuildFile; fileRef = 421FCEB822CF5C8E00C62E5E /* miso.png */; };
 		422798852271F37800E07C39 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798842271F37800E07C39 /* AppDelegate.m */; };
 		422798882271F37800E07C39 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798872271F37800E07C39 /* ViewController.m */; };
 		4227988B2271F37800E07C39 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 422798892271F37800E07C39 /* Main.storyboard */; };
@@ -28,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		421FCEB822CF5C8E00C62E5E /* miso.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = miso.png; sourceTree = "<group>"; };
 		422798802271F37800E07C39 /* Sensors test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sensors test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		422798832271F37800E07C39 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		422798842271F37800E07C39 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				4227988C2271F37800E07C39 /* Assets.xcassets */,
 				422798912271F37800E07C39 /* Info.plist */,
 				422798922271F37800E07C39 /* main.m */,
+				421FCEB822CF5C8E00C62E5E /* miso.png */,
 			);
 			path = "Sensors test";
 			sourceTree = "<group>";
@@ -232,6 +235,7 @@
 				422798902271F37800E07C39 /* LaunchScreen.storyboard in Resources */,
 				4227988D2271F37800E07C39 /* Assets.xcassets in Resources */,
 				4227988B2271F37800E07C39 /* Main.storyboard in Resources */,
+				421FCEB922CF5C8E00C62E5E /* miso.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
