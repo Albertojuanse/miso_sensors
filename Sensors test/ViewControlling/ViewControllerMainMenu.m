@@ -29,25 +29,25 @@
     beaconsRegistered = [[NSMutableArray alloc] init];
     regionIdNumber = [NSNumber numberWithInteger:3];
     // Pre-registered regions
-    NSDictionary * regionRaspiDic = [[NSDictionary alloc] init];
+    NSMutableDictionary * regionRaspiDic = [[NSMutableDictionary alloc] init];
     [regionRaspiDic setValue:@"25DC8A73-F3C9-4111-A7DD-C39CD4B828C7" forKey:@"uuid"];
     [regionRaspiDic setValue:@"1" forKey:@"major"];
     [regionRaspiDic setValue:@"0" forKey:@"minor"];
     [regionRaspiDic setValue:@"raspi@miso.uam.es" forKey:@"identifier"];
     [beaconsRegistered addObject:regionRaspiDic];
-    NSDictionary * regionBeacon1Dic = [[NSDictionary alloc] init];
+    NSMutableDictionary * regionBeacon1Dic = [[NSMutableDictionary alloc] init];
     [regionBeacon1Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825" forKey:@"uuid"];
     [regionBeacon1Dic setValue:@"1" forKey:@"major"];
     [regionBeacon1Dic setValue:@"1" forKey:@"minor"];
     [regionBeacon1Dic setValue:@"beacon1@miso.uam.es" forKey:@"identifier"];
     [beaconsRegistered addObject:regionBeacon1Dic];
-    NSDictionary * regionBeacon2Dic = [[NSDictionary alloc] init];
+    NSMutableDictionary * regionBeacon2Dic = [[NSMutableDictionary alloc] init];
     [regionBeacon2Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824" forKey:@"uuid"];
     [regionBeacon2Dic setValue:@"1" forKey:@"major"];
     [regionBeacon2Dic setValue:@"1" forKey:@"minor"];
     [regionBeacon2Dic setValue:@"beacon2@miso.uam.es" forKey:@"identifier"];
     [beaconsRegistered addObject:regionBeacon2Dic];
-    NSDictionary * regionBeacon3Dic = [[NSDictionary alloc] init];
+    NSMutableDictionary * regionBeacon3Dic = [[NSMutableDictionary alloc] init];
     [regionBeacon3Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823" forKey:@"uuid"];
     [regionBeacon3Dic setValue:@"1" forKey:@"major"];
     [regionBeacon3Dic setValue:@"1" forKey:@"minor"];
@@ -55,7 +55,6 @@
     [beaconsRegistered addObject:regionBeacon3Dic];
     
     // Visualization
-    [self.buttonAdd setEnabled:YES];
     
     // Table delegates; the delegate methods for attending these tables are part of this class
     self.tableModes.delegate = self;
@@ -93,7 +92,7 @@
     
     // Configure individual cells
     if (tableView == self.tableBeacons) {
-        NSDictionary * regionDic = [beaconsRegistered objectAtIndex:indexPath.row];
+        NSMutableDictionary * regionDic = [beaconsRegistered objectAtIndex:indexPath.row];
         cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ ; major: %@ ; minor: %@",
                                regionDic[@"identifier"],
                                regionDic[@"uuid"],
@@ -127,13 +126,13 @@
         NSLog(@"[NOTI][VC] Notification \"handleButtonAdd\" recived");
         
         // Get data from form
-        NSDictionary *data = notification.userInfo;
+        NSMutableDictionary *data = notification.userInfo;
         NSString * uuid = [data objectForKey:@"uuid"];
         NSString * major = [data objectForKey:@"major"];
         NSString * minor = [data objectForKey:@"minor"];
         
         BOOL regionFound = NO;
-        for (NSDictionary * regionDic in beaconsRegistered) {
+        for (NSMutableDictionary * regionDic in beaconsRegistered) {
             if ([uuid isEqualToString:regionDic[@"uuid"]]) {
                 if ([major isEqualToString:regionDic[@"major"]]) {
                     if ([minor isEqualToString:regionDic[@"minor"]]) {
@@ -144,7 +143,7 @@
         }
         if (!regionFound)
         {
-            NSDictionary * regionBeaconDic = [[NSDictionary alloc] init];
+            NSMutableDictionary * regionBeaconDic = [[NSMutableDictionary alloc] init];
             [regionBeaconDic setValue:uuid forKey:@"uuid"];
             [regionBeaconDic setValue:major forKey:@"major"];
             [regionBeaconDic setValue:minor forKey:@"minor"];
@@ -154,6 +153,7 @@
             [regionBeaconDic setValue:regionId forKey:@"identifier"];
             [beaconsRegistered addObject:regionBeaconDic];
         }
+        [self.tableBeacons reloadData];
     }
 }
 

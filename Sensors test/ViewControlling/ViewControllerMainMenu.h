@@ -26,7 +26,6 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *tableModes;
 @property (weak, nonatomic) IBOutlet UITableView *tableBeacons;
-@property (weak, nonatomic) IBOutlet UIButton *buttonAdd;
 
 @end
 
