@@ -83,6 +83,8 @@
                     </view>
                     <connections>
                         <outlet property="buttonAdd" destination="Zp0-zM-RWh" id="pRb-Ui-1e7"/>
+                        <outlet property="tableBeacons" destination="OSI-94-ylG" id="Q50-ew-s3g"/>
+                        <outlet property="tableModes" destination="ofE-hB-npY" id="WTF-oQ-7X1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WTd-at-ldf" userLabel="First Responder" sceneMemberID="firstResponder"/>

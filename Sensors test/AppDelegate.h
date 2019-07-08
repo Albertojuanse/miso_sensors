@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
-#import "ViewController.h"
 #import "StateMachine.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate> {

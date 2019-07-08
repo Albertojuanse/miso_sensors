@@ -22,8 +22,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *textMajor;
 @property (weak, nonatomic) IBOutlet UITextField *textMinor;
 
-
-
 @end
 
 

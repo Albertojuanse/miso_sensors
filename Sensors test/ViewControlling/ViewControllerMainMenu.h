@@ -13,10 +13,19 @@
  @class ViewControllerMainMenu
  @discussion This class extends UIViewController and controls the main menu interface.
  */
-@interface ViewControllerMainMenu : UIViewController{
+@interface ViewControllerMainMenu : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+    
+    // Modes
+    NSMutableArray * modes;
+    
+    // Beacons' region identifiers
+    NSMutableArray * beaconsRegistered;
+    NSNumber * regionIdNumber;
     
 }
 
+@property (weak, nonatomic) IBOutlet UITableView *tableModes;
+@property (weak, nonatomic) IBOutlet UITableView *tableBeacons;
 @property (weak, nonatomic) IBOutlet UIButton *buttonAdd;
 
 @end
