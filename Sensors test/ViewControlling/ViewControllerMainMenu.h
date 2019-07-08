@@ -15,6 +15,8 @@
  */
 @interface ViewControllerMainMenu : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
+    BOOL flagWasLoadedOnce;
+    
     // Modes
     NSMutableArray * modes;
     

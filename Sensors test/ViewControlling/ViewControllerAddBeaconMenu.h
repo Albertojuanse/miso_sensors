@@ -20,6 +20,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *textUUID;
 @property (weak, nonatomic) IBOutlet UITextField *textMajor;
 @property (weak, nonatomic) IBOutlet UITextField *textMinor;
+@property (weak, nonatomic) IBOutlet UILabel *textError;
 
 @end
 

@@ -95,7 +95,7 @@
         [self.condition unlock];
         
         // Action state machine evolution; it must be called after release the condition
-        [self evaluateState];
+        //[self evaluateState];
     }
 }
 
@@ -237,7 +237,7 @@
  */
 - (BOOL) isStarted{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [viewController.labelStatus setText:@"UNLOCATED; tap 'Measure' or 'Travel' to start."];
+        //[viewController.labelStatus setText:@"UNLOCATED; tap 'Measure' or 'Travel' to start."];
     });
     
     BOOL isStarted;
@@ -283,10 +283,10 @@
 - (BOOL) isLocated{
     if ([location isLocated]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [viewController.labelStatus setText:@"LOCATED; tap 'Measure' or 'Travel' to start."];
+            //[viewController.labelStatus setText:@"LOCATED; tap 'Measure' or 'Travel' to start."];
             // Control tapping
-            [viewController.buttonMeasure setEnabled:YES];
-            [viewController.buttonTravel setEnabled:YES];
+            //[viewController.buttonMeasure setEnabled:YES];
+            //[viewController.buttonTravel setEnabled:YES];
         });
         return YES;
     } else {
@@ -318,10 +318,10 @@
     if (userWantsToStartMeasureFlag) {
         NSLog(@"[INFO][SM] Label is going to be changed");
         dispatch_async(dispatch_get_main_queue(), ^{
-            [viewController.labelStatus setText:@"MEASURING; tap 'Measure' again for stop the measure."];
+            //[viewController.labelStatus setText:@"MEASURING; tap 'Measure' again for stop the measure."];
             // Control tapping
-            [viewController.buttonMeasure setEnabled:YES];
-            [viewController.buttonTravel setEnabled:NO];
+            //[viewController.buttonMeasure setEnabled:YES];
+            //[viewController.buttonTravel setEnabled:NO];
         });
         // Ask location manager to start measuring
         [location startMeasuring];
@@ -357,10 +357,10 @@
     if(userWantsToStopMeasureFlag) {
         dispatch_async(dispatch_get_main_queue(), ^{
             NSLog(@"[INFO][SM] Label is going to be changed");
-            [viewController.labelStatus setText:@"LOCATED; tap 'Measure' or 'Travel' to start."];
+            //[viewController.labelStatus setText:@"LOCATED; tap 'Measure' or 'Travel' to start."];
             // Control tapping
-            [viewController.buttonMeasure setEnabled:YES];
-            [viewController.buttonTravel setEnabled:YES];
+            //[viewController.buttonMeasure setEnabled:YES];
+            //[viewController.buttonTravel setEnabled:YES];
         });
         // Ask location manager to stop measuring
         [location stopMeasuring];
@@ -396,10 +396,10 @@
     if (userWantsToStartTravelFlag) {
         dispatch_async(dispatch_get_main_queue(), ^{
             NSLog(@"[INFO][SM] Label is going to be changed");
-            [viewController.labelStatus setText:@"TRAVELING; tap 'Travel' again for stop the travel."];
+            //[viewController.labelStatus setText:@"TRAVELING; tap 'Travel' again for stop the travel."];
             // Prevent new tapping
-            [viewController.buttonMeasure setEnabled:NO];
-            [viewController.buttonTravel setEnabled:YES];
+            //[viewController.buttonMeasure setEnabled:NO];
+            //[viewController.buttonTravel setEnabled:YES];
         });
         // Ask motion manager to start traveling
         [location setLocated:NO];
@@ -437,10 +437,10 @@
     if(userWantsToStopTravelFlag) {
         dispatch_async(dispatch_get_main_queue(), ^{
             NSLog(@"[INFO][SM] Label is going to be changed");
-            [viewController.labelStatus setText:@"UNLOCATED; tap 'Measure' or 'Travel' to start."];
+            //[viewController.labelStatus setText:@"UNLOCATED; tap 'Measure' or 'Travel' to start."];
             // Control tapping
-            [viewController.buttonMeasure setEnabled:NO];
-            [viewController.buttonTravel setEnabled:NO];
+            //[viewController.buttonMeasure setEnabled:NO];
+            //[viewController.buttonTravel setEnabled:NO];
         });
         // Ask motion manager to stop traveling
         [motion stopTraveling];

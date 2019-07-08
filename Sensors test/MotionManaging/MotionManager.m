@@ -236,7 +236,7 @@ if (self) {
                 if ([acce_averager_x isOutput]) {
                     acce_bias_x = [NSNumber numberWithFloat:[acce_averager_x.output floatValue]];
                     acce_biasBuffer_x.disabledInput = [NSNumber numberWithFloat:[acce_averager_x.output floatValue]];
-                    viewController.labelAX.text = [NSString stringWithFormat:@"%.2f", [acce_measuresBuffer_x.singleOutput floatValue] - [acce_averager_x.output floatValue]];
+                    //viewController.labelAX.text = [NSString stringWithFormat:@"%.2f", [acce_measuresBuffer_x.singleOutput floatValue] - [acce_averager_x.output floatValue]];
                 }
             }
         }
@@ -263,7 +263,7 @@ if (self) {
                 if ([acce_averager_y isOutput]) {
                     acce_bias_y = [NSNumber numberWithFloat:[acce_averager_y.output floatValue]];
                     acce_biasBuffer_y.disabledInput = [NSNumber numberWithFloat:[acce_averager_y.output floatValue]];
-                    viewController.labelAY.text = [NSString stringWithFormat:@"%.2f", [acce_measuresBuffer_y.singleOutput floatValue] - [acce_averager_y.output floatValue]];
+                    //viewController.labelAY.text = [NSString stringWithFormat:@"%.2f", [acce_measuresBuffer_y.singleOutput floatValue] - [acce_averager_y.output floatValue]];
                 }
             }
         }
@@ -290,7 +290,7 @@ if (self) {
                 if ([acce_averager_z isOutput]) {
                     acce_bias_z = [NSNumber numberWithFloat:[acce_averager_z.output floatValue]];
                     acce_biasBuffer_z.disabledInput = [NSNumber numberWithFloat:[acce_averager_z.output floatValue]];
-                    viewController.labelAZ.text = [NSString stringWithFormat:@"%.2f", [acce_measuresBuffer_z.singleOutput floatValue] - [acce_averager_z.output floatValue]];
+                    //viewController.labelAZ.text = [NSString stringWithFormat:@"%.2f", [acce_measuresBuffer_z.singleOutput floatValue] - [acce_averager_z.output floatValue]];
                     
                 }
             }
@@ -326,7 +326,7 @@ if (self) {
                     if (!gyro_threshold_x.enabling) {
                         gyro_angularSpeed_x = [NSNumber numberWithFloat:[gyro_biasAdder_x.output floatValue]];
                     }
-                    viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", [gyro_angularSpeed_x floatValue]];
+                    //viewController.labelGX.text = [NSString stringWithFormat:@"%.2f", [gyro_angularSpeed_x floatValue]];
                     
                 }
             }
@@ -361,7 +361,7 @@ if (self) {
                     if (!gyro_threshold_y.enabling) {
                         gyro_angularSpeed_y = [NSNumber numberWithFloat:[gyro_biasAdder_y.output floatValue]];
                     }
-                    viewController.labelGY.text = [NSString stringWithFormat:@"%.2f", [gyro_angularSpeed_y floatValue]];
+                    //viewController.labelGY.text = [NSString stringWithFormat:@"%.2f", [gyro_angularSpeed_y floatValue]];
                     
                 }
             }
@@ -396,14 +396,14 @@ if (self) {
                     if (!gyro_threshold_z.enabling) {
                         gyro_angularSpeed_z = [NSNumber numberWithFloat:[gyro_biasAdder_z.output floatValue]];
                     }
-                    viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", [gyro_angularSpeed_z floatValue]];
+                    //viewController.labelGZ.text = [NSString stringWithFormat:@"%.2f", [gyro_angularSpeed_z floatValue]];
                 }
             }
         }
     }
     
     if (calibrated) {
-        viewController.labelCalibrated.text = @"Calibrated";
+        //viewController.labelCalibrated.text = @"Calibrated";
         // Calculate the velocity and position; explicit matricial calculations
         // Pt+1 = Pt + t * vt + T^2/2 ( Rnb_t (measures - bias) + g )
         if (!acce_threshold_x.enabling) {
@@ -420,7 +420,7 @@ if (self) {
                      ];
         }
     
-        viewController.labelPosX.text = [NSString stringWithFormat:@"%.2f", [pos_x floatValue]];
+        //viewController.labelPosX.text = [NSString stringWithFormat:@"%.2f", [pos_x floatValue]];
     
         if (!acce_threshold_y.enabling) {
             pos_y = [NSNumber numberWithFloat:
@@ -436,7 +436,7 @@ if (self) {
                      ];
         }
     
-        viewController.labelPosY.text = [NSString stringWithFormat:@"%.2f", [pos_y floatValue]];
+        //viewController.labelPosY.text = [NSString stringWithFormat:@"%.2f", [pos_y floatValue]];
     
         if (!acce_threshold_z.enabling) {
             pos_z = [NSNumber numberWithFloat:
@@ -452,7 +452,7 @@ if (self) {
                      ];
         }
     
-        viewController.labelPosZ.text = [NSString stringWithFormat:@"%.2f", [pos_z floatValue]];
+        //viewController.labelPosZ.text = [NSString stringWithFormat:@"%.2f", [pos_z floatValue]];
     
         // Vt+1 = Vt + t * ( Rnb_t (measures - bias) + g )
     
@@ -641,9 +641,9 @@ if (self) {
                           ]; // Yaw
         }
         
-        viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", [attitude_x floatValue] * 180.0 / M_PI];
-        viewController.labelDegR.text = [NSString stringWithFormat:@"%.2f", [attitude_y floatValue] * 180.0 / M_PI];
-        viewController.labelDegY.text = [NSString stringWithFormat:@"%.2f", [attitude_z floatValue] * 180.0 / M_PI];
+        //viewController.labelDegP.text = [NSString stringWithFormat:@"%.2f", [attitude_x floatValue] * 180.0 / M_PI];
+        //viewController.labelDegR.text = [NSString stringWithFormat:@"%.2f", [attitude_y floatValue] * 180.0 / M_PI];
+        //viewController.labelDegY.text = [NSString stringWithFormat:@"%.2f", [attitude_z floatValue] * 180.0 / M_PI];
     }
     
     /*

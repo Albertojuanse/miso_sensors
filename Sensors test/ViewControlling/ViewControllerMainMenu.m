@@ -10,6 +10,14 @@
 
 @implementation ViewControllerMainMenu
 
+- (instancetype) init {
+    self = [super init];
+    if (self) {
+        flagWasLoadedOnce = NO;
+    }
+    return self;
+}
+
 /*!
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
@@ -17,95 +25,62 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Variables
-    modes = [[NSMutableArray alloc] init];
-    [modes addObject:@"RHO_RHO_MODELLING"];
-    [modes addObject:@"RHO_THETA_MODELLING"];
-    [modes addObject:@"THETA_THETA_MODELLING"];
-    [modes addObject:@"RHO_RHO_LOCATING"];
-    [modes addObject:@"RHO_THETA_LOCATING"];
-    [modes addObject:@"THETA_THETA_LOCATING"];
+    NSLog(@"VIEW DID LOAD");
+    if (!flagWasLoadedOnce) {
+        NSLog(@"VIEW DID LOAD");
+        // Variables
+        modes = [[NSMutableArray alloc] init];
+        [modes addObject:@"RHO_RHO_MODELLING"];
+        [modes addObject:@"RHO_THETA_MODELLING"];
+        [modes addObject:@"THETA_THETA_MODELLING"];
+        [modes addObject:@"RHO_RHO_LOCATING"];
+        [modes addObject:@"RHO_THETA_LOCATING"];
+        [modes addObject:@"THETA_THETA_LOCATING"];
     
-    beaconsRegistered = [[NSMutableArray alloc] init];
-    regionIdNumber = [NSNumber numberWithInteger:3];
-    // Pre-registered regions
-    NSMutableDictionary * regionRaspiDic = [[NSMutableDictionary alloc] init];
-    [regionRaspiDic setValue:@"25DC8A73-F3C9-4111-A7DD-C39CD4B828C7" forKey:@"uuid"];
-    [regionRaspiDic setValue:@"1" forKey:@"major"];
-    [regionRaspiDic setValue:@"0" forKey:@"minor"];
-    [regionRaspiDic setValue:@"raspi@miso.uam.es" forKey:@"identifier"];
-    [beaconsRegistered addObject:regionRaspiDic];
-    NSMutableDictionary * regionBeacon1Dic = [[NSMutableDictionary alloc] init];
-    [regionBeacon1Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825" forKey:@"uuid"];
-    [regionBeacon1Dic setValue:@"1" forKey:@"major"];
-    [regionBeacon1Dic setValue:@"1" forKey:@"minor"];
-    [regionBeacon1Dic setValue:@"beacon1@miso.uam.es" forKey:@"identifier"];
-    [beaconsRegistered addObject:regionBeacon1Dic];
-    NSMutableDictionary * regionBeacon2Dic = [[NSMutableDictionary alloc] init];
-    [regionBeacon2Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824" forKey:@"uuid"];
-    [regionBeacon2Dic setValue:@"1" forKey:@"major"];
-    [regionBeacon2Dic setValue:@"1" forKey:@"minor"];
-    [regionBeacon2Dic setValue:@"beacon2@miso.uam.es" forKey:@"identifier"];
-    [beaconsRegistered addObject:regionBeacon2Dic];
-    NSMutableDictionary * regionBeacon3Dic = [[NSMutableDictionary alloc] init];
-    [regionBeacon3Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823" forKey:@"uuid"];
-    [regionBeacon3Dic setValue:@"1" forKey:@"major"];
-    [regionBeacon3Dic setValue:@"1" forKey:@"minor"];
-    [regionBeacon3Dic setValue:@"beacon3@miso.uam.es" forKey:@"identifier"];
-    [beaconsRegistered addObject:regionBeacon3Dic];
+        beaconsRegistered = [[NSMutableArray alloc] init];
+        regionIdNumber = [NSNumber numberWithInteger:3];
+        // Pre-registered regions
+        NSMutableDictionary * regionRaspiDic = [[NSMutableDictionary alloc] init];
+        [regionRaspiDic setValue:@"25DC8A73-F3C9-4111-A7DD-C39CD4B828C7" forKey:@"uuid"];
+        [regionRaspiDic setValue:@"1" forKey:@"major"];
+        [regionRaspiDic setValue:@"0" forKey:@"minor"];
+        [regionRaspiDic setValue:@"raspi@miso.uam.es" forKey:@"identifier"];
+        [beaconsRegistered addObject:regionRaspiDic];
+        NSMutableDictionary * regionBeacon1Dic = [[NSMutableDictionary alloc] init];
+        [regionBeacon1Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825" forKey:@"uuid"];
+        [regionBeacon1Dic setValue:@"1" forKey:@"major"];
+        [regionBeacon1Dic setValue:@"1" forKey:@"minor"];
+        [regionBeacon1Dic setValue:@"beacon1@miso.uam.es" forKey:@"identifier"];
+        [beaconsRegistered addObject:regionBeacon1Dic];
+        NSMutableDictionary * regionBeacon2Dic = [[NSMutableDictionary alloc] init];
+        [regionBeacon2Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824" forKey:@"uuid"];
+        [regionBeacon2Dic setValue:@"1" forKey:@"major"];
+        [regionBeacon2Dic setValue:@"1" forKey:@"minor"];
+        [regionBeacon2Dic setValue:@"beacon2@miso.uam.es" forKey:@"identifier"];
+        [beaconsRegistered addObject:regionBeacon2Dic];
+        NSMutableDictionary * regionBeacon3Dic = [[NSMutableDictionary alloc] init];
+        [regionBeacon3Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823" forKey:@"uuid"];
+        [regionBeacon3Dic setValue:@"1" forKey:@"major"];
+        [regionBeacon3Dic setValue:@"1" forKey:@"minor"];
+        [regionBeacon3Dic setValue:@"beacon3@miso.uam.es" forKey:@"identifier"];
+        [beaconsRegistered addObject:regionBeacon3Dic];
     
-    // Visualization
+        // Visualization
     
-    // Table delegates; the delegate methods for attending these tables are part of this class
-    self.tableModes.delegate = self;
-    self.tableBeacons.delegate = self;
+        // Table delegates; the delegate methods for attending these tables are part of this class
+        self.tableModes.delegate = self;
+        self.tableModes.dataSource = self;
+        self.tableBeacons.delegate = self;
+        self.tableBeacons.dataSource = self;
     
-    // This object must listen to this events
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(addBeacon:)
-                                                 name:@"handleButtonAdd"
-                                               object:nil];
-    
-}
-    
-#pragma mark - UItableView delegate methods
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (tableView == self.tableBeacons) {
-        return [beaconsRegistered count];
-    }
-    if (tableView == self.tableModes) {
-        return [modes count];
-    }
-    return 0;
-}
-    
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    
-    // Common to all cells
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        // This object must listen to this events
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(addBeacon:)
+                                                     name:@"handleButtonAdd"
+                                                   object:nil];
     }
     
-    // Configure individual cells
-    if (tableView == self.tableBeacons) {
-        NSMutableDictionary * regionDic = [beaconsRegistered objectAtIndex:indexPath.row];
-        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ ; major: %@ ; minor: %@",
-                               regionDic[@"identifier"],
-                               regionDic[@"uuid"],
-                               regionDic[@"major"],
-                               regionDic[@"minor"]
-                               ];
-        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-    }
-    if (tableView == self.tableModes) {
-        cell.textLabel.text = [modes objectAtIndex:indexPath.row];
-        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-    }
-    return cell;
+    flagWasLoadedOnce = YES;
 }
 
 /*!
@@ -126,10 +101,14 @@
         NSLog(@"[NOTI][VC] Notification \"handleButtonAdd\" recived");
         
         // Get data from form
-        NSMutableDictionary *data = notification.userInfo;
+        NSDictionary *data = notification.userInfo;
         NSString * uuid = [data objectForKey:@"uuid"];
         NSString * major = [data objectForKey:@"major"];
         NSString * minor = [data objectForKey:@"minor"];
+        
+        NSLog(@"[HOLA] %@", uuid);
+        NSLog(@"[HOLA] %@", major);
+        NSLog(@"[HOLA] %@", minor);
         
         BOOL regionFound = NO;
         for (NSMutableDictionary * regionDic in beaconsRegistered) {
@@ -148,13 +127,65 @@
             [regionBeaconDic setValue:major forKey:@"major"];
             [regionBeaconDic setValue:minor forKey:@"minor"];
             regionIdNumber = [NSNumber numberWithInt:[regionIdNumber intValue] + 1];
+            NSLog(@"[HOLA] %.2f", [regionIdNumber floatValue]);
             NSString * regionId = [@"beacon" stringByAppendingString:[regionIdNumber stringValue]];
             regionId = [@"beacon" stringByAppendingString:@"@miso.uam.es"];
+            
+            NSLog(@"[HOLA] %@", regionId);
             [regionBeaconDic setValue:regionId forKey:@"identifier"];
             [beaconsRegistered addObject:regionBeaconDic];
         }
         [self.tableBeacons reloadData];
     }
+}
+
+#pragma mark - UItableView delegate methods
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    // Return the number of sections.
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if (tableView == self.tableBeacons) {
+        NSLog(@"[HOLA] Number of rows: %.2f", [[NSNumber numberWithInteger:[beaconsRegistered count]] floatValue]);
+        return [beaconsRegistered count];
+    }
+    if (tableView == self.tableModes) {
+        return [modes count];
+    }
+    return 0;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    // Common to all cells
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+    NSLog(@"[HOLA] Table composing");
+    
+    // Configure individual cells
+    if (tableView == self.tableBeacons) {
+        NSMutableDictionary * regionDic = [beaconsRegistered objectAtIndex:indexPath.row];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ ; major: %@ ; minor: %@",
+                               regionDic[@"identifier"],
+                               regionDic[@"uuid"],
+                               regionDic[@"major"],
+                               regionDic[@"minor"]
+                               ];
+        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+    }
+    if (tableView == self.tableModes) {
+        cell.textLabel.text = [modes objectAtIndex:indexPath.row];
+        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+    }
+    return cell;
 }
 
 @end
