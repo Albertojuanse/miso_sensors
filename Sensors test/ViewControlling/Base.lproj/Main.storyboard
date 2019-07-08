@@ -89,10 +89,10 @@
             </objects>
             <point key="canvasLocation" x="-777.34375" y="24.609375"/>
         </scene>
-        <!--View Controller-->
+        <!--View Controller Add Beacon Menu-->
         <scene sceneID="7FD-gP-vw4">
             <objects>
-                <viewController id="Crx-eI-vrX" sceneMemberID="viewController">
+                <viewController id="Crx-eI-vrX" customClass="ViewControllerAddBeaconMenu" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="UBH-kC-6q6">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -134,8 +134,12 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bj3-ZJ-Ap6">
-                                <rect key="frame" x="690" y="153.5" width="46" height="30"/>
-                                <state key="normal" title="Button"/>
+                                <rect key="frame" x="706" y="153.5" width="30" height="30"/>
+                                <state key="normal" title="Add"/>
+                                <connections>
+                                    <action selector="handleButtonAdd:" destination="Crx-eI-vrX" eventType="touchUpInside" id="tNO-83-6mf"/>
+                                    <segue destination="lVP-jp-YaV" kind="show" identifier="fromAddToMain" id="ana-Yd-hCq"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -163,10 +167,17 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="EOs-Mg-dw9"/>
                     </view>
+                    <connections>
+                        <outlet property="buttonAdd" destination="bj3-ZJ-Ap6" id="k3n-IK-IIG"/>
+                        <outlet property="textMajor" destination="Zge-f0-112" id="3fL-QA-6pz"/>
+                        <outlet property="textMinor" destination="Lfh-Ts-LpU" id="eOY-C6-Jq8"/>
+                        <outlet property="textUUID" destination="zn5-eC-bJe" id="jfG-oY-8ti"/>
+                        <outlet property="view" destination="UBH-kC-6q6" id="DoW-rJ-tqB"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tgg-1Q-QhH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-780.46875" y="724.8046875"/>
+            <point key="canvasLocation" x="-777" y="762"/>
         </scene>
         <!--View Controller Rho Rho Modelling-->
         <scene sceneID="tne-QT-ifu">

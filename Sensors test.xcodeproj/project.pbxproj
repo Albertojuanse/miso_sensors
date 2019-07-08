@@ -27,6 +27,7 @@
 		4276127422C0EE91007BDED8 /* SharedData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4276127322C0EE91007BDED8 /* SharedData.m */; };
 		42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 42917F02229BE12900EE6CD3 /* Blackbox.m */; };
 		4295FB2222D35D7A0024B155 /* ViewControllerMainMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */; };
+		4295FB2622D360BB0024B155 /* ViewControllerAddBeaconMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +68,8 @@
 		42917F04229BE16500EE6CD3 /* Blackbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Blackbox.h; sourceTree = "<group>"; };
 		4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerMainMenu.m; sourceTree = "<group>"; };
 		4295FB2322D35D8D0024B155 /* ViewControllerMainMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerMainMenu.h; sourceTree = "<group>"; };
+		4295FB2422D360930024B155 /* ViewControllerAddBeaconMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerAddBeaconMenu.h; sourceTree = "<group>"; };
+		4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerAddBeaconMenu.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +137,8 @@
 				4227988E2271F37800E07C39 /* LaunchScreen.storyboard */,
 				4295FB2322D35D8D0024B155 /* ViewControllerMainMenu.h */,
 				4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */,
+				4295FB2422D360930024B155 /* ViewControllerAddBeaconMenu.h */,
+				4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */,
 				422798862271F37800E07C39 /* ViewControllerRhoRhoModelling.h */,
 				422798872271F37800E07C39 /* ViewControllerRhoRhoModelling.m */,
 				426501BB22A03B4000BE20B7 /* Canvas.h */,
@@ -261,6 +266,7 @@
 				4276127422C0EE91007BDED8 /* SharedData.m in Sources */,
 				426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */,
 				4242F6CB22CBACAB00C4B0B7 /* Averager.m in Sources */,
+				4295FB2622D360BB0024B155 /* ViewControllerAddBeaconMenu.m in Sources */,
 				4227989B2271F60700E07C39 /* MotionManager.m in Sources */,
 				4242F6C422CB9EC200C4B0B7 /* Buffer.m in Sources */,
 				4295FB2222D35D7A0024B155 /* ViewControllerMainMenu.m in Sources */,

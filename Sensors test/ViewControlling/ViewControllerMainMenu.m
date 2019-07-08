@@ -20,7 +20,7 @@
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(addBeacon:)
-                                                 name:@"addBeacon"
+                                                 name:@"handleButtonAdd"
                                                object:nil];
     
     // Visualization
@@ -41,11 +41,17 @@
  @discussion This method adds to the table any beacon that user wants to submit in the adding view; it is only added if it does not exists yet.
  */
 - (void)addBeacon:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"addBeacon"]){
-        NSLog(@"[NOTI][VC] Notification \"addBeacon\" recived");
+    if ([[notification name] isEqualToString:@"handleButtonAdd"]){
+        NSLog(@"[NOTI][VC] Notification \"handleButtonAdd\" recived");
         
-        // Save beacons
+        // Get data from form
         NSDictionary *data = notification.userInfo;
+        NSString * uuid = [data objectForKey:@"uuid"];
+        NSString * major = [data objectForKey:@"major"];
+        NSString * minor = [data objectForKey:@"minor"];
+        
+        // TO DO: Add to table. 2019/07/08. Alberto J.
+        
     }
 }
 
