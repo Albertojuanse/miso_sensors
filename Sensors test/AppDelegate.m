@@ -18,11 +18,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    // View controller configuration
-    viewController = self.window.rootViewController;
-    
     // State machine initialization; main orchestrator
-    stateMachine = [[StateMachine alloc] initWithViewController:viewController];
+    stateMachine = [[StateMachine alloc] init];
     
     return YES;
 }

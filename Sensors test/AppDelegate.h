@@ -15,9 +15,6 @@
     
     // Orchestrator
     StateMachine * stateMachine;
-    
-    // Main view; its control will be delegated to the machine state, but for initialization porpuses it's instantiated here.
-    ViewController * viewController;
 }
 
 @property (strong, nonatomic) UIWindow * window;

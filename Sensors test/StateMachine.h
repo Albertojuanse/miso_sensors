@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "StateMachine.h"
-#import "ViewController.h"
 #import "MotionManager.h"
 #import "LocationManagerDelegate.h"
 #import "SharedData.h"
@@ -32,7 +31,6 @@
     BOOL userWantsToStopTravel;
     
     // Other components
-    ViewController * viewController;
     MotionManager * motion;
     LocationManagerDelegate * location;
     SharedData * sharedData;
@@ -47,7 +45,7 @@
 // For unlock the thread from outside; YES for blocking the thread and prevent its evolution and NO for leaving it to run.
 @property (nonatomic) BOOL lock;
 
-- (instancetype)initWithViewController:(ViewController *) viewControllerFromAppDelegate;
+- (instancetype)init;
 
 #pragma mark AppDelegateResponseMethods
 

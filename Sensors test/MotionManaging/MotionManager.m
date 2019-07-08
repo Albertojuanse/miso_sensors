@@ -14,13 +14,11 @@
  @method init
  @discussion Constructor.
  */
-- (instancetype)initWithViewController:(ViewController *) viewControllerFromStateMachine
-                         andSharedData:(SharedData *)initSharedData
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
 {
 self = [super init];
 if (self) {
     // Components
-    viewController = viewControllerFromStateMachine;
     sharedData = initSharedData;
     
     // Configuration variables

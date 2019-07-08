@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <CoreMotion/CoreMotion.h>
 #include <stdlib.h>
-#import "ViewController.h"
 #import "SharedData.h"
 #import "Threshold.h"
 #import "Buffer.h"
@@ -23,7 +22,6 @@
 @interface MotionManager : CMMotionManager {
     
     // Components
-    ViewController * viewController;
     SharedData * sharedData;
     
     // Configuration variables
@@ -131,8 +129,7 @@
 @property NSNumber * gyro_biasBuffer_capacity;
 
 // Methods
-- (instancetype) initWithViewController:(ViewController *) viewControllerFromStateMachine
-                          andSharedData:(SharedData *)initSharedData;
+- (instancetype) initWithSharedData:(SharedData *)initSharedData;
 - (void) startAccelerometers;
 - (void) stopAccelerometers;
 - (void) startGyroscopes;

@@ -15,7 +15,7 @@
  @method init
  @discussion Constructor.
  */
-- (instancetype)initWithViewController:(ViewController *) viewControllerFromAppDelegate
+- (instancetype)init
 {
     self = [super init];
     if (self) {
@@ -34,9 +34,7 @@
         
         // Other components
         sharedData = [[SharedData alloc] init];
-        viewController = viewControllerFromAppDelegate;
-        motion = [[MotionManager alloc] initWithViewController:viewControllerFromAppDelegate
-                                                 andSharedData:sharedData];
+        motion = [[MotionManager alloc] initWithSharedData:sharedData];
         
         motion.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
         motion.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
