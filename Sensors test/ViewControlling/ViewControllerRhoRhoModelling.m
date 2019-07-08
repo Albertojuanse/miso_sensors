@@ -1,14 +1,14 @@
 //
-//  ViewController.m
+//  ViewControllerRhoRhoModelling.m
 //  Sensors test
 //
 //  Created by Alberto J. on 25/4/19.
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "ViewControllerRhoRhoModelling.h"
 
-@implementation ViewController
+@implementation ViewControllerRhoRhoModelling
 
 /*!
  @method viewDidLoad
@@ -19,7 +19,6 @@
     
     // Ask canvas to initialize
     [self.canvas prepareCanvas];
-    self.text.backgroundColor = [UIColor colorWithRed:218/255.0 green:224/255.0 blue:235/255.0 alpha:0.6];
     
     // Variables
     displayedUUID = [[NSMutableArray alloc] init];
@@ -88,28 +87,11 @@
                 // ...and get the uuid.
                 NSString * uuidNew = [NSString stringWithString:uuidDic[@"uuid"]];
                 
-                // Check if it is already displayed
-                if (displayedUUID.count == 0) {
-                    // Later will be added the new item
-                } else {
-                    for (NSString * displayed in displayedUUID) {
-                        if ([displayed isEqualToString:uuidNew]) {
-                            found = YES;
-                        } else {
-                            // Later will be added the new item
-                        }
-                    }
-                }
-                if (found == NO) {
-                    [displayedUUID addObject:uuidNew];
-                    displayedUUIDString = [displayedUUIDString stringByAppendingString:[uuidNew stringByAppendingString:@"\n"]];
-                    [self.text setText:displayedUUIDString];
-                    NSLog(@"[INFO][VC] Added displayedUUID.");
-                    NSLog(@"[INFO][VC] -> %@", uuidNew);
+                // TO DO: ¿Needed? Alberto J. 2019/07/08.
+                
                 }
             }
         }
-    }
 
     [self.canvas setNeedsDisplay];
 }

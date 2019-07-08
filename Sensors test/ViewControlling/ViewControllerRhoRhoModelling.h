@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  ViewControllerRhoRhoModelling.h
 //  Sensors test
 //
 //  Created by Alberto J. on 25/4/19.
@@ -11,10 +11,10 @@
 #import "Canvas.h"
 
 /*!
- @class ViewController
- @discussion This class extends UIViewController and controls the main view of the app.
+ @class ViewControllerRhoRhoModelling
+ @discussion This class extends UIViewController and controls the interface for modelling whot the rho rho location system.
  */
-@interface ViewController : UIViewController{
+@interface ViewControllerRhoRhoModelling : UIViewController{
     // For update canvas
     NSMutableDictionary * measuresDic;
     NSMutableDictionary * locatedDic;
@@ -37,7 +37,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *labelDegR;
 @property (weak, nonatomic) IBOutlet UILabel *labelDegY;
 
-@property (weak, nonatomic) IBOutlet UILabel *text;
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
 
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
