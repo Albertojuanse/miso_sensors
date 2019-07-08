@@ -18,8 +18,6 @@
     // For update canvas
     NSMutableDictionary * measuresDic;
     NSMutableDictionary * locatedDic;
-    NSMutableArray * displayedUUID;
-    NSString * displayedUUIDString;
 }
 
 @property (weak, nonatomic) IBOutlet UILabel *labelAX;

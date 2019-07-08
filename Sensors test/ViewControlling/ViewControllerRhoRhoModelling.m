@@ -20,10 +20,6 @@
     // Ask canvas to initialize
     [self.canvas prepareCanvas];
     
-    // Variables
-    displayedUUID = [[NSMutableArray alloc] init];
-    displayedUUIDString = [[NSString alloc] init];
-    
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(refreshCanvas:)
