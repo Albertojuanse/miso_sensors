@@ -32,16 +32,9 @@
     
     // Orchestration variables
     BOOL measuring;
-    BOOL located;
-    NSNumber * currentNumberOfMeasures;
 }
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData;
-- (void) setLocated:(BOOL)newLocated;
-- (BOOL) isLocated;
-- (void) startMeasuring;
-- (void) stopMeasuring;
-- (BOOL) isMeasuredWith:(NSNumber *)numberOfMeasures;
 - (RDPosition *) getPosition;
 - (void) setPosition:(RDPosition *)newPosition;
 

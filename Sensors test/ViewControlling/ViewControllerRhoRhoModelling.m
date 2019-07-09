@@ -57,7 +57,7 @@
     beaconsRegistered = newBeaconsRegistered;
 }
 
-#pragma marks - Notification event handles
+#pragma mark - Notification event handles
 
 /*!
  @method refreshCanvas:
@@ -129,6 +129,7 @@
         [self.labelStatus setText:@"TRAVELING; please, tap 'Travel' again for finishing travel."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"startTraveling"
                                                             object:nil];
+        NSLog(@"[NOTI][VCRRM] Notification \"startTraveling\" posted.");
         
     }
     if (measuring) { // If measuring, user can travel or measuring; if 'Travel' is tapped while measure an error ocurred and nothing must happen.
@@ -150,6 +151,7 @@
         [self.labelStatus setText:@"IDLE; please, tap 'Measure' ot 'Travel' for starting. Tap back for finishing."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopTraveling"
                                                             object:nil];
+        NSLog(@"[NOTI][VCRRM] Notification \"stopTraveling\" posted.");
     }
 }
 
@@ -172,8 +174,8 @@
         NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
         // Create a copy of beacons for sending it; concurrence issues prevented
         NSMutableArray * beaconsRegisteredToSend = [[NSMutableArray alloc] init];
-        for (NSMutableDictionary * beaconDic in beaconsRegistered) {
-            [beaconsRegisteredToSend addObject:beaconDic];
+        for (NSMutableDictionary * regionDic in beaconsRegistered) {
+            [beaconsRegisteredToSend addObject:regionDic];
         }
         [data setObject:beaconsRegisteredToSend forKey:@"beaconsRegistered"];
         // And send the notification
@@ -192,6 +194,7 @@
         [self.labelStatus setText:@"IDLE; please, tap 'Measure' ot 'Travel' for starting. Tap back for finishing."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
                                                             object:nil];
+        NSLog(@"[NOTI][VCRRM] Notification \"stopMeasuring\" posted.");
         
     }
     if (traveling) { // If traveling, user can finish the travel; if 'Measuring' is tapped while measure an error ocurred and nothing must happen.

@@ -14,13 +14,13 @@
  @method init
  @discussion Constructor.
  */
-- (instancetype)initWithSharedData:(SharedData *)sharedDataFromStateMachine
+- (instancetype)initWithSharedData:(SharedData *)sharedDataFromAppDelegate
 {
     self = [super init];
     if (self) {
         
         // Components
-        sharedData = sharedDataFromStateMachine;
+        sharedData = sharedDataFromAppDelegate;
         rhoRhoSystem = [[RDRhoRhoSystem alloc] init];
         
         // Set device's location at the origin
@@ -29,13 +29,8 @@
         position.y = [NSNumber numberWithFloat:0.0];
         position.z = [NSNumber numberWithFloat:0.0];
         
-        // Orchestration variables
+        // Intance variables
         measuring = NO;
-        located = YES;
-        currentNumberOfMeasures = [NSNumber numberWithInteger:0];
-        
-        // Other variables
-        rangedBeacons = [[NSMutableArray alloc] init];
         
         // Initialize location manager and set this class as the delegate which implement the event response's methods
         locationManager = [[CLLocationManager alloc] init];
@@ -43,7 +38,6 @@
         locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
         locationManager.distanceFilter = kCLDistanceFilterNone;
         //[locationManager startUpdatingLocation];
-        
         // It seems is only for background modes
         //locationManager.allowsBackgroundLocationUpdates = YES;
         //locationManager.pausesLocationUpdatesAutomatically = false;
@@ -76,10 +70,23 @@
             default:
                 break;
         }
+        
+        // This object must listen to this events
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(startMeasuring:)
+                                                     name:@"startMeasuring"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(stopMeasuring:)
+                                                     name:@"stopMeasuring"
+                                                   object:nil];
+        
         NSLog(@"[INFO][LM] LocationManager prepared");
     }
     return self;
 }
+
+#pragma mark - Location manager delegated methods
 
 /*!
  @method locationManager:didChangeAuthorizationStatus:
@@ -134,69 +141,6 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         NSLog(@"[INFO][LM] Ranging avalible.");
     }else{
         NSLog(@"[ERROR][LM] Ranging not avalible.");
-    }
-    
-    if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways || CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
-        
-        // Create a NSUUID with proximity UUID of the broadcasting beacons
-        NSUUID *uuidRaspi = [[NSUUID alloc] initWithUUIDString:@"25DC8A73-F3C9-4111-A7DD-C39CD4B828C7"];
-        NSUUID *uuidBeacon1 = [[NSUUID alloc] initWithUUIDString:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825"];
-        NSUUID *uuidBeacon2 = [[NSUUID alloc] initWithUUIDString:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824"];
-        NSUUID *uuidBeacon3 = [[NSUUID alloc] initWithUUIDString:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823"];
-        
-        // Setup searching region with proximity UUID as the broadcasting beacon
-        monitoredRegions = [[NSMutableArray alloc] init];
-        CLBeaconRegion * RaspiRegion = [[CLBeaconRegion alloc] initWithProximityUUID:uuidRaspi major:1 minor:0 identifier:@"raspi@miso.uam.es"];
-        [monitoredRegions addObject:RaspiRegion];
-        CLBeaconRegion * Beacon1Region = [[CLBeaconRegion alloc] initWithProximityUUID:uuidBeacon1 major:1 minor:1 identifier:@"beacon1@miso.uam.es"];
-        [monitoredRegions addObject:Beacon1Region];
-        CLBeaconRegion * Beacon2Region = [[CLBeaconRegion alloc] initWithProximityUUID:uuidBeacon2 major:1 minor:1 identifier:@"beacon2@miso.uam.es"];
-        [monitoredRegions addObject:Beacon2Region];
-        CLBeaconRegion * Beacon3Region = [[CLBeaconRegion alloc] initWithProximityUUID:uuidBeacon3 major:1 minor:1 identifier:@"beacon3@miso.uam.es"];
-        [monitoredRegions addObject:Beacon3Region];
-        
-        // Info to radiolocator
-        NSMutableArray *rssiMeasures = [[NSMutableArray alloc] init];
-        // In first element of each row it will be refereced each region UUID, and then the measuresNSMutableArray *first = [[NSMutableArray alloc] init];
-        for(CLBeacon *region in monitoredRegions) {
-            NSArray *rssiValues = [[NSArray alloc] initWithObjects:[region proximityUUID], nil];
-            [rssiMeasures addObject:rssiValues];
-        }
-        
-        // Configurate the region
-        
-        // If entry or exit must be notify; the default values are YES
-        //RaspiRegion.notifyOnEntry = YES;
-        //RaspiRegion.notifyOnExit = YES;
-        //RaspiRegion.notifyEntryStateOnDisplay = YES;
-        
-        //  For normal use ob beacon regions use startMonitoringForRegion:  ...
-        //[locationManager startMonitoringForRegion:RaspiRegion];
-        // ...but for in-region initialization this one is needed
-        rangedRegions = [[NSMutableArray alloc] init];
-        [rangedRegions addObject:RaspiRegion];
-        [locationManager startRangingBeaconsInRegion:RaspiRegion];
-        [rangedRegions addObject:Beacon1Region];
-        [locationManager startRangingBeaconsInRegion:Beacon1Region];
-        [rangedRegions addObject:Beacon2Region];
-        [locationManager startRangingBeaconsInRegion:Beacon2Region];
-        [rangedRegions addObject:Beacon3Region];
-        [locationManager startRangingBeaconsInRegion:Beacon3Region];
-        
-        NSLog(@"[INFO][LM] Device monitorizes a region:");
-        NSLog(@"[INFO][LM] -> %@", [[RaspiRegion proximityUUID] UUIDString]);
-        NSLog(@"[INFO][LM] Device monitorizes a region:");
-        NSLog(@"[INFO][LM] -> %@", [[Beacon1Region proximityUUID] UUIDString]);
-        NSLog(@"[INFO][LM] Device monitorizes a region:");
-        NSLog(@"[INFO][LM] -> %@", [[Beacon2Region proximityUUID] UUIDString]);
-        NSLog(@"[INFO][LM] Device monitorizes a region:");
-        NSLog(@"[INFO][LM] -> %@", [[Beacon3Region proximityUUID] UUIDString]);
-        
-        NSLog(@"[INFO][LM] Start monitoring regions.");
-    }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied || CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted){
-        for(CLBeaconRegion * region in  locationManager.monitoredRegions){
-            [locationManager stopMonitoringForRegion:region];
-        }
     }
 }
 
@@ -309,65 +253,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     }
 }
 
-#pragma mark OrchestrationMethods
-
-/*!
- @method setLocated
- @discussion This method sets the location status.
- */
-- (void) setLocated:(BOOL) newLocated {
-    located = newLocated;
-}
-
-/*!
- @method isLocated
- @discussion This method is called when a superior instance wants to know if the current location is known.
- */
-- (BOOL) isLocated {
-    if (measuring || located) {
-        return YES;
-    } else {
-        return NO;
-    }
-}
-
-/*!
- @method startMeasuring
- @discussion This method sets the flag 'measuring' true, and thus the measures are stored.
- */
-- (void) startMeasuring {
-    NSLog(@"[INFO][LM] Asked to start measuring.");
-    // If is not currently measuring
-    if (!measuring) {
-        NSLog(@"[INFO][LM] Measured flag is YES.");
-        measuring = YES;
-    }
-}
-
-/*!
- @method stopMeasuring
- @discussion This method sets the flag 'measuring' false, and thus the measures are not stored.
- */
-- (void) stopMeasuring {
-    // If is currently measuring
-    if (measuring) {
-        measuring = NO;
-        // Reset the number of 'measures per measure'
-        currentNumberOfMeasures = [NSNumber numberWithInteger:0];
-    }
-}
-
-/*!
- @method stopMeasuring
- @discussion This method sets the flag 'measuring' false, and thus the measures are not stored.
- */
-- (BOOL) isMeasuredWith:(NSNumber *)numberOfMeasures {
-    if ([currentNumberOfMeasures integerValue] >= [numberOfMeasures integerValue] - 1) {
-        return YES;
-    } else {
-        return NO;
-    }
-}
+#pragma mark - Instance method
 
 /*!
  @method getPosition
@@ -382,14 +268,140 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 }
 
 /*!
- @method getPosition
- @discussion Getter of current position of the device.
+ @method setPosition:
+ @discussion Setter of current position of the device.
  */
 - (void) setPosition:(RDPosition *) newPosition {
     position = [[RDPosition alloc] init];
     position.x = [NSNumber numberWithFloat:[newPosition.x floatValue]];
     position.y = [NSNumber numberWithFloat:[newPosition.y floatValue]];
     position.z = [NSNumber numberWithFloat:[newPosition.z floatValue]];
+}
+
+#pragma mark - Notification event handles
+
+/*!
+ @method startMeasuring
+ @discussion This method sets the flag 'measuring' true, and thus the measures are stored.
+ */
+- (void) startMeasuring:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"startMeasuring"]){
+        NSLog(@"[NOTI][LM] Notfication \"startMeasuring\" recived.");
+    
+        // If is not currently measuring
+        if (!measuring) {
+            measuring = YES;
+        }
+        
+        // The notification payload is the array with the beacons that must be ranged
+        NSDictionary *data = notification.userInfo;
+        NSMutableArray * beaconsRegistered = [data valueForKey:@"beaconsRegistered"];
+        
+        // Register them if it is posible.
+        switch (CLLocationManager.authorizationStatus) {
+            case kCLAuthorizationStatusNotDetermined:
+                // Request authorization initially
+                NSLog(@"[ERROR][LM] Authorization is still not known");
+                
+            case kCLAuthorizationStatusRestricted:
+                // Disable location features
+                NSLog(@"[ERROR][LM] User still restricts localization services");
+                break;
+                
+            case kCLAuthorizationStatusDenied:
+                // Disable location features
+                NSLog(@"[ERROR][LM] User still doesn't allow localization services");
+                break;
+                
+            case kCLAuthorizationStatusAuthorizedAlways:
+                // Enable location features
+                NSLog(@"[INFO][LM] User still allows 'always' localization services");
+                break;
+                
+            case kCLAuthorizationStatusAuthorizedWhenInUse:
+                // Enable location features
+                NSLog(@"[INFO][LM] User still allows 'when-in-use' localization services");
+                break;
+                
+            default:
+                break;
+        }
+        
+        // Error managment
+        if ([CLLocationManager locationServicesEnabled]) {
+            NSLog(@"[INFO][LM] Location services still enabled.");
+        }else{
+            NSLog(@"[ERROR][LM] Location services still not enabled.");
+        }
+        
+        if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]]) {
+            NSLog(@"[INFO][LM] Monitoring still avalible for class CLBeaconRegion.");
+        }else{
+            NSLog(@"[ERROR][LM] Monitoring still not avalible for class CLBeaconRegion.");
+        }
+        
+        if ([CLLocationManager isRangingAvailable]) {
+            NSLog(@"[INFO][LM] Ranging stillavalible.");
+        }else{
+            NSLog(@"[ERROR][LM] Ranging still not avalible.");
+        }
+        
+        monitoredRegions = [[NSMutableArray alloc] init];
+        rangedRegions = [[NSMutableArray alloc] init];
+        
+        // If using location services is allowed
+        if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
+           CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
+            
+            for (NSMutableDictionary * regionDic in beaconsRegistered) {
+                
+                NSString * uuidString = regionDic[@"uuid"];
+                NSInteger major = [regionDic[@"major"] integerValue];
+                NSInteger minor = [regionDic[@"minor"] integerValue];
+                NSString * identifier = regionDic[@"identifier"];
+                
+                // Create a NSUUID with proximity UUID of the broadcasting beacons
+                NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:uuidString];
+                
+                // Setup searching region with proximity UUID as the broadcasting beacon
+                CLBeaconRegion * region = [[CLBeaconRegion alloc] initWithProximityUUID:uuid major:major minor:minor identifier:identifier];
+                [monitoredRegions addObject:region];
+                
+                [locationManager startRangingBeaconsInRegion:region];
+                [rangedRegions addObject:region];
+                NSLog(@"[INFO][LM] Device monitorizes a region:");
+                NSLog(@"[INFO][LM] -> %@", [[region proximityUUID] UUIDString]);
+            }
+            
+            NSLog(@"[INFO][LM] Start monitoring regions.");
+        }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied ||
+                  CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted){
+            // If is not allowed to use location services, unregister every region
+            for(CLBeaconRegion * region in  locationManager.monitoredRegions){
+                [locationManager stopMonitoringForRegion:region];
+            }
+        }
+    }
+}
+
+/*!
+ @method stopMeasuring
+ @discussion This method sets the flag 'measuring' false, and thus the measures are not stored; it also deletes the monitored regions from location manager.
+ */
+- (void) stopMeasuring:(NSNotification *) notification {
+    NSLog(@"[NOTI][LM] Notfication \"startMeasuring\" recived.");
+    
+    // If is currently measuring
+    if (measuring) {
+        measuring = NO;
+    }
+    
+    // Delete registered regions
+    for(CLBeaconRegion * region in  locationManager.monitoredRegions){
+        [locationManager stopMonitoringForRegion:region];
+    }
+    monitoredRegions = nil; // For ARC disposing
+    rangedRegions = nil;
 }
 
 @end

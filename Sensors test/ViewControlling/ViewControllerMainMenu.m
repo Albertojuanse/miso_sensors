@@ -96,7 +96,7 @@
     regionIdNumber = newRegionIdNumber;
 }
 
-#pragma marks - Butons event handle
+#pragma mark - Butons event handle
 
 /*!
  @method handleButtonAdd:
