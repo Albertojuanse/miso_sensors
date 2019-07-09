@@ -10,12 +10,19 @@
 
 @implementation ViewControllerRhoRhoModelling
 
+#pragma marks - UIViewController delegated methods
+
 /*!
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
  */
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    // Variables
+    idle = YES;
+    measuring = NO;
+    traveling = NO;
     
     // Ask canvas to initialize
     [self.canvas prepareCanvas];
@@ -40,6 +47,8 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma marks - Instance methods
+
 /*!
  @method setBeaconsRegistered:
  @discussion This method sets the NSMutableArray variable 'beaconsRegistered'.
@@ -47,6 +56,8 @@
 - (void) setBeaconsRegistered:(NSMutableArray *)newBeaconsRegistered {
     beaconsRegistered = newBeaconsRegistered;
 }
+
+#pragma marks - Notification event handles
 
 /*!
  @method refreshCanvas:
@@ -100,28 +111,98 @@
     [self.canvas setNeedsDisplay];
 }
 
-#pragma marks - Butons event handle
+#pragma marks - Buttons event handles
 
 /*!
  @method handleButtonTravel:
- @discussion This method handles the action in which the Travel button is pressed; it must notify the orchestrator that the user wants to move the device.
+ @discussion This method handles the action in which the Travel button is pressed; it must disable both control buttons and ask motion manager to start traveling.
  */
 - (IBAction)handleButtonTravel:(id)sender {
     
-    
-    // Empty data array for use the 'postNotificationName:object:userInfo:' method.
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"handleButtonTravel"
-                                                        object:nil];
+    // In every state the button performs different behaviours
+    if (idle) { // If idle, user can travel or measuring; if 'Travel' is tapped, ask start traveling.
+        [self.buttonTravel setEnabled:YES];
+        [self.buttonMeasure setEnabled:NO];
+        idle = NO;
+        measuring = NO;
+        traveling = YES;
+        [self.labelStatus setText:@"TRAVELING; please, tap 'Travel' again for finishing travel."];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"startTraveling"
+                                                            object:nil];
+        
+    }
+    if (measuring) { // If measuring, user can travel or measuring; if 'Travel' is tapped while measure an error ocurred and nothing must happen.
+        NSLog(@"[ERROR][VCRRM] Measuring button were tapped while in TRAVELING state.");
+        [self.buttonTravel setEnabled:YES];
+        [self.buttonMeasure setEnabled:NO];
+        idle = NO;
+        measuring = NO;
+        traveling = YES;
+        [self.labelStatus setText:@"TRAVELING; please, tap 'Travel' again for finishing travel."];
+        
+    }
+    if (traveling) { // If traveling, user can finish the travel; if 'Travel' is tapped, ask stop traveling.
+        [self.buttonTravel setEnabled:YES];
+        [self.buttonMeasure setEnabled:YES];
+        idle = YES;
+        measuring = NO;
+        traveling = NO;
+        [self.labelStatus setText:@"IDLE; please, tap 'Measure' ot 'Travel' for starting. Tap back for finishing."];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopTraveling"
+                                                            object:nil];
+    }
 }
+
 
 /*!
  @method handleButtonMeasure:
- @discussion This method handles the action in which the Measure button is pressed; it must notify the orchestrator that the user wants to make a measure.
+ @discussion This method handles the action in which the Measure button is pressed; it must disable 'Travel' control buttons and ask location manager delegate to start measuring.
  */
 - (IBAction)handleButtonMeasure:(id)sender {
-    // Empty data array for use the 'postNotificationName:object:userInfo:' method.
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"handleButtonMeasure"
-                                                        object:nil];
+    
+    // In every state the button performs different behaviours
+    if (idle) { // If idle, user can travel or measuring; if 'Measuring' is tapped, ask start measuring.
+        [self.buttonTravel setEnabled:NO];
+        [self.buttonMeasure setEnabled:YES];
+        idle = NO;
+        measuring = YES;
+        traveling = NO;
+        [self.labelStatus setText:@"MEASURING; please, tap 'Measure' again for finishing measure."];
+        
+        NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+        // Create a copy of beacons for sending it; concurrence issues prevented
+        NSMutableArray * beaconsRegisteredToSend = [[NSMutableArray alloc] init];
+        for (NSMutableDictionary * beaconDic in beaconsRegistered) {
+            [beaconsRegisteredToSend addObject:beaconDic];
+        }
+        [data setObject:beaconsRegisteredToSend forKey:@"beaconsRegistered"];
+        // And send the notification
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
+                                                            object:nil
+                                                          userInfo:data];
+        NSLog(@"[NOTI][VCRRM] Notification \"startMeasuring\" posted.");
+        
+    }
+    if (measuring) { // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
+        [self.buttonTravel setEnabled:YES];
+        [self.buttonMeasure setEnabled:YES];
+        idle = YES;
+        measuring = NO;
+        traveling = NO;
+        [self.labelStatus setText:@"IDLE; please, tap 'Measure' ot 'Travel' for starting. Tap back for finishing."];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
+                                                            object:nil];
+        
+    }
+    if (traveling) { // If traveling, user can finish the travel; if 'Measuring' is tapped while measure an error ocurred and nothing must happen.
+        NSLog(@"[ERROR][VCRRM] Measuring button were tapped while in TRAVELING state.");
+        [self.buttonTravel setEnabled:NO];
+        [self.buttonMeasure setEnabled:YES];
+        idle = NO;
+        measuring = YES;
+        traveling = NO;
+        [self.labelStatus setText:@"MEASURING; please, tap 'Measure' again for finishing measure."];
+    }
 }
 
 /*!
@@ -150,108 +231,5 @@
         
     }
 }
-
-/*!
- @method handleButtonTravel
- @discussion This method handles the action in which the Measure button is pressed; it must disable both control buttons and ask motion manager to start traveling.
- */
-- (void) handleButtonTravel:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"handleButtonTravel"]){
-        NSLog(@"[NOTI][SM] Notification \"handleButtonTravel\" recived");
-        [self.condition lock];
-        
-        if (state == STATES[2]) {  // LOCATED
-            if (!userWantsToStartTravel && !userWantsToStopTravel) {
-                userWantsToStartTravel = YES;
-            } else if (userWantsToStartTravel && !userWantsToStopTravel) {
-                userWantsToStartTravel = NO;
-                userWantsToStopTravel = YES;
-            } else if (!userWantsToStartTravel && userWantsToStopTravel) {
-                NSLog(@"[ERROR][SM] 'userWantsToStartTravel' is NO && 'userWantsToStopTravel' is YES");
-                userWantsToStartTravel = NO;
-                userWantsToStopTravel = NO;
-            } else if (userWantsToStartTravel && userWantsToStopTravel) {
-                NSLog(@"[ERROR][SM] Both 'userWantsToStartTravel' && 'userWantsToStopTravel' flags are YES");
-                userWantsToStartTravel = NO;
-                userWantsToStopTravel = NO;
-            }
-        }
-        
-        if (state == STATES[4]) {  // TRAVELING
-            if (!userWantsToStartTravel && !userWantsToStopTravel) {
-                userWantsToStartTravel = YES;
-            } else if (userWantsToStartTravel && !userWantsToStopTravel) {
-                userWantsToStartTravel = NO;
-                userWantsToStopTravel = YES;
-            } else if (!userWantsToStartTravel && userWantsToStopTravel) {
-                NSLog(@"[ERROR][SM] 'userWantsToStartTravel' is NO && 'userWantsToStopTravel' is YES");
-                userWantsToStartTravel = NO;
-                userWantsToStopTravel = NO;
-            } else if (userWantsToStartTravel && userWantsToStopTravel) {
-                NSLog(@"[ERROR][SM] Both 'userWantsToStartTravel' && 'userWantsToStopTravel' flags are YES");
-                userWantsToStartTravel = NO;
-                userWantsToStopTravel = NO;
-            }
-        }
-        
-        // Unlock the thread for recycle
-        NSLog(@"[INFO][SM] Asked to recycle the state machine");
-        self.lock = NO;
-        [self.condition signal];
-        [self.condition unlock];
-    }
-}
-
-/*!
- @method handleButtonMeasure
- @discussion This method handles the action in which the Measure button is pressed; it must disable both control buttons and ask location manager delegate to start measuring.
- */
-- (void) handleButtonMeasure:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"handleButtonMeasure"]){
-        NSLog(@"[NOTI][SM] Notification \"handleButtonMeasure\" recived");
-        [self.condition lock];
-        
-        if (state == STATES[2]) {  // LOCATED
-            if (!userWantsToStartMeasure && !userWantsToStopMeasure) {
-                userWantsToStartMeasure = YES;
-            } else if (userWantsToStartMeasure && !userWantsToStopMeasure) {
-                userWantsToStartMeasure = NO;
-                userWantsToStopMeasure = YES;
-            } else if (!userWantsToStartMeasure && userWantsToStopMeasure) {
-                NSLog(@"[ERROR][SM] 'userWantsToStartMeasure' is NO && 'userWantsToStopMeasure' is YES");
-                userWantsToStartMeasure = NO;
-                userWantsToStopMeasure = NO;
-            } else if (userWantsToStartMeasure && userWantsToStopMeasure) {
-                NSLog(@"[ERROR][SM] Both 'userWantsToStartMeasure' && 'userWantsToStopMeasure' flags are YES");
-                userWantsToStartMeasure = NO;
-                userWantsToStopMeasure = NO;
-            }
-        }
-        
-        if (state == STATES[3]) {  // MEASURING
-            if (!userWantsToStartMeasure && !userWantsToStopMeasure) {
-                userWantsToStartMeasure = YES;
-            } else if (userWantsToStartMeasure && !userWantsToStopMeasure) {
-                userWantsToStartMeasure = NO;
-                userWantsToStopMeasure = YES;
-            } else if (!userWantsToStartMeasure && userWantsToStopMeasure) {
-                NSLog(@"[ERROR][SM] 'userWantsToStartMeasure' is NO && 'userWantsToStopMeasure' is YES");
-                userWantsToStartMeasure = NO;
-                userWantsToStopMeasure = NO;
-            } else if (userWantsToStartMeasure && userWantsToStopMeasure) {
-                NSLog(@"[ERROR][SM] Both 'userWantsToStartMeasure' && 'userWantsToStopMeasure' flags are YES");
-                userWantsToStartMeasure = NO;
-                userWantsToStopMeasure = NO;
-            }
-        }
-        
-        // Unlock the thread for recycle
-        NSLog(@"[INFO][SM] Asked to recycle the state machine");
-        self.lock = NO;
-        [self.condition signal];
-        [self.condition unlock];
-    }
-}
-
 
 @end

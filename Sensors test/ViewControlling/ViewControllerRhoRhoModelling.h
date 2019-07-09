@@ -20,6 +20,11 @@
     NSMutableDictionary * measuresDic;
     NSMutableDictionary * locatedDic;
     
+    // State flags
+    BOOL idle;
+    BOOL measuring;
+    BOOL traveling;
+    
     // Variables
     NSMutableArray * beaconsRegistered;
     

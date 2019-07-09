@@ -307,13 +307,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          object:nil
          userInfo:data];
     }
-    
-    // Notify the event
-    if(beacons.count > 0) {
-        NSLog(@"[NOTI][LM] Notification \"needEvaluateState\" posted.");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
-                                                        object:nil];
-    }
 }
 
 #pragma mark OrchestrationMethods
@@ -349,9 +342,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         NSLog(@"[INFO][LM] Measured flag is YES.");
         measuring = YES;
     }
-    // Notify the event
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
-                                                        object:nil];
 }
 
 /*!
@@ -365,9 +355,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         // Reset the number of 'measures per measure'
         currentNumberOfMeasures = [NSNumber numberWithInteger:0];
     }
-    // Notify the event
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
-                                                        object:nil];
 }
 
 /*!
@@ -403,10 +390,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     position.x = [NSNumber numberWithFloat:[newPosition.x floatValue]];
     position.y = [NSNumber numberWithFloat:[newPosition.y floatValue]];
     position.z = [NSNumber numberWithFloat:[newPosition.z floatValue]];
-    
-    // Notify the event
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
-                                                        object:nil];
 }
 
 @end

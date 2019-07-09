@@ -685,10 +685,6 @@ if (self) {
     position.x = [NSNumber numberWithFloat:[initialPosition.x floatValue] + rndValue1];
     position.y = [NSNumber numberWithFloat:[initialPosition.y floatValue] + rndValue2];
     position.z = [NSNumber numberWithFloat:[initialPosition.z floatValue]];
-    
-    // Notify the event
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
-                                                        object:nil];
 }
 
 /*!
@@ -698,10 +694,6 @@ if (self) {
 - (void) stopTraveling {
     NSLog(@"[INFO][MM] Stopping traveling");
     traveling = NO;
-    
-    // Notify the event
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
-                                                        object:nil];
 }
 
 /*!
@@ -714,10 +706,6 @@ if (self) {
     newPosition.y = [NSNumber numberWithFloat:[position.y floatValue]];
     newPosition.z = [NSNumber numberWithFloat:[position.z floatValue]];
     NSLog(@"[INFO][MM] The travel finished at position: %@", newPosition);
-    
-    // Notify the event
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"needEvaluateState"
-                                                        object:nil];
     return newPosition;
 }
 
