@@ -296,10 +296,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     if ([[notification name] isEqualToString:@"startMeasuring"]){
         NSLog(@"[NOTI][LM] Notfication \"startMeasuring\" recived.");
     
-        // If is not currently measuring
-        if (!measuring) {
-            measuring = YES;
-        }
+        measuring = YES;
         
         // The notification payload is the array with the beacons that must be ranged
         NSDictionary *data = notification.userInfo;
@@ -349,7 +346,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         }
         
         if ([CLLocationManager isRangingAvailable]) {
-            NSLog(@"[INFO][LM] Ranging stillavalible.");
+            NSLog(@"[INFO][LM] Ranging still avalible.");
         }else{
             NSLog(@"[ERROR][LM] Ranging still not avalible.");
         }
@@ -401,9 +398,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         NSLog(@"[NOTI][LM] Notfication \"stopMeasuring\" recived.");
     
         // If is currently measuring
-        if (measuring) {
-            measuring = NO;
-        }
+        measuring = NO;
         
         // Delete registered regions
         for(CLBeaconRegion * region in  locationManager.monitoredRegions){

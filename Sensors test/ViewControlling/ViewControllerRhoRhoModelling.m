@@ -36,6 +36,7 @@
     // Visualization
     [self.buttonTravel setEnabled:YES];
     [self.buttonMeasure setEnabled:YES];
+    [self.labelStatus setText:@"IDLE; please, tap 'Measure' ot 'Travel' for starting. Tap back for finishing."];
 }
 
 /*!
@@ -130,6 +131,7 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"startTraveling"
                                                             object:nil];
         NSLog(@"[NOTI][VCRRM] Notification \"startTraveling\" posted.");
+        return;
         
     }
     if (measuring) { // If measuring, user can travel or measuring; if 'Travel' is tapped while measure an error ocurred and nothing must happen.
@@ -140,7 +142,7 @@
         measuring = NO;
         traveling = YES;
         [self.labelStatus setText:@"TRAVELING; please, tap 'Travel' again for finishing travel."];
-        
+        return;
     }
     if (traveling) { // If traveling, user can finish the travel; if 'Travel' is tapped, ask stop traveling.
         [self.buttonTravel setEnabled:YES];
@@ -152,6 +154,7 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopTraveling"
                                                             object:nil];
         NSLog(@"[NOTI][VCRRM] Notification \"stopTraveling\" posted.");
+        return;
     }
 }
 
@@ -183,6 +186,7 @@
                                                             object:nil
                                                           userInfo:data];
         NSLog(@"[NOTI][VCRRM] Notification \"startMeasuring\" posted.");
+        return;
         
     }
     if (measuring) { // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
@@ -195,6 +199,7 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
                                                             object:nil];
         NSLog(@"[NOTI][VCRRM] Notification \"stopMeasuring\" posted.");
+        return;
         
     }
     if (traveling) { // If traveling, user can finish the travel; if 'Measuring' is tapped while measure an error ocurred and nothing must happen.
@@ -205,6 +210,7 @@
         measuring = YES;
         traveling = NO;
         [self.labelStatus setText:@"MEASURING; please, tap 'Measure' again for finishing measure."];
+        return;
     }
 }
 
