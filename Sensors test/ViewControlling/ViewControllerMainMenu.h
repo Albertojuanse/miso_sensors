@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "ViewControllerAddBeaconMenu.h"
+#import "ViewControllerRhoRhoModelling.h"
 
 /*!
  @class ViewControllerMainMenu
@@ -18,6 +19,7 @@
     
     // Modes
     NSMutableArray * modes;
+    NSString * chosenMode;
     
     // Beacons' region identifiers
     NSMutableArray * beaconsRegistered;

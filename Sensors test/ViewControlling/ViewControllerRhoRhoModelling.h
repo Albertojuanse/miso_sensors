@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "ViewControllerMainMenu.h"
 #import "Canvas.h"
 
 /*!
@@ -18,6 +19,10 @@
     // For update canvas
     NSMutableDictionary * measuresDic;
     NSMutableDictionary * locatedDic;
+    
+    // Variables
+    NSMutableArray * beaconsRegistered;
+    
 }
 
 @property (weak, nonatomic) IBOutlet UILabel *labelAX;
@@ -39,6 +44,8 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 @property (weak, nonatomic) IBOutlet UIButton *buttonTravel;
+
+- (void) setBeaconsRegistered:(NSMutableArray *)newBeaconsRegistered;
 
 @end
 

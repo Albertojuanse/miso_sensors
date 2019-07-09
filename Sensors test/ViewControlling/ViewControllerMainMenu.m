@@ -107,6 +107,21 @@
     [self performSegueWithIdentifier:@"fromMainToAdd" sender:sender];
 }
 
+- (IBAction)handleButonStart:(id)sender {
+    // If user did select a row in the table
+    if (chosenMode) {
+        
+        if ([chosenMode isEqualToString:[modes objectAtIndex:0]]) { // RHO_RHO_MODELLING
+            [self performSegueWithIdentifier:@"fromMainToRHO_RHO_MODELLING" sender:sender];
+        } else {
+            return;
+        }
+        
+    } else {
+        return;
+    }
+}
+
 /*!
  @method prepareForSegue:sender:
  @discussion This method is called before any segue and it is used for pass other views variables.
@@ -114,6 +129,8 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     NSLog(@"[INFO][VCMM] Asked segue %@", [segue identifier]);
+    
+    // If add menu is going to be displayed, pass it the beaconsRegistered array
     if ([[segue identifier] isEqualToString:@"fromMainToAdd"]) {
         
         // Get destination view
@@ -121,6 +138,16 @@
         // Set the variable
         [viewControllerAddBeaconMenu setBeaconsRegistered:beaconsRegistered];
         [viewControllerAddBeaconMenu setRegionIdNumber:regionIdNumber];
+        
+    }
+    
+    // If Rho Rho Syetem based Modelling is going to be displayed, pass it the beaconsRegistered array.
+    if ([[segue identifier] isEqualToString:@"fromMainToRHO_RHO_MODELLING"]) {
+        
+        // Get destination view
+        ViewControllerRhoRhoModelling *viewControllerRhoRhoModelling = [segue destinationViewController];
+        // Set the variable
+        [viewControllerRhoRhoModelling setBeaconsRegistered:beaconsRegistered];
         
     }
 }
@@ -171,5 +198,17 @@
     }
     return cell;
 }
+
+- (void)tableView:(UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (tableView == self.tableBeacons) {
+        
+    }
+    if (tableView == self.tableModes) {
+        chosenMode = [modes objectAtIndex:indexPath.row];
+    }
+}
+
 
 @end

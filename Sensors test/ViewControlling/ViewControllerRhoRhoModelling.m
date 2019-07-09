@@ -41,6 +41,14 @@
 }
 
 /*!
+ @method setBeaconsRegistered:
+ @discussion This method sets the NSMutableArray variable 'beaconsRegistered'.
+ */
+- (void) setBeaconsRegistered:(NSMutableArray *)newBeaconsRegistered {
+    beaconsRegistered = newBeaconsRegistered;
+}
+
+/*!
  @method refreshCanvas:
  @discussion This method gets the beacons that must be represented in canvas and ask it to upload; this method is called when someone submits the 'refreshCanvas' notification.
  */
@@ -92,6 +100,8 @@
     [self.canvas setNeedsDisplay];
 }
 
+#pragma marks - Butons event handle
+
 /*!
  @method handleButtonTravel:
  @discussion This method handles the action in which the Travel button is pressed; it must notify the orchestrator that the user wants to move the device.
@@ -110,6 +120,33 @@
     // Empty data array for use the 'postNotificationName:object:userInfo:' method.
     [[NSNotificationCenter defaultCenter] postNotificationName:@"handleButtonMeasure"
                                                         object:nil];
+}
+
+/*!
+ @method handleBackButton:
+ @discussion This method dismiss this view and ask main menu view to be displayed; 'prepareForSegue:sender:' method is called before.
+ */
+- (IBAction)handleBackButton:(id)sender {
+    [self performSegueWithIdentifier:@"fromRHO_RHO_MODELLINGToMain" sender:sender];
+}
+
+/*!
+ @method prepareForSegue:sender:
+ @discussion This method is called before any segue and it is used for pass other views variables.
+ */
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    NSLog(@"[INFO][VCRRM] Asked segue %@", [segue identifier]);
+    
+    // If main menu is going to be displayed, any variable can be returned here
+    if ([[segue identifier] isEqualToString:@"fromRHO_RHO_MODELLINGToMain"]) {
+        
+        // Get destination view
+        ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
+        // Set the variables
+        [viewControllerMainMenu setBeaconsRegistered:beaconsRegistered];
+        
+    }
 }
 
 @end

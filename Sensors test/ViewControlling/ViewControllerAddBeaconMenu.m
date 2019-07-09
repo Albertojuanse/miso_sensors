@@ -31,6 +31,7 @@
     beaconsRegistered = newBeaconsRegistered;
 }
 
+
 /*!
  @method setRegionIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsRegistered'.
