@@ -80,6 +80,14 @@
                                                  selector:@selector(stopMeasuring:)
                                                      name:@"stopMeasuring"
                                                    object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(getPositionUsingNotification:)
+                                                     name:@"getPosition"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(setPositionUsingNotification:)
+                                                     name:@"setPosition"
+                                                   object:nil];
         
         NSLog(@"[INFO][LM] LocationManager prepared");
     }
@@ -389,19 +397,62 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  @discussion This method sets the flag 'measuring' false, and thus the measures are not stored; it also deletes the monitored regions from location manager.
  */
 - (void) stopMeasuring:(NSNotification *) notification {
-    NSLog(@"[NOTI][LM] Notfication \"startMeasuring\" recived.");
+    if ([[notification name] isEqualToString:@"stopMeasuring"]){
+        NSLog(@"[NOTI][LM] Notfication \"stopMeasuring\" recived.");
     
-    // If is currently measuring
-    if (measuring) {
-        measuring = NO;
+        // If is currently measuring
+        if (measuring) {
+            measuring = NO;
+        }
+        
+        // Delete registered regions
+        for(CLBeaconRegion * region in  locationManager.monitoredRegions){
+            [locationManager stopMonitoringForRegion:region];
+        }
+        monitoredRegions = nil; // For ARC disposing
+        rangedRegions = nil;
     }
-    
-    // Delete registered regions
-    for(CLBeaconRegion * region in  locationManager.monitoredRegions){
-        [locationManager stopMonitoringForRegion:region];
+}
+
+
+/*!
+ @method getPositionUsingNotification:
+ @discussion Getter of current position of the device using observer pattern.
+ */
+- (void) getPositionUsingNotification:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"getPosition"]){
+        NSLog(@"[NOTI][LM] Notfication \"getPosition\" recived.");
+        
+        NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+        // Create a copy of the current position for sending it; concurrence issues prevented
+        RDPosition * newPosition = [[RDPosition alloc] init];
+        newPosition.x = [NSNumber numberWithFloat:[position.x floatValue]];
+        newPosition.y = [NSNumber numberWithFloat:[position.y floatValue]];
+        newPosition.z = [NSNumber numberWithFloat:[position.z floatValue]];
+        [data setObject:newPosition forKey:@"currentPosition"];
+        // And send the notification
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"getPositionRespond"
+                                                            object:nil
+                                                          userInfo:data];
+        NSLog(@"[NOTI][VCRRM] Notification \"getPositionRespond\" posted.");
     }
-    monitoredRegions = nil; // For ARC disposing
-    rangedRegions = nil;
+}
+
+/*!
+ @method setPositionUsingNotification:
+ @discussion Setter of current position of the device using observer pattern.
+ */
+- (void) setPositionUsingNotification:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"setPosition"]){
+        NSLog(@"[NOTI][LM] Notfication \"setPosition\" recived.");
+        
+        NSDictionary * data = notification.userInfo;
+        RDPosition * newPosition = data[@"currentPosition"];
+        position = [[RDPosition alloc] init];
+        position.x = [NSNumber numberWithFloat:[newPosition.x floatValue]];
+        position.y = [NSNumber numberWithFloat:[newPosition.y floatValue]];
+        position.z = [NSNumber numberWithFloat:[newPosition.z floatValue]];
+    }
 }
 
 @end

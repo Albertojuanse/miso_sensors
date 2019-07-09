@@ -111,7 +111,7 @@
     NSNumber * attitude_y; // Roll
     NSNumber * attitude_z; // Yaw
     
-    // Orchestration variables
+    // Variables
     BOOL traveling;
     BOOL calibrated;
     RDPosition * position;
@@ -134,8 +134,5 @@
 - (void) stopAccelerometers;
 - (void) startGyroscopes;
 - (void) stopGyroscopes;
-- (void) startTravelingFrom:(RDPosition*)initialPosition;
-- (void) stopTraveling;
-- (RDPosition *) getFinalPosition;
 
 @end

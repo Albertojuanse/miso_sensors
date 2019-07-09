@@ -117,9 +117,28 @@ if (self) {
     traveling = NO;
     calibrated = NO;
     position = [[RDPosition alloc] init];
+    
+    // This object must listen to this events
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(startTraveling:)
+                                                 name:@"startTraveling"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(stopTraveling:)
+                                                 name:@"startTraveling"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(startTravelingFrom:)
+                                                 name:@"getPositionRespond"
+                                               object:nil];
+    
+    
+    NSLog(@"[INFO][MM] MotionManager prepared");
     }
     return self;
 }
+
+#pragma mark - Location manager methods
 
 /*!
  @method startAccelerometers
@@ -671,42 +690,65 @@ if (self) {
     */
 }
 
+#pragma mark - Notification event handles
+
+/*!
+ @method startTraveling
+ @discussion This method simulate a traveling in space from a given 'RDPosition'.
+ */
+- (void) startTraveling:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"startTraveling"]){
+        NSLog(@"[NOTI][LM] Notfication \"startTraveling\" recived.");
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"getPosition"
+                                                            object:nil];
+        NSLog(@"[NOTI][VCRRM] Notification \"getPosition\" posted.");
+    }
+}
+/*!
+ @method stopTraveling
+ @discussion This method simulate a traveling in space from a given 'RDPosition'.
+ */
+- (void) stopTraveling:(NSNotification *) notification  {
+    if ([[notification name] isEqualToString:@"stopTraveling"]){
+        NSLog(@"[NOTI][LM] Notfication \"stopTraveling\" recived.");
+        traveling = NO;
+        
+        NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+        // Create a copy of the current position for sending it; concurrence issues prevented
+        RDPosition * newPosition = [[RDPosition alloc] init];
+        newPosition.x = [NSNumber numberWithFloat:[position.x floatValue]];
+        newPosition.y = [NSNumber numberWithFloat:[position.y floatValue]];
+        newPosition.z = [NSNumber numberWithFloat:[position.z floatValue]];
+        [data setObject:newPosition forKey:@"currentPosition"];
+        // And send the notification
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPosition"
+                                                            object:nil
+                                                          userInfo:data];
+        NSLog(@"[NOTI][VCRRM] Notification \"setPosition\" posted.");
+    }
+}
+
 /*!
  @method startTravelingFrom
  @discussion This method simulate a traveling in space from a given 'RDPosition'.
  */
-- (void) startTravelingFrom:(RDPosition*)initialPosition {
-    NSLog(@"[INFO][MM] Starting traveling from position: %@", initialPosition);
-    traveling = YES;
-    float low_bound = -1.00;
-    float high_bound = 1.00;
-    float rndValue1 = (((float)arc4random()/0x100000000)*(high_bound-low_bound)+low_bound);
-    float rndValue2 = (((float)arc4random()/0x100000000)*(high_bound-low_bound)+low_bound);
-    position.x = [NSNumber numberWithFloat:[initialPosition.x floatValue] + rndValue1];
-    position.y = [NSNumber numberWithFloat:[initialPosition.y floatValue] + rndValue2];
-    position.z = [NSNumber numberWithFloat:[initialPosition.z floatValue]];
-}
-
-/*!
- @method simulateTraveling
- @discussion This method simulate a traveling in space from a given 'RDPosition'.
- */
-- (void) stopTraveling {
-    NSLog(@"[INFO][MM] Stopping traveling");
-    traveling = NO;
-}
-
-/*!
- @method simulateTraveling
- @discussion This method simulate a traveling in space from a given 'RDPosition'.
- */
-- (RDPosition *) getFinalPosition {
-    RDPosition * newPosition = [[RDPosition alloc] init];
-    newPosition.x = [NSNumber numberWithFloat:[position.x floatValue]];
-    newPosition.y = [NSNumber numberWithFloat:[position.y floatValue]];
-    newPosition.z = [NSNumber numberWithFloat:[position.z floatValue]];
-    NSLog(@"[INFO][MM] The travel finished at position: %@", newPosition);
-    return newPosition;
+- (void) startTravelingFrom:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"getPositionRespond"]){
+        NSLog(@"[NOTI][LM] Notfication \"getPositionRespond\" recived.");
+        
+        NSDictionary * data = notification.userInfo;
+        RDPosition * initialPosition = data[@"currentPosition"];
+        
+        traveling = YES;
+        float low_bound = -1.00;
+        float high_bound = 1.00;
+        float rndValue1 = (((float)arc4random()/0x100000000)*(high_bound-low_bound)+low_bound);
+        float rndValue2 = (((float)arc4random()/0x100000000)*(high_bound-low_bound)+low_bound);
+        position.x = [NSNumber numberWithFloat:[initialPosition.x floatValue] + rndValue1];
+        position.y = [NSNumber numberWithFloat:[initialPosition.y floatValue] + rndValue2];
+        position.z = [NSNumber numberWithFloat:[initialPosition.z floatValue]];
+    }
 }
 
 @end
