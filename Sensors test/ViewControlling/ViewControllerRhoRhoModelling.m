@@ -107,6 +107,8 @@
  @discussion This method handles the action in which the Travel button is pressed; it must notify the orchestrator that the user wants to move the device.
  */
 - (IBAction)handleButtonTravel:(id)sender {
+    
+    
     // Empty data array for use the 'postNotificationName:object:userInfo:' method.
     [[NSNotificationCenter defaultCenter] postNotificationName:@"handleButtonTravel"
                                                         object:nil];
@@ -148,5 +150,108 @@
         
     }
 }
+
+/*!
+ @method handleButtonTravel
+ @discussion This method handles the action in which the Measure button is pressed; it must disable both control buttons and ask motion manager to start traveling.
+ */
+- (void) handleButtonTravel:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"handleButtonTravel"]){
+        NSLog(@"[NOTI][SM] Notification \"handleButtonTravel\" recived");
+        [self.condition lock];
+        
+        if (state == STATES[2]) {  // LOCATED
+            if (!userWantsToStartTravel && !userWantsToStopTravel) {
+                userWantsToStartTravel = YES;
+            } else if (userWantsToStartTravel && !userWantsToStopTravel) {
+                userWantsToStartTravel = NO;
+                userWantsToStopTravel = YES;
+            } else if (!userWantsToStartTravel && userWantsToStopTravel) {
+                NSLog(@"[ERROR][SM] 'userWantsToStartTravel' is NO && 'userWantsToStopTravel' is YES");
+                userWantsToStartTravel = NO;
+                userWantsToStopTravel = NO;
+            } else if (userWantsToStartTravel && userWantsToStopTravel) {
+                NSLog(@"[ERROR][SM] Both 'userWantsToStartTravel' && 'userWantsToStopTravel' flags are YES");
+                userWantsToStartTravel = NO;
+                userWantsToStopTravel = NO;
+            }
+        }
+        
+        if (state == STATES[4]) {  // TRAVELING
+            if (!userWantsToStartTravel && !userWantsToStopTravel) {
+                userWantsToStartTravel = YES;
+            } else if (userWantsToStartTravel && !userWantsToStopTravel) {
+                userWantsToStartTravel = NO;
+                userWantsToStopTravel = YES;
+            } else if (!userWantsToStartTravel && userWantsToStopTravel) {
+                NSLog(@"[ERROR][SM] 'userWantsToStartTravel' is NO && 'userWantsToStopTravel' is YES");
+                userWantsToStartTravel = NO;
+                userWantsToStopTravel = NO;
+            } else if (userWantsToStartTravel && userWantsToStopTravel) {
+                NSLog(@"[ERROR][SM] Both 'userWantsToStartTravel' && 'userWantsToStopTravel' flags are YES");
+                userWantsToStartTravel = NO;
+                userWantsToStopTravel = NO;
+            }
+        }
+        
+        // Unlock the thread for recycle
+        NSLog(@"[INFO][SM] Asked to recycle the state machine");
+        self.lock = NO;
+        [self.condition signal];
+        [self.condition unlock];
+    }
+}
+
+/*!
+ @method handleButtonMeasure
+ @discussion This method handles the action in which the Measure button is pressed; it must disable both control buttons and ask location manager delegate to start measuring.
+ */
+- (void) handleButtonMeasure:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"handleButtonMeasure"]){
+        NSLog(@"[NOTI][SM] Notification \"handleButtonMeasure\" recived");
+        [self.condition lock];
+        
+        if (state == STATES[2]) {  // LOCATED
+            if (!userWantsToStartMeasure && !userWantsToStopMeasure) {
+                userWantsToStartMeasure = YES;
+            } else if (userWantsToStartMeasure && !userWantsToStopMeasure) {
+                userWantsToStartMeasure = NO;
+                userWantsToStopMeasure = YES;
+            } else if (!userWantsToStartMeasure && userWantsToStopMeasure) {
+                NSLog(@"[ERROR][SM] 'userWantsToStartMeasure' is NO && 'userWantsToStopMeasure' is YES");
+                userWantsToStartMeasure = NO;
+                userWantsToStopMeasure = NO;
+            } else if (userWantsToStartMeasure && userWantsToStopMeasure) {
+                NSLog(@"[ERROR][SM] Both 'userWantsToStartMeasure' && 'userWantsToStopMeasure' flags are YES");
+                userWantsToStartMeasure = NO;
+                userWantsToStopMeasure = NO;
+            }
+        }
+        
+        if (state == STATES[3]) {  // MEASURING
+            if (!userWantsToStartMeasure && !userWantsToStopMeasure) {
+                userWantsToStartMeasure = YES;
+            } else if (userWantsToStartMeasure && !userWantsToStopMeasure) {
+                userWantsToStartMeasure = NO;
+                userWantsToStopMeasure = YES;
+            } else if (!userWantsToStartMeasure && userWantsToStopMeasure) {
+                NSLog(@"[ERROR][SM] 'userWantsToStartMeasure' is NO && 'userWantsToStopMeasure' is YES");
+                userWantsToStartMeasure = NO;
+                userWantsToStopMeasure = NO;
+            } else if (userWantsToStartMeasure && userWantsToStopMeasure) {
+                NSLog(@"[ERROR][SM] Both 'userWantsToStartMeasure' && 'userWantsToStopMeasure' flags are YES");
+                userWantsToStartMeasure = NO;
+                userWantsToStopMeasure = NO;
+            }
+        }
+        
+        // Unlock the thread for recycle
+        NSLog(@"[INFO][SM] Asked to recycle the state machine");
+        self.lock = NO;
+        [self.condition signal];
+        [self.condition unlock];
+    }
+}
+
 
 @end

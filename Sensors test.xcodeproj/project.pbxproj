@@ -19,7 +19,6 @@
 		4242F6C422CB9EC200C4B0B7 /* Buffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4242F6C322CB9EC200C4B0B7 /* Buffer.m */; };
 		4242F6C722CBA7C600C4B0B7 /* Adder.m in Sources */ = {isa = PBXBuildFile; fileRef = 4242F6C622CBA7C600C4B0B7 /* Adder.m */; };
 		4242F6CB22CBACAB00C4B0B7 /* Averager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4242F6CA22CBACAB00C4B0B7 /* Averager.m */; };
-		42631C3F22A6710A00F0E660 /* StateMachine.m in Sources */ = {isa = PBXBuildFile; fileRef = 42631C3E22A6710A00F0E660 /* StateMachine.m */; };
 		426501BA22A03B3000BE20B7 /* LocationManagerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */; };
 		426501BD22A03B4300BE20B7 /* Canvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501BC22A03B4300BE20B7 /* Canvas.m */; };
 		426501C322A03B5200BE20B7 /* RDPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C022A03B5200BE20B7 /* RDPosition.m */; };
@@ -52,8 +51,6 @@
 		4242F6C622CBA7C600C4B0B7 /* Adder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Adder.m; sourceTree = "<group>"; };
 		4242F6C922CBAAD500C4B0B7 /* Averager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Averager.h; sourceTree = "<group>"; };
 		4242F6CA22CBACAB00C4B0B7 /* Averager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Averager.m; sourceTree = "<group>"; };
-		42631C3D22A670F200F0E660 /* StateMachine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StateMachine.h; sourceTree = "<group>"; };
-		42631C3E22A6710A00F0E660 /* StateMachine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StateMachine.m; sourceTree = "<group>"; };
 		426501B822A03B2A00BE20B7 /* LocationManagerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationManagerDelegate.h; sourceTree = "<group>"; };
 		426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManagerDelegate.m; sourceTree = "<group>"; };
 		426501BB22A03B4000BE20B7 /* Canvas.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Canvas.h; sourceTree = "<group>"; };
@@ -109,8 +106,6 @@
 				42917F00229BDE2100EE6CD3 /* MotionManaging */,
 				422798832271F37800E07C39 /* AppDelegate.h */,
 				422798842271F37800E07C39 /* AppDelegate.m */,
-				42631C3D22A670F200F0E660 /* StateMachine.h */,
-				42631C3E22A6710A00F0E660 /* StateMachine.m */,
 				4276127222C0EE71007BDED8 /* SharedData.h */,
 				4276127322C0EE91007BDED8 /* SharedData.m */,
 				4227988C2271F37800E07C39 /* Assets.xcassets */,
@@ -271,7 +266,6 @@
 				4242F6C422CB9EC200C4B0B7 /* Buffer.m in Sources */,
 				4295FB2222D35D7A0024B155 /* ViewControllerMainMenu.m in Sources */,
 				426501BA22A03B3000BE20B7 /* LocationManagerDelegate.m in Sources */,
-				42631C3F22A6710A00F0E660 /* StateMachine.m in Sources */,
 				4242F6C122CB99BF00C4B0B7 /* Threshold.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -8,12 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
-#import "StateMachine.h"
+#import "MotionManager.h"
+#import "LocationManagerDelegate.h"
+#import "SharedData.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate> {
     
-    // Orchestrator
-    StateMachine * stateMachine;
+    // Other components
+    MotionManager * motion;
+    LocationManagerDelegate * location;
+    SharedData * sharedData;
+    
 }
 
 @property (strong, nonatomic) UIWindow * window;
