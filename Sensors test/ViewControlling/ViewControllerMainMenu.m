@@ -10,14 +10,6 @@
 
 @implementation ViewControllerMainMenu
 
-- (instancetype) init {
-    self = [super init];
-    if (self) {
-        flagWasLoadedOnce = NO;
-    }
-    return self;
-}
-
 /*!
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
@@ -25,10 +17,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSLog(@"VIEW DID LOAD");
-    if (!flagWasLoadedOnce) {
-        NSLog(@"VIEW DID LOAD");
-        // Variables
+    // Variables; only inizialated if they didn't be so.
+    if (!modes) {
         modes = [[NSMutableArray alloc] init];
         [modes addObject:@"RHO_RHO_MODELLING"];
         [modes addObject:@"RHO_THETA_MODELLING"];
@@ -36,9 +26,10 @@
         [modes addObject:@"RHO_RHO_LOCATING"];
         [modes addObject:@"RHO_THETA_LOCATING"];
         [modes addObject:@"THETA_THETA_LOCATING"];
-    
+    }
+
+    if (!beaconsRegistered) {
         beaconsRegistered = [[NSMutableArray alloc] init];
-        regionIdNumber = [NSNumber numberWithInteger:3];
         // Pre-registered regions
         NSMutableDictionary * regionRaspiDic = [[NSMutableDictionary alloc] init];
         [regionRaspiDic setValue:@"25DC8A73-F3C9-4111-A7DD-C39CD4B828C7" forKey:@"uuid"];
@@ -64,23 +55,20 @@
         [regionBeacon3Dic setValue:@"1" forKey:@"minor"];
         [regionBeacon3Dic setValue:@"beacon3@miso.uam.es" forKey:@"identifier"];
         [beaconsRegistered addObject:regionBeacon3Dic];
-    
-        // Visualization
-    
-        // Table delegates; the delegate methods for attending these tables are part of this class
-        self.tableModes.delegate = self;
-        self.tableModes.dataSource = self;
-        self.tableBeacons.delegate = self;
-        self.tableBeacons.dataSource = self;
-    
-        // This object must listen to this events
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(addBeacon:)
-                                                     name:@"handleButtonAdd"
-                                                   object:nil];
     }
     
-    flagWasLoadedOnce = YES;
+    if (!regionIdNumber) {
+        regionIdNumber = [NSNumber numberWithInteger:3];
+    }
+    
+    // Table delegates; the delegate methods for attending these tables are part of this class.
+    self.tableModes.delegate = self;
+    self.tableModes.dataSource = self;
+    self.tableBeacons.delegate = self;
+    self.tableBeacons.dataSource = self;
+    
+    [self.tableModes reloadData];
+    [self.tableBeacons reloadData];
 }
 
 /*!
@@ -93,49 +81,47 @@
 }
 
 /*!
- @method addBeacon:
- @discussion This method adds to the table any beacon that user wants to submit in the adding view; it is only added if it does not exists yet.
+ @method setBeaconsRegistered:
+ @discussion This method sets the NSMutableArray variable 'beaconsRegistered'.
  */
-- (void)addBeacon:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"handleButtonAdd"]){
-        NSLog(@"[NOTI][VC] Notification \"handleButtonAdd\" recived");
+- (void) setBeaconsRegistered:(NSMutableArray *)newBeaconsRegistered {
+    beaconsRegistered = newBeaconsRegistered;
+}
+
+/*!
+ @method setRegionIdNumber:
+ @discussion This method sets the NSMutableArray variable 'beaconsRegistered'.
+ */
+- (void) setRegionIdNumber:(NSNumber *)newRegionIdNumber {
+    regionIdNumber = newRegionIdNumber;
+}
+
+#pragma marks - Butons event handle
+
+/*!
+ @method handleButtonAdd:
+ @discussion This method handles the Add button action and ask the add view to show; 'prepareForSegue:sender:' method is called before.
+ */
+- (IBAction)handleButonAdd:(id)sender
+{
+    [self performSegueWithIdentifier:@"fromMainToAdd" sender:sender];
+}
+
+/*!
+ @method prepareForSegue:sender:
+ @discussion This method is called before any segue and it is used for pass other views variables.
+ */
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    NSLog(@"[INFO][VCMM] Asked segue %@", [segue identifier]);
+    if ([[segue identifier] isEqualToString:@"fromMainToAdd"]) {
         
-        // Get data from form
-        NSDictionary *data = notification.userInfo;
-        NSString * uuid = [data objectForKey:@"uuid"];
-        NSString * major = [data objectForKey:@"major"];
-        NSString * minor = [data objectForKey:@"minor"];
+        // Get destination view
+        ViewControllerAddBeaconMenu *viewControllerAddBeaconMenu = [segue destinationViewController];
+        // Set the variable
+        [viewControllerAddBeaconMenu setBeaconsRegistered:beaconsRegistered];
+        [viewControllerAddBeaconMenu setRegionIdNumber:regionIdNumber];
         
-        NSLog(@"[HOLA] %@", uuid);
-        NSLog(@"[HOLA] %@", major);
-        NSLog(@"[HOLA] %@", minor);
-        
-        BOOL regionFound = NO;
-        for (NSMutableDictionary * regionDic in beaconsRegistered) {
-            if ([uuid isEqualToString:regionDic[@"uuid"]]) {
-                if ([major isEqualToString:regionDic[@"major"]]) {
-                    if ([minor isEqualToString:regionDic[@"minor"]]) {
-                        regionFound = YES;
-                    }
-                }
-            }
-        }
-        if (!regionFound)
-        {
-            NSMutableDictionary * regionBeaconDic = [[NSMutableDictionary alloc] init];
-            [regionBeaconDic setValue:uuid forKey:@"uuid"];
-            [regionBeaconDic setValue:major forKey:@"major"];
-            [regionBeaconDic setValue:minor forKey:@"minor"];
-            regionIdNumber = [NSNumber numberWithInt:[regionIdNumber intValue] + 1];
-            NSLog(@"[HOLA] %.2f", [regionIdNumber floatValue]);
-            NSString * regionId = [@"beacon" stringByAppendingString:[regionIdNumber stringValue]];
-            regionId = [@"beacon" stringByAppendingString:@"@miso.uam.es"];
-            
-            NSLog(@"[HOLA] %@", regionId);
-            [regionBeaconDic setValue:regionId forKey:@"identifier"];
-            [beaconsRegistered addObject:regionBeaconDic];
-        }
-        [self.tableBeacons reloadData];
     }
 }
 
@@ -150,7 +136,6 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableBeacons) {
-        NSLog(@"[HOLA] Number of rows: %.2f", [[NSNumber numberWithInteger:[beaconsRegistered count]] floatValue]);
         return [beaconsRegistered count];
     }
     if (tableView == self.tableModes) {
@@ -168,7 +153,6 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-    NSLog(@"[HOLA] Table composing");
     
     // Configure individual cells
     if (tableView == self.tableBeacons) {
