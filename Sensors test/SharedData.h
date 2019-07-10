@@ -46,5 +46,6 @@
                     andWithState:(BOOL)measuring;
 - (void) inLocatedDicSetPosition:(RDPosition*)locatedPosition
                         fromUUID:(NSString*)locatedUUID;
+- (void) reset;
 
 @end

@@ -28,6 +28,26 @@
     return self;
 }
 
+/*!
+ @method reset
+ @discussion delete de info.
+ */
+- (void) reset {
+    measuresDic = nil; // ARC cleaning
+    locatedDic = nil;
+    positionIdNumber = nil;
+    uuidIdNumber = nil;
+    measureIdNumber = nil;
+    locatedIdNumber = nil;
+    measuresDic = [[NSMutableDictionary alloc] init];
+    locatedDic = [[NSMutableDictionary alloc] init];
+    positionIdNumber = [NSNumber numberWithInt:0];
+    uuidIdNumber = [NSNumber numberWithInt:0];
+    measureIdNumber = [NSNumber numberWithInt:0];
+    locatedIdNumber = [NSNumber numberWithInt:0];
+    
+}
+
 #pragma mark Measures getters
 
 /*!

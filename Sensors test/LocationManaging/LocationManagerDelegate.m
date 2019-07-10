@@ -88,6 +88,10 @@
                                                  selector:@selector(setPositionUsingNotification:)
                                                      name:@"setPosition"
                                                    object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(reset:)
+                                                     name:@"reset"
+                                                   object:nil];
         
         NSLog(@"[INFO][LM] LocationManager prepared");
     }
@@ -384,6 +388,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             // If is not allowed to use location services, unregister every region
             for(CLBeaconRegion * region in  locationManager.monitoredRegions){
                 [locationManager stopMonitoringForRegion:region];
+                [locationManager stopRangingBeaconsInRegion:region];
             }
         }
     }
@@ -403,6 +408,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         // Delete registered regions
         for(CLBeaconRegion * region in  locationManager.monitoredRegions){
             [locationManager stopMonitoringForRegion:region];
+            [locationManager stopRangingBeaconsInRegion:region];
         }
         monitoredRegions = nil; // For ARC disposing
         rangedRegions = nil;
@@ -447,6 +453,28 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         position.x = [NSNumber numberWithFloat:[newPosition.x floatValue]];
         position.y = [NSNumber numberWithFloat:[newPosition.y floatValue]];
         position.z = [NSNumber numberWithFloat:[newPosition.z floatValue]];
+    }
+}
+
+/*!
+ @method reset
+ @discussion Setter of current position of the device using observer pattern.
+ */
+- (void) reset:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"reset"]){
+        NSLog(@"[NOTI][LM] Notfication \"reset\" recived.");
+        
+        // Components
+        [sharedData reset];
+        
+        // Set device's location at the origin
+        position = [[RDPosition alloc] init];
+        position.x = [NSNumber numberWithFloat:0.0];
+        position.y = [NSNumber numberWithFloat:0.0];
+        position.z = [NSNumber numberWithFloat:0.0];
+        
+        // Intance variables
+        measuring = NO;
     }
 }
 

@@ -24,6 +24,7 @@
 		426501C322A03B5200BE20B7 /* RDPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C022A03B5200BE20B7 /* RDPosition.m */; };
 		426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */; };
 		4275ED5A22D5E8A900A5CAB7 /* ViewControllerRhoThetaModelling.m in Sources */ = {isa = PBXBuildFile; fileRef = 4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModelling.m */; };
+		4275ED5D22D5F84300A5CAB7 /* RDRhoThetaSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 4275ED5C22D5F84300A5CAB7 /* RDRhoThetaSystem.m */; };
 		4276127422C0EE91007BDED8 /* SharedData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4276127322C0EE91007BDED8 /* SharedData.m */; };
 		42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 42917F02229BE12900EE6CD3 /* Blackbox.m */; };
 		4295FB2222D35D7A0024B155 /* ViewControllerMainMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */; };
@@ -62,6 +63,8 @@
 		426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDRhoRhoSystem.m; sourceTree = "<group>"; };
 		4275ED5822D5E88E00A5CAB7 /* ViewControllerRhoThetaModelling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerRhoThetaModelling.h; sourceTree = "<group>"; };
 		4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModelling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerRhoThetaModelling.m; sourceTree = "<group>"; };
+		4275ED5B22D5F83000A5CAB7 /* RDRhoThetaSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDRhoThetaSystem.h; sourceTree = "<group>"; };
+		4275ED5C22D5F84300A5CAB7 /* RDRhoThetaSystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDRhoThetaSystem.m; sourceTree = "<group>"; };
 		4276127222C0EE71007BDED8 /* SharedData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedData.h; sourceTree = "<group>"; };
 		4276127322C0EE91007BDED8 /* SharedData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedData.m; sourceTree = "<group>"; };
 		42917F02229BE12900EE6CD3 /* Blackbox.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Blackbox.m; sourceTree = "<group>"; };
@@ -154,6 +157,8 @@
 				426501C022A03B5200BE20B7 /* RDPosition.m */,
 				426501C122A03B5200BE20B7 /* RDRhoRhoSystem.h */,
 				426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */,
+				4275ED5B22D5F83000A5CAB7 /* RDRhoThetaSystem.h */,
+				4275ED5C22D5F84300A5CAB7 /* RDRhoThetaSystem.m */,
 			);
 			path = Radiodetermination;
 			sourceTree = "<group>";
@@ -259,6 +264,7 @@
 				42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */,
 				426501BD22A03B4300BE20B7 /* Canvas.m in Sources */,
 				426501C322A03B5200BE20B7 /* RDPosition.m in Sources */,
+				4275ED5D22D5F84300A5CAB7 /* RDRhoThetaSystem.m in Sources */,
 				422798882271F37800E07C39 /* ViewControllerRhoRhoModelling.m in Sources */,
 				4242F6C722CBA7C600C4B0B7 /* Adder.m in Sources */,
 				422798932271F37800E07C39 /* main.m in Sources */,
