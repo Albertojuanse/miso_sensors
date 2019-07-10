@@ -7,8 +7,10 @@
 //
 
 #import <CoreLocation/CoreLocation.h>
+#import <CoreLocation/CLHeading.h>
 #import "RDPosition.h"
 #import "RDRhoRhoSystem.h"
+#import "RDRhoThetaSystem.h"
 #import "SharedData.h"
 
 /*!
@@ -20,6 +22,7 @@
     // Components
     SharedData * sharedData;
     RDRhoRhoSystem * rhoRhoSystem;
+    RDRhoThetaSystem * rhoThetaSystem;
     
     // Variables
     RDPosition * position;
@@ -33,6 +36,7 @@
     // Orchestration variables
     BOOL measuring;
     BOOL idle;
+    NSString * uuidChosenByUser;
 }
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData;

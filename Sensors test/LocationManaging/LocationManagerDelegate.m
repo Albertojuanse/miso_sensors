@@ -22,6 +22,7 @@
         // Components
         sharedData = sharedDataFromAppDelegate;
         rhoRhoSystem = [[RDRhoRhoSystem alloc] init];
+        rhoThetaSystem = [[RDRhoThetaSystem alloc] init];
         
         // Set device's location at the origin
         position = [[RDPosition alloc] init];
@@ -29,7 +30,7 @@
         position.y = [NSNumber numberWithFloat:0.0];
         position.z = [NSNumber numberWithFloat:0.0];
         
-        // Intance variables
+        // Instance variables
         measuring = NO;
         idle = YES;
         
@@ -111,26 +112,26 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
     switch (status) {
         case kCLAuthorizationStatusNotDetermined:
             // Request authorization initially
-             NSLog(@"[ERROR][LM] Authorization is not known");
+             NSLog(@"[ERROR][LM] Authorization is not known.");
             
         case kCLAuthorizationStatusRestricted:
             // Disable location features
-            NSLog(@"[ERROR][LM] User restricts localization services");
+            NSLog(@"[ERROR][LM] User restricts localization services.");
             break;
             
         case kCLAuthorizationStatusDenied:
             // Disable location features
-            NSLog(@"[ERROR][LM] User doesn't allow localization services");
+            NSLog(@"[ERROR][LM] User doesn't allow localization services.");
             break;
             
         case kCLAuthorizationStatusAuthorizedAlways:
             // Enable location features
-            NSLog(@"[INFO][LM] User allows 'always' localization services");
+            NSLog(@"[INFO][LM] User allows 'always' localization services.");
             break;
             
         case kCLAuthorizationStatusAuthorizedWhenInUse:
             // Enable location features
-            NSLog(@"[INFO][LM] User allows 'when-in-use' localization services");
+            NSLog(@"[INFO][LM] User allows 'when-in-use' localization services.");
             break;
             
         default:
@@ -154,6 +155,12 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         NSLog(@"[INFO][LM] Ranging avalible.");
     }else{
         NSLog(@"[ERROR][LM] Ranging not avalible.");
+    }
+    
+    if ([CLLocationManager headingAvailable]) {
+        NSLog(@"[INFO][LM] Heading avalible.");
+    }else{
+        NSLog(@"[ERROR][LM] Heading not avalible.");
     }
 }
 
@@ -212,8 +219,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 
                 // ...and save it in dictionary 'measuresDic'.
                 
-                // TO DO: Heading measures. Alberto J. 2019-06-04.
-                
                 // TO DO. Calibration. Alberto J.
                 NSInteger calibration = -30;
                 NSNumber * RSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue] + calibration];
@@ -271,9 +276,40 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         if (beacons.count > 0) {
             // ...do something with them os it will be saved and appear later.
             for (CLBeacon *beacon in beacons) {
-                
+                NSString * uuid = [[beacon proximityUUID] UUIDString];
+                uuid = nil; // ARC dispose
+                NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
+                rssi = nil;
             }
         }
+    }
+}
+
+/*!
+ @method locationManager:didUpdateHeading:
+ @discussion This method is called when the device wants to deliver a data about its heading.
+ */
+- (void)locationManager:(CLLocationManager *)manager
+       didUpdateHeading:(CLHeading *)newHeading
+{
+    // If app is not in main menu
+    if (!idle) {
+        if (uuidChosenByUser) {
+            RDPosition * measurePosition = [[RDPosition alloc] init];
+            measurePosition.x = position.x;
+            measurePosition.y = position.y;
+            measurePosition.z = position.z;
+            
+            [sharedData inMeasuresDicSetMeasure:[NSNumber numberWithDouble:[newHeading trueHeading]]
+                                         ofType:@"heading"
+                                       withUUID:uuidChosenByUser
+                                     atPosition:measurePosition
+                                   andWithState:measuring];
+        } else {
+            NSLog(@"[INFO][LM] User did not choose any UUID source for the heading measure; disposing.");
+        }
+    } else { // If is idle...
+       
     }
 }
 
@@ -318,31 +354,37 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         // The notification payload is the array with the beacons that must be ranged
         NSDictionary *data = notification.userInfo;
         NSMutableArray * beaconsRegistered = [data valueForKey:@"beaconsRegistered"];
+        // In rho theta based system, user must choose which beacon is the source;
+        if ([data valueForKey:@"uuidChosenByUser"]) {
+            uuidChosenByUser = [data valueForKey:@"uuidChosenByUser"];
+        } else {
+            uuidChosenByUser = nil;
+        }
         
         // Register them if it is posible.
         switch (CLLocationManager.authorizationStatus) {
             case kCLAuthorizationStatusNotDetermined:
                 // Request authorization initially
-                NSLog(@"[ERROR][LM] Authorization is still not known");
+                NSLog(@"[ERROR][LM] Authorization is still not known.");
                 
             case kCLAuthorizationStatusRestricted:
                 // Disable location features
-                NSLog(@"[ERROR][LM] User still restricts localization services");
+                NSLog(@"[ERROR][LM] User still restricts localization services.");
                 break;
                 
             case kCLAuthorizationStatusDenied:
                 // Disable location features
-                NSLog(@"[ERROR][LM] User still doesn't allow localization services");
+                NSLog(@"[ERROR][LM] User still doesn't allow localization services.");
                 break;
                 
             case kCLAuthorizationStatusAuthorizedAlways:
                 // Enable location features
-                NSLog(@"[INFO][LM] User still allows 'always' localization services");
+                NSLog(@"[INFO][LM] User still allows 'always' localization services.");
                 break;
                 
             case kCLAuthorizationStatusAuthorizedWhenInUse:
                 // Enable location features
-                NSLog(@"[INFO][LM] User still allows 'when-in-use' localization services");
+                NSLog(@"[INFO][LM] User still allows 'when-in-use' localization services.");
                 break;
                 
             default:
@@ -366,6 +408,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             NSLog(@"[INFO][LM] Ranging still avalible.");
         }else{
             NSLog(@"[ERROR][LM] Ranging still not avalible.");
+        }
+        
+        if ([CLLocationManager headingAvailable]) {
+            NSLog(@"[INFO][LM] Heading avalible.");
+        }else{
+            NSLog(@"[ERROR][LM] Heading not avalible.");
         }
         
         monitoredRegions = [[NSMutableArray alloc] init];
@@ -394,8 +442,11 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 NSLog(@"[INFO][LM] Device monitorizes a region:");
                 NSLog(@"[INFO][LM] -> %@", [[region proximityUUID] UUIDString]);
             }
-            
             NSLog(@"[INFO][LM] Start monitoring regions.");
+            
+            [locationManager startUpdatingHeading];
+            NSLog(@"[INFO][LM] Start updating heading.");
+            
         }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied ||
                   CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted){
             // If is not allowed to use location services, unregister every region
@@ -425,11 +476,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             [locationManager stopMonitoringForRegion:region];
             [locationManager stopRangingBeaconsInRegion:region];
         }
+        [locationManager stopUpdatingHeading];
+        uuidChosenByUser = nil;
         monitoredRegions = nil; // For ARC disposing
         rangedRegions = nil;
     }
 }
-
 
 /*!
  @method getPositionUsingNotification:
@@ -497,6 +549,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             [locationManager stopMonitoringForRegion:region];
             [locationManager stopRangingBeaconsInRegion:region];
         }
+        [locationManager stopUpdatingHeading];
+        uuidChosenByUser = nil;
         monitoredRegions = nil; // For ARC disposing
         rangedRegions = nil;
     }
