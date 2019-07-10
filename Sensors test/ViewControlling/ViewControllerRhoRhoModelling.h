@@ -13,7 +13,7 @@
 
 /*!
  @class ViewControllerRhoRhoModelling
- @discussion This class extends UIViewController and controls the interface for modelling whot the rho rho location system.
+ @discussion This class extends UIViewController and controls the interface for modelling with the rho rho location system.
  */
 @interface ViewControllerRhoRhoModelling : UIViewController{
     // For update canvas

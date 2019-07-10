@@ -570,10 +570,10 @@
             </objects>
             <point key="canvasLocation" x="115" y="25"/>
         </scene>
-        <!--View Controller Rho Rho Modelling-->
+        <!--View Controller Rho Theta Modelling-->
         <scene sceneID="J6u-go-mjX">
             <objects>
-                <viewController id="1M1-iA-J20" customClass="ViewControllerRhoRhoModelling" sceneMemberID="viewController">
+                <viewController id="1M1-iA-J20" customClass="ViewControllerRhoThetaModelling" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="yOG-jH-Xjd">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -588,26 +588,19 @@
                                             <action selector="handleButtonMeasure:" destination="1M1-iA-J20" eventType="touchUpInside" id="JQM-Dq-cwq"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o5J-nz-xQs">
-                                        <rect key="frame" x="695" y="880" width="41" height="30"/>
-                                        <state key="normal" title="Travel"/>
-                                        <connections>
-                                            <action selector="handleButtonTravel:" destination="1M1-iA-J20" eventType="touchUpInside" id="ix5-sk-HDc"/>
-                                        </connections>
-                                    </button>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3YZ-89-cXu" userLabel="Canvas" customClass="Canvas">
-                                        <rect key="frame" x="32" y="32" width="704" height="754"/>
+                                        <rect key="frame" x="32" y="32" width="704" height="816"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UqA-Dx-2wr">
-                                        <rect key="frame" x="702" y="818" width="34" height="30"/>
+                                        <rect key="frame" x="702" y="880" width="34" height="30"/>
                                         <state key="normal" title="Back"/>
                                         <connections>
                                             <action selector="handleBackButton:" destination="1M1-iA-J20" eventType="touchUpInside" id="Ehl-N3-VHp"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aFh-h7-dil" userLabel="Label Status">
-                                        <rect key="frame" x="32" y="822.5" width="49.5" height="21"/>
+                                        <rect key="frame" x="32" y="884.5" width="49.5" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -615,7 +608,6 @@
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="o5J-nz-xQs" secondAttribute="trailing" constant="32" id="1at-Kc-JHu"/>
                                     <constraint firstItem="UqA-Dx-2wr" firstAttribute="centerY" secondItem="aFh-h7-dil" secondAttribute="centerY" id="5JG-DA-Ifd"/>
                                     <constraint firstItem="3YZ-89-cXu" firstAttribute="leading" secondItem="T71-HV-Sty" secondAttribute="leading" constant="32" id="FnP-C9-cnf"/>
                                     <constraint firstAttribute="bottom" secondItem="UNj-vu-DXA" secondAttribute="bottom" constant="32" id="I7z-MA-b93"/>
@@ -624,8 +616,7 @@
                                     <constraint firstItem="UqA-Dx-2wr" firstAttribute="top" secondItem="3YZ-89-cXu" secondAttribute="bottom" constant="32" id="UIV-br-1ik"/>
                                     <constraint firstItem="aFh-h7-dil" firstAttribute="leading" secondItem="T71-HV-Sty" secondAttribute="leading" constant="32" id="WWY-uY-jh2"/>
                                     <constraint firstItem="3YZ-89-cXu" firstAttribute="top" secondItem="T71-HV-Sty" secondAttribute="top" constant="32" id="fTy-M9-E91"/>
-                                    <constraint firstItem="o5J-nz-xQs" firstAttribute="top" secondItem="UqA-Dx-2wr" secondAttribute="bottom" constant="32" id="ht9-o3-5wO"/>
-                                    <constraint firstItem="UNj-vu-DXA" firstAttribute="top" secondItem="o5J-nz-xQs" secondAttribute="bottom" constant="32" id="ovc-bC-QGH"/>
+                                    <constraint firstItem="UNj-vu-DXA" firstAttribute="top" secondItem="UqA-Dx-2wr" secondAttribute="bottom" constant="32" id="lMF-Zv-sl1"/>
                                     <constraint firstAttribute="trailing" secondItem="UqA-Dx-2wr" secondAttribute="trailing" constant="32" id="z0s-4R-Wjo"/>
                                 </constraints>
                             </view>
@@ -641,7 +632,6 @@
                     </view>
                     <connections>
                         <outlet property="buttonMeasure" destination="UNj-vu-DXA" id="9oh-mw-BZ7"/>
-                        <outlet property="buttonTravel" destination="o5J-nz-xQs" id="v3S-NP-uoY"/>
                         <outlet property="canvas" destination="3YZ-89-cXu" id="4xh-5W-Yr4"/>
                         <outlet property="labelStatus" destination="aFh-h7-dil" id="SeA-1a-jwB"/>
                         <segue destination="lVP-jp-YaV" kind="show" identifier="fromRHO_THETA_MODELLINGToMain" id="kiJ-cW-9Gg"/>

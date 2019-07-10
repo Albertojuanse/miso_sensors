@@ -113,6 +113,9 @@
         
         if ([chosenMode isEqualToString:[modes objectAtIndex:0]]) { // RHO_RHO_MODELLING
             [self performSegueWithIdentifier:@"fromMainToRHO_RHO_MODELLING" sender:sender];
+        }
+        if ([chosenMode isEqualToString:[modes objectAtIndex:1]]) { // RHO_THETA_MODELLING
+            [self performSegueWithIdentifier:@"fromMainToRHO_THETA_MODELLING" sender:sender];
         } else {
             return;
         }
@@ -148,6 +151,16 @@
         ViewControllerRhoRhoModelling *viewControllerRhoRhoModelling = [segue destinationViewController];
         // Set the variable
         [viewControllerRhoRhoModelling setBeaconsRegistered:beaconsRegistered];
+        
+    }
+    
+    // If Rho Theta Syetem based Modelling is going to be displayed, pass it the beaconsRegistered array.
+    if ([[segue identifier] isEqualToString:@"fromMainToRHO_THETA_MODELLING"]) {
+        
+        // Get destination view
+        ViewControllerRhoThetaModelling *viewControllerRhoThetaModelling = [segue destinationViewController];
+        // Set the variable
+        [viewControllerRhoThetaModelling setBeaconsRegistered:beaconsRegistered];
         
     }
 }
