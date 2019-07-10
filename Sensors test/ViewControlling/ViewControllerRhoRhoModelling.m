@@ -152,6 +152,7 @@
             [beaconsRegisteredToSend addObject:regionDic];
         }
         [data setObject:beaconsRegisteredToSend forKey:@"beaconsRegistered"];
+        [data setObject:@"RHO_RHO_MODELLING" forKey:@"mode"];
         // And send the notification
         [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
                                                             object:nil

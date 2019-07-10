@@ -35,6 +35,12 @@
     // Visualization
     [self.buttonMeasure setEnabled:YES];
     [self.labelStatus setText:@"IDLE; please, aid the iBEacon device and tap 'Measure' for starting. Tap back for finishing."];
+    
+    // Table delegates; the delegate methods for attending these tables are part of this class.
+    self.tableBeacons.delegate = self;
+    self.tableBeacons.dataSource = self;
+    
+    [self.tableBeacons reloadData];
 }
 
 /*!
@@ -91,25 +97,30 @@
     
     // In every state the button performs different behaviours
     if (idle) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
-        [self.buttonMeasure setEnabled:YES];
-        idle = NO;
-        measuring = YES;
-        [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
+        if (uuidChosenByUser) {
+            [self.buttonMeasure setEnabled:YES];
+            idle = NO;
+            measuring = YES;
+            [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
         
-        NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-        // Create a copy of beacons for sending it; concurrence issues prevented
-        NSMutableArray * beaconsRegisteredToSend = [[NSMutableArray alloc] init];
-        for (NSMutableDictionary * regionDic in beaconsRegistered) {
-            [beaconsRegisteredToSend addObject:regionDic];
+            NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+            // Create a copy of beacons for sending it; concurrence issues prevented
+            NSMutableArray * beaconsRegisteredToSend = [[NSMutableArray alloc] init];
+            for (NSMutableDictionary * regionDic in beaconsRegistered) {
+                [beaconsRegisteredToSend addObject:regionDic];
+            }
+            [data setObject:beaconsRegisteredToSend forKey:@"beaconsRegistered"];
+            [data setObject:uuidChosenByUser forKey:@"uuidChosenByUser"];
+            [data setObject:@"RHO_THETA_MODELLING" forKey:@"mode"];
+            // And send the notification
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
+                                                                object:nil
+                                                              userInfo:data];
+            NSLog(@"[NOTI][VCRTM] Notification \"startMeasuring\" posted.");
+            return;
+        } else {
+            return;
         }
-        [data setObject:beaconsRegisteredToSend forKey:@"beaconsRegistered"];
-        // And send the notification
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
-                                                            object:nil
-                                                          userInfo:data];
-        NSLog(@"[NOTI][VCRRM] Notification \"startMeasuring\" posted.");
-        return;
-        
     }
     if (measuring) { // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
         [self.buttonMeasure setEnabled:YES];
@@ -118,9 +129,8 @@
         [self.labelStatus setText:@"IDLE; please, aid the iBEacon device and tap 'Measure' for starting. Tap back for finishing."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRRM] Notification \"stopMeasuring\" posted.");
+        NSLog(@"[NOTI][VCRTM] Notification \"stopMeasuring\" posted.");
         return;
-        
     }
 }
 
@@ -138,7 +148,7 @@
  */
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSLog(@"[INFO][VCRRM] Asked segue %@", [segue identifier]);
+    NSLog(@"[INFO][VCRTM] Asked segue %@", [segue identifier]);
     
     // If main menu is going to be displayed, any variable can be returned here
     if ([[segue identifier] isEqualToString:@"fromRHO_THETA_MODELLINGToMain"]) {
@@ -151,11 +161,59 @@
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRRM] Notification \"stopMeasuring\" posted.");
+        NSLog(@"[NOTI][VCRTM] Notification \"stopMeasuring\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRRM] Notification \"reset\" posted.");
+        NSLog(@"[NOTI][VCRTM] Notification \"reset\" posted.");
         return;
+    }
+}
+
+#pragma mark - UItableView delegate methods
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    // Return the number of sections.
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if (tableView == self.tableBeacons) {
+        return [beaconsRegistered count];
+    }
+    return 0;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    // Common to all cells
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+    
+    // Configure individual cells
+    if (tableView == self.tableBeacons) {
+        NSMutableDictionary * regionDic = [beaconsRegistered objectAtIndex:indexPath.row];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ ; major: %@ ; minor: %@",
+                               regionDic[@"identifier"],
+                               regionDic[@"uuid"],
+                               regionDic[@"major"],
+                               regionDic[@"minor"]
+                               ];
+        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+    }
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (tableView == self.tableBeacons) {
+        uuidChosenByUser = [beaconsRegistered objectAtIndex:indexPath.row][@"uuid"];
     }
 }
 

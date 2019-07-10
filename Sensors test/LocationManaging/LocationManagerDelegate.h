@@ -36,6 +36,7 @@
     // Orchestration variables
     BOOL measuring;
     BOOL idle;
+    NSString * mode;
     NSString * uuidChosenByUser;
 }
 

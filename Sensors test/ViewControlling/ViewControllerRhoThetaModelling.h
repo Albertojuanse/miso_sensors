@@ -15,7 +15,7 @@
  @class ViewControllerRhoThetaModelling
  @discussion This class extends UIViewController and controls the interface for modelling with the rho theta location system.
  */
-@interface ViewControllerRhoThetaModelling : UIViewController{
+@interface ViewControllerRhoThetaModelling : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     // For update canvas
     NSMutableDictionary * measuresDic;
     NSMutableDictionary * locatedDic;
@@ -26,14 +26,13 @@
     
     // Variables
     NSMutableArray * beaconsRegistered;
+    NSString * uuidChosenByUser;
     
 }
 
-
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;
-
+@property (weak, nonatomic) IBOutlet UITableView *tableBeacons;
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
-
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 
 - (void) setBeaconsRegistered:(NSMutableArray *)newBeaconsRegistered;

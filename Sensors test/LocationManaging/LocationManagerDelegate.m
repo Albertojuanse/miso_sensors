@@ -212,42 +212,58 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 NSString * uuid = [[beacon proximityUUID] UUIDString];
                 NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
                 
-                RDPosition * measurePosition = [[RDPosition alloc] init];
-                measurePosition.x = position.x;
-                measurePosition.y = position.y;
-                measurePosition.z = position.z;
+                // If 'uuidChosenByUser' exists, the system used is a ro teta system, and so the measure is saved only if uuid are the same
+                BOOL save = YES;
+                if (uuidChosenByUser) {
+                    if (![uuidChosenByUser isEqualToString:uuid]) {
+                        save = NO;
+                    }
+                }
                 
-                // ...and save it in dictionary 'measuresDic'.
-                
-                // TO DO. Calibration. Alberto J.
-                NSInteger calibration = -30;
-                NSNumber * RSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue] + calibration];
-                
-                // Minimum sensibility 5 cm; Ipad often gives unreal values near to cero
-                if ([RSSIdistance floatValue] > 0.05) {
-                    [sharedData inMeasuresDicSetMeasure:RSSIdistance
-                                                 ofType:@"rssi"
-                                               withUUID:uuid
-                                             atPosition:measurePosition
-                                           andWithState:measuring];
+                if (save) {
+                    RDPosition * measurePosition = [[RDPosition alloc] init];
+                    measurePosition.x = position.x;
+                    measurePosition.y = position.y;
+                    measurePosition.z = position.z;
+                    
+                    // ...and save it in dictionary 'measuresDic'.
+                    
+                    // TO DO. Calibration. Alberto J.
+                    NSInteger calibration = -30;
+                    NSNumber * RSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue] + calibration];
+                    
+                    // Minimum sensibility 5 cm; Ipad often gives unreal values near to cero
+                    if ([RSSIdistance floatValue] > 0.05) {
+                        [sharedData inMeasuresDicSetMeasure:RSSIdistance
+                                                     ofType:@"rssi"
+                                                   withUUID:uuid
+                                                 atPosition:measurePosition
+                                               andWithState:measuring];
 
-                    // Ask radiolocation of beacons if posible...
-                    // Precision is arbitrary set to 5 cm
-                    NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                 [NSNumber numberWithFloat:0.5], @"xPrecision",
-                                                 [NSNumber numberWithFloat:0.5], @"yPrecision",
-                                                 [NSNumber numberWithFloat:0.5], @"zPrecision",
-                                                 nil];
-                    
-                    NSMutableDictionary * locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithMeasures:sharedData
-                                                                                                           andPrecisions:precisions];
-                    
-                    // ...and save it in dictionary 'locatedDic'.
-                    // In this dictionary keys are the UUID.
-                    NSArray *positionKeys = [locatedPositions allKeys];
-                    for (id positionKey in positionKeys) {
-                        [sharedData inLocatedDicSetPosition:[locatedPositions objectForKey:positionKey]
-                                                   fromUUID:positionKey];
+                        // Ask radiolocation of beacons if posible...
+                        // Precision is arbitrary set to 5 cm
+                        NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                     [NSNumber numberWithFloat:0.5], @"xPrecision",
+                                                     [NSNumber numberWithFloat:0.5], @"yPrecision",
+                                                     [NSNumber numberWithFloat:0.5], @"zPrecision",
+                                                     nil];
+                        NSMutableDictionary * locatedPositions;
+                        if ([mode isEqualToString:@"RHO_RHO_MODELLING"]) {
+                            locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithMeasures:sharedData
+                                                                                                                   andPrecisions:precisions];
+                        }
+                        if ([mode isEqualToString:@"RHO_THETA_MODELLING"]) {
+                            locatedPositions = [rhoThetaSystem getLocationsUsingGridAproximationWithMeasures:sharedData
+                                                                                                                   andPrecisions:precisions];
+                        }
+                        
+                        // ...and save it in dictionary 'locatedDic'.
+                        // In this dictionary keys are the UUID.
+                        NSArray *positionKeys = [locatedPositions allKeys];
+                        for (id positionKey in positionKeys) {
+                            [sharedData inLocatedDicSetPosition:[locatedPositions objectForKey:positionKey]
+                                                       fromUUID:positionKey];
+                        }
                     }
                 }
                 
@@ -300,7 +316,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             measurePosition.y = position.y;
             measurePosition.z = position.z;
             
-            [sharedData inMeasuresDicSetMeasure:[NSNumber numberWithDouble:[newHeading trueHeading]]
+            [sharedData inMeasuresDicSetMeasure:[NSNumber numberWithDouble:[newHeading trueHeading]*M_PI/180.0]
                                          ofType:@"heading"
                                        withUUID:uuidChosenByUser
                                      atPosition:measurePosition
@@ -353,6 +369,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         
         // The notification payload is the array with the beacons that must be ranged
         NSDictionary *data = notification.userInfo;
+        mode = [data valueForKey:@"mode"];
         NSMutableArray * beaconsRegistered = [data valueForKey:@"beaconsRegistered"];
         // In rho theta based system, user must choose which beacon is the source;
         if ([data valueForKey:@"uuidChosenByUser"]) {
@@ -480,6 +497,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         uuidChosenByUser = nil;
         monitoredRegions = nil; // For ARC disposing
         rangedRegions = nil;
+        mode = nil;
     }
 }
 
@@ -553,6 +571,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         uuidChosenByUser = nil;
         monitoredRegions = nil; // For ARC disposing
         rangedRegions = nil;
+        mode = nil;
     }
 }
 
