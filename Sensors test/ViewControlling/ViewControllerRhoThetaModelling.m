@@ -149,6 +149,9 @@
         [viewControllerMainMenu setBeaconsRegistered:beaconsRegistered];
         
         // Ask Location manager to clean the measures taken and reset its position.
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
+                                                            object:nil];
+        NSLog(@"[NOTI][VCRRM] Notification \"stopMeasuring\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
                                                             object:nil];
         NSLog(@"[NOTI][VCRRM] Notification \"reset\" posted.");

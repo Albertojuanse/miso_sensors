@@ -31,6 +31,7 @@
         
         // Intance variables
         measuring = NO;
+        idle = YES;
         
         // Initialize location manager and set this class as the delegate which implement the event response's methods
         locationManager = [[CLLocationManager alloc] init];
@@ -194,74 +195,85 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
        didRangeBeacons:(NSArray*)beacons
               inRegion:(CLBeaconRegion*)region
 {
-    // If there is any beacon in the event...
-    if (beacons.count > 0) {
-        for (CLBeacon *beacon in beacons) {
-            // ...save it and get its information...
-            [rangedBeacons addObject:beacon];
-            NSString * uuid = [[beacon proximityUUID] UUIDString];
-            NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
-            
-            RDPosition * measurePosition = [[RDPosition alloc] init];
-            measurePosition.x = position.x;
-            measurePosition.y = position.y;
-            measurePosition.z = position.z;
-            
-            // ...and save it in dictionary 'measuresDic'.
-            
-            // TO DO: Heading measures. Alberto J. 2019-06-04.
-            
-            // TO DO. Calibration. Alberto J.
-            NSInteger calibration = -30;
-            NSNumber * RSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue] + calibration];
-            
-            // Minimum sensibility 5 cm; Ipad often gives unreal values near to cero
-            if ([RSSIdistance floatValue] > 0.05) {
-                [sharedData inMeasuresDicSetMeasure:RSSIdistance
-                                             ofType:@"rssi"
-                                           withUUID:uuid
-                                         atPosition:measurePosition
-                                       andWithState:measuring];
+    // If app is not in main menu
+    if (!idle) {
+        // If there is any beacon in the event...
+        if (beacons.count > 0) {
+            for (CLBeacon *beacon in beacons) {
+                // ...save it and get its information...
+                [rangedBeacons addObject:beacon];
+                NSString * uuid = [[beacon proximityUUID] UUIDString];
+                NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
+                
+                RDPosition * measurePosition = [[RDPosition alloc] init];
+                measurePosition.x = position.x;
+                measurePosition.y = position.y;
+                measurePosition.z = position.z;
+                
+                // ...and save it in dictionary 'measuresDic'.
+                
+                // TO DO: Heading measures. Alberto J. 2019-06-04.
+                
+                // TO DO. Calibration. Alberto J.
+                NSInteger calibration = -30;
+                NSNumber * RSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue] + calibration];
+                
+                // Minimum sensibility 5 cm; Ipad often gives unreal values near to cero
+                if ([RSSIdistance floatValue] > 0.05) {
+                    [sharedData inMeasuresDicSetMeasure:RSSIdistance
+                                                 ofType:@"rssi"
+                                               withUUID:uuid
+                                             atPosition:measurePosition
+                                           andWithState:measuring];
 
-                // Ask radiolocation of beacons if posible...
-                // Precision is arbitrary set to 5 cm
-                NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                             [NSNumber numberWithFloat:0.5], @"xPrecision",
-                                             [NSNumber numberWithFloat:0.5], @"yPrecision",
-                                             [NSNumber numberWithFloat:0.5], @"zPrecision",
-                                             nil];
-                
-                NSMutableDictionary * locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithMeasures:sharedData
-                                                                                                       andPrecisions:precisions];
-                
-                // ...and save it in dictionary 'locatedDic'.
-                // In this dictionary keys are the UUID.
-                NSArray *positionKeys = [locatedPositions allKeys];
-                for (id positionKey in positionKeys) {
-                    [sharedData inLocatedDicSetPosition:[locatedPositions objectForKey:positionKey]
-                                               fromUUID:positionKey];
+                    // Ask radiolocation of beacons if posible...
+                    // Precision is arbitrary set to 5 cm
+                    NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                 [NSNumber numberWithFloat:0.5], @"xPrecision",
+                                                 [NSNumber numberWithFloat:0.5], @"yPrecision",
+                                                 [NSNumber numberWithFloat:0.5], @"zPrecision",
+                                                 nil];
+                    
+                    NSMutableDictionary * locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithMeasures:sharedData
+                                                                                                           andPrecisions:precisions];
+                    
+                    // ...and save it in dictionary 'locatedDic'.
+                    // In this dictionary keys are the UUID.
+                    NSArray *positionKeys = [locatedPositions allKeys];
+                    for (id positionKey in positionKeys) {
+                        [sharedData inLocatedDicSetPosition:[locatedPositions objectForKey:positionKey]
+                                                   fromUUID:positionKey];
+                    }
                 }
+                
+                NSLog(@"[INFO][LM] Generated locations dictionary:");
+                NSLog(@"[INFO][LM]  -> %@", [sharedData getLocatedDic]);
+                
             }
             
-            NSLog(@"[INFO][LM] Generated locations dictionary:");
-            NSLog(@"[INFO][LM]  -> %@", [sharedData getLocatedDic]);
-            
+            NSLog(@"[INFO][LM] Generated measures dictionary:");
+            NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDic]);
         }
-        
-        NSLog(@"[INFO][LM] Generated measures dictionary:");
-        NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDic]);
-    }
     
-    // Ask view controller to refresh the canvas
-    if(beacons.count > 0) {
-        NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
-        NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-        [data setObject:[sharedData getMeasuresDic] forKey:@"measuresDic"];
-        [data setObject:[sharedData getLocatedDic] forKey:@"locatedDic"];
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"refreshCanvas"
-         object:nil
-         userInfo:data];
+        // Ask view controller to refresh the canvas
+        if(beacons.count > 0) {
+            NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
+            NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+            [data setObject:[sharedData getMeasuresDic] forKey:@"measuresDic"];
+            [data setObject:[sharedData getLocatedDic] forKey:@"locatedDic"];
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"refreshCanvas"
+             object:nil
+             userInfo:data];
+        }
+    } else { // If is idle...
+        // ...if there is any beacon in the event...
+        if (beacons.count > 0) {
+            // ...do something with them os it will be saved and appear later.
+            for (CLBeacon *beacon in beacons) {
+                
+            }
+        }
     }
 }
 
@@ -301,6 +313,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         NSLog(@"[NOTI][LM] Notfication \"startMeasuring\" recived.");
     
         measuring = YES;
+        idle = NO;
         
         // The notification payload is the array with the beacons that must be ranged
         NSDictionary *data = notification.userInfo;
@@ -390,6 +403,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 [locationManager stopMonitoringForRegion:region];
                 [locationManager stopRangingBeaconsInRegion:region];
             }
+            monitoredRegions = nil; // For ARC disposing
+            rangedRegions = nil;
         }
     }
 }
@@ -475,6 +490,15 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         
         // Intance variables
         measuring = NO;
+        idle = YES;
+        
+        // Delete registered regions
+        for(CLBeaconRegion * region in  locationManager.monitoredRegions){
+            [locationManager stopMonitoringForRegion:region];
+            [locationManager stopRangingBeaconsInRegion:region];
+        }
+        monitoredRegions = nil; // For ARC disposing
+        rangedRegions = nil;
     }
 }
 

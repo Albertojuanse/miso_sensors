@@ -32,6 +32,7 @@
     
     // Orchestration variables
     BOOL measuring;
+    BOOL idle;
 }
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData;
