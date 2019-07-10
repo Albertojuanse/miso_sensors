@@ -16,148 +16,10 @@
     return self;
 }
 
-/*!
- @method divideSegmentStartingAt:finishingAt:andWithPrecision:
- @discussion This method saves in the parameter 'NSMutableArray' type 'values' the middle value between two given values; if the divisions are greater than the precision, the method is recursively called until reached. The maximum or minimum value given as parameter is not included in final 'values' array. This method is used for composing the grid.
- */
-- (void) recursiveDivideSegmentStartingAt:(NSNumber*)minValue
-                              finishingAt:(NSNumber*)maxValue
-                            withPrecision:(NSNumber*)precision
-                                  inArray:(NSMutableArray*)values
-{
-    // If equals
-    if ([minValue isEqualToNumber:maxValue]) {
-        [values  addObject:minValue];
-        return;
-    }
-    
-    // Middle point and save it
-    NSNumber * middle = [NSNumber numberWithFloat:
-                         [minValue floatValue] +
-                         [[RDPosition euclideanDistance1Dfrom:minValue to:maxValue] floatValue]
-                         / 2.0
-                         ];
-    [values addObject:middle];
-    
-    // Stop condition
-    if (
-        [[RDPosition euclideanDistance1Dfrom:minValue to:maxValue] floatValue] <
-        2.0 * [precision floatValue]
-        )
-    {
-        return;
-    } else { // Recursive
-        [self recursiveDivideSegmentStartingAt:minValue
-                                   finishingAt:middle
-                                 withPrecision:precision
-                                       inArray:values];
-        [self recursiveDivideSegmentStartingAt:middle
-                                   finishingAt:maxValue
-                                 withPrecision:precision
-                                       inArray:values];
-        return;
-    }
-}
-
-/*!
- @method generateGridUsingPositions:andMaxMeasure:andPrecisions:
- @discussion This method generates a grid using maximum and minimum coordinate values of a set of positions and the maximum of the measures taken. It is used for sampling the space and perform thus some optimization calculus such as the one on method 'getLocationsUsingGridAproximationWithMeasures:andPrecisions:'.
- */
-- (NSMutableArray *) generateGridUsingPositions:(NSMutableArray*)measurePositions
-                                  andMaxMeasure:(NSNumber *)maxMeasure
-                                  andPrecisions:(NSDictionary*)precisions
-{
-    
-    // Search for the maximum and minimum values for the coordinates.
-    NSNumber * minPositionsXvalue = [NSNumber numberWithFloat:FLT_MAX];
-    NSNumber * maxPositionsXvalue = [NSNumber numberWithFloat:-FLT_MAX];
-    NSNumber * minPositionsYvalue = [NSNumber numberWithFloat:FLT_MAX];
-    NSNumber * maxPositionsYvalue = [NSNumber numberWithFloat:-FLT_MAX];
-    NSNumber * minPositionsZvalue = [NSNumber numberWithFloat:FLT_MAX];
-    NSNumber * maxPositionsZvalue = [NSNumber numberWithFloat:-FLT_MAX];
-    
-    for (RDPosition * position in measurePositions) {
-        if (([position.x floatValue] - [maxMeasure floatValue]) < [minPositionsXvalue floatValue]) {
-            minPositionsXvalue = position.x;
-        }
-        if (([position.x floatValue] + [maxMeasure floatValue]) > [maxPositionsXvalue floatValue]) {
-            maxPositionsXvalue = position.x;
-        }
-        if (([position.y floatValue] - [maxMeasure floatValue]) < [minPositionsYvalue floatValue]) {
-            minPositionsYvalue = position.y;
-        }
-        if (([position.y floatValue] + [maxMeasure floatValue]) > [maxPositionsYvalue floatValue]) {
-            maxPositionsYvalue = position.y;
-        }
-        if (([position.y floatValue] - [maxMeasure floatValue]) < [minPositionsZvalue floatValue]) {
-            minPositionsZvalue = position.z;
-        }
-        if (([position.z floatValue] + [maxMeasure floatValue]) > [maxPositionsZvalue floatValue]) {
-            maxPositionsZvalue = position.z;
-        }
-    }
-    
-    // Get the coordinate values for the grid's positions; the method 'divideSegmentStartingAt:finishingAt:andWithPrecision:' adds to the values arrays the division points of the axis, but not add min and max value.
-    NSMutableArray * xValues = [[NSMutableArray alloc] init];
-    if ([minPositionsXvalue isEqualToNumber:maxPositionsXvalue]) {
-        [xValues addObject:minPositionsXvalue];
-    } else { // Only evaluate axis partition if the max and min value are not equal.
-        [xValues addObject:minPositionsXvalue];
-        [xValues addObject:maxPositionsXvalue];
-        [self recursiveDivideSegmentStartingAt:minPositionsXvalue
-                                   finishingAt:maxPositionsXvalue
-                                 withPrecision:[precisions objectForKey:@"xPrecision"]
-                                       inArray:xValues];
-    }
-    NSMutableArray * yValues = [[NSMutableArray alloc] init];
-    if ([minPositionsYvalue isEqualToNumber:maxPositionsYvalue]) {
-        [yValues addObject:minPositionsYvalue];
-    } else { // Only evaluate axis partition if the max and min value are not equal.
-        [yValues addObject:minPositionsYvalue];
-        [yValues addObject:maxPositionsYvalue];
-        [self recursiveDivideSegmentStartingAt:minPositionsYvalue
-                                   finishingAt:maxPositionsYvalue
-                                 withPrecision:[precisions objectForKey:@"yPrecision"]
-                                       inArray:yValues];
-    }
-    NSMutableArray * zValues = [[NSMutableArray alloc] init];
-    if ([minPositionsZvalue isEqualToNumber:maxPositionsZvalue]) {
-        [zValues addObject:minPositionsZvalue];
-    } else { // Only evaluate axis partition if the max and min value are not equal.
-        [zValues addObject:minPositionsZvalue];
-        [zValues addObject:maxPositionsZvalue];
-        [self recursiveDivideSegmentStartingAt:minPositionsZvalue
-                                   finishingAt:maxPositionsZvalue
-                                 withPrecision:[precisions objectForKey:@"zPrecision"]
-                                       inArray:zValues];
-    }
-    
-    // Compose the grid
-    NSMutableArray * grid = [[NSMutableArray alloc] init];
-    for (NSNumber * posX in xValues) {
-        for (NSNumber * posY in yValues) {
-            for (NSNumber * posZ in zValues) {
-                RDPosition * pos = [[RDPosition alloc] init];
-                pos.x = posX;
-                pos.y = posY;
-                pos.z = posZ;
-                [grid addObject:pos];
-            }
-        }
-    }
-    
-    return grid;
-}
-
-/*!
- @method getLocationsUsingGridAproximationWithMeasures:andPrecisions:
- precision:
- @discussion This method calculates any posible location with the measures taken from each beacon at different positions; it uses a simple grid search of the minimum of the least square of distances from positions were the measures were taken to the grid and the measures and the same point in the grid. In the '('NSDictionary' object 'precisions' must be defined the minimum requirement of precision for each axe, with floats in objects 'NSNumbers' set in the keys "xPrecision", "yPrecision" and "zPrecision".
- */
 - (NSMutableDictionary *) getLocationsUsingGridAproximationWithMeasures:(SharedData*)sharedData
                                                           andPrecisions:(NSDictionary*)precisions
 {
-    NSLog(@"[INFO][RR] Start Radiolocating beacons");
+ NSLog(@"[INFO][RT] Start Radiolocating beacons");
     NSMutableDictionary * locatedPositions = [[NSMutableDictionary alloc] init];
     NSMutableDictionary * measuresDic = [sharedData getMeasuresDic];
     
@@ -165,7 +27,7 @@
     //
     // { "measurePosition1":                              //  measuresDic
     //     { "measurePosition": measurePosition;          //  positionDic
-    //       "positionRangeMeasures":
+    //       "positionMeasures":
     //         { "measureUuid1":                          //  uuidDicDic
     //             { "uuid" : uuid1;                      //  uuidDic
     //               "uuidMeasures":
@@ -174,19 +36,6 @@
     //                       "measure": rssi/heading
     //                     };
     //                   "measure2":  { (···) }
-    //                 }
-    //             };
-    //           "measureUuid2": { (···) }
-    //         }
-    //       "positionHeadingMeasures":
-    //         { "measureUuid1":                          //  uuidDicDic
-    //             { "uuid" : uuid1;                      //  uuidDic
-    //               "uuidMeasures":
-    //                 { "measure3":                      //  measureDicDic
-    //                     { "type": "rssi"/"heading";    //  measureDic
-    //                       "measure": rssi/heading
-    //                     };
-    //                   "measure4":  { (···) }
     //                 }
     //             };
     //           "measureUuid2": { (···) }
@@ -203,20 +52,12 @@
     NSMutableDictionary * uuidDicDic;
     NSMutableDictionary * positionDic;
     
-    // The grid is calculed with the positions
-    NSMutableArray * measurePositions = [sharedData fromMeasuresDicGetPositions];
-    NSNumber * maxMeasure = [sharedData fromMeasuresDicGetMaxMeasure];
-    NSMutableArray * grid = [self generateGridUsingPositions:measurePositions
-                                               andMaxMeasure:maxMeasure
-                                               andPrecisions:precisions];
-    
-    
     // Each UUID groups the measures taken from a certain beacon and so, for every one of them a RDPosition would be found. It is needed the info about how many beacons there are.
     NSArray * positionKeys = [measuresDic allKeys];
     NSMutableArray * diferentUUID = [[NSMutableArray alloc] init];
     for (id positionKey in positionKeys) {
         positionDic = [measuresDic objectForKey:positionKey];
-        uuidDicDic = positionDic[@"positionRangeMeasures"];
+        uuidDicDic = positionDic[@"positionMeasures"];
         NSArray * uuidKeys = [uuidDicDic allKeys];
         for (id uuidKey in uuidKeys) {
             NSString * uuid = uuidDicDic[uuidKey][@"uuid"];
@@ -241,108 +82,104 @@
     // And thus, for every beacon that must be located with it unique UUID.
     for (NSString * UUIDtoLocate in diferentUUID) {
         
-        // Optimization search over the grid
-        NSNumber * minarg = [NSNumber numberWithFloat:FLT_MAX];
-        RDPosition * minargPosition;
-        NSString * minargUUID;
+        NSString * uuid;
         
-        // For every position in the grid...
-        for (RDPosition * gridPosition in grid) {
+        // Measures are only feasible if measures have both heading and rssi types.
+        BOOL isHeadingMeasure = NO;
+        BOOL isRSSIMeasure = NO;
+        
+        // For every position where measures were taken, which is usually only one,
+        NSArray * positionKeys = [measuresDic allKeys];
+        for (id positionKey in positionKeys) {
+            // ...get the dictionary for this position, and also get the position,...
+            positionDic = [measuresDic objectForKey:positionKey];
+            RDPosition * measurePosition = positionDic[@"measurePosition"];
             
-            NSNumber * sum = [NSNumber numberWithFloat:0.0];
-            
-            // Measures are only feasible if measures were take from at least 3 positions with measures.
-            NSInteger positionsWithMeasures = 0;
-            
-            // ...and for every position where measures were taken
-            NSArray * positionKeys = [measuresDic allKeys];
-            for (id positionKey in positionKeys) {
-                // ...get the dictionary for this position, and also get the position,...
-                positionDic = [measuresDic objectForKey:positionKey];
-                RDPosition * measurePosition = positionDic[@"measurePosition"];
+            // Get the the dictionary with the UUID's dictionaries...
+            uuidDicDic = positionDic[@"positionMeasures"];
+            NSArray * uuidKeys = [uuidDicDic allKeys];
+            for (id uuidKey in uuidKeys) {
+                // ...get the dictionary and the UUID...
+                uuidDic = [uuidDicDic objectForKey:uuidKey];
+                uuid = uuidDic[@"uuid"];
                 
-                // ...and thus calculate the euclidean distance between them...
-                NSNumber * positionsDistance = [measurePosition euclideanDistance3Dto:gridPosition];
-                // ...this will be used for comparing with each beacon's measures and minimization.
-                
-                // Get the the dictionary with the UUID's dictionaries...
-                uuidDicDic = positionDic[@"positionRangeMeasures"];
-                NSArray * uuidKeys = [uuidDicDic allKeys];
-                for (id uuidKey in uuidKeys) {
-                    // ...get the dictionary and the UUID...
-                    uuidDic = [uuidDicDic objectForKey:uuidKey];
-                    minargUUID = uuidDic[@"uuid"];
+                // ...and only perform the calculus if is the current searched UUID...
+                if ([UUIDtoLocate isEqualToString:uuid]) {
+                    // ...and for every measure calculate its mean average.
+                    // TO DO Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
                     
-                    // ...and only perform the calculus if is the current searched UUID...
-                    if ([UUIDtoLocate isEqualToString:minargUUID]) {
-                        
-                        // Get the the dictionary with the measures dictionaries...
-                        measureDicDic = uuidDic[@"uuidMeasures"];
-                        // ...and for every measure calculate its mean average.
-                        // TO DO Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
-                        
-                        // But only do this if the 'measureDicDic' exists
-                        if (measureDicDic.count == 0) {
-                            // Not evaluate
-                        } else {
-                            NSNumber * measuresAcumulation = [NSNumber numberWithFloat:0.0];
-                            NSInteger measureIndex = 0;
-                            NSArray * measuresKeys = [measureDicDic allKeys];
-                            for (id measureKey in measuresKeys) {
-                                measureDic = [measureDicDic objectForKey:measureKey];
-                                measuresAcumulation = [NSNumber numberWithFloat:
-                                                       [measuresAcumulation floatValue] +
-                                                       [measureDic[@"measure"] floatValue]
-                                                       ];
-                                measureIndex++;
+                    // But only do this if the 'measureDicDic' exists
+                    if (measureDicDic.count == 0) {
+                        // Not evaluate
+                    } else {
+                        NSNumber * measuresRSSIAcumulation = [NSNumber numberWithFloat:0.0];
+                        NSNumber * measuresHeadingAcumulation = [NSNumber numberWithFloat:0.0];
+                        NSInteger measureRSSIIndex = 0;
+                        NSInteger measureHeadingIndex = 0;
+                        NSArray * measuresKeys = [measureDicDic allKeys];
+                        for (id measureKey in measuresKeys) {
+                            measureDic = [measureDicDic objectForKey:measureKey];
+                            
+                            // Get the data and acumulate it
+                            if ([measureDic[@"type"] isEqualToString:@"rssi"]) {
+                                measuresRSSIAcumulation = [NSNumber numberWithFloat:
+                                                           [measuresRSSIAcumulation floatValue] +
+                                                           [measureDic[@"measure"] floatValue]
+                                                           ];
+                                measureRSSIIndex++;
+                                isRSSIMeasure = YES;
                             }
-                            NSNumber * measureIndexFloat = [NSNumber numberWithInteger:measureIndex];
-                            NSNumber * measuresAverage = [NSNumber numberWithFloat:
-                                                          [measuresAcumulation floatValue] / [measureIndexFloat floatValue]
-                                                          ];
-                            // Count as valid position with measures
-                            if (measureIndex > 0) {
-                                positionsWithMeasures++;
+                            if ([measureDic[@"type"] isEqualToString:@"heading"]) {
+                                measuresHeadingAcumulation = [NSNumber numberWithFloat:
+                                                              [measuresHeadingAcumulation floatValue] +
+                                                              [measureDic[@"measure"] floatValue]
+                                                              ];
+                                isHeadingMeasure = YES;
+                                measureHeadingIndex++;
                             }
                             
-                            // And perform the calculus to minimizate; is squared difference.
-                            sum = [NSNumber numberWithFloat:
-                                   (
-                                    [sum floatValue] +
-                                    [positionsDistance floatValue] -
-                                    [measuresAverage floatValue]) *
-                                   (
-                                    [sum floatValue] +
-                                    [positionsDistance floatValue] -
-                                    [measuresAverage floatValue]
-                                    )
-                                   ];
+                            // Calculate the mean averages
+                            NSNumber * measureRSSIIndexFloat = [NSNumber numberWithInteger:measureRSSIIndex];
+                            NSNumber * measuresRSSIAverage = [NSNumber numberWithFloat:0.0];
+                            if (measureRSSIIndex != 0) { // Division by zero preventing
+                                measuresRSSIAverage = [NSNumber numberWithFloat:
+                                                       [measuresRSSIAcumulation floatValue] /
+                                                       [measureRSSIIndexFloat floatValue]
+                                                       ];
+                            }
+                            
+                            NSNumber * measureHeadingIndexFloat = [NSNumber numberWithInteger:measureHeadingIndex];
+                            NSNumber * measuresHeadingAverage = [NSNumber numberWithFloat:0.0];
+                            if (measureHeadingIndex != 0) { // Division by zero preventing
+                                measuresHeadingAverage = [NSNumber numberWithFloat:
+                                                          [measuresHeadingAcumulation floatValue] /
+                                                          [measureHeadingIndexFloat floatValue]
+                                                          ];
+                            }
+                            
+                            // Final calculus is only performed if there are both RSSI and heading measures
+                            // (x, y) = (x0, y0) + (RSSI * cos(heading), RSSI * sen(heading)) in radians and meters
+                            if (isRSSIMeasure && isHeadingMeasure) {
+                                RDPosition * locatedPosition = [[RDPosition alloc] init];
+                                locatedPosition.x = [NSNumber numberWithFloat:[measurePosition.x floatValue] +
+                                                     [measuresRSSIAverage floatValue] *
+                                                     cos([measuresHeadingAverage doubleValue])
+                                                     ];
+                                locatedPosition.y = [NSNumber numberWithFloat:[measurePosition.y floatValue] +
+                                                     [measuresRSSIAverage floatValue] *
+                                                     sin([measuresHeadingAverage doubleValue])
+                                                     ];
+                                locatedPosition.z = measurePosition.z;
+                                
+                                [locatedPositions setObject:locatedPosition forKey:uuid];
+                            }
                         }
                     }
                 }
             }
-            // Evaluate feasibility
-            if (positionsWithMeasures > 2) {
-                // Minimization
-                
-                if ([sum floatValue] < [minarg floatValue]) {
-                    minarg = [NSNumber numberWithFloat:[sum floatValue]];
-                    minargPosition = [[RDPosition alloc] init];
-                    minargPosition.x = gridPosition.x;
-                    minargPosition.y = gridPosition.y;
-                    minargPosition.z = gridPosition.z;
-                }
-                
-            } else {
-                minargPosition = nil;
-            }
-        }
-        // Add the minimum position for this UUID
-        if (minargPosition) {
-            [locatedPositions setObject:minargPosition forKey:minargUUID];
         }
     }
-    NSLog(@"[INFO][RR] Finish Radiolocating beacons");
+    NSLog(@"[INFO][RT] Finish Radiolocating beacons");
     return locatedPositions;
 }
 

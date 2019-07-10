@@ -189,7 +189,7 @@
     //
     // { "measurePosition1":                              //  measuresDic
     //     { "measurePosition": measurePosition;          //  positionDic
-    //       "positionRangeMeasures":
+    //       "positionMeasures":
     //         { "measureUuid1":                          //  uuidDicDic
     //             { "uuid" : uuid1;                      //  uuidDic
     //               "uuidMeasures":
@@ -198,19 +198,6 @@
     //                       "measure": rssi/heading
     //                     };
     //                   "measure2":  { (···) }
-    //                 }
-    //             };
-    //           "measureUuid2": { (···) }
-    //         }
-    //       "positionHeadingMeasures":
-    //         { "measureUuid1":                          //  uuidDicDic
-    //             { "uuid" : uuid1;                      //  uuidDic
-    //               "uuidMeasures":
-    //                 { "measure3":                      //  measureDicDic
-    //                     { "type": "rssi"/"heading";    //  measureDic
-    //                       "measure": rssi/heading
-    //                     };
-    //                   "measure4":  { (···) }
     //                 }
     //             };
     //           "measureUuid2": { (···) }
@@ -229,7 +216,7 @@
     
     // The grid is calculed with the positions
     NSMutableArray * measurePositions = [sharedData fromMeasuresDicGetPositions];
-    NSNumber * maxMeasure = [sharedData fromMeasuresDicGetMaxMeasure];
+    NSNumber * maxMeasure = [sharedData fromMeasuresDicGetMaxMeasureOfType:@"rssi"];
     NSMutableArray * grid = [self generateGridUsingPositions:measurePositions
                                                andMaxMeasure:maxMeasure
                                                andPrecisions:precisions];
@@ -240,7 +227,7 @@
     NSMutableArray * diferentUUID = [[NSMutableArray alloc] init];
     for (id positionKey in positionKeys) {
         positionDic = [measuresDic objectForKey:positionKey];
-        uuidDicDic = positionDic[@"positionRangeMeasures"];
+        uuidDicDic = positionDic[@"positionMeasures"];
         NSArray * uuidKeys = [uuidDicDic allKeys];
         for (id uuidKey in uuidKeys) {
             NSString * uuid = uuidDicDic[uuidKey][@"uuid"];
@@ -290,7 +277,7 @@
                 // ...this will be used for comparing with each beacon's measures and minimization.
                 
                 // Get the the dictionary with the UUID's dictionaries...
-                uuidDicDic = positionDic[@"positionRangeMeasures"];
+                uuidDicDic = positionDic[@"positionMeasures"];
                 NSArray * uuidKeys = [uuidDicDic allKeys];
                 for (id uuidKey in uuidKeys) {
                     // ...get the dictionary and the UUID...
@@ -314,16 +301,23 @@
                             NSArray * measuresKeys = [measureDicDic allKeys];
                             for (id measureKey in measuresKeys) {
                                 measureDic = [measureDicDic objectForKey:measureKey];
-                                measuresAcumulation = [NSNumber numberWithFloat:
-                                                       [measuresAcumulation floatValue] +
-                                                       [measureDic[@"measure"] floatValue]
-                                                       ];
-                                measureIndex++;
+                                
+                                // Only evaluate if it is a RSSI measure
+                                if ([measureDic[@"type"] isEqualToString:@"rssi"]) {
+                                    measuresAcumulation = [NSNumber numberWithFloat:
+                                                           [measuresAcumulation floatValue] +
+                                                           [measureDic[@"measure"] floatValue]
+                                                           ];
+                                    measureIndex++;
+                                }
                             }
                             NSNumber * measureIndexFloat = [NSNumber numberWithInteger:measureIndex];
-                            NSNumber * measuresAverage = [NSNumber numberWithFloat:
-                                                          [measuresAcumulation floatValue] / [measureIndexFloat floatValue]
-                                                          ];
+                            NSNumber * measuresAverage = [NSNumber numberWithFloat:0.0];
+                            if (measureIndex != 0) { // Division by zero preventing
+                                measuresAverage = [NSNumber numberWithFloat:
+                                                              [measuresAcumulation floatValue] / [measureIndexFloat floatValue]
+                                                              ];
+                            }
                             // Count as valid position with measures
                             if (measureIndex > 0) {
                                 positionsWithMeasures++;
