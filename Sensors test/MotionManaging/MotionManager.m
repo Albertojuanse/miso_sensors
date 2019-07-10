@@ -125,7 +125,7 @@ if (self) {
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(stopTraveling:)
-                                                 name:@"startTraveling"
+                                                 name:@"stopTraveling"
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(startTravelingFrom:)
