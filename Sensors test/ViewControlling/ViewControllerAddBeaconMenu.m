@@ -129,7 +129,6 @@
         // Set the variable
         [viewControllerMainMenu setBeaconsRegistered:beaconsRegistered];
         [viewControllerMainMenu setRegionIdNumber:regionIdNumber];
-        
     }
 }
 
