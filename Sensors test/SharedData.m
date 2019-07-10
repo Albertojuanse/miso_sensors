@@ -80,10 +80,10 @@
 }
 
 /*!
- @method fromMeasuresDicGetMaxMeasure
+ @method fromMeasuresDicGetMaxMeasureOfType:
  @discussion This method returns a 'NSNumber' that contains the maximum of the measures taken.
  */
-- (NSNumber *) fromMeasuresDicGetMaxMeasure {
+- (NSNumber *) fromMeasuresDicGetMaxMeasureOfType:(NSString *)type {
     NSNumber * maxMeasure = [NSNumber numberWithFloat:0.0];
     if (measuresDic.count == 0) {
         // Do nothing
@@ -95,7 +95,7 @@
             positionDic = [measuresDic objectForKey:positionKey];
             
             // Get the the dictionary with the UUID's dictionaries...
-            uuidDicDic = positionDic[@"positionRangeMeasures"];
+            uuidDicDic = positionDic[@"positionMeasures"];
             // ...and for every UUID...
             NSArray * uuidKeys = [uuidDicDic allKeys];
             for (id uuidKey in uuidKeys) {
@@ -111,9 +111,10 @@
                     measureDic = [measureDicDic objectForKey:measureKey];
                     // ...and the measure.
                     NSNumber * measure = [NSNumber numberWithFloat:[measureDic[@"measure"] floatValue]];
-                    
-                    if ([measure floatValue] > [maxMeasure floatValue]) {
-                        maxMeasure = measure;
+                    if ([measureDic[@"type"] isEqualToString:type]) {
+                        if ([measure floatValue] > [maxMeasure floatValue]) {
+                            maxMeasure = measure;
+                        }
                     }
                 }
             }
@@ -139,7 +140,7 @@
     //
     // { "measurePosition1":                              //  measuresDic
     //     { "measurePosition": measurePosition;          //  positionDic
-    //       "positionRangeMeasures":
+    //       "positionMeasures":
     //         { "measureUuid1":                          //  uuidDicDic
     //             { "uuid" : uuid1;                      //  uuidDic
     //               "uuidMeasures":
@@ -148,19 +149,6 @@
     //                       "measure": rssi/heading
     //                     };
     //                   "measure2":  { (···) }
-    //                 }
-    //             };
-    //           "measureUuid2": { (···) }
-    //         }
-    //       "positionHeadingMeasures":
-    //         { "measureUuid1":                          //  uuidDicDic
-    //             { "uuid" : uuid1;                      //  uuidDic
-    //               "uuidMeasures":
-    //                 { "measure3":                      //  measureDicDic
-    //                     { "type": "rssi"/"heading";    //  measureDic
-    //                       "measure": rssi/heading
-    //                     };
-    //                   "measure4":  { (···) }
     //                 }
     //             };
     //           "measureUuid2": { (···) }
@@ -203,7 +191,7 @@
         // Create the 'positionDic' dictionary
         positionDic = [[NSMutableDictionary alloc] init];
         positionDic[@"measurePosition"] = measurePosition;
-        positionDic[@"positionRangeMeasures"] = uuidDicDic;
+        positionDic[@"positionMeasures"] = uuidDicDic;
         
         // Set positionDic in the main dictionary 'measuresDic' with an unique position's identifier key
         positionIdNumber = [NSNumber numberWithInt:[positionIdNumber intValue] + 1];
@@ -228,7 +216,7 @@
                 positionFound = YES;
                 
                 // For each uuid already saved...
-                uuidDicDic = positionDic[@"positionRangeMeasures"];
+                uuidDicDic = positionDic[@"positionMeasures"];
                 NSArray *uuidKeys = [uuidDicDic allKeys];
                 for (id uuidKey in uuidKeys) {
                     // ...get the dictionary for this uuid...
@@ -300,7 +288,7 @@
             // Create the 'positionDic' dictionary
             positionDic = [[NSMutableDictionary alloc] init];
             positionDic[@"measurePosition"] = measurePosition;
-            positionDic[@"positionRangeMeasures"] = uuidDicDic;
+            positionDic[@"positionMeasures"] = uuidDicDic;
             NSLog(@"[INFO][LM] New position saved in dictionary: (%.2f, %.2f)", [measurePosition.x floatValue], [measurePosition.y floatValue]);
             
             // Set positionDic in the main dictionary 'measuresDic' with an unique position's identifier key

@@ -80,35 +80,7 @@
         self.canvas.measuresDic = measuresDic;
         self.canvas.locatedDic = locatedDic;
         
-        // Inspect dictionary for UUID names.
-        // Declare the inner dictionaries.
-        NSMutableDictionary * uuidDic;
-        NSMutableDictionary * uuidDicDic;
-        NSMutableDictionary * positionDic;
-        
-        // For every position where measures were taken
-        NSArray *positionKeys = [measuresDic allKeys];
-        for (id positionKey in positionKeys) {
-            // ...get the dictionary for this position.
-            positionDic = [measuresDic objectForKey:positionKey];
-            
-            // Get the the dictionary with the UUID's dictionaries...
-            uuidDicDic = positionDic[@"positionRangeMeasures"];
-            // ...and for every UUID...
-            NSArray *uuidKeys = [uuidDicDic allKeys];
-            BOOL found = NO;
-            for (id uuidKey in uuidKeys) {
-                // ...get the dictionary...
-                uuidDic = [uuidDicDic objectForKey:uuidKey];
-                // ...and get the uuid.
-                NSString * uuidNew = [NSString stringWithString:uuidDic[@"uuid"]];
-                
-                // TO DO: ¿Needed? Alberto J. 2019/07/08.
-                
-                }
-            }
-        }
-
+    }
     [self.canvas setNeedsDisplay];
 }
 

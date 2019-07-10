@@ -172,7 +172,7 @@
     //
     // { "measurePosition1":                              //  measuresDic
     //     { "measurePosition": measurePosition;          //  positionDic
-    //       "positionRangeMeasures":
+    //       "positionMeasures":
     //         { "measureUuid1":                          //  uuidDicDic
     //             { "uuid" : uuid1;                      //  uuidDic
     //               "uuidMeasures":
@@ -281,7 +281,7 @@
         /* *******  END * DEFINE POSITION CANVAS REPRESENTATION (METHOD)  ************ */
         
         // Get the the dictionary with the UUID's dictionaries...
-        uuidDicDic = positionDic[@"positionRangeMeasures"];
+        uuidDicDic = positionDic[@"positionMeasures"];
         // ...and for every UUID...
         NSArray * uuidKeys = [uuidDicDic allKeys];
         // Color for every UUID
@@ -447,31 +447,36 @@
                 measureDic = [measureDicDic objectForKey:measureKey];
                 // ...and the measure.
                 NSNumber * measure = [NSNumber numberWithFloat:[measureDic[@"measure"] floatValue]];
+                NSString * type = measureDic[@"type"];
                 
                 /* *********  DEFINE MEASURE CANVAS REPRESENTATION (METHOD)  ************ */
-                RDPosition * canvasPosition = [self transformSingleRealPointToCanvasPoint:realPosition];
+                    RDPosition * canvasPosition = [self transformSingleRealPointToCanvasPoint:realPosition];
+                if ([type isEqualToString:@"rssi"]) {
+                    //UIBezierPath *measureBezierPath = [UIBezierPath bezierPath];
+                    //[measureBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:[measure floatValue]*(rWidth+rHeight)/2.0 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+                    //NSLog(@"[INFO][CA][TRAN] Radius measured: %.2f",  [measure floatValue]);
+                    //NSLog(@"[INFO][CA][TRAN] Radius canvas: %.2f",  [measure floatValue]*(rWidth+rHeight)/2.0);
                 
-                //UIBezierPath *measureBezierPath = [UIBezierPath bezierPath];
-                //[measureBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:[measure floatValue]*(rWidth+rHeight)/2.0 startAngle:0 endAngle:2 * M_PI clockwise:YES];
-                //NSLog(@"[INFO][CA][TRAN] Radius measured: %.2f",  [measure floatValue]);
-                //NSLog(@"[INFO][CA][TRAN] Radius canvas: %.2f",  [measure floatValue]*(rWidth+rHeight)/2.0);
                 
-                
-                CGRect rect = CGRectMake([canvasPosition.x floatValue] - [measure floatValue] * rWidth,
-                                         [canvasPosition.y floatValue] - [measure floatValue] * rHeight,
-                                         2.0 * [measure floatValue] * rWidth,
-                                         2.0 * [measure floatValue] * rHeight);
-                UIBezierPath *measureBezierPath = [UIBezierPath bezierPathWithOvalInRect:rect];
-                //NSLog(@"[INFO][CA][TRAN] Ellipse measured: %.2f, %.2f",  [measure floatValue],  [measure floatValue]);
-                //NSLog(@"[INFO][CA][TRAN] Ellipse canvas: %.2f, %.2f",  [measure floatValue] * rWidth, [measure floatValue] * rHeight);
+                    CGRect rect = CGRectMake([canvasPosition.x floatValue] - [measure floatValue] * rWidth,
+                                             [canvasPosition.y floatValue] - [measure floatValue] * rHeight,
+                                             2.0 * [measure floatValue] * rWidth,
+                                             2.0 * [measure floatValue] * rHeight);
+                    UIBezierPath *measureBezierPath = [UIBezierPath bezierPathWithOvalInRect:rect];
+                    //NSLog(@"[INFO][CA][TRAN] Ellipse measured: %.2f, %.2f",  [measure floatValue],  [measure floatValue]);
+                    //NSLog(@"[INFO][CA][TRAN] Ellipse canvas: %.2f, %.2f",  [measure floatValue] * rWidth, [measure floatValue] * rHeight);
                 
 
                 
-                CAShapeLayer *beaconLayer = [[CAShapeLayer alloc] init];
-                [beaconLayer setPath:measureBezierPath.CGPath];
-                [beaconLayer setStrokeColor:colorUUID.CGColor];
-                [beaconLayer setFillColor:[UIColor clearColor].CGColor];
-                [[self layer] addSublayer:beaconLayer];
+                    CAShapeLayer *beaconLayer = [[CAShapeLayer alloc] init];
+                    [beaconLayer setPath:measureBezierPath.CGPath];
+                    [beaconLayer setStrokeColor:colorUUID.CGColor];
+                    [beaconLayer setFillColor:[UIColor clearColor].CGColor];
+                    [[self layer] addSublayer:beaconLayer];
+                }
+                if ([type isEqualToString:@"heading"]) {
+                    // TO DO: Heading representation. Alberto J. 2019/07/10.
+                }
                 /* *********  * END * DEFINE MEASURE CANVAS REPRESENTATION (METHOD)  ************ */
             }
             UUIDindex++;
