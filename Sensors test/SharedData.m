@@ -339,7 +339,9 @@
 - (void) inLocatedDicSetPosition:(RDPosition*)locatedPosition
                         fromUUID:(NSString*)locatedUUID
 {
-    
+    NSLog(@"[INFO][SD] Located positions to save:");
+    NSLog(@"[INFO][SD]  -> Position %@", locatedPosition);
+    NSLog(@"[INFO][SD]  -> from %@", locatedUUID);
     // The schema of the locatedDic object is:
     //
     // { "locatedPosition1":                              //  locatedDic
@@ -351,6 +353,7 @@
     //
     
     if (locatedDic.count == 0) {
+        NSLog(@"[INFO][SD] locatedDic.count == 0 => YES");
         // First initialization
         
         // Compose the dictionary from the innermost to the outermost
@@ -365,29 +368,40 @@
         locatedDic[locatedId] = positionDic;
         
     } else {
-        // Find if already exists the position or its UUID and create it if not; a beacon only can exists in a position, hence no mobility solutions are considered
+        NSLog(@"[INFO][SD] locatedDic.count == 0 => NO");
+        // A beacon only can exists in a position, hence no mobility solutions are considered
         
         // If UUID exists, position is actualized; if UUID does not exist, it will be created.
         // For each position already saved...
+        BOOL UUIDfound = NO;
         NSArray *positionKeys = [locatedDic allKeys];
         for (id positionKey in positionKeys) {
             // ...get the dictionary for this position...
             positionDic = [locatedDic objectForKey:positionKey];
             // ...and checks if the current UUID's locatedUUID already exists comparing it with the saved ones.
             NSString * savedUUID = positionDic[@"locatedUUID"];
+            NSLog(@"[INFO][SD] UUID saved in %@ is %@", positionDic[@"locatedPosition"], savedUUID);
             if ([savedUUID isEqualToString:locatedUUID]) { // UUID already exists
+                NSLog(@"[INFO][SD] UUID saved is equals to %@; upload to %@", locatedUUID, locatedPosition);
                 positionDic[@"locatedPosition"] = locatedPosition;
-            } else { // UUID new
-                // Wrap locatedPosition in a dictionary with its UUID
-                positionDic = [[NSMutableDictionary alloc] init];
-                positionDic[@"locatedPosition"] = locatedPosition;
-                positionDic[@"locatedUUID"] = locatedUUID;
+                UUIDfound = YES;
+            } else {
                 
-                // Set it into locatedDic
-                locatedIdNumber = [NSNumber numberWithInt:[locatedIdNumber intValue] + 1];
-                NSString * locatedId = [@"locatedPosition" stringByAppendingString:[measureIdNumber stringValue]];
-                locatedDic[locatedId] = positionDic;
             }
+        }
+        
+        // If UUID did not be found, create its dictionary
+        if (!UUIDfound) {
+            NSLog(@"[INFO][SD] UUID saved are not equals to %@; creating new dic", locatedUUID);
+            // Wrap locatedPosition in a dictionary with its UUID
+            NSMutableDictionary * newPositionDic = [[NSMutableDictionary alloc] init];
+            newPositionDic[@"locatedPosition"] = locatedPosition;
+            newPositionDic[@"locatedUUID"] = locatedUUID;
+            
+            // Set it into locatedDic
+            locatedIdNumber = [NSNumber numberWithInt:[locatedIdNumber intValue] + 1];
+            NSString * locatedId = [@"locatedPosition" stringByAppendingString:[measureIdNumber stringValue]];
+            locatedDic[locatedId] = newPositionDic;
         }
     }
 }

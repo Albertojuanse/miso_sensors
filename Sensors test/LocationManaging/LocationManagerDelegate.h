@@ -27,6 +27,11 @@
     // Variables
     RDPosition * position;
     NSNumber * lastHeadingPosition;
+    BOOL measuring;
+    BOOL idle;
+    NSString * mode;
+    NSString * uuidChosenByUser;
+    BOOL isUuidChosenByUserRanged;
     
     // Data store
     NSMutableArray * monitoredRegions;
@@ -35,11 +40,6 @@
     NSMutableArray * rangedBeacons;
     
     // Orchestration variables
-    BOOL measuring;
-    BOOL idle;
-    NSString * mode;
-    NSString * uuidChosenByUser;
-    BOOL save;
 }
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData;
