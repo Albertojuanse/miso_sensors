@@ -116,10 +116,24 @@
         }
         if ([chosenMode isEqualToString:[modes objectAtIndex:1]]) { // RHO_THETA_MODELLING
             [self performSegueWithIdentifier:@"fromMainToRHO_THETA_MODELLING" sender:sender];
-        } else {
+        }
+        if ([chosenMode isEqualToString:[modes objectAtIndex:2]]) { // RHO_THETA_MODELLING
             return;
+            // [self performSegueWithIdentifier:@"fromMainToTHETA_THETA_MODELLING" sender:sender];
+        }
+        if ([chosenMode isEqualToString:[modes objectAtIndex:3]]) { // RHO_RHO_LOCATING
+            return;
+            // [self performSegueWithIdentifier:@"fromMainToAddPositions" sender:sender];
+        }
+        if ([chosenMode isEqualToString:[modes objectAtIndex:4]]) { // RHO_THETA_LOCATING
+            return;
+            // [self performSegueWithIdentifier:@"fromMainToAddPositions" sender:sender];
+        }
+        if ([chosenMode isEqualToString:[modes objectAtIndex:5]]) { // THETA_THETA_LOCATING
+            [self performSegueWithIdentifier:@"fromMainToAddPositions" sender:sender];
         }
         
+        return;
     } else {
         return;
     }
@@ -161,6 +175,21 @@
         ViewControllerRhoThetaModelling *viewControllerRhoThetaModelling = [segue destinationViewController];
         // Set the variable
         [viewControllerRhoThetaModelling setBeaconsRegistered:beaconsRegistered];
+        
+    }
+    
+    // If Theta Theta Syetem based Modelling is going to be displayed, there is no need of the beaconsRegistered array.
+    if ([[segue identifier] isEqualToString:@"fromMainToTHETA_THETA_MODELLING"]) {
+        // Do nothing
+    }
+    
+    // If Rho Theta Syetem or Rho Rho Sytem based Locating is going to be displayed, pass it the beaconsRegistered array.
+    if ([[segue identifier] isEqualToString:@"fromMainToAddPositions"]) {
+        
+        // Get destination view
+        ViewControllerAddPositions * viewControllerAddPositions = [segue destinationViewController];
+        // Set the variable
+        [viewControllerAddPositions setBeaconsRegistered:beaconsRegistered];
         
     }
 }

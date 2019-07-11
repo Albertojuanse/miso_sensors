@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "ViewControllerAddBeaconMenu.h"
+#import "ViewControllerAddPositions.h"
 #import "ViewControllerRhoRhoModelling.h"
 #import "ViewControllerRhoThetaModelling.h"
 
