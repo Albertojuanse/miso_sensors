@@ -33,6 +33,10 @@
         // Instance variables
         measuring = NO;
         idle = YES;
+        // In ro teta system, only save heading measures if the beacons measures exist
+        save = NO;
+        // Heading is not delivered unless new values avalible; when RSSI measures from the chosen UUID is saved, the flag 'save' is activated, and no heading is saved until user moves the device; thus, this location is always saved the first time that a valid RSSI measure is taken
+        NSNumber * lastHeadingPosition;
         
         // Initialize location manager and set this class as the delegate which implement the event response's methods
         locationManager = [[CLLocationManager alloc] init];
@@ -212,8 +216,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 NSString * uuid = [[beacon proximityUUID] UUIDString];
                 NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
                 
-                // If 'uuidChosenByUser' exists, the system used is a ro teta system, and so the measure is saved only if uuid are the same
-                BOOL save = YES;
+                // If 'uuidChosenByUser' exists, the system used is a ro teta system, and so the measure is saved only if uuid are the same; also, the heading measures only will be saved if becons measures are saved
+                
+                save = YES;
                 if (uuidChosenByUser) {
                     if (![uuidChosenByUser isEqualToString:uuid]) {
                         save = NO;
@@ -310,23 +315,33 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 {
     // If app is not in main menu
     if (!idle) {
-        if (uuidChosenByUser) {
-            RDPosition * measurePosition = [[RDPosition alloc] init];
-            measurePosition.x = position.x;
-            measurePosition.y = position.y;
-            measurePosition.z = position.z;
-            
-            [sharedData inMeasuresDicSetMeasure:[NSNumber numberWithDouble:[newHeading trueHeading]*M_PI/180.0]
-                                         ofType:@"heading"
-                                       withUUID:uuidChosenByUser
-                                     atPosition:measurePosition
-                                   andWithState:measuring];
+        // and if the beacons measures where taken to this uuid
+        if(save) {
+            if (uuidChosenByUser) {
+                RDPosition * measurePosition = [[RDPosition alloc] init];
+                measurePosition.x = position.x;
+                measurePosition.y = position.y;
+                measurePosition.z = position.z;
+                
+                [sharedData inMeasuresDicSetMeasure:[NSNumber numberWithDouble:[newHeading trueHeading]*M_PI/180.0]
+                                             ofType:@"heading"
+                                           withUUID:uuidChosenByUser
+                                         atPosition:measurePosition
+                                       andWithState:measuring];
+            } else {
+                NSLog(@"[INFO][LM] User did not choose any UUID source for the heading measure; disposing.");
+            }
         } else {
-            NSLog(@"[INFO][LM] User did not choose any UUID source for the heading measure; disposing.");
+            if ([mode isEqualToString:@"THETA_THETA_MODE"]) {
+            // TO DO: THETA THETA SYSTEM
+            } else {
+                NSLog(@"[INFO][LM] User did choose a UUID source that is not being ranging; disposing.");
+            }
         }
-    } else { // If is idle...
-       
+    }  else { // If is idle...
+        
     }
+    lastHeadingPosition = [NSNumber numberWithDouble:[newHeading trueHeading]*M_PI/180.0];
 }
 
 #pragma mark - Instance method
@@ -487,6 +502,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     
         // If is currently measuring
         measuring = NO;
+        save = NO;
         
         // Delete registered regions
         for(CLBeaconRegion * region in  locationManager.monitoredRegions){
@@ -561,6 +577,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         // Intance variables
         measuring = NO;
         idle = YES;
+        save = NO;
         
         // Delete registered regions
         for(CLBeaconRegion * region in  locationManager.monitoredRegions){

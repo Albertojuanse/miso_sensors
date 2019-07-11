@@ -196,7 +196,7 @@
     NSMutableDictionary * uuidDicDic;
     NSMutableDictionary * positionDic;
     
-    // The positios must be scaled before its displaying
+    // The positions must be scaled before its displaying
     NSMutableArray * realPositions = [[NSMutableArray alloc] init];
     NSArray * positionKeys = [self.measuresDic allKeys];
     for (id positionKey in positionKeys) {
@@ -208,6 +208,7 @@
         position.x = dicPosition.x;
         position.y = dicPosition.y;
         position.z = dicPosition.z;
+        NSLog(@"[INFO][CA] Added real position %@", position);
         [realPositions addObject:position];
     }
     
@@ -225,16 +226,22 @@
     NSArray * locatedKeys = [self.locatedDic allKeys];
     for (id locatedKey in locatedKeys) {
         // ...get the dictionary for this position...
-        positionDic = [self.measuresDic objectForKey:locatedKey];
+        positionDic = [self.locatedDic objectForKey:locatedKey];
         // ...and the position.
         RDPosition * dicPosition = positionDic[@"locatedPosition"];
         RDPosition * position = [[RDPosition alloc] init];
         position.x = dicPosition.x;
         position.y = dicPosition.y;
         position.z = dicPosition.z;
+        NSLog(@"[INFO][CA] Added real position %@", position);
         [realPositions addObject:position];
     }
     /* ************************** END LOCATED DIC **************************** */
+    
+    NSLog(@"[INFO][CA] Real positions to show:");
+    for (RDPosition * pos in realPositions) {
+        NSLog(@"[INFO][CA] -> %@", pos);
+    }
     
     // Transform the real positions to an apropiate canvas ones, with the barycenter of the set of points in the center of the canvas
     // This method sets the ratios in the class variables 'rWidth' and 'rHeight'; then, they will be used for transform every single point

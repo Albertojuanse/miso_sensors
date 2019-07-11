@@ -26,6 +26,7 @@
     
     // Variables
     RDPosition * position;
+    NSNumber * lastHeadingPosition;
     
     // Data store
     NSMutableArray * monitoredRegions;
@@ -38,6 +39,7 @@
     BOOL idle;
     NSString * mode;
     NSString * uuidChosenByUser;
+    BOOL save;
 }
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData;
