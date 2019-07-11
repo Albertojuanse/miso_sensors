@@ -38,7 +38,9 @@
  */
 - (void) setRegionIdNumber:(NSNumber *)newRegionIdNumber {
     regionIdNumber = newRegionIdNumber;
-} 
+}
+
+#pragma marks - Buttons event handles
 
 /*!
  @method handleButtonAdd:
