@@ -25,10 +25,10 @@
     self.textZ.placeholder = @"0.0";
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
-    self.tableBeacons.delegate = self;
-    self.tableBeacons.dataSource = self;
+    self.tableBeaconsAndPositions.delegate = self;
+    self.tableBeaconsAndPositions.dataSource = self;
     
-    [self.tableBeacons reloadData];
+    [self.tableBeaconsAndPositions reloadData];
 }
 
 /*!
@@ -93,7 +93,7 @@
                 if ([regionDic[@"uuid"] isEqualToString:uuidChosenByUser]) {
                     regionDic[@"x"] = [self.textX text];
                     regionDic[@"y"] = [self.textY text];
-                    regionDic[@"y"] = [self.textZ text];
+                    regionDic[@"z"] = [self.textZ text];
                     
                     self.textX.text = @"";
                     self.textY.text = @"";
@@ -196,7 +196,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.tableBeacons) {
+    if (tableView == self.tableBeaconsAndPositions) {
         return [beaconsAndPositionsRegistered count];
     }
     return 0;
@@ -213,7 +213,7 @@
     }
     
     // Configure individual cells
-    if (tableView == self.tableBeacons) {
+    if (tableView == self.tableBeaconsAndPositions) {
         NSMutableDictionary * regionDic = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row];
         cell.textLabel.numberOfLines = 0; // Means any number
         if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
@@ -245,7 +245,7 @@
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (tableView == self.tableBeacons) {
+    if (tableView == self.tableBeaconsAndPositions) {
         uuidChosenByUser = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"uuid"];
     }
 }

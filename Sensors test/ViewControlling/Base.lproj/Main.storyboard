@@ -30,8 +30,8 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap + button for adding new ones, or select one and tap 'Edit'." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XAd-5l-cgu">
-                                        <rect key="frame" x="32" y="528" width="473" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap + button for configure them or adding new ones." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XAd-5l-cgu">
+                                        <rect key="frame" x="32" y="528" width="403" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -61,20 +61,12 @@
                                             <action selector="handleButonStart:" destination="lVP-jp-YaV" eventType="touchUpInside" id="3kG-w1-c8k"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Register the iBeacons and reference positions before it use. " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dwG-Vz-UA7">
-                                        <rect key="frame" x="32" y="499" width="460" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Register the iBeacons and reference positions before use them. " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dwG-Vz-UA7">
+                                        <rect key="frame" x="32" y="499" width="489" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="epC-Wo-AzE">
-                                        <rect key="frame" x="646" y="519" width="36" height="38"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="21"/>
-                                        <state key="normal" title="Edit"/>
-                                        <connections>
-                                            <action selector="handleButtonEdit:" destination="lVP-jp-YaV" eventType="touchUpInside" id="0IW-UD-0yy"/>
-                                        </connections>
-                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -82,10 +74,8 @@
                                     <constraint firstItem="RbC-qr-Qzv" firstAttribute="top" secondItem="Zp0-zM-RWh" secondAttribute="bottom" constant="16" id="0NV-tr-uSG"/>
                                     <constraint firstItem="zaA-aE-9CS" firstAttribute="leading" secondItem="Nro-qx-VM6" secondAttribute="leading" constant="32" id="2Fo-0z-4K8"/>
                                     <constraint firstAttribute="trailing" secondItem="Zp0-zM-RWh" secondAttribute="trailing" constant="32" id="5ke-BY-6Uv"/>
-                                    <constraint firstItem="Zp0-zM-RWh" firstAttribute="centerY" secondItem="epC-Wo-AzE" secondAttribute="centerY" id="7JW-Om-8tW"/>
                                     <constraint firstItem="pMp-QA-YHA" firstAttribute="top" secondItem="Nro-qx-VM6" secondAttribute="top" constant="55" id="BTa-to-rrl"/>
                                     <constraint firstItem="RbC-qr-Qzv" firstAttribute="top" secondItem="XAd-5l-cgu" secondAttribute="bottom" constant="16" id="SKc-cm-30z"/>
-                                    <constraint firstItem="Zp0-zM-RWh" firstAttribute="leading" secondItem="epC-Wo-AzE" secondAttribute="trailing" constant="32" id="aG8-iD-H1T"/>
                                     <constraint firstAttribute="trailing" secondItem="YnX-CR-lc7" secondAttribute="trailing" constant="32" id="bem-hK-3y0"/>
                                     <constraint firstItem="YnX-CR-lc7" firstAttribute="leading" secondItem="Nro-qx-VM6" secondAttribute="leading" constant="32" id="c7A-bu-lcG"/>
                                     <constraint firstItem="zaA-aE-9CS" firstAttribute="top" secondItem="Nro-qx-VM6" secondAttribute="top" constant="64" id="fv4-fy-eX6"/>
@@ -112,7 +102,7 @@
                         <viewLayoutGuide key="safeArea" id="55H-Nm-isb"/>
                     </view>
                     <connections>
-                        <outlet property="tableBeacons" destination="RbC-qr-Qzv" id="aHP-09-xlO"/>
+                        <outlet property="tableBeaconsAndPositions" destination="RbC-qr-Qzv" id="aHP-09-xlO"/>
                         <outlet property="tableModes" destination="YnX-CR-lc7" id="ysR-ld-hYb"/>
                         <segue destination="Crx-eI-vrX" kind="show" identifier="fromMainToAdd" id="AQR-tb-zhA"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="fromMainToRHO_RHO_MODELLING" id="N3R-vg-jtW"/>
@@ -194,7 +184,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please, submit the UUID, major and minor values from the new iBeacon device." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tgx-51-evS">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please, submit the UUID, major and minor values from the iBeacon device." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tgx-51-evS">
                                 <rect key="frame" x="32" y="105" width="704" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -795,7 +785,7 @@
                     </view>
                     <connections>
                         <outlet property="buttonSet" destination="cdE-ha-RRz" id="oCV-xm-AQb"/>
-                        <outlet property="tableBeacons" destination="zil-AZ-XAM" id="AoX-da-XFj"/>
+                        <outlet property="tableBeaconsAndPositions" destination="zil-AZ-XAM" id="AoX-da-XFj"/>
                         <outlet property="textX" destination="tGy-cR-DmZ" id="zhH-Af-dGq"/>
                         <outlet property="textY" destination="ww3-1a-zy4" id="hUJ-01-gwZ"/>
                         <outlet property="textZ" destination="S4N-aK-iaE" id="n1r-LD-jnh"/>
@@ -889,7 +879,7 @@
                         <outlet property="buttonMeasure" destination="UNj-vu-DXA" id="9oh-mw-BZ7"/>
                         <outlet property="canvas" destination="3YZ-89-cXu" id="4xh-5W-Yr4"/>
                         <outlet property="labelStatus" destination="aFh-h7-dil" id="SeA-1a-jwB"/>
-                        <outlet property="tableBeacons" destination="xnz-BZ-Dex" id="Zib-uL-h5v"/>
+                        <outlet property="tableBeaconsAndPositions" destination="xnz-BZ-Dex" id="Zib-uL-h5v"/>
                         <segue destination="lVP-jp-YaV" kind="show" identifier="fromRHO_THETA_MODELLINGToMain" id="kiJ-cW-9Gg"/>
                     </connections>
                 </viewController>

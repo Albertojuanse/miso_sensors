@@ -29,6 +29,17 @@
                 self.textUUID.text = regionDic[@"uuid"];
                 self.textMajor.text = regionDic[@"major"];
                 self.textMinor.text = regionDic[@"minor"];
+                
+                if (
+                    regionDic[@"x"] &&
+                    regionDic[@"y"] &&
+                    regionDic[@"z"]
+                    )
+                {
+                    self.textX.text = regionDic[@"x"];
+                    self.textY.text = regionDic[@"y"];
+                    self.textZ.text = regionDic[@"z"];
+                }
             }
         }
     }
@@ -114,7 +125,7 @@
     }
     
     // If 'uuidChosenByUser' exists, it is the edit mode
-    if (!uuidChosenByUser) {
+    if (!uuidChosenByUser) { // If not
         // Search for it; if exist, not submit
         for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
             if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
@@ -122,7 +133,9 @@
                     if ([[self.textMajor text] isEqualToString:regionDic[@"major"]]) {
                         if ([[self.textMinor text] isEqualToString:regionDic[@"minor"]]) {
                             
-                            // If exists but there are the three coordinate values
+                            // If this code is reached, the beacon is registered and its position can be set or uploaded but not registered again.
+                            
+                            // If exists the three coordinate values
                             if (
                                 ![[self.textX text] isEqualToString:@""] &&
                                 ![[self.textY text] isEqualToString:@""] &&
@@ -131,31 +144,24 @@
                             {
                                 regionDic[@"x"] = [self.textX text];
                                 regionDic[@"y"] = [self.textY text];
-                                regionDic[@"y"] = [self.textZ text];
-                            }
+                                regionDic[@"z"] = [self.textZ text];
+                            } else {
                             
-                            // If exists but there are not all the three coordinate values
-                            if (
-                                ![[self.textX text] isEqualToString:@""] ||
-                                ![[self.textY text] isEqualToString:@""] ||
-                                ![[self.textZ text] isEqualToString:@""]
-                                )
-                            {
-                                self.textError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
-                                return;
+                                // If all coordinate values missing the user trys to re-register a beacon
+                                if (
+                                    [[self.textX text] isEqualToString:@""] &&
+                                    [[self.textY text] isEqualToString:@""] &&
+                                    [[self.textZ text] isEqualToString:@""]
+                                    )
+                                {
+                                    self.textError.text = @"Error. This iBeacon is already registered. Please, submit a different one or push \"Back\".";
+                                    return;
+                                } else {
+                                    // If ths code is reached means that there is only some coordinate values but not all of them
+                                    self.textError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+                                    return;
+                                }
                             }
-                            
-                            // If coordinate values missing, and so, triying to double register a beacon
-                            if (
-                                [[self.textX text] isEqualToString:@""] &&
-                                [[self.textY text] isEqualToString:@""] &&
-                                [[self.textZ text] isEqualToString:@""]
-                                )
-                            {
-                                self.textError.text = @"Error. This iBeacon is already registered. Please, submit a different one or push \"Back\".";
-                                return;
-                            }
-                            
                         }
                     }
                 }
@@ -168,13 +174,13 @@
         [newRegionDic setValue:[self.textUUID text] forKey:@"uuid"];
         [newRegionDic setValue:[self.textMajor text] forKey:@"major"];
         [newRegionDic setValue:[self.textMinor text] forKey:@"minor"];
+        
         regionIdNumber = [NSNumber numberWithInt:[regionIdNumber intValue] + 1];
         NSString * regionId = [@"beacon" stringByAppendingString:[regionIdNumber stringValue]];
         regionId = [regionId stringByAppendingString:@"@miso.uam.es"];
-    
         [newRegionDic setValue:regionId forKey:@"identifier"];
         
-        // If exists but there are the three coordinate values
+        // If exists the three coordinate values
         if (
             ![[self.textX text] isEqualToString:@""] &&
             ![[self.textY text] isEqualToString:@""] &&
@@ -183,18 +189,23 @@
         {
             newRegionDic[@"x"] = [self.textX text];
             newRegionDic[@"y"] = [self.textY text];
-            newRegionDic[@"y"] = [self.textZ text];
-        }
-        
-        // If exists but there are not all the three coordinate values
-        if (
-            ![[self.textX text] isEqualToString:@""] ||
-            ![[self.textY text] isEqualToString:@""] ||
-            ![[self.textZ text] isEqualToString:@""]
-            )
-        {
-            self.textError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
-            return;
+            newRegionDic[@"z"] = [self.textZ text];
+        } else {
+            
+            // If all coordinate values missing the user trys to re-register a beacon
+            if (
+                [[self.textX text] isEqualToString:@""] &&
+                [[self.textY text] isEqualToString:@""] &&
+                [[self.textZ text] isEqualToString:@""]
+                )
+            {
+                self.textError.text = @"Error. This iBeacon is already registered. Please, submit a different one or push \"Back\".";
+                return;
+            } else {
+                // If ths code is reached means that there is only some coordinate values but not all of them
+                self.textError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+                return;
+            }
         }
         
         [beaconsAndPositionsRegistered addObject:newRegionDic];
@@ -207,7 +218,7 @@
                     regionDic[@"major"] = [self.textMajor text];
                     regionDic[@"minor"] = [self.textMinor text];
                     
-                    // If exists but there are the three coordinate values
+                    // If exists the three coordinate values
                     if (
                         ![[self.textX text] isEqualToString:@""] &&
                         ![[self.textY text] isEqualToString:@""] &&
@@ -216,18 +227,23 @@
                     {
                         regionDic[@"x"] = [self.textX text];
                         regionDic[@"y"] = [self.textY text];
-                        regionDic[@"y"] = [self.textZ text];
-                    }
-                    
-                    // If exists but there are not all the three coordinate values
-                    if (
-                        ![[self.textX text] isEqualToString:@""] ||
-                        ![[self.textY text] isEqualToString:@""] ||
-                        ![[self.textZ text] isEqualToString:@""]
-                        )
-                    {
-                        self.textError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
-                        return;
+                        regionDic[@"z"] = [self.textZ text];
+                    } else {
+                        
+                        // If all coordinate values missing the user trys to re-register a beacon
+                        if (
+                            [[self.textX text] isEqualToString:@""] &&
+                            [[self.textY text] isEqualToString:@""] &&
+                            [[self.textZ text] isEqualToString:@""]
+                            )
+                        {
+                            self.textError.text = @"Error. This iBeacon is already registered. Please, submit a different one or push \"Back\".";
+                            return;
+                        } else {
+                            // If ths code is reached means that there is only some coordinate values but not all of them
+                            self.textError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+                            return;
+                        }
                     }
                 }
             }

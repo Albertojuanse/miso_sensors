@@ -88,11 +88,11 @@
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableModes.delegate = self;
     self.tableModes.dataSource = self;
-    self.tableBeacons.delegate = self;
-    self.tableBeacons.dataSource = self;
+    self.tableBeaconsAndPositions.delegate = self;
+    self.tableBeaconsAndPositions.dataSource = self;
     
     [self.tableModes reloadData];
-    [self.tableBeacons reloadData];
+    [self.tableBeaconsAndPositions reloadData];
 }
 
 /*!
@@ -128,14 +128,6 @@
  */
 - (IBAction)handleButonAdd:(id)sender
 {
-    [self performSegueWithIdentifier:@"fromMainToAdd" sender:sender];
-}
-
-/*!
- @method handleButtonEdit:
- @discussion This method handles the Edit button action and ask the add view to show; 'prepareForSegue:sender:' method is called before.
- */
-- (IBAction)handleButtonEdit:(id)sender {
     [self performSegueWithIdentifier:@"fromMainToAdd" sender:sender];
 }
 
@@ -237,7 +229,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.tableBeacons) {
+    if (tableView == self.tableBeaconsAndPositions) {
         return [beaconsAndPositionsRegistered count];
     }
     if (tableView == self.tableModes) {
@@ -257,7 +249,7 @@
     }
     
     // Configure individual cells
-    if (tableView == self.tableBeacons) {
+    if (tableView == self.tableBeaconsAndPositions) {
         NSMutableDictionary * regionDic = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row];
         cell.textLabel.numberOfLines = 0; // Means any number
         if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
@@ -293,7 +285,7 @@
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (tableView == self.tableBeacons) {
+    if (tableView == self.tableBeaconsAndPositions) {
         uuidChosenByUser = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"uuid"];
     }
     if (tableView == self.tableModes) {
