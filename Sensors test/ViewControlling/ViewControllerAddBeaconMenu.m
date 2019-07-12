@@ -39,6 +39,10 @@
                     self.textX.text = regionDic[@"x"];
                     self.textY.text = regionDic[@"y"];
                     self.textZ.text = regionDic[@"z"];
+                } else {
+                    self.textX.placeholder = @"0.0";
+                    self.textY.placeholder = @"0.0";
+                    self.textZ.placeholder = @"0.0";
                 }
             }
         }
@@ -73,6 +77,34 @@
 #pragma marks - Buttons event handles
 
 /*!
+ @method handleButtonDelete:
+ @discussion This method handles the 'Delete' button action and ask the main menu to delete the beacon submitted by the user.
+ */
+- (IBAction)handleButtonDelete:(id)sender {
+    
+    // Search for it and delete it
+    NSMutableDictionary * regionDicToDelete;
+    for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
+        if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+            if ([[self.textUUID text] isEqualToString:regionDic[@"uuid"]]) {
+                if ([[self.textMajor text] isEqualToString:regionDic[@"major"]]) {
+                    if ([[self.textMinor text] isEqualToString:regionDic[@"minor"]]) {
+                        
+                        // Save its reference
+                        regionDicToDelete = regionDic;
+                        
+                    }
+                }
+            }
+        }
+    }
+    
+    [beaconsAndPositionsRegistered removeObject:regionDicToDelete];
+    
+    [self performSegueWithIdentifier:@"backFromAddToMain" sender:sender];
+}
+
+/*!
  @method handleButtonAdd:
  @discussion This method handles the Add button action and ask the main menu to add the new beacon submitted by the user.
  */
@@ -103,7 +135,7 @@
         return;
     }
     
-    NSString * floatRegex = @"[+-]?([0-9]*[.])?[0-9]+";
+    NSString * floatRegex = @"^$|[+-]?([0-9]*[.])?[0-9]+";
     NSPredicate * floatTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", floatRegex];
     if ([floatTest evaluateWithObject:[self.textX text]]){
         //Matches
@@ -192,15 +224,14 @@
             newRegionDic[@"z"] = [self.textZ text];
         } else {
             
-            // If all coordinate values missing the user trys to re-register a beacon
+            // If all coordinate values missing, the user does not want to save the position
             if (
                 [[self.textX text] isEqualToString:@""] &&
                 [[self.textY text] isEqualToString:@""] &&
                 [[self.textZ text] isEqualToString:@""]
                 )
             {
-                self.textError.text = @"Error. This iBeacon is already registered. Please, submit a different one or push \"Back\".";
-                return;
+                // Do nothing
             } else {
                 // If ths code is reached means that there is only some coordinate values but not all of them
                 self.textError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
@@ -230,15 +261,14 @@
                         regionDic[@"z"] = [self.textZ text];
                     } else {
                         
-                        // If all coordinate values missing the user trys to re-register a beacon
+                        // If all coordinate values missing, the user does not want to save the position
                         if (
                             [[self.textX text] isEqualToString:@""] &&
                             [[self.textY text] isEqualToString:@""] &&
                             [[self.textZ text] isEqualToString:@""]
                             )
                         {
-                            self.textError.text = @"Error. This iBeacon is already registered. Please, submit a different one or push \"Back\".";
-                            return;
+                            // Do nothing
                         } else {
                             // If ths code is reached means that there is only some coordinate values but not all of them
                             self.textError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
