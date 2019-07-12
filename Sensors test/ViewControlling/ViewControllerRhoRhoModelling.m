@@ -51,11 +51,11 @@
 #pragma marks - Instance methods
 
 /*!
- @method setBeaconsRegistered:
- @discussion This method sets the NSMutableArray variable 'beaconsRegistered'.
+ @method setbeaconsAndPositionsRegistered:
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setBeaconsRegistered:(NSMutableArray *)newBeaconsRegistered {
-    beaconsRegistered = newBeaconsRegistered;
+- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered {
+    beaconsAndPositionsRegistered = newbeaconsAndPositionsRegistered;
 }
 
 #pragma mark - Notification event handles
@@ -147,11 +147,11 @@
         
         NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
         // Create a copy of beacons for sending it; concurrence issues prevented
-        NSMutableArray * beaconsRegisteredToSend = [[NSMutableArray alloc] init];
-        for (NSMutableDictionary * regionDic in beaconsRegistered) {
-            [beaconsRegisteredToSend addObject:regionDic];
+        NSMutableArray * beaconsAndPositionsRegisteredToSend = [[NSMutableArray alloc] init];
+        for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
+            [beaconsAndPositionsRegisteredToSend addObject:regionDic];
         }
-        [data setObject:beaconsRegisteredToSend forKey:@"beaconsRegistered"];
+        [data setObject:beaconsAndPositionsRegisteredToSend forKey:@"beaconsAndPositionsRegistered"];
         [data setObject:@"RHO_RHO_MODELLING" forKey:@"mode"];
         // And send the notification
         [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
@@ -208,7 +208,7 @@
         // Get destination view
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
         // Set the variables
-        [viewControllerMainMenu setBeaconsRegistered:beaconsRegistered];
+        [viewControllerMainMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"

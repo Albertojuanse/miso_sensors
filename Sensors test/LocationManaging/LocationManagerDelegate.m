@@ -457,7 +457,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         mode = [data valueForKey:@"mode"];
         // In rho theta based system, user must choose which beacon is the source
         uuidChosenByUser = [data valueForKey:@"uuidChosenByUser"];
-        NSMutableArray * beaconsRegistered = [data valueForKey:@"beaconsRegistered"];
+        NSMutableArray * beaconsAndPositionsRegistered = [data valueForKey:@"beaconsAndPositionsRegistered"];
         
         // Register them if it is posible.
         switch (CLLocationManager.authorizationStatus) {
@@ -530,7 +530,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 ) {
                 
                 // Resgiter the regions to be monitorized
-                for (NSMutableDictionary * regionDic in beaconsRegistered) {
+                for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
                     
                     NSString * uuidString = regionDic[@"uuid"];
                     NSInteger major = [regionDic[@"major"] integerValue];

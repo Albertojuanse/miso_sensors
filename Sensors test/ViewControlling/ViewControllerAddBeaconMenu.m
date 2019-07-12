@@ -21,23 +21,42 @@
     self.textUUID.placeholder = @"12345678-1234-1234-1234-123456789012";
     self.textMajor.placeholder = @"0";
     self.textMinor.placeholder = @"0";
+    
+    // If 'uuidChosenByUser' exists, it is the edit mode
+    for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
+        if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+            if ([regionDic[@"uuid"] isEqualToString:uuidChosenByUser]) {
+                self.textUUID.text = regionDic[@"uuid"];
+                self.textMajor.text = regionDic[@"major"];
+                self.textMinor.text = regionDic[@"minor"];
+            }
+        }
+    }
+    
 }
 
 /*!
- @method setBeaconsRegistered:
- @discussion This method sets the NSMutableArray variable 'beaconsRegistered'.
+ @method setbeaconsAndPositionsRegistered:
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setBeaconsRegistered:(NSMutableArray *)newBeaconsRegistered {
-    beaconsRegistered = newBeaconsRegistered;
+- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered {
+    beaconsAndPositionsRegistered = newbeaconsAndPositionsRegistered;
 }
-
 
 /*!
  @method setRegionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsRegistered'.
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
 - (void) setRegionIdNumber:(NSNumber *)newRegionIdNumber {
     regionIdNumber = newRegionIdNumber;
+}
+
+/*!
+ @method setUuidChosenByUser:
+ @discussion This method sets the NSString variable 'uuidChosenByUser'.
+ */
+- (void) setUuidChosenByUser:(NSString *)newUuidChosenByUser {
+    uuidChosenByUser = newUuidChosenByUser;
 }
 
 #pragma marks - Buttons event handles
@@ -58,7 +77,7 @@
         return;
     }
     
-    NSString * majorAndMinorRegex = @"[0-32768]{1}";
+    NSString * majorAndMinorRegex = @"[0-9]{1}|[0-9]{1}[0-9]{1}|[0-9]{1}[0-9]{1}[0-9]{1}|[0-9]{1}[0-9]{1}[0-9]{1}[0-9]{1}";
     NSPredicate * majorAndMinorTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", majorAndMinorRegex];
     if ([majorAndMinorTest evaluateWithObject:[self.textMajor text]]){
         //Matches
@@ -73,30 +92,148 @@
         return;
     }
     
-    // Search for it; if exist, not submit
-    for (NSMutableDictionary * regionDic in beaconsRegistered) {
-        if ([[self.textUUID text] isEqualToString:regionDic[@"uuid"]]) {
-            if ([[self.textMajor text] isEqualToString:regionDic[@"major"]]) {
-                if ([[self.textMinor text] isEqualToString:regionDic[@"minor"]]) {
-                    self.textError.text = @"Error. This iBeacon is already registered. Please, submit a different one or push \"Back\".";
-                    return;
+    NSString * floatRegex = @"[+-]?([0-9]*[.])?[0-9]+";
+    NSPredicate * floatTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", floatRegex];
+    if ([floatTest evaluateWithObject:[self.textX text]]){
+        //Matches
+    } else {
+        self.textError.text = @"Error. X value not valid. Please, use decimal dot: 0.01";
+        return;
+    }
+    if ([floatTest evaluateWithObject:[self.textY text]]){
+        //Matches
+    } else {
+        self.textError.text = @"Error. Y value not valid. Please, use decimal dot: 0.01";
+        return;
+    }
+    if ([floatTest evaluateWithObject:[self.textZ text]]){
+        //Matches
+    } else {
+        self.textError.text = @"Error. Z value not valid. Please, use decimal dot: 0.01";
+        return;
+    }
+    
+    // If 'uuidChosenByUser' exists, it is the edit mode
+    if (!uuidChosenByUser) {
+        // Search for it; if exist, not submit
+        for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
+            if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+                if ([[self.textUUID text] isEqualToString:regionDic[@"uuid"]]) {
+                    if ([[self.textMajor text] isEqualToString:regionDic[@"major"]]) {
+                        if ([[self.textMinor text] isEqualToString:regionDic[@"minor"]]) {
+                            
+                            // If exists but there are the three coordinate values
+                            if (
+                                ![[self.textX text] isEqualToString:@""] &&
+                                ![[self.textY text] isEqualToString:@""] &&
+                                ![[self.textZ text] isEqualToString:@""]
+                                )
+                            {
+                                regionDic[@"x"] = [self.textX text];
+                                regionDic[@"y"] = [self.textY text];
+                                regionDic[@"y"] = [self.textZ text];
+                            }
+                            
+                            // If exists but there are not all the three coordinate values
+                            if (
+                                ![[self.textX text] isEqualToString:@""] ||
+                                ![[self.textY text] isEqualToString:@""] ||
+                                ![[self.textZ text] isEqualToString:@""]
+                                )
+                            {
+                                self.textError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+                                return;
+                            }
+                            
+                            // If coordinate values missing, and so, triying to double register a beacon
+                            if (
+                                [[self.textX text] isEqualToString:@""] &&
+                                [[self.textY text] isEqualToString:@""] &&
+                                [[self.textZ text] isEqualToString:@""]
+                                )
+                            {
+                                self.textError.text = @"Error. This iBeacon is already registered. Please, submit a different one or push \"Back\".";
+                                return;
+                            }
+                            
+                        }
+                    }
+                }
+            }
+        }
+    
+        // This code is only reached if the Beacon is UUID compliant and it does not exist.
+        NSMutableDictionary * newRegionDic = [[NSMutableDictionary alloc] init];
+        [newRegionDic setValue:@"beacon" forKey:@"type"];
+        [newRegionDic setValue:[self.textUUID text] forKey:@"uuid"];
+        [newRegionDic setValue:[self.textMajor text] forKey:@"major"];
+        [newRegionDic setValue:[self.textMinor text] forKey:@"minor"];
+        regionIdNumber = [NSNumber numberWithInt:[regionIdNumber intValue] + 1];
+        NSString * regionId = [@"beacon" stringByAppendingString:[regionIdNumber stringValue]];
+        regionId = [regionId stringByAppendingString:@"@miso.uam.es"];
+    
+        [newRegionDic setValue:regionId forKey:@"identifier"];
+        
+        // If exists but there are the three coordinate values
+        if (
+            ![[self.textX text] isEqualToString:@""] &&
+            ![[self.textY text] isEqualToString:@""] &&
+            ![[self.textZ text] isEqualToString:@""]
+            )
+        {
+            newRegionDic[@"x"] = [self.textX text];
+            newRegionDic[@"y"] = [self.textY text];
+            newRegionDic[@"y"] = [self.textZ text];
+        }
+        
+        // If exists but there are not all the three coordinate values
+        if (
+            ![[self.textX text] isEqualToString:@""] ||
+            ![[self.textY text] isEqualToString:@""] ||
+            ![[self.textZ text] isEqualToString:@""]
+            )
+        {
+            self.textError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+            return;
+        }
+        
+        [beaconsAndPositionsRegistered addObject:newRegionDic];
+    } else {
+        // Search for it and upload the data
+        for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
+            if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+                if ([uuidChosenByUser isEqualToString:regionDic[@"uuid"]]) {
+                    regionDic[@"uuid"] = [self.textUUID text];
+                    regionDic[@"major"] = [self.textMajor text];
+                    regionDic[@"minor"] = [self.textMinor text];
+                    
+                    // If exists but there are the three coordinate values
+                    if (
+                        ![[self.textX text] isEqualToString:@""] &&
+                        ![[self.textY text] isEqualToString:@""] &&
+                        ![[self.textZ text] isEqualToString:@""]
+                        )
+                    {
+                        regionDic[@"x"] = [self.textX text];
+                        regionDic[@"y"] = [self.textY text];
+                        regionDic[@"y"] = [self.textZ text];
+                    }
+                    
+                    // If exists but there are not all the three coordinate values
+                    if (
+                        ![[self.textX text] isEqualToString:@""] ||
+                        ![[self.textY text] isEqualToString:@""] ||
+                        ![[self.textZ text] isEqualToString:@""]
+                        )
+                    {
+                        self.textError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+                        return;
+                    }
                 }
             }
         }
     }
-    
-    // This code is only reached if the Beacon is UUID compliant and it does not exist.
-    NSMutableDictionary * regionBeaconDic = [[NSMutableDictionary alloc] init];
-    [regionBeaconDic setValue:[self.textUUID text] forKey:@"uuid"];
-    [regionBeaconDic setValue:[self.textMajor text] forKey:@"major"];
-    [regionBeaconDic setValue:[self.textMinor text] forKey:@"minor"];
-    regionIdNumber = [NSNumber numberWithInt:[regionIdNumber intValue] + 1];
-    NSString * regionId = [@"beacon" stringByAppendingString:[regionIdNumber stringValue]];
-    regionId = [regionId stringByAppendingString:@"@miso.uam.es"];
-    
-    [regionBeaconDic setValue:regionId forKey:@"identifier"];
-    [beaconsRegistered addObject:regionBeaconDic];
-    
+
     [self performSegueWithIdentifier:@"submitFromAddToMain" sender:sender];
 }
 
@@ -120,7 +257,7 @@
         // Get destination view
         ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
         // Set the variable
-        [viewControllerMainMenu setBeaconsRegistered:beaconsRegistered];
+        [viewControllerMainMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerMainMenu setRegionIdNumber:regionIdNumber];
         
     }
@@ -129,7 +266,7 @@
         // Get destination view
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
         // Set the variable
-        [viewControllerMainMenu setBeaconsRegistered:beaconsRegistered];
+        [viewControllerMainMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerMainMenu setRegionIdNumber:regionIdNumber];
     }
 }

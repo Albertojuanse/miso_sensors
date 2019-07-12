@@ -25,7 +25,7 @@
     BOOL measuring;
     
     // Variables
-    NSMutableArray * beaconsRegistered;
+    NSMutableArray * beaconsAndPositionsRegistered;
     NSString * uuidChosenByUser;
     
 }
@@ -35,6 +35,6 @@
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 
-- (void) setBeaconsRegistered:(NSMutableArray *)newBeaconsRegistered;
+- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered;
 
 @end

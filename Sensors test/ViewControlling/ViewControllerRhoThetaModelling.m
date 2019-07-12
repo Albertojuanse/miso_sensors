@@ -55,11 +55,11 @@
 #pragma marks - Instance methods
 
 /*!
- @method setBeaconsRegistered:
- @discussion This method sets the NSMutableArray variable 'beaconsRegistered'.
+ @method setbeaconsAndPositionsRegistered:
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setBeaconsRegistered:(NSMutableArray *)newBeaconsRegistered {
-    beaconsRegistered = newBeaconsRegistered;
+- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered {
+    beaconsAndPositionsRegistered = newbeaconsAndPositionsRegistered;
 }
 #pragma mark - Notification event handles
 
@@ -105,11 +105,11 @@
         
             NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
             // Create a copy of beacons for sending it; concurrence issues prevented
-            NSMutableArray * beaconsRegisteredToSend = [[NSMutableArray alloc] init];
-            for (NSMutableDictionary * regionDic in beaconsRegistered) {
-                [beaconsRegisteredToSend addObject:regionDic];
+            NSMutableArray * beaconsAndPositionsRegisteredToSend = [[NSMutableArray alloc] init];
+            for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
+                [beaconsAndPositionsRegisteredToSend addObject:regionDic];
             }
-            [data setObject:beaconsRegisteredToSend forKey:@"beaconsRegistered"];
+            [data setObject:beaconsAndPositionsRegisteredToSend forKey:@"beaconsAndPositionsRegistered"];
             [data setObject:uuidChosenByUser forKey:@"uuidChosenByUser"];
             [data setObject:@"RHO_THETA_MODELLING" forKey:@"mode"];
             // And send the notification
@@ -156,7 +156,7 @@
         // Get destination view
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
         // Set the variables
-        [viewControllerMainMenu setBeaconsRegistered:beaconsRegistered];
+        [viewControllerMainMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
@@ -180,7 +180,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableBeacons) {
-        return [beaconsRegistered count];
+        return [beaconsAndPositionsRegistered count];
     }
     return 0;
 }
@@ -197,14 +197,30 @@
     
     // Configure individual cells
     if (tableView == self.tableBeacons) {
-        NSMutableDictionary * regionDic = [beaconsRegistered objectAtIndex:indexPath.row];
-        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ ; major: %@ ; minor: %@",
-                               regionDic[@"identifier"],
-                               regionDic[@"uuid"],
-                               regionDic[@"major"],
-                               regionDic[@"minor"]
-                               ];
-        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+        NSMutableDictionary * regionDic = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row];
+        cell.textLabel.numberOfLines = 0; // Means any number
+        if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+            if (regionDic[@"x"] && regionDic[@"y"] && regionDic[@"z"]) {
+                cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                                       regionDic[@"identifier"],
+                                       regionDic[@"uuid"],
+                                       regionDic[@"major"],
+                                       regionDic[@"minor"],
+                                       regionDic[@"x"],
+                                       regionDic[@"y"],
+                                       regionDic[@"z"]
+                                       ];
+                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            } else {
+                cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
+                                       regionDic[@"identifier"],
+                                       regionDic[@"uuid"],
+                                       regionDic[@"major"],
+                                       regionDic[@"minor"]
+                                       ];
+                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            }
+        }
     }
     return cell;
 }
@@ -213,7 +229,7 @@
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (tableView == self.tableBeacons) {
-        uuidChosenByUser = [beaconsRegistered objectAtIndex:indexPath.row][@"uuid"];
+        uuidChosenByUser = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"uuid"];
     }
 }
 

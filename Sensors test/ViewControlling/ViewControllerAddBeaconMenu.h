@@ -16,17 +16,22 @@
  */
 @interface ViewControllerAddBeaconMenu : UIViewController{
     
-    NSMutableArray * beaconsRegistered;
+    NSMutableArray * beaconsAndPositionsRegistered;
     NSNumber * regionIdNumber;
+    NSString * uuidChosenByUser;
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *textUUID;
 @property (weak, nonatomic) IBOutlet UITextField *textMajor;
 @property (weak, nonatomic) IBOutlet UITextField *textMinor;
 @property (weak, nonatomic) IBOutlet UILabel *textError;
+@property (weak, nonatomic) IBOutlet UITextField *textX;
+@property (weak, nonatomic) IBOutlet UITextField *textY;
+@property (weak, nonatomic) IBOutlet UITextField *textZ;
 
-- (void) setBeaconsRegistered:(NSMutableArray *)newBeaconsRegistered;
+- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered;
 - (void) setRegionIdNumber:(NSNumber *)newRegionIdNumber;
+- (void) setUuidChosenByUser:(NSString *)uuidChosenByUser;
 
 @end
 

@@ -21,7 +21,7 @@
     NSString * chosenMode;
     
     // Beacons' region identifiers
-    NSMutableArray * beaconsRegistered;
+    NSMutableArray * beaconsAndPositionsRegistered;
     NSString * uuidChosenByUser;    
     
 }
@@ -32,7 +32,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableBeacons;
 @property (weak, nonatomic) IBOutlet UIButton *buttonSet;
 
-- (void) setBeaconsRegistered:(NSMutableArray *)newBeaconsRegistered;
+- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered;
 - (void) setChosenMode:(NSString *)chosenMode;
 
 @end

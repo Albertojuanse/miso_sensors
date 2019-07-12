@@ -26,7 +26,7 @@
     BOOL traveling;
     
     // Variables
-    NSMutableArray * beaconsRegistered;
+    NSMutableArray * beaconsAndPositionsRegistered;
     
 }
 
@@ -50,7 +50,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 @property (weak, nonatomic) IBOutlet UIButton *buttonTravel;
 
-- (void) setBeaconsRegistered:(NSMutableArray *)newBeaconsRegistered;
+- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered;
 
 @end
 

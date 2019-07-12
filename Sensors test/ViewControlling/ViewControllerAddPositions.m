@@ -43,11 +43,11 @@
 #pragma marks - Instance methods
 
 /*!
- @method setBeaconsRegistered:
- @discussion This method sets the NSMutableArray variable 'beaconsRegistered'.
+ @method setbeaconsAndPositionsRegistered:
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setBeaconsRegistered:(NSMutableArray *)newBeaconsRegistered {
-    beaconsRegistered = newBeaconsRegistered;
+- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered {
+    beaconsAndPositionsRegistered = newbeaconsAndPositionsRegistered;
 }
 
 /*!
@@ -88,15 +88,17 @@
     // Search for it and set the coordinates
     // If the user chose in the table a beacon for set the coordinates
     if (uuidChosenByUser) {
-        for (NSMutableDictionary * regionDic in beaconsRegistered) {
-            if ([regionDic[@"uuid"] isEqualToString:uuidChosenByUser]) {
-                regionDic[@"x"] = [self.textX text];
-                regionDic[@"y"] = [self.textY text];
-                regionDic[@"y"] = [self.textZ text];
-                
-                self.textX.text = @"";
-                self.textY.text = @"";
-                self.textZ.text = @"";
+        for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
+            if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+                if ([regionDic[@"uuid"] isEqualToString:uuidChosenByUser]) {
+                    regionDic[@"x"] = [self.textX text];
+                    regionDic[@"y"] = [self.textY text];
+                    regionDic[@"y"] = [self.textZ text];
+                    
+                    self.textX.text = @"";
+                    self.textY.text = @"";
+                    self.textZ.text = @"";
+                }
             }
         }
         return;
@@ -149,7 +151,7 @@
         // Get destination view
         ViewControllerRhoRhoLocating * viewControllerRhoRhoLocating = [segue destinationViewController];
         // Set the variables
-        [viewControllerRhoRhoLocating setBeaconsRegistered:beaconsRegistered];
+        [viewControllerRhoRhoLocating setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
      
     }
      return;
@@ -161,7 +163,7 @@
         // Get destination view
         ViewControllerRhoThetaLocating * viewControllerRhoThetaLocating = [segue destinationViewController];
         // Set the variables
-        [viewControllerRhoThetaLocating setBeaconsRegistered:beaconsRegistered];
+        [viewControllerRhoThetaLocating setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
      
     }
      return;
@@ -172,7 +174,7 @@
         // Get destination view
         ViewControllerThetaThetaLocating * viewControllerThetaThetaLocating = [segue destinationViewController];
         // Set the variables
-        [viewControllerThetaThetaLocating setBeaconsRegistered:beaconsRegistered];
+        [viewControllerThetaThetaLocating setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         
     }
     if ([[segue identifier] isEqualToString:@"fromAddPositionsToMain"]) {
@@ -180,7 +182,7 @@
         // Get destination view
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
         // Set the variable
-        [viewControllerMainMenu setBeaconsRegistered:beaconsRegistered];
+        [viewControllerMainMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
     }
 }
 
@@ -195,7 +197,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableBeacons) {
-        return [beaconsRegistered count];
+        return [beaconsAndPositionsRegistered count];
     }
     return 0;
 }
@@ -212,14 +214,30 @@
     
     // Configure individual cells
     if (tableView == self.tableBeacons) {
-        NSMutableDictionary * regionDic = [beaconsRegistered objectAtIndex:indexPath.row];
-        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ ; major: %@ ; minor: %@",
-                               regionDic[@"identifier"],
-                               regionDic[@"uuid"],
-                               regionDic[@"major"],
-                               regionDic[@"minor"]
-                               ];
-        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+        NSMutableDictionary * regionDic = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row];
+        cell.textLabel.numberOfLines = 0; // Means any number
+        if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+            if (regionDic[@"x"] && regionDic[@"y"] && regionDic[@"z"]) {
+                cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                                       regionDic[@"identifier"],
+                                       regionDic[@"uuid"],
+                                       regionDic[@"major"],
+                                       regionDic[@"minor"],
+                                       regionDic[@"x"],
+                                       regionDic[@"y"],
+                                       regionDic[@"z"]
+                                       ];
+                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            } else {
+                cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
+                                       regionDic[@"identifier"],
+                                       regionDic[@"uuid"],
+                                       regionDic[@"major"],
+                                       regionDic[@"minor"]
+                                       ];
+                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            }
+        }
     }
     return cell;
 }
@@ -228,7 +246,7 @@
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (tableView == self.tableBeacons) {
-        uuidChosenByUser = [beaconsRegistered objectAtIndex:indexPath.row][@"uuid"];
+        uuidChosenByUser = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"uuid"];
     }
 }
 

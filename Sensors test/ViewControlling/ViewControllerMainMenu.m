@@ -28,33 +28,57 @@
         [modes addObject:@"THETA_THETA_LOCATING"];
     }
 
-    if (!beaconsRegistered) {
-        beaconsRegistered = [[NSMutableArray alloc] init];
+    // The schema of the beaconsAndPositionsRegistered object is:
+    //
+    //  [{ "type": @"beacon" | @"position";                             //  regionDic
+    //     "identifier": (NSString *)identifier1;
+    //     "uuid": (NSString *)uuid1;
+    //     "major": (NSString *)major1;
+    //     "minor": (NSString *)minor1;
+    //     "x": (NSString *)x1;
+    //     "y": (NSString *)y1;
+    //     "z": (NSString *)z1
+    //   },
+    //  [{ "type": @"beacon" | @"position";                             //  regionDic
+    //     "identifier": (NSString *)identifier2;
+    //     "uuid": (NSString *)uuid2;
+    //     (···)
+    //   },
+    //   (···)
+    //  ]
+    //
+    
+    if (!beaconsAndPositionsRegistered) {
+        beaconsAndPositionsRegistered = [[NSMutableArray alloc] init];
         // Pre-registered regions
         NSMutableDictionary * regionRaspiDic = [[NSMutableDictionary alloc] init];
+        [regionRaspiDic setValue:@"beacon" forKey:@"type"];
         [regionRaspiDic setValue:@"25DC8A73-F3C9-4111-A7DD-C39CD4B828C7" forKey:@"uuid"];
         [regionRaspiDic setValue:@"1" forKey:@"major"];
         [regionRaspiDic setValue:@"0" forKey:@"minor"];
         [regionRaspiDic setValue:@"raspi@miso.uam.es" forKey:@"identifier"];
-        [beaconsRegistered addObject:regionRaspiDic];
+        [beaconsAndPositionsRegistered addObject:regionRaspiDic];
         NSMutableDictionary * regionBeacon1Dic = [[NSMutableDictionary alloc] init];
+        [regionBeacon1Dic setValue:@"beacon" forKey:@"type"];
         [regionBeacon1Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825" forKey:@"uuid"];
         [regionBeacon1Dic setValue:@"1" forKey:@"major"];
         [regionBeacon1Dic setValue:@"1" forKey:@"minor"];
         [regionBeacon1Dic setValue:@"beacon1@miso.uam.es" forKey:@"identifier"];
-        [beaconsRegistered addObject:regionBeacon1Dic];
+        [beaconsAndPositionsRegistered addObject:regionBeacon1Dic];
         NSMutableDictionary * regionBeacon2Dic = [[NSMutableDictionary alloc] init];
+        [regionBeacon2Dic setValue:@"beacon" forKey:@"type"];
         [regionBeacon2Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824" forKey:@"uuid"];
         [regionBeacon2Dic setValue:@"1" forKey:@"major"];
         [regionBeacon2Dic setValue:@"1" forKey:@"minor"];
         [regionBeacon2Dic setValue:@"beacon2@miso.uam.es" forKey:@"identifier"];
-        [beaconsRegistered addObject:regionBeacon2Dic];
+        [beaconsAndPositionsRegistered addObject:regionBeacon2Dic];
         NSMutableDictionary * regionBeacon3Dic = [[NSMutableDictionary alloc] init];
+        [regionBeacon3Dic setValue:@"beacon" forKey:@"type"];
         [regionBeacon3Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823" forKey:@"uuid"];
         [regionBeacon3Dic setValue:@"1" forKey:@"major"];
         [regionBeacon3Dic setValue:@"1" forKey:@"minor"];
         [regionBeacon3Dic setValue:@"beacon3@miso.uam.es" forKey:@"identifier"];
-        [beaconsRegistered addObject:regionBeacon3Dic];
+        [beaconsAndPositionsRegistered addObject:regionBeacon3Dic];
     }
     
     if (!regionIdNumber) {
@@ -81,16 +105,16 @@
 }
 
 /*!
- @method setBeaconsRegistered:
- @discussion This method sets the NSMutableArray variable 'beaconsRegistered'.
+ @method setbeaconsAndPositionsRegistered:
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setBeaconsRegistered:(NSMutableArray *)newBeaconsRegistered {
-    beaconsRegistered = newBeaconsRegistered;
+- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered {
+    beaconsAndPositionsRegistered = newbeaconsAndPositionsRegistered;
 }
 
 /*!
  @method setRegionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsRegistered'.
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
 - (void) setRegionIdNumber:(NSNumber *)newRegionIdNumber {
     regionIdNumber = newRegionIdNumber;
@@ -104,6 +128,14 @@
  */
 - (IBAction)handleButonAdd:(id)sender
 {
+    [self performSegueWithIdentifier:@"fromMainToAdd" sender:sender];
+}
+
+/*!
+ @method handleButtonEdit:
+ @discussion This method handles the Edit button action and ask the add view to show; 'prepareForSegue:sender:' method is called before.
+ */
+- (IBAction)handleButtonEdit:(id)sender {
     [self performSegueWithIdentifier:@"fromMainToAdd" sender:sender];
 }
 
@@ -147,49 +179,50 @@
 {
     NSLog(@"[INFO][VCMM] Asked segue %@", [segue identifier]);
     
-    // If add menu is going to be displayed, pass it the beaconsRegistered array
+    // If add menu is going to be displayed, pass it the beaconsAndPositionsRegistered array
     if ([[segue identifier] isEqualToString:@"fromMainToAdd"]) {
         
         // Get destination view
         ViewControllerAddBeaconMenu *viewControllerAddBeaconMenu = [segue destinationViewController];
         // Set the variable
-        [viewControllerAddBeaconMenu setBeaconsRegistered:beaconsRegistered];
+        [viewControllerAddBeaconMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerAddBeaconMenu setRegionIdNumber:regionIdNumber];
+        [viewControllerAddBeaconMenu setUuidChosenByUser:uuidChosenByUser];
         
     }
     
-    // If Rho Rho Syetem based Modelling is going to be displayed, pass it the beaconsRegistered array.
+    // If Rho Rho Syetem based Modelling is going to be displayed, pass it the beaconsAndPositionsRegistered array.
     if ([[segue identifier] isEqualToString:@"fromMainToRHO_RHO_MODELLING"]) {
         
         // Get destination view
         ViewControllerRhoRhoModelling *viewControllerRhoRhoModelling = [segue destinationViewController];
         // Set the variable
-        [viewControllerRhoRhoModelling setBeaconsRegistered:beaconsRegistered];
+        [viewControllerRhoRhoModelling setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         
     }
     
-    // If Rho Theta Syetem based Modelling is going to be displayed, pass it the beaconsRegistered array.
+    // If Rho Theta Syetem based Modelling is going to be displayed, pass it the beaconsAndPositionsRegistered array.
     if ([[segue identifier] isEqualToString:@"fromMainToRHO_THETA_MODELLING"]) {
         
         // Get destination view
         ViewControllerRhoThetaModelling *viewControllerRhoThetaModelling = [segue destinationViewController];
         // Set the variable
-        [viewControllerRhoThetaModelling setBeaconsRegistered:beaconsRegistered];
+        [viewControllerRhoThetaModelling setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         
     }
     
-    // If Theta Theta Syetem based Modelling is going to be displayed, there is no need of the beaconsRegistered array.
+    // If Theta Theta Syetem based Modelling is going to be displayed, there is no need of the beaconsAndPositionsRegistered array.
     if ([[segue identifier] isEqualToString:@"fromMainToTHETA_THETA_MODELLING"]) {
         // Do nothing
     }
     
-    // If Rho Theta Syetem or Rho Rho Sytem based Locating is going to be displayed, pass it the beaconsRegistered array.
+    // If Rho Theta Syetem or Rho Rho Sytem based Locating is going to be displayed, pass it the beaconsAndPositionsRegistered array.
     if ([[segue identifier] isEqualToString:@"fromMainToAddPositions"]) {
         
         // Get destination view
         ViewControllerAddPositions * viewControllerAddPositions = [segue destinationViewController];
         // Set the variable
-        [viewControllerAddPositions setBeaconsRegistered:beaconsRegistered];
+        [viewControllerAddPositions setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         
     }
 }
@@ -205,7 +238,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableBeacons) {
-        return [beaconsRegistered count];
+        return [beaconsAndPositionsRegistered count];
     }
     if (tableView == self.tableModes) {
         return [modes count];
@@ -225,14 +258,30 @@
     
     // Configure individual cells
     if (tableView == self.tableBeacons) {
-        NSMutableDictionary * regionDic = [beaconsRegistered objectAtIndex:indexPath.row];
-        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ ; major: %@ ; minor: %@",
-                               regionDic[@"identifier"],
-                               regionDic[@"uuid"],
-                               regionDic[@"major"],
-                               regionDic[@"minor"]
-                               ];
-        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+        NSMutableDictionary * regionDic = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row];
+        cell.textLabel.numberOfLines = 0; // Means any number
+        if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+            if (regionDic[@"x"] && regionDic[@"y"] && regionDic[@"z"]) {
+                cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                                       regionDic[@"identifier"],
+                                       regionDic[@"uuid"],
+                                       regionDic[@"major"],
+                                       regionDic[@"minor"],
+                                       regionDic[@"x"],
+                                       regionDic[@"y"],
+                                       regionDic[@"z"]
+                                       ];
+                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            } else {
+                cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
+                                       regionDic[@"identifier"],
+                                       regionDic[@"uuid"],
+                                       regionDic[@"major"],
+                                       regionDic[@"minor"]
+                                       ];
+                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            }
+        }
     }
     if (tableView == self.tableModes) {
         cell.textLabel.text = [modes objectAtIndex:indexPath.row];
@@ -245,7 +294,7 @@
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (tableView == self.tableBeacons) {
-        
+        uuidChosenByUser = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"uuid"];
     }
     if (tableView == self.tableModes) {
         chosenMode = [modes objectAtIndex:indexPath.row];
