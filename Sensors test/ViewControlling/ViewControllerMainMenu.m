@@ -35,6 +35,7 @@
     //     "uuid": (NSString *)uuid1;
     //     "major": (NSString *)major1;
     //     "minor": (NSString *)minor1;
+    //     "position": (RDPosition *)position1;
     //     "x": (NSString *)x1;
     //     "y": (NSString *)y1;
     //     "z": (NSString *)z1
@@ -81,8 +82,12 @@
         [beaconsAndPositionsRegistered addObject:regionBeacon3Dic];
     }
     
-    if (!regionIdNumber) {
-        regionIdNumber = [NSNumber numberWithInteger:3];
+    if (!regionBeaconIdNumber) {
+        regionBeaconIdNumber = [NSNumber numberWithInteger:3];
+    }
+    
+    if (!regionPositionIdNumber) {
+        regionPositionIdNumber = [NSNumber numberWithInteger:0];
     }
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
@@ -113,11 +118,19 @@
 }
 
 /*!
- @method setRegionIdNumber:
+ @method setRegionBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionIdNumber:(NSNumber *)newRegionIdNumber {
-    regionIdNumber = newRegionIdNumber;
+- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionBeaconIdNumber {
+    regionBeaconIdNumber = newRegionBeaconIdNumber;
+}
+
+/*!
+ @method setRegionPositionIdNumber:
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ */
+- (void) setRegionPositionIdNumber:(NSNumber *)newRegionPositionIdNumber {
+    regionPositionIdNumber = newRegionPositionIdNumber;
 }
 
 #pragma mark - Butons event handle
@@ -178,8 +191,16 @@
         ViewControllerAddBeaconMenu *viewControllerAddBeaconMenu = [segue destinationViewController];
         // Set the variable
         [viewControllerAddBeaconMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerAddBeaconMenu setRegionIdNumber:regionIdNumber];
-        [viewControllerAddBeaconMenu setUuidChosenByUser:uuidChosenByUser];
+        [viewControllerAddBeaconMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
+        [viewControllerAddBeaconMenu setRegionPositionIdNumber:regionPositionIdNumber];
+        
+        // When user selects a cell in the table, sets one of the following with a value and the other one with null.
+        if (uuidChosenByUser) {
+            [viewControllerAddBeaconMenu setUuidChosenByUser:uuidChosenByUser];
+        }
+        if (positionChosenByUser) {
+            [viewControllerAddBeaconMenu setPositionChosenByUser:positionChosenByUser];
+        }
         
     }
     
@@ -274,6 +295,15 @@
                 cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
             }
         }
+        if ([@"position" isEqualToString:regionDic[@"type"]]) {
+            cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%@, %@, %@)",
+                                   regionDic[@"identifier"],
+                                   regionDic[@"x"],
+                                   regionDic[@"y"],
+                                   regionDic[@"z"]
+                                   ];
+            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+        }
     }
     if (tableView == self.tableModes) {
         cell.textLabel.text = [modes objectAtIndex:indexPath.row];
@@ -286,7 +316,21 @@
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (tableView == self.tableBeaconsAndPositions) {
-        uuidChosenByUser = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"uuid"];
+        
+        // Reset
+        uuidChosenByUser = nil;
+        positionChosenByUser = nil;
+        
+        // Depending on type, get the UUID or RDPosition object
+        NSString * type = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"type"];
+        
+        if ([type isEqualToString:@"beacon"]) {
+            uuidChosenByUser = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"uuid"];
+        }
+        if ([type isEqualToString:@"position"]) {
+            positionChosenByUser = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"position"];
+        }
+        
     }
     if (tableView == self.tableModes) {
         chosenMode = [modes objectAtIndex:indexPath.row];

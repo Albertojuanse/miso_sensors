@@ -25,8 +25,12 @@
     
     // Beacons' region identifiers
     NSMutableArray * beaconsAndPositionsRegistered;
-    NSNumber * regionIdNumber;
+    NSNumber * regionBeaconIdNumber;
+    NSNumber * regionPositionIdNumber;
+    
+    // user choose to pass to add beacon and positions view controller; one of both must be alwais nil
     NSString * uuidChosenByUser;
+    NSString * positionChosenByUser;
     
 }
 
@@ -34,7 +38,8 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableBeaconsAndPositions;
 
 - (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered;
-- (void) setRegionIdNumber:(NSNumber *)newRegionIdNumber;
+- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;
+- (void) setRegionPositionIdNumber:(NSNumber *)newRegionIdNumber;
 
 @end
 

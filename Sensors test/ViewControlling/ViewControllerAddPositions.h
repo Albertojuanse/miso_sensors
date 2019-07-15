@@ -26,9 +26,9 @@
     
 }
 
-@property (weak, nonatomic) IBOutlet UITextField *textX;
-@property (weak, nonatomic) IBOutlet UITextField *textY;
-@property (weak, nonatomic) IBOutlet UITextField *textZ;
+@property (weak, nonatomic) IBOutlet UITextField *textBeaconX;
+@property (weak, nonatomic) IBOutlet UITextField *textBeaconY;
+@property (weak, nonatomic) IBOutlet UITextField *textBeaconZ;
 @property (weak, nonatomic) IBOutlet UITableView *tableBeaconsAndPositions;
 @property (weak, nonatomic) IBOutlet UIButton *buttonSet;
 

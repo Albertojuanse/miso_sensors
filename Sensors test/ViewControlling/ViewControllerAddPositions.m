@@ -20,9 +20,9 @@
     [super viewDidLoad];
     
     // Visualization
-    self.textX.placeholder = @"0.0";
-    self.textY.placeholder = @"0.0";
-    self.textZ.placeholder = @"0.0";
+    self.textBeaconX.placeholder = @"0.0";
+    self.textBeaconY.placeholder = @"0.0";
+    self.textBeaconZ.placeholder = @"0.0";
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableBeaconsAndPositions.delegate = self;
@@ -69,17 +69,17 @@
     // Validate data
     NSString * floatRegex = @"[+-]?([0-9]*[.])?[0-9]+";
     NSPredicate * floatTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", floatRegex];
-    if ([floatTest evaluateWithObject:[self.textX text]]){
+    if ([floatTest evaluateWithObject:[self.textBeaconX text]]){
         //Matches
     } else {
         return;
     }
-    if ([floatTest evaluateWithObject:[self.textY text]]){
+    if ([floatTest evaluateWithObject:[self.textBeaconY text]]){
         //Matches
     } else {
         return;
     }
-    if ([floatTest evaluateWithObject:[self.textZ text]]){
+    if ([floatTest evaluateWithObject:[self.textBeaconZ text]]){
         //Matches
     } else {
         return;
@@ -91,13 +91,13 @@
         for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
             if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
                 if ([regionDic[@"uuid"] isEqualToString:uuidChosenByUser]) {
-                    regionDic[@"x"] = [self.textX text];
-                    regionDic[@"y"] = [self.textY text];
-                    regionDic[@"z"] = [self.textZ text];
+                    regionDic[@"x"] = [self.textBeaconX text];
+                    regionDic[@"y"] = [self.textBeaconY text];
+                    regionDic[@"z"] = [self.textBeaconZ text];
                     
-                    self.textX.text = @"";
-                    self.textY.text = @"";
-                    self.textZ.text = @"";
+                    self.textBeaconX.text = @"";
+                    self.textBeaconY.text = @"";
+                    self.textBeaconZ.text = @"";
                 }
             }
         }

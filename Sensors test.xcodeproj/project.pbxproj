@@ -154,8 +154,8 @@
 				428AF6BF22D7915000BE5374 /* ViewControllerAddPositions.m */,
 				428AF6C122D7A64E00BE5374 /* ViewControllerThetaThetaLocating.h */,
 				428AF6C222D7A67500BE5374 /* ViewControllerThetaThetaLocating.m */,
-				426501BC22A03B4300BE20B7 /* Canvas.m */,
 				426501BB22A03B4000BE20B7 /* Canvas.h */,
+				426501BC22A03B4300BE20B7 /* Canvas.m */,
 			);
 			path = ViewControlling;
 			sourceTree = "<group>";
