@@ -51,7 +51,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 @property (weak, nonatomic) IBOutlet UIButton *buttonTravel;
 
-- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered;
+- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
 - (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;
 
 @end

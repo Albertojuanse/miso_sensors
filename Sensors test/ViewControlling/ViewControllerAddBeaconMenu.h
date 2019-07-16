@@ -68,7 +68,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableEntities;
 
 
-- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered;
+- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
 - (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;
 - (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;
 - (void) setRegionPositionIdNumber:(NSNumber *)newRegionIdNumber;

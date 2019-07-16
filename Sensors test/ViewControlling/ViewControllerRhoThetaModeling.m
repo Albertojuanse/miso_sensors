@@ -55,11 +55,11 @@
 #pragma mark - Instance methods
 
 /*!
- @method setbeaconsAndPositionsRegistered:
+ @method setBeaconsAndPositionsRegistered:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered {
-    beaconsAndPositionsRegistered = newbeaconsAndPositionsRegistered;
+- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered {
+    beaconsAndPositionsRegistered = newBeaconsAndPositionsRegistered;
 }
 
 /*!
@@ -165,7 +165,7 @@
         // Get destination view
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
         // Set the variables
-        [viewControllerMainMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
         
         // Ask Location manager to clean the measures taken and reset its position.

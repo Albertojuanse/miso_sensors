@@ -1131,6 +1131,7 @@
                         <outlet property="buttonMeasure" destination="TVg-4S-aPr" id="8Es-pk-eG6"/>
                         <outlet property="canvas" destination="141-Pq-GhL" id="BBv-3e-z8Q"/>
                         <outlet property="labelStatus" destination="dfE-Bc-mRd" id="p98-Sh-BKx"/>
+                        <outlet property="tableBeaconsAndPositionsChosen" destination="4ll-jJ-GH8" id="wS1-5Y-wpC"/>
                         <segue destination="lVP-jp-YaV" kind="show" identifier="fromTHETA_THETA_LOCATINGToMain" id="CUv-vL-aFj"/>
                     </connections>
                 </viewController>

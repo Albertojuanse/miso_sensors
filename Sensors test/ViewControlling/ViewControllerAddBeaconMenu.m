@@ -236,11 +236,11 @@
 #pragma mark - Instance methods
 
 /*!
- @method setbeaconsAndPositionsRegistered:
+ @method setBeaconsAndPositionsRegistered:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered {
-    beaconsAndPositionsRegistered = newbeaconsAndPositionsRegistered;
+- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered {
+    beaconsAndPositionsRegistered = newBeaconsAndPositionsRegistered;
 }
 
 /*!
@@ -775,7 +775,7 @@
         // Get destination view
         ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
         // Set the variable
-        [viewControllerMainMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
         [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
         [viewControllerMainMenu setRegionPositionIdNumber:regionPositionIdNumber];
@@ -786,7 +786,7 @@
         // Get destination view
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
         // Set the variable
-        [viewControllerMainMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
         [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
         [viewControllerMainMenu setRegionPositionIdNumber:regionPositionIdNumber];

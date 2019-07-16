@@ -44,11 +44,11 @@
 #pragma mark - Instance methods
 
 /*!
- @method setbeaconsAndPositionsRegistered:
+ @method setBeaconsAndPositionsRegistered:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered {
-    beaconsAndPositionsRegistered = newbeaconsAndPositionsRegistered;
+- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered {
+    beaconsAndPositionsRegistered = newBeaconsAndPositionsRegistered;
 }
 
 /*!
@@ -113,7 +113,7 @@
         // Get destination view
         ViewControllerRhoRhoLocating * viewControllerRhoRhoLocating = [segue destinationViewController];
         // Set the variables
-        [viewControllerRhoRhoLocating setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerRhoRhoLocating setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
      
     }
      return;
@@ -125,7 +125,7 @@
         // Get destination view
         ViewControllerRhoThetaLocating * viewControllerRhoThetaLocating = [segue destinationViewController];
         // Set the variables
-        [viewControllerRhoThetaLocating setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerRhoThetaLocating setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
      
     }
      return;
@@ -136,7 +136,7 @@
         // Get destination view
         ViewControllerThetaThetaLocating * viewControllerThetaThetaLocating = [segue destinationViewController];
         // Set the variables
-        [viewControllerThetaThetaLocating setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerThetaThetaLocating setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         
     }
     if ([[segue identifier] isEqualToString:@"fromAddPositionsToMain"]) {
@@ -144,7 +144,7 @@
         // Get destination view
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
         // Set the variable
-        [viewControllerMainMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
     }
 }

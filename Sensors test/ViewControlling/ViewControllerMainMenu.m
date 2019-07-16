@@ -154,11 +154,11 @@
 #pragma mark - Instance methods
 
 /*!
- @method setbeaconsAndPositionsRegistered:
+ @method setBeaconsAndPositionsRegistered:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered {
-    beaconsAndPositionsRegistered = newbeaconsAndPositionsRegistered;
+- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered {
+    beaconsAndPositionsRegistered = newBeaconsAndPositionsRegistered;
 }
 
 /*!
@@ -242,7 +242,7 @@
         // Get destination view
         ViewControllerAddBeaconMenu *viewControllerAddBeaconMenu = [segue destinationViewController];
         // Set the variable
-        [viewControllerAddBeaconMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerAddBeaconMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerAddBeaconMenu setEntitiesRegistered:entitiesRegistered];
         [viewControllerAddBeaconMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
         [viewControllerAddBeaconMenu setRegionPositionIdNumber:regionPositionIdNumber];
@@ -263,7 +263,7 @@
         // Get destination view
         ViewControllerRhoRhoModeling *viewControllerRhoRhoModeling = [segue destinationViewController];
         // Set the variable
-        [viewControllerRhoRhoModeling setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerRhoRhoModeling setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerRhoRhoModeling setEntitiesRegistered:entitiesRegistered];
         
     }
@@ -274,7 +274,7 @@
         // Get destination view
         ViewControllerRhoThetaModeling *viewControllerRhoThetaModeling = [segue destinationViewController];
         // Set the variable
-        [viewControllerRhoThetaModeling setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerRhoThetaModeling setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerRhoThetaModeling setEntitiesRegistered:entitiesRegistered];
         
     }
@@ -290,7 +290,7 @@
         // Get destination view
         ViewControllerSelectPositions * viewControllerSelectPositions = [segue destinationViewController];
         // Set the variable
-        [viewControllerSelectPositions setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerSelectPositions setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerSelectPositions setEntitiesRegistered:entitiesRegistered];
         
     }

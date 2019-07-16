@@ -31,7 +31,7 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *tableBeaconsAndPositions;
 
-- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered;
+- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
 - (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;
 - (void) setChosenMode:(NSString *)chosenMode;
 

@@ -36,7 +36,7 @@
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 
-- (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered;
+- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
 - (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;
 
 @end
