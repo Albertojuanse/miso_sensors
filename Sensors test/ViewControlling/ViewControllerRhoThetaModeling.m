@@ -1,14 +1,14 @@
 //
-//  ViewControllerRhoThetaModelling.m
+//  ViewControllerRhoThetaModeling.m
 //  Sensors test
 //
 //  Created by Alberto J. on 10/7/19.
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
-#import "ViewControllerRhoThetaModelling.h"
+#import "ViewControllerRhoThetaModeling.h"
 
-@implementation ViewControllerRhoThetaModelling
+@implementation ViewControllerRhoThetaModeling
 
 #pragma mark - UIViewController delegated methods
 
@@ -120,7 +120,7 @@
             }
             [data setObject:beaconsAndPositionsRegisteredToSend forKey:@"beaconsAndPositionsRegistered"];
             [data setObject:uuidChosenByUser forKey:@"uuidChosenByUser"];
-            [data setObject:@"RHO_THETA_MODELLING" forKey:@"mode"];
+            [data setObject:@"RHO_THETA_MODELING" forKey:@"mode"];
             // And send the notification
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
                                                                 object:nil
@@ -148,7 +148,7 @@
  @discussion This method dismiss this view and ask main menu view to be displayed; 'prepareForSegue:sender:' method is called before.
  */
 - (IBAction)handleBackButton:(id)sender {
-    [self performSegueWithIdentifier:@"fromRHO_THETA_MODELLINGToMain" sender:sender];
+    [self performSegueWithIdentifier:@"fromRHO_THETA_MODELINGToMain" sender:sender];
 }
 
 /*!
@@ -160,7 +160,7 @@
     NSLog(@"[INFO][VCRTM] Asked segue %@", [segue identifier]);
     
     // If main menu is going to be displayed, any variable can be returned here
-    if ([[segue identifier] isEqualToString:@"fromRHO_THETA_MODELLINGToMain"]) {
+    if ([[segue identifier] isEqualToString:@"fromRHO_THETA_MODELINGToMain"]) {
         
         // Get destination view
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];

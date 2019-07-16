@@ -1,5 +1,5 @@
 //
-//  ViewControllerRhoThetaModelling.h
+//  ViewControllerRhoThetaModeling.h
 //  Sensors test
 //
 //  Created by Alberto J. on 10/7/19.
@@ -12,10 +12,10 @@
 #import "Canvas.h"
 
 /*!
- @class ViewControllerRhoThetaModelling
- @discussion This class extends UIViewController and controls the interface for modelling with the rho theta location system.
+ @class ViewControllerRhoThetaModeling
+ @discussion This class extends UIViewController and controls the interface for modeling with the rho theta location system.
  */
-@interface ViewControllerRhoThetaModelling : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+@interface ViewControllerRhoThetaModeling : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     // For update canvas
     NSMutableDictionary * measuresDic;
     NSMutableDictionary * locatedDic;

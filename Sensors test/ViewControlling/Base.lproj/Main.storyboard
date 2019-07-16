@@ -106,8 +106,8 @@
                         <outlet property="tableBeaconsAndPositions" destination="RbC-qr-Qzv" id="aHP-09-xlO"/>
                         <outlet property="tableModes" destination="YnX-CR-lc7" id="ysR-ld-hYb"/>
                         <segue destination="Crx-eI-vrX" kind="show" identifier="fromMainToAdd" id="AQR-tb-zhA"/>
-                        <segue destination="BYZ-38-t0r" kind="show" identifier="fromMainToRHO_RHO_MODELLING" id="N3R-vg-jtW"/>
-                        <segue destination="1M1-iA-J20" kind="show" identifier="fromMainToRHO_THETA_MODELLING" id="ZVX-zW-HeN"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="fromMainToRHO_RHO_MODELING" id="N3R-vg-jtW"/>
+                        <segue destination="1M1-iA-J20" kind="show" identifier="fromMainToRHO_THETA_MODELING" id="ZVX-zW-HeN"/>
                         <segue destination="zBC-hA-n0a" kind="show" identifier="fromMainToAddPositions" id="DJm-0E-zOi"/>
                     </connections>
                 </viewController>
@@ -513,10 +513,10 @@
             </objects>
             <point key="canvasLocation" x="-777.34375" y="761.71875"/>
         </scene>
-        <!--View Controller Rho Rho Modelling-->
+        <!--View Controller Rho Rho Modeling-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewControllerRhoRhoModelling" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewControllerRhoRhoModeling" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -864,7 +864,7 @@
                         <outlet property="labelPosY" destination="dHH-nc-sN5" id="2fm-gC-XrL"/>
                         <outlet property="labelPosZ" destination="Ogo-cr-Epc" id="E7e-hI-zbJ"/>
                         <outlet property="labelStatus" destination="GGn-8C-Ja2" id="Jnc-SX-ztT"/>
-                        <segue destination="lVP-jp-YaV" kind="show" identifier="fromRHO_RHO_MODELLINGToMain" id="G2q-Ct-ZEH"/>
+                        <segue destination="lVP-jp-YaV" kind="show" identifier="fromRHO_RHO_MODELINGToMain" id="G2q-Ct-ZEH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -958,10 +958,10 @@
             </objects>
             <point key="canvasLocation" x="2140.625" y="761.71875"/>
         </scene>
-        <!--View Controller Rho Theta Modelling-->
+        <!--View Controller Rho Theta Modeling-->
         <scene sceneID="J6u-go-mjX">
             <objects>
-                <viewController id="1M1-iA-J20" customClass="ViewControllerRhoThetaModelling" sceneMemberID="viewController">
+                <viewController id="1M1-iA-J20" customClass="ViewControllerRhoThetaModeling" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="yOG-jH-Xjd">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1041,7 +1041,7 @@
                         <outlet property="canvas" destination="3YZ-89-cXu" id="4xh-5W-Yr4"/>
                         <outlet property="labelStatus" destination="aFh-h7-dil" id="SeA-1a-jwB"/>
                         <outlet property="tableBeaconsAndPositions" destination="xnz-BZ-Dex" id="Zib-uL-h5v"/>
-                        <segue destination="lVP-jp-YaV" kind="show" identifier="fromRHO_THETA_MODELLINGToMain" id="kiJ-cW-9Gg"/>
+                        <segue destination="lVP-jp-YaV" kind="show" identifier="fromRHO_THETA_MODELINGToMain" id="kiJ-cW-9Gg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AZT-QR-dYO" sceneMemberID="firstResponder"/>

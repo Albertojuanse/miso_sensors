@@ -1,14 +1,14 @@
 //
-//  ViewControllerRhoRhoModelling.m
+//  ViewControllerRhoRhoModeling.m
 //  Sensors test
 //
 //  Created by Alberto J. on 25/4/19.
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
-#import "ViewControllerRhoRhoModelling.h"
+#import "ViewControllerRhoRhoModeling.h"
 
-@implementation ViewControllerRhoRhoModelling
+@implementation ViewControllerRhoRhoModeling
 
 #pragma mark - UIViewController delegated methods
 
@@ -160,7 +160,7 @@
             [beaconsAndPositionsRegisteredToSend addObject:regionDic];
         }
         [data setObject:beaconsAndPositionsRegisteredToSend forKey:@"beaconsAndPositionsRegistered"];
-        [data setObject:@"RHO_RHO_MODELLING" forKey:@"mode"];
+        [data setObject:@"RHO_RHO_MODELING" forKey:@"mode"];
         // And send the notification
         [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
                                                             object:nil
@@ -199,7 +199,7 @@
  @discussion This method dismiss this view and ask main menu view to be displayed; 'prepareForSegue:sender:' method is called before.
  */
 - (IBAction)handleBackButton:(id)sender {
-    [self performSegueWithIdentifier:@"fromRHO_RHO_MODELLINGToMain" sender:sender];
+    [self performSegueWithIdentifier:@"fromRHO_RHO_MODELINGToMain" sender:sender];
 }
 
 /*!
@@ -211,7 +211,7 @@
     NSLog(@"[INFO][VCRRM] Asked segue %@", [segue identifier]);
     
     // If main menu is going to be displayed, any variable can be returned here
-    if ([[segue identifier] isEqualToString:@"fromRHO_RHO_MODELLINGToMain"]) {
+    if ([[segue identifier] isEqualToString:@"fromRHO_RHO_MODELINGToMain"]) {
         
         // Get destination view
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];

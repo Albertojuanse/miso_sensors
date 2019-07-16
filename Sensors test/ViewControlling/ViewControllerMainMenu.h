@@ -10,8 +10,8 @@
 #import <UIKit/UIKit.h>
 #import "ViewControllerAddBeaconMenu.h"
 #import "ViewControllerSelectPositions.h"
-#import "ViewControllerRhoRhoModelling.h"
-#import "ViewControllerRhoThetaModelling.h"
+#import "ViewControllerRhoRhoModeling.h"
+#import "ViewControllerRhoThetaModeling.h"
 
 /*!
  @class ViewControllerMainMenu

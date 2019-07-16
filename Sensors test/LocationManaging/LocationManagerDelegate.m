@@ -212,8 +212,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         
         // If a rho type system
         if (
-            [mode isEqualToString:@"RHO_RHO_MODELLING"] ||
-            [mode isEqualToString:@"RHO_THETA_MODELLING"] ||
+            [mode isEqualToString:@"RHO_RHO_MODELING"] ||
+            [mode isEqualToString:@"RHO_THETA_MODELING"] ||
             [mode isEqualToString:@"RHO_RHO_LOCATING"] ||
             [mode isEqualToString:@"RHO_THETA_LOCATING"]
             )
@@ -249,7 +249,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     if ([RSSIdistance floatValue] > 0.05) {
                         
                         if (
-                            [mode isEqualToString:@"RHO_THETA_MODELLING"] ||
+                            [mode isEqualToString:@"RHO_THETA_MODELING"] ||
                             [mode isEqualToString:@"RHO_THETA_LOCATING"]
                             )
                         {
@@ -283,7 +283,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                         }
                         
                         if (
-                            [mode isEqualToString:@"RHO_RHO_MODELLING"] ||
+                            [mode isEqualToString:@"RHO_RHO_MODELING"] ||
                             [mode isEqualToString:@"RHO_RHO_LOCATING"]
                             )
                         {
@@ -332,7 +332,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             
             // If a theta theta type system; it is supposed that in this case regions are ot registered, but just in case
             if (
-                [mode isEqualToString:@"THETA_THETA_MODELLING"] ||
+                [mode isEqualToString:@"THETA_THETA_MODELING"] ||
                 [mode isEqualToString:@"THETA_THETA_LOCATING"]
                 ) {
                 // Do nothing
@@ -366,7 +366,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         
         // If a rho type system
         if (
-            [mode isEqualToString:@"RHO_THETA_MODELLING"] ||
+            [mode isEqualToString:@"RHO_THETA_MODELING"] ||
             [mode isEqualToString:@"RHO_THETA_LOCATING"]
             )
         {
@@ -391,7 +391,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         
         // If a theta theta type system
         if (
-            [mode isEqualToString:@"THETA_THETA_MODELLING"] ||
+            [mode isEqualToString:@"THETA_THETA_MODELING"] ||
             [mode isEqualToString:@"THETA_THETA_LOCATING"]
             ) {
             // TO DO: THETA THETA SYSTEM
@@ -523,8 +523,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             
             // If a rho type system
             if (
-                [mode isEqualToString:@"RHO_RHO_MODELLING"] ||
-                [mode isEqualToString:@"RHO_THETA_MODELLING"] ||
+                [mode isEqualToString:@"RHO_RHO_MODELING"] ||
+                [mode isEqualToString:@"RHO_THETA_MODELING"] ||
                 [mode isEqualToString:@"RHO_RHO_LOCATING"] ||
                 [mode isEqualToString:@"RHO_THETA_LOCATING"]
                 ) {
@@ -553,8 +553,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             }
             // If a theta type system
             if (
-                [mode isEqualToString:@"THETA_THETA_MODELLING"] ||
-                [mode isEqualToString:@"RHO_THETA_MODELLING"] ||
+                [mode isEqualToString:@"THETA_THETA_MODELING"] ||
+                [mode isEqualToString:@"RHO_THETA_MODELING"] ||
                 [mode isEqualToString:@"THETA_THETA_LOCATING"] ||
                 [mode isEqualToString:@"RHO_THETA_LOCATING"]
                 ) {

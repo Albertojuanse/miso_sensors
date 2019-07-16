@@ -22,9 +22,9 @@
     // Variables; only inizialated if they didn't be so.
     if (!modes) {
         modes = [[NSMutableArray alloc] init];
-        [modes addObject:@"RHO_RHO_MODELLING"];
-        [modes addObject:@"RHO_THETA_MODELLING"];
-        [modes addObject:@"THETA_THETA_MODELLING"];
+        [modes addObject:@"RHO_RHO_MODELING"];
+        [modes addObject:@"RHO_THETA_MODELING"];
+        [modes addObject:@"THETA_THETA_MODELING"];
         [modes addObject:@"RHO_RHO_LOCATING"];
         [modes addObject:@"RHO_THETA_LOCATING"];
         [modes addObject:@"THETA_THETA_LOCATING"];
@@ -200,15 +200,15 @@
     // If user did select a row in the table
     if (chosenMode) {
         
-        if ([chosenMode isEqualToString:[modes objectAtIndex:0]]) { // RHO_RHO_MODELLING
-            [self performSegueWithIdentifier:@"fromMainToRHO_RHO_MODELLING" sender:sender];
+        if ([chosenMode isEqualToString:[modes objectAtIndex:0]]) { // RHO_RHO_MODELING
+            [self performSegueWithIdentifier:@"fromMainToRHO_RHO_MODELING" sender:sender];
         }
-        if ([chosenMode isEqualToString:[modes objectAtIndex:1]]) { // RHO_THETA_MODELLING
-            [self performSegueWithIdentifier:@"fromMainToRHO_THETA_MODELLING" sender:sender];
+        if ([chosenMode isEqualToString:[modes objectAtIndex:1]]) { // RHO_THETA_MODELING
+            [self performSegueWithIdentifier:@"fromMainToRHO_THETA_MODELING" sender:sender];
         }
-        if ([chosenMode isEqualToString:[modes objectAtIndex:2]]) { // RHO_THETA_MODELLING
+        if ([chosenMode isEqualToString:[modes objectAtIndex:2]]) { // RHO_THETA_MODELING
             return;
-            // [self performSegueWithIdentifier:@"fromMainToTHETA_THETA_MODELLING" sender:sender];
+            // [self performSegueWithIdentifier:@"fromMainToTHETA_THETA_MODELING" sender:sender];
         }
         if ([chosenMode isEqualToString:[modes objectAtIndex:3]]) { // RHO_RHO_LOCATING
             return;
@@ -257,30 +257,30 @@
         
     }
     
-    // If Rho Rho Syetem based Modelling is going to be displayed, pass it the beaconsAndPositionsRegistered array.
-    if ([[segue identifier] isEqualToString:@"fromMainToRHO_RHO_MODELLING"]) {
+    // If Rho Rho Syetem based Modeling is going to be displayed, pass it the beaconsAndPositionsRegistered array.
+    if ([[segue identifier] isEqualToString:@"fromMainToRHO_RHO_MODELING"]) {
         
         // Get destination view
-        ViewControllerRhoRhoModelling *viewControllerRhoRhoModelling = [segue destinationViewController];
+        ViewControllerRhoRhoModeling *viewControllerRhoRhoModeling = [segue destinationViewController];
         // Set the variable
-        [viewControllerRhoRhoModelling setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerRhoRhoModelling setEntitiesRegistered:entitiesRegistered];
+        [viewControllerRhoRhoModeling setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerRhoRhoModeling setEntitiesRegistered:entitiesRegistered];
         
     }
     
-    // If Rho Theta Syetem based Modelling is going to be displayed, pass it the beaconsAndPositionsRegistered array.
-    if ([[segue identifier] isEqualToString:@"fromMainToRHO_THETA_MODELLING"]) {
+    // If Rho Theta Syetem based Modeling is going to be displayed, pass it the beaconsAndPositionsRegistered array.
+    if ([[segue identifier] isEqualToString:@"fromMainToRHO_THETA_MODELING"]) {
         
         // Get destination view
-        ViewControllerRhoThetaModelling *viewControllerRhoThetaModelling = [segue destinationViewController];
+        ViewControllerRhoThetaModeling *viewControllerRhoThetaModeling = [segue destinationViewController];
         // Set the variable
-        [viewControllerRhoThetaModelling setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerRhoThetaModelling setEntitiesRegistered:entitiesRegistered];
+        [viewControllerRhoThetaModeling setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerRhoThetaModeling setEntitiesRegistered:entitiesRegistered];
         
     }
     
-    // If Theta Theta Syetem based Modelling is going to be displayed, there is no need of the beaconsAndPositionsRegistered array.
-    if ([[segue identifier] isEqualToString:@"fromMainToTHETA_THETA_MODELLING"]) {
+    // If Theta Theta Syetem based Modeling is going to be displayed, there is no need of the beaconsAndPositionsRegistered array.
+    if ([[segue identifier] isEqualToString:@"fromMainToTHETA_THETA_MODELING"]) {
         // Do nothing
     }
     

@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		421FCEB922CF5C8E00C62E5E /* miso.png in Resources */ = {isa = PBXBuildFile; fileRef = 421FCEB822CF5C8E00C62E5E /* miso.png */; };
 		422798852271F37800E07C39 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798842271F37800E07C39 /* AppDelegate.m */; };
-		422798882271F37800E07C39 /* ViewControllerRhoRhoModelling.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798872271F37800E07C39 /* ViewControllerRhoRhoModelling.m */; };
+		422798882271F37800E07C39 /* ViewControllerRhoRhoModeling.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798872271F37800E07C39 /* ViewControllerRhoRhoModeling.m */; };
 		4227988B2271F37800E07C39 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 422798892271F37800E07C39 /* Main.storyboard */; };
 		4227988D2271F37800E07C39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4227988C2271F37800E07C39 /* Assets.xcassets */; };
 		422798902271F37800E07C39 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4227988E2271F37800E07C39 /* LaunchScreen.storyboard */; };
@@ -23,7 +23,7 @@
 		426501BD22A03B4300BE20B7 /* Canvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501BC22A03B4300BE20B7 /* Canvas.m */; };
 		426501C322A03B5200BE20B7 /* RDPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C022A03B5200BE20B7 /* RDPosition.m */; };
 		426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */; };
-		4275ED5A22D5E8A900A5CAB7 /* ViewControllerRhoThetaModelling.m in Sources */ = {isa = PBXBuildFile; fileRef = 4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModelling.m */; };
+		4275ED5A22D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m in Sources */ = {isa = PBXBuildFile; fileRef = 4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m */; };
 		4275ED5D22D5F84300A5CAB7 /* RDRhoThetaSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 4275ED5C22D5F84300A5CAB7 /* RDRhoThetaSystem.m */; };
 		4276127422C0EE91007BDED8 /* SharedData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4276127322C0EE91007BDED8 /* SharedData.m */; };
 		428AF6C022D7915000BE5374 /* ViewControllerSelectPositions.m in Sources */ = {isa = PBXBuildFile; fileRef = 428AF6BF22D7915000BE5374 /* ViewControllerSelectPositions.m */; };
@@ -38,8 +38,8 @@
 		422798802271F37800E07C39 /* Sensors test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sensors test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		422798832271F37800E07C39 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		422798842271F37800E07C39 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		422798862271F37800E07C39 /* ViewControllerRhoRhoModelling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerRhoRhoModelling.h; sourceTree = "<group>"; };
-		422798872271F37800E07C39 /* ViewControllerRhoRhoModelling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerRhoRhoModelling.m; sourceTree = "<group>"; };
+		422798862271F37800E07C39 /* ViewControllerRhoRhoModeling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerRhoRhoModeling.h; sourceTree = "<group>"; };
+		422798872271F37800E07C39 /* ViewControllerRhoRhoModeling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerRhoRhoModeling.m; sourceTree = "<group>"; };
 		4227988A2271F37800E07C39 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4227988C2271F37800E07C39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4227988F2271F37800E07C39 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -63,8 +63,8 @@
 		426501C022A03B5200BE20B7 /* RDPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDPosition.m; sourceTree = "<group>"; };
 		426501C122A03B5200BE20B7 /* RDRhoRhoSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDRhoRhoSystem.h; sourceTree = "<group>"; };
 		426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDRhoRhoSystem.m; sourceTree = "<group>"; };
-		4275ED5822D5E88E00A5CAB7 /* ViewControllerRhoThetaModelling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerRhoThetaModelling.h; sourceTree = "<group>"; };
-		4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModelling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerRhoThetaModelling.m; sourceTree = "<group>"; };
+		4275ED5822D5E88E00A5CAB7 /* ViewControllerRhoThetaModeling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerRhoThetaModeling.h; sourceTree = "<group>"; };
+		4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerRhoThetaModeling.m; sourceTree = "<group>"; };
 		4275ED5B22D5F83000A5CAB7 /* RDRhoThetaSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDRhoThetaSystem.h; sourceTree = "<group>"; };
 		4275ED5C22D5F84300A5CAB7 /* RDRhoThetaSystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDRhoThetaSystem.m; sourceTree = "<group>"; };
 		4276127222C0EE71007BDED8 /* SharedData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedData.h; sourceTree = "<group>"; };
@@ -146,10 +146,10 @@
 				4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */,
 				4295FB2422D360930024B155 /* ViewControllerAddBeaconMenu.h */,
 				4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */,
-				422798862271F37800E07C39 /* ViewControllerRhoRhoModelling.h */,
-				422798872271F37800E07C39 /* ViewControllerRhoRhoModelling.m */,
-				4275ED5822D5E88E00A5CAB7 /* ViewControllerRhoThetaModelling.h */,
-				4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModelling.m */,
+				422798862271F37800E07C39 /* ViewControllerRhoRhoModeling.h */,
+				422798872271F37800E07C39 /* ViewControllerRhoRhoModeling.m */,
+				4275ED5822D5E88E00A5CAB7 /* ViewControllerRhoThetaModeling.h */,
+				4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m */,
 				428AF6BE22D7912400BE5374 /* ViewControllerSelectPositions.h */,
 				428AF6BF22D7915000BE5374 /* ViewControllerSelectPositions.m */,
 				428AF6C122D7A64E00BE5374 /* ViewControllerThetaThetaLocating.h */,
@@ -276,7 +276,7 @@
 				426501C322A03B5200BE20B7 /* RDPosition.m in Sources */,
 				428AF6C022D7915000BE5374 /* ViewControllerSelectPositions.m in Sources */,
 				4275ED5D22D5F84300A5CAB7 /* RDRhoThetaSystem.m in Sources */,
-				422798882271F37800E07C39 /* ViewControllerRhoRhoModelling.m in Sources */,
+				422798882271F37800E07C39 /* ViewControllerRhoRhoModeling.m in Sources */,
 				4242F6C722CBA7C600C4B0B7 /* Adder.m in Sources */,
 				422798932271F37800E07C39 /* main.m in Sources */,
 				422798852271F37800E07C39 /* AppDelegate.m in Sources */,
@@ -285,7 +285,7 @@
 				4242F6CB22CBACAB00C4B0B7 /* Averager.m in Sources */,
 				4295FB2622D360BB0024B155 /* ViewControllerAddBeaconMenu.m in Sources */,
 				4227989B2271F60700E07C39 /* MotionManager.m in Sources */,
-				4275ED5A22D5E8A900A5CAB7 /* ViewControllerRhoThetaModelling.m in Sources */,
+				4275ED5A22D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m in Sources */,
 				4242F6C422CB9EC200C4B0B7 /* Buffer.m in Sources */,
 				4295FB2222D35D7A0024B155 /* ViewControllerMainMenu.m in Sources */,
 				428AF6C322D7A67500BE5374 /* ViewControllerThetaThetaLocating.m in Sources */,
