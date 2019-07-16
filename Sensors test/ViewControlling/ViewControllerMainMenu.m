@@ -34,18 +34,31 @@
     //
     //  [{ "type": @"beacon" | @"position";                             //  regionDic
     //     "identifier": (NSString *)identifier1;
+    //
     //     "uuid": (NSString *)uuid1;
     //     "major": (NSString *)major1;
     //     "minor": (NSString *)minor1;
+    //
     //     "position": (RDPosition *)position1;
     //     "x": (NSString *)x1;
     //     "y": (NSString *)y1;
     //     "z": (NSString *)z1
+    //
+    //     "entity": (NSMutableDictionary *)entityDic1;                 //  entityDic
     //   },
-    //  [{ "type": @"beacon" | @"position";                             //  regionDic
+    //   { "type": @"beacon" | @"position";                             //  regionDic
     //     "identifier": (NSString *)identifier2;
     //     "uuid": (NSString *)uuid2;
     //     (···)
+    //   },
+    //   (···)
+    //  ]
+    //
+    // And the schema of entitiesRegistered is
+    //
+    //  [{ "name": name1                                               //  entityDic
+    //   },
+    //   { "name": name2
     //   },
     //   (···)
     //  ]
@@ -87,6 +100,9 @@
     if (!entitiesRegistered) {
         entitiesRegistered = [[NSMutableArray alloc] init];
         // Pre-registered entities
+        NSMutableDictionary * entityRemoveDic = [[NSMutableDictionary alloc] init];
+        [entityRemoveDic setValue:@"<No entity>" forKey:@"name"];
+        [entitiesRegistered addObject:entityRemoveDic];
         NSMutableDictionary * entity1Dic = [[NSMutableDictionary alloc] init];
         [entity1Dic setValue:@"Entity 1" forKey:@"name"];
         [entitiesRegistered addObject:entity1Dic];
@@ -300,36 +316,87 @@
     if (tableView == self.tableBeaconsAndPositions) {
         NSMutableDictionary * regionDic = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row];
         cell.textLabel.numberOfLines = 0; // Means any number
+        
+        // If it is a beacon
         if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+            
+            // It representation depends on if exist its position or its entity
             if (regionDic[@"x"] && regionDic[@"y"] && regionDic[@"z"]) {
-                cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                if (regionDic[@"entity"]) {
+                    
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                                           regionDic[@"identifier"],
+                                           regionDic[@"entity"][@"name"],
+                                           regionDic[@"uuid"],
+                                           regionDic[@"major"],
+                                           regionDic[@"minor"],
+                                           regionDic[@"x"],
+                                           regionDic[@"y"],
+                                           regionDic[@"z"]
+                                           ];
+                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    
+                } else {
+                    
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                                           regionDic[@"identifier"],
+                                           regionDic[@"uuid"],
+                                           regionDic[@"major"],
+                                           regionDic[@"minor"],
+                                           regionDic[@"x"],
+                                           regionDic[@"y"],
+                                           regionDic[@"z"]
+                                           ];
+                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    
+                }
+            } else {
+                if (regionDic[@"entity"]) {
+                
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nmajor: %@ ; minor: %@",
+                                           regionDic[@"identifier"],
+                                           regionDic[@"entity"][@"name"],
+                                           regionDic[@"uuid"],
+                                           regionDic[@"major"],
+                                           regionDic[@"minor"]
+                                           ];
+                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    
+                } else  {
+                    
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
+                                           regionDic[@"identifier"],
+                                           regionDic[@"uuid"],
+                                           regionDic[@"major"],
+                                           regionDic[@"minor"]
+                                           ];
+                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    
+                }
+            }
+        }
+        
+        // And if it is a position
+        if ([@"position" isEqualToString:regionDic[@"type"]]) {
+            // If its entity is set
+            if (regionDic[@"entity"]) {
+                cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> \n Position: (%@, %@, %@)",
                                        regionDic[@"identifier"],
-                                       regionDic[@"uuid"],
-                                       regionDic[@"major"],
-                                       regionDic[@"minor"],
+                                       regionDic[@"entity"][@"name"],
                                        regionDic[@"x"],
                                        regionDic[@"y"],
                                        regionDic[@"z"]
                                        ];
                 cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
             } else {
-                cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
+                cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%@, %@, %@)",
                                        regionDic[@"identifier"],
-                                       regionDic[@"uuid"],
-                                       regionDic[@"major"],
-                                       regionDic[@"minor"]
+                                       regionDic[@"x"],
+                                       regionDic[@"y"],
+                                       regionDic[@"z"]
                                        ];
                 cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
             }
-        }
-        if ([@"position" isEqualToString:regionDic[@"type"]]) {
-            cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%@, %@, %@)",
-                                   regionDic[@"identifier"],
-                                   regionDic[@"x"],
-                                   regionDic[@"y"],
-                                   regionDic[@"z"]
-                                   ];
-            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         }
     }
     if (tableView == self.tableModes) {

@@ -137,6 +137,10 @@
                              self.textMajor.text = regionDic[@"major"];
                              self.textMinor.text = regionDic[@"minor"];
                              
+                             if (regionDic[@"entity"]){
+                                 self.textEntity.text = regionDic[@"entity"][@"name"];
+                             }
+                             
                              if (
                                  regionDic[@"x"] &&
                                  regionDic[@"y"] &&
@@ -206,6 +210,11 @@
                  
                  for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
                      if ([@"position" isEqualToString:regionDic[@"type"]]) {
+                         
+                         if (regionDic[@"entity"]){
+                             self.textEntity.text = regionDic[@"entity"][@"name"];
+                         }
+                         
                          if ([regionDic[@"position"] isEqual:positionChosenByUser]) {
                              self.textPositionX.text = regionDic[@"x"];
                              self.textPositionY.text = regionDic[@"y"];
@@ -426,6 +435,22 @@
                             // If this code is reached, the beacon is registered and its position can be set or uploaded but not registered again.
                             dicFound = YES;
                             
+                            // Also its entity can be modified or set
+                            if (entityChosenByUser) {
+                                
+                                // The special entity <No entity> is selected by user to remove the previous chosen entity
+                                if ([entityChosenByUser isEqualToString:@"<No entity>"]) {
+                                    regionDic[@"entity"] = nil;
+                                } else {
+                                    // search for its dictionary and set it
+                                    for (NSMutableDictionary * entityDic in entitiesRegistered) {
+                                        if ([entityChosenByUser isEqualToString:entityDic[@"name"]]) {
+                                            regionDic[@"entity"] = entityDic;
+                                        }
+                                    }
+                                }
+                            }
+                            
                             // If the three coordinate values had been submitted
                             if (
                                 ![[self.textBeaconX text] isEqualToString:@""] &&
@@ -438,21 +463,25 @@
                                 regionDic[@"z"] = [self.textBeaconZ text];
                             } else {
                                 
-                                // If all coordinate values missing the user tries to re-register a beacon
+                                // If all coordinate values missing the user tries to re-register a beacon, unless the user wanted to set its entity
                                 if (
                                     [[self.textBeaconX text] isEqualToString:@""] &&
                                     [[self.textBeaconY text] isEqualToString:@""] &&
                                     [[self.textBeaconZ text] isEqualToString:@""]
                                     )
                                 {
-                                    self.labelBeaconError.text = @"Error. This iBeacon is already registered. Please, submit a different one or push \"Back\".";
-                                    return;
+                                    // This code is reached also when an entity was set or uploaded, so check it
+                                    if (!entityChosenByUser) {
+                                        self.labelPositionError.text = @"Error. This position is already registered. Please, submit a different one or push \"Back\".";
+                                        return;
+                                    }
                                 } else {
                                     // If ths code is reached means that there is only some coordinate values but not all of them
-                                    self.labelBeaconError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+                                    self.labelBeaconError.text = @"Error. Some coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
                                     return;
                                 }
                             }
+                            
                         }
                     }
                 }
@@ -472,6 +501,22 @@
                     // If this code is reached, the position is registered and its position can be uploaded.
                     dicFound = YES;
                     
+                    // Also its entity can be modified or set
+                    if (entityChosenByUser) {
+                        
+                        // The special entity <No entity> is selected by user to remove the previous chosen entity
+                        if ([entityChosenByUser isEqualToString:@"<No entity>"]) {
+                            regionDic[@"entity"] = nil;
+                        } else {
+                            // search for its dictionary and set it
+                            for (NSMutableDictionary * entityDic in entitiesRegistered) {
+                                if ([entityChosenByUser isEqualToString:entityDic[@"name"]]) {
+                                    regionDic[@"entity"] = entityDic;
+                                }
+                            }
+                        }
+                    }
+                    
                     // If the three coordinate values had been submitted
                     if (
                         ![[self.textPositionX text] isEqualToString:@""] &&
@@ -485,21 +530,25 @@
                         regionDic[@"position"] = positionToFind;
                     } else {
                         
-                        // If all coordinate values missing the user tries to re-register the same position
+                        // If all coordinate values missing the user tries to re-register the same position, unless user wants to set its entoty
                         if (
                             [[self.textPositionX text] isEqualToString:@""] &&
                             [[self.textPositionY text] isEqualToString:@""] &&
                             [[self.textPositionZ text] isEqualToString:@""]
                             )
                         {
-                            self.labelPositionError.text = @"Error. This position is already registered. Please, submit a different one or push \"Back\".";
-                            return;
+                            // This code is reached also when an entity was set or uploaded, so check it
+                            if (!entityChosenByUser) {
+                                self.labelPositionError.text = @"Error. This position is already registered. Please, submit a different one or push \"Back\".";
+                                return;
+                            }
                         } else {
                             // If ths code is reached means that there is only some coordinate values but not all of them
-                            self.labelPositionError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+                            self.labelPositionError.text = @"Error. Some coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
                             return;
                         }
                     }
+                    
                 }
             }
         }
@@ -521,6 +570,22 @@
             NSString * regionId = [@"beacon" stringByAppendingString:[regionBeaconIdNumber stringValue]];
             regionId = [regionId stringByAppendingString:@"@miso.uam.es"];
             [newRegionDic setValue:regionId forKey:@"identifier"];
+            
+            // Its entity can be set
+            if (entityChosenByUser) {
+                
+                // The special entity <No entity> is selected by user to remove the previous chosen entity
+                if ([entityChosenByUser isEqualToString:@"<No entity>"]) {
+                    newRegionDic[@"entity"] = nil;
+                } else {
+                    // search for its dictionary and set it
+                    for (NSMutableDictionary * entityDic in entitiesRegistered) {
+                        if ([entityChosenByUser isEqualToString:entityDic[@"name"]]) {
+                            newRegionDic[@"entity"] = entityDic;
+                        }
+                    }
+                }
+            }
             
             // If exists the three coordinate values
             if (
@@ -548,6 +613,7 @@
                     return;
                 }
             }
+            
         }
         if (selectedSegmentIndex == 1) { // position mode
             
@@ -566,6 +632,21 @@
             positionToSave.y = [NSNumber numberWithFloat:[[self.textPositionY text] floatValue]];
             positionToSave.z = [NSNumber numberWithFloat:[[self.textPositionZ text] floatValue]];
             
+            // Its entity can be set
+            if (entityChosenByUser) {
+                
+                // The special entity <No entity> is selected by user to remove the previous chosen entity
+                if ([entityChosenByUser isEqualToString:@"<No entity>"]) {
+                    newRegionDic[@"entity"] = nil;
+                } else {
+                    // search for its dictionary and set it
+                    for (NSMutableDictionary * entityDic in entitiesRegistered) {
+                        if ([entityChosenByUser isEqualToString:entityDic[@"name"]]) {
+                            newRegionDic[@"entity"] = entityDic;
+                        }
+                    }
+                }
+            }
             
             if (
                 ![[self.textPositionX text] isEqualToString:@""] &&
@@ -593,6 +674,7 @@
                     return;
                 }
             }
+            
         }
         
         [beaconsAndPositionsRegistered addObject:newRegionDic];
