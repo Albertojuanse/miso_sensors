@@ -461,6 +461,11 @@
                                 regionDic[@"x"] = [self.textBeaconX text];
                                 regionDic[@"y"] = [self.textBeaconY text];
                                 regionDic[@"z"] = [self.textBeaconZ text];
+                                RDPosition * positionToAdd = [[RDPosition alloc] init];
+                                positionToAdd.x = [NSNumber numberWithFloat:[[self.textBeaconX text] floatValue]];
+                                positionToAdd.y = [NSNumber numberWithFloat:[[self.textBeaconY text] floatValue]];
+                                positionToAdd.z = [NSNumber numberWithFloat:[[self.textBeaconZ text] floatValue]];
+                                regionDic[@"position"] = positionToAdd;
                             } else {
                                 
                                 // If all coordinate values missing the user tries to re-register a beacon, unless the user wanted to set its entity
@@ -597,6 +602,11 @@
                 newRegionDic[@"x"] = [self.textBeaconX text];
                 newRegionDic[@"y"] = [self.textBeaconY text];
                 newRegionDic[@"z"] = [self.textBeaconZ text];
+                RDPosition * positionToAdd = [[RDPosition alloc] init];
+                positionToAdd.x = [NSNumber numberWithFloat:[[self.textBeaconX text] floatValue]];
+                positionToAdd.y = [NSNumber numberWithFloat:[[self.textBeaconY text] floatValue]];
+                positionToAdd.z = [NSNumber numberWithFloat:[[self.textBeaconZ text] floatValue]];
+                newRegionDic[@"position"] = positionToAdd;
             } else {
                 
                 // If all coordinate values missing, the user does not want to save the position

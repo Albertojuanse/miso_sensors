@@ -1,5 +1,5 @@
 //
-//  ViewControllerAddPositions.h
+//  ViewControllerSelectPositions.h
 //  Sensors test
 //
 //  Created by Alberto J. on 11/7/19.
@@ -12,26 +12,24 @@
 #import "ViewControllerMainMenu.h"
 
 /*!
- @class ViewControllerAddPositions
- @discussion This class extends UIViewController and controls the menu to add the beacons positions for locating porpuses.
+ @class ViewControllerSelectPositions
+ @discussion This class extends UIViewController and controls the menu to select the beacons and positions for locating porpuses.
  */
 
-@interface ViewControllerAddPositions : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+@interface ViewControllerSelectPositions : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
     NSString * chosenMode;
     
     // Beacons' region identifiers
     NSMutableArray * beaconsAndPositionsRegistered;
     NSMutableArray * entitiesRegistered;
+    NSMutableArray * beaconsAndPositionsChosen;
+    NSMutableArray * beaconsAndPositionsChosenIndexes;
     NSString * uuidChosenByUser;    
     
 }
 
-@property (weak, nonatomic) IBOutlet UITextField *textBeaconX;
-@property (weak, nonatomic) IBOutlet UITextField *textBeaconY;
-@property (weak, nonatomic) IBOutlet UITextField *textBeaconZ;
 @property (weak, nonatomic) IBOutlet UITableView *tableBeaconsAndPositions;
-@property (weak, nonatomic) IBOutlet UIButton *buttonSet;
 
 - (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered;
 - (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;

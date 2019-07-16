@@ -288,10 +288,10 @@
     if ([[segue identifier] isEqualToString:@"fromMainToAddPositions"]) {
         
         // Get destination view
-        ViewControllerAddPositions * viewControllerAddPositions = [segue destinationViewController];
+        ViewControllerSelectPositions * viewControllerSelectPositions = [segue destinationViewController];
         // Set the variable
-        [viewControllerAddPositions setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerAddPositions setEntitiesRegistered:entitiesRegistered];
+        [viewControllerSelectPositions setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerSelectPositions setEntitiesRegistered:entitiesRegistered];
         
     }
 }
