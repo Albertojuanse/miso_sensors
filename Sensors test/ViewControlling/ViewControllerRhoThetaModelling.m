@@ -209,27 +209,92 @@
     if (tableView == self.tableBeaconsAndPositions) {
         NSMutableDictionary * regionDic = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row];
         cell.textLabel.numberOfLines = 0; // Means any number
+        
+        // If it is a beacon
         if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+            
+            // It representation depends on if exist its position or its entity
             if (regionDic[@"x"] && regionDic[@"y"] && regionDic[@"z"]) {
-                cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                if (regionDic[@"entity"]) {
+                    
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                                           regionDic[@"identifier"],
+                                           regionDic[@"entity"][@"name"],
+                                           regionDic[@"uuid"],
+                                           regionDic[@"major"],
+                                           regionDic[@"minor"],
+                                           regionDic[@"x"],
+                                           regionDic[@"y"],
+                                           regionDic[@"z"]
+                                           ];
+                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    
+                } else {
+                    
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                                           regionDic[@"identifier"],
+                                           regionDic[@"uuid"],
+                                           regionDic[@"major"],
+                                           regionDic[@"minor"],
+                                           regionDic[@"x"],
+                                           regionDic[@"y"],
+                                           regionDic[@"z"]
+                                           ];
+                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    
+                }
+            } else {
+                if (regionDic[@"entity"]) {
+                    
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nmajor: %@ ; minor: %@",
+                                           regionDic[@"identifier"],
+                                           regionDic[@"entity"][@"name"],
+                                           regionDic[@"uuid"],
+                                           regionDic[@"major"],
+                                           regionDic[@"minor"]
+                                           ];
+                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    
+                } else  {
+                    
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
+                                           regionDic[@"identifier"],
+                                           regionDic[@"uuid"],
+                                           regionDic[@"major"],
+                                           regionDic[@"minor"]
+                                           ];
+                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    
+                }
+            }
+        }
+        
+        // And if it is a position
+        if ([@"position" isEqualToString:regionDic[@"type"]]) {
+            // If its entity is set
+            if (regionDic[@"entity"]) {
+                cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> \n Position: (%@, %@, %@)",
                                        regionDic[@"identifier"],
-                                       regionDic[@"uuid"],
-                                       regionDic[@"major"],
-                                       regionDic[@"minor"],
+                                       regionDic[@"entity"][@"name"],
                                        regionDic[@"x"],
                                        regionDic[@"y"],
                                        regionDic[@"z"]
                                        ];
                 cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
             } else {
-                cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
+                cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%@, %@, %@)",
                                        regionDic[@"identifier"],
-                                       regionDic[@"uuid"],
-                                       regionDic[@"major"],
-                                       regionDic[@"minor"]
+                                       regionDic[@"x"],
+                                       regionDic[@"y"],
+                                       regionDic[@"z"]
                                        ];
                 cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
             }
+            
+            // In this mode, only beacons can be aimed, and so, positions are marked
+            [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
+            [cell setTintColor:[UIColor redColor]];
+            
         }
     }
     return cell;
@@ -239,7 +304,16 @@
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (tableView == self.tableBeaconsAndPositions) {
-        uuidChosenByUser = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"uuid"];
+    
+        // Only beacons can be aimed, positions were marked
+        if ([@"position" isEqualToString:
+              [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"type"]
+              ])
+        {
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+        } else {
+            uuidChosenByUser = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"uuid"];
+        }
     }
 }
 
