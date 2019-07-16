@@ -22,6 +22,7 @@
     
     // Beacons' region identifiers
     NSMutableArray * beaconsAndPositionsRegistered;
+    NSMutableArray * entitiesRegistered;
     NSString * uuidChosenByUser;    
     
 }
@@ -33,6 +34,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonSet;
 
 - (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered;
+- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;
 - (void) setChosenMode:(NSString *)chosenMode;
 
 @end

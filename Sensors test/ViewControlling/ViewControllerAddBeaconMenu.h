@@ -15,16 +15,19 @@
  @class ViewControllerAddBeaconMenu
  @discussion This class extends UIViewController and controls the main menu for adding new beacons to the app.
  */
-@interface ViewControllerAddBeaconMenu : UIViewController{
+@interface ViewControllerAddBeaconMenu : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
     NSMutableArray * beaconsAndPositionsRegistered;
+    NSMutableArray * entitiesRegistered;
     NSNumber * regionBeaconIdNumber;
     NSNumber * regionPositionIdNumber;
     
     // User selection in main manu
     RDPosition * positionChosenByUser;
     NSString * uuidChosenByUser;
+    NSString * entityChosenByUser;
     NSInteger selectedSegmentIndex;
+    
 }
 
 
@@ -61,7 +64,12 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonPositionBack;
 @property (weak, nonatomic) IBOutlet UIButton *buttonPositionAdd;
 
+@property (weak, nonatomic) IBOutlet UITextField *textEntity;
+@property (weak, nonatomic) IBOutlet UITableView *tableEntities;
+
+
 - (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered;
+- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;
 - (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;
 - (void) setRegionPositionIdNumber:(NSNumber *)newRegionIdNumber;
 - (void) setUuidChosenByUser:(NSString *)uuidChosenByUser;

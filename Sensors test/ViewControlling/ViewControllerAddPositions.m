@@ -10,7 +10,7 @@
 
 @implementation ViewControllerAddPositions
 
-#pragma marks - UIViewController delegated methods
+#pragma mark - UIViewController delegated methods
 
 /*!
  @method viewDidLoad
@@ -40,7 +40,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma marks - Instance methods
+#pragma mark - Instance methods
 
 /*!
  @method setbeaconsAndPositionsRegistered:
@@ -58,7 +58,15 @@
     chosenMode = newChosenMode;
 }
 
-#pragma marks - Buttons event handles
+/*!
+ @method setEntitiesRegistered:
+ @discussion This method sets the NSMutableArray variable 'entitiesRegistered'.
+ */
+- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered {
+    entitiesRegistered = newEntitiesRegistered;
+}
+
+#pragma mark - Buttons event handles
 
 /*!
  @method handleButtonSet:
@@ -183,6 +191,7 @@
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
         // Set the variable
         [viewControllerMainMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
     }
 }
 

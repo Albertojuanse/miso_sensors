@@ -10,6 +10,8 @@
 
 @implementation ViewControllerMainMenu
 
+#pragma mark - UIViewController delegated methods
+
 /*!
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
@@ -82,6 +84,17 @@
         [beaconsAndPositionsRegistered addObject:regionBeacon3Dic];
     }
     
+    if (!entitiesRegistered) {
+        entitiesRegistered = [[NSMutableArray alloc] init];
+        // Pre-registered entities
+        NSMutableDictionary * entity1Dic = [[NSMutableDictionary alloc] init];
+        [entity1Dic setValue:@"Entity 1" forKey:@"name"];
+        [entitiesRegistered addObject:entity1Dic];
+        NSMutableDictionary * entity2Dic = [[NSMutableDictionary alloc] init];
+        [entity2Dic setValue:@"Entity 2" forKey:@"name"];
+        [entitiesRegistered addObject:entity2Dic];
+    }
+    
     if (!regionBeaconIdNumber) {
         regionBeaconIdNumber = [NSNumber numberWithInteger:3];
     }
@@ -109,6 +122,8 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - Instance methods
+
 /*!
  @method setbeaconsAndPositionsRegistered:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
@@ -131,6 +146,14 @@
  */
 - (void) setRegionPositionIdNumber:(NSNumber *)newRegionPositionIdNumber {
     regionPositionIdNumber = newRegionPositionIdNumber;
+}
+
+/*!
+ @method setEntitiesRegistered:
+ @discussion This method sets the NSMutableArray variable 'entitiesRegistered'.
+ */
+- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered {
+    entitiesRegistered = newEntitiesRegistered;
 }
 
 #pragma mark - Butons event handle
@@ -191,6 +214,7 @@
         ViewControllerAddBeaconMenu *viewControllerAddBeaconMenu = [segue destinationViewController];
         // Set the variable
         [viewControllerAddBeaconMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerAddBeaconMenu setEntitiesRegistered:entitiesRegistered];
         [viewControllerAddBeaconMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
         [viewControllerAddBeaconMenu setRegionPositionIdNumber:regionPositionIdNumber];
         
@@ -211,6 +235,7 @@
         ViewControllerRhoRhoModelling *viewControllerRhoRhoModelling = [segue destinationViewController];
         // Set the variable
         [viewControllerRhoRhoModelling setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerRhoRhoModelling setEntitiesRegistered:entitiesRegistered];
         
     }
     
@@ -221,6 +246,7 @@
         ViewControllerRhoThetaModelling *viewControllerRhoThetaModelling = [segue destinationViewController];
         // Set the variable
         [viewControllerRhoThetaModelling setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerRhoThetaModelling setEntitiesRegistered:entitiesRegistered];
         
     }
     
@@ -236,6 +262,7 @@
         ViewControllerAddPositions * viewControllerAddPositions = [segue destinationViewController];
         // Set the variable
         [viewControllerAddPositions setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerAddPositions setEntitiesRegistered:entitiesRegistered];
         
     }
 }

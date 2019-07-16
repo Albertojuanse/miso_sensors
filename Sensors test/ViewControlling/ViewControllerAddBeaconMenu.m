@@ -10,6 +10,8 @@
 
 @implementation ViewControllerAddBeaconMenu
 
+#pragma mark - UIViewController delegated methods
+
 /*!
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
@@ -40,6 +42,11 @@
                               action:@selector(uploadSegmentIndex:)
                     forControlEvents:UIControlEventValueChanged];
     
+    // Table delegates; the delegate methods for attending these tables are part of this class.
+    self.tableEntities.delegate = self;
+    self.tableEntities.dataSource = self;
+    
+    [self.tableEntities reloadData];
 }
 
 /*!
@@ -217,6 +224,8 @@
 
 }
 
+#pragma mark - Instance methods
+
 /*!
  @method setbeaconsAndPositionsRegistered:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
@@ -257,7 +266,15 @@
     positionChosenByUser = newPositionChosenByUser;
 }
 
-#pragma marks - Buttons event handles
+/*!
+ @method setEntitiesRegistered:
+ @discussion This method sets the NSMutableArray variable 'entitiesRegistered'.
+ */
+- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered {
+    entitiesRegistered = newEntitiesRegistered;
+}
+
+#pragma mark - Buttons event handles
 
 /*!
  @method handleButtonDelete:
@@ -421,7 +438,7 @@
                                 regionDic[@"z"] = [self.textBeaconZ text];
                             } else {
                                 
-                                // If all coordinate values missing the user trys to re-register a beacon
+                                // If all coordinate values missing the user tries to re-register a beacon
                                 if (
                                     [[self.textBeaconX text] isEqualToString:@""] &&
                                     [[self.textBeaconY text] isEqualToString:@""] &&
@@ -468,7 +485,7 @@
                         regionDic[@"position"] = positionToFind;
                     } else {
                         
-                        // If all coordinate values missing the user trys to re-register the same position
+                        // If all coordinate values missing the user tries to re-register the same position
                         if (
                             [[self.textPositionX text] isEqualToString:@""] &&
                             [[self.textPositionY text] isEqualToString:@""] &&
@@ -562,7 +579,7 @@
                 newRegionDic[@"position"] = positionToSave;
             } else {
                 
-                // If all coordinate values missing the user trys to re-register the same position
+                // If all coordinate values missing the user tries to re-register the same position
                 if (
                     [[self.textPositionX text] isEqualToString:@""] &&
                     [[self.textPositionY text] isEqualToString:@""] &&
@@ -586,11 +603,73 @@
 
 /*!
  @method handleButtonBack:
- @discussion This method handles the Back button action and segue back to the main menu; 'prepareForSegue:sender:' method is called before.
+ @discussion This method handles the 'Back' button action and segue back to the main menu; 'prepareForSegue:sender:' method is called before.
  */
 - (IBAction)handleButtonBack:(id)sender {
     [self performSegueWithIdentifier:@"backFromAddToMain" sender:sender];
 }
+
+/*!
+ @method handleButtonAddEntity:
+ @discussion This method handles the 'Add entity' button action and register the user entity if it does not exit.
+ */
+- (IBAction)handleButtonAddEntity:(id)sender {
+    
+    // The user tries to register the entity called
+    NSString * newEntityName = [self.textEntity text];
+    
+    // Search for it
+    BOOL dicFound = NO;
+    for (NSMutableDictionary * entityDic in entitiesRegistered) {
+        
+        // If it exists, return
+        if ([entityDic[@"name"] isEqualToString:newEntityName]) {
+            dicFound = YES;
+            return;
+        } else {
+            // Nothing
+        }
+    }
+    
+    // If it did not exist, create it
+    if (!dicFound) {
+        NSMutableDictionary * entityDic = [[NSMutableDictionary alloc] init];
+        [entityDic setValue:newEntityName forKey:@"name"];
+        [entitiesRegistered addObject:entityDic];
+    }
+    
+    // Reload visualization
+    [self.tableEntities reloadData];
+    return;
+}
+
+
+/*!
+ @method handleButtonRemoveEntity:
+ @discussion This method handles the 'Remove entity' button action and unregister the user entity if it exits.
+ */
+- (IBAction)handleButtonRemoveEntity:(id)sender {
+    
+    // The user tries to remove the entity called
+    NSString * removeEntityName = [self.textEntity text];
+    
+    // Search for it
+    NSMutableDictionary * entityDicFound;
+    for (NSMutableDictionary * entityDic in entitiesRegistered) {
+        // If it exists, save its reference
+        if ([entityDic[@"name"] isEqualToString:removeEntityName]) {
+            entityDicFound = entityDic;
+        }
+    }
+    if (entityDicFound) {
+        [entitiesRegistered removeObject:entityDicFound];
+    }
+    
+    // Reload visualization
+    [self.tableEntities reloadData];
+    return;
+}
+
 
 /*!
  @method prepareForSegue:sender:
@@ -605,6 +684,7 @@
         ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
         // Set the variable
         [viewControllerMainMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
         [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
         [viewControllerMainMenu setRegionPositionIdNumber:regionPositionIdNumber];
         
@@ -615,11 +695,63 @@
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
         // Set the variable
         [viewControllerMainMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
         [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
         [viewControllerMainMenu setRegionPositionIdNumber:regionPositionIdNumber];
         
         
     }
+}
+
+#pragma mark - UItableView delegate methods
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    // Return the number of sections.
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if (tableView == self.tableEntities) {
+        return [entitiesRegistered count];
+    }
+    return 0;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    // Common to all cells
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+    
+    // Configure individual cells
+    if (tableView == self.tableEntities) {
+        NSMutableDictionary * entityDic = [entitiesRegistered objectAtIndex:indexPath.row];
+        cell.textLabel.numberOfLines = 0; // Means any number
+        
+        cell.textLabel.text = [NSString stringWithFormat:@"%@", entityDic[@"name"]];
+        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+    }
+        
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (tableView == self.tableEntities) {
+        
+        // Get the chosen entity name
+        entityChosenByUser = [entitiesRegistered objectAtIndex:indexPath.row][@"name"];
+        self.textEntity.text = [entitiesRegistered objectAtIndex:indexPath.row][@"name"];
+        
+    }
+    return;
 }
 
 @end

@@ -10,7 +10,7 @@
 
 @implementation ViewControllerRhoThetaModelling
 
-#pragma marks - UIViewController delegated methods
+#pragma mark - UIViewController delegated methods
 
 /*!
  @method viewDidLoad
@@ -52,7 +52,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma marks - Instance methods
+#pragma mark - Instance methods
 
 /*!
  @method setbeaconsAndPositionsRegistered:
@@ -61,6 +61,15 @@
 - (void) setbeaconsAndPositionsRegistered:(NSMutableArray *)newbeaconsAndPositionsRegistered {
     beaconsAndPositionsRegistered = newbeaconsAndPositionsRegistered;
 }
+
+/*!
+ @method setEntitiesRegistered:
+ @discussion This method sets the NSMutableArray variable 'entitiesRegistered'.
+ */
+- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered {
+    entitiesRegistered = newEntitiesRegistered;
+}
+
 #pragma mark - Notification event handles
 
 /*!
@@ -87,7 +96,7 @@
     [self.canvas setNeedsDisplay];
 }
 
-#pragma marks - Buttons event handles
+#pragma mark - Buttons event handles
 
 /*!
  @method handleButtonMeasure:
@@ -157,6 +166,7 @@
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
         // Set the variables
         [viewControllerMainMenu setbeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
