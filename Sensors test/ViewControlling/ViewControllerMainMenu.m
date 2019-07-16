@@ -67,6 +67,19 @@
     if (!beaconsAndPositionsRegistered) {
         beaconsAndPositionsRegistered = [[NSMutableArray alloc] init];
         // Pre-registered regions
+        NSMutableDictionary * regionSelfDic = [[NSMutableDictionary alloc] init];
+        [regionSelfDic setValue:@"position" forKey:@"type"];
+        [regionSelfDic setValue:@"0.0" forKey:@"x"];
+        [regionSelfDic setValue:@"0.0" forKey:@"y"];
+        [regionSelfDic setValue:@"0.0" forKey:@"z"];
+        RDPosition * selfPosition = [[RDPosition alloc] init];
+        selfPosition.x = [NSNumber numberWithFloat:0.0];
+        selfPosition.y = [NSNumber numberWithFloat:0.0];
+        selfPosition.z = [NSNumber numberWithFloat:0.0];
+        [regionSelfDic setValue:selfPosition forKey:@"position"];
+        [regionSelfDic setValue:@"ipad@miso.uam.es" forKey:@"identifier"];
+        [beaconsAndPositionsRegistered addObject:regionSelfDic];
+        
         NSMutableDictionary * regionRaspiDic = [[NSMutableDictionary alloc] init];
         [regionRaspiDic setValue:@"beacon" forKey:@"type"];
         [regionRaspiDic setValue:@"25DC8A73-F3C9-4111-A7DD-C39CD4B828C7" forKey:@"uuid"];
