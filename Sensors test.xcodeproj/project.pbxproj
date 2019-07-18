@@ -28,6 +28,7 @@
 		4276127422C0EE91007BDED8 /* SharedData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4276127322C0EE91007BDED8 /* SharedData.m */; };
 		428AF6C022D7915000BE5374 /* ViewControllerSelectPositions.m in Sources */ = {isa = PBXBuildFile; fileRef = 428AF6BF22D7915000BE5374 /* ViewControllerSelectPositions.m */; };
 		428AF6C322D7A67500BE5374 /* ViewControllerThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 428AF6C222D7A67500BE5374 /* ViewControllerThetaThetaLocating.m */; };
+		428B7C6022E089B200B0C660 /* RDThetaThetaSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 428B7C5F22E089B200B0C660 /* RDThetaThetaSystem.m */; };
 		42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 42917F02229BE12900EE6CD3 /* Blackbox.m */; };
 		4295FB2222D35D7A0024B155 /* ViewControllerMainMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */; };
 		4295FB2622D360BB0024B155 /* ViewControllerAddBeaconMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */; };
@@ -73,6 +74,8 @@
 		428AF6BF22D7915000BE5374 /* ViewControllerSelectPositions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerSelectPositions.m; sourceTree = "<group>"; };
 		428AF6C122D7A64E00BE5374 /* ViewControllerThetaThetaLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerThetaThetaLocating.h; sourceTree = "<group>"; };
 		428AF6C222D7A67500BE5374 /* ViewControllerThetaThetaLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerThetaThetaLocating.m; sourceTree = "<group>"; };
+		428B7C5E22E089A000B0C660 /* RDThetaThetaSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDThetaThetaSystem.h; sourceTree = "<group>"; };
+		428B7C5F22E089B200B0C660 /* RDThetaThetaSystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDThetaThetaSystem.m; sourceTree = "<group>"; };
 		42917F02229BE12900EE6CD3 /* Blackbox.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Blackbox.m; sourceTree = "<group>"; };
 		42917F04229BE16500EE6CD3 /* Blackbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Blackbox.h; sourceTree = "<group>"; };
 		4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerMainMenu.m; sourceTree = "<group>"; };
@@ -169,6 +172,8 @@
 				426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */,
 				4275ED5B22D5F83000A5CAB7 /* RDRhoThetaSystem.h */,
 				4275ED5C22D5F84300A5CAB7 /* RDRhoThetaSystem.m */,
+				428B7C5E22E089A000B0C660 /* RDThetaThetaSystem.h */,
+				428B7C5F22E089B200B0C660 /* RDThetaThetaSystem.m */,
 			);
 			path = Radiodetermination;
 			sourceTree = "<group>";
@@ -271,6 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				428B7C6022E089B200B0C660 /* RDThetaThetaSystem.m in Sources */,
 				42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */,
 				426501BD22A03B4300BE20B7 /* Canvas.m in Sources */,
 				426501C322A03B5200BE20B7 /* RDPosition.m in Sources */,

@@ -36,13 +36,14 @@
     //     "identifier": (NSString *)identifier1;
     //
     //     "uuid": (NSString *)uuid1;
+    //
     //     "major": (NSString *)major1;
     //     "minor": (NSString *)minor1;
     //
     //     "position": (RDPosition *)position1;
     //     "x": (NSString *)x1;
     //     "y": (NSString *)y1;
-    //     "z": (NSString *)z1
+    //     "z": (NSString *)z1;
     //
     //     "entity": (NSMutableDictionary *)entityDic1;                 //  entityDic
     //
@@ -65,7 +66,6 @@
     //   (···)
     //  ]
     //
-    //
     // The schema of modelsGenerated is
     //
     //  [{ "name": name1;                                              //  modelDic
@@ -76,8 +76,6 @@
     //   },
     //   (···)
     //  ]
-    //
-    //
     //
     // The schema of modelComponents is
     //
@@ -94,18 +92,64 @@
     if (!beaconsAndPositionsRegistered) {
         beaconsAndPositionsRegistered = [[NSMutableArray alloc] init];
         // Pre-registered regions
-        NSMutableDictionary * regionSelfDic = [[NSMutableDictionary alloc] init];
-        [regionSelfDic setValue:@"position" forKey:@"type"];
-        [regionSelfDic setValue:@"0.0" forKey:@"x"];
-        [regionSelfDic setValue:@"0.0" forKey:@"y"];
-        [regionSelfDic setValue:@"0.0" forKey:@"z"];
-        RDPosition * selfPosition = [[RDPosition alloc] init];
-        selfPosition.x = [NSNumber numberWithFloat:0.0];
-        selfPosition.y = [NSNumber numberWithFloat:0.0];
-        selfPosition.z = [NSNumber numberWithFloat:0.0];
-        [regionSelfDic setValue:selfPosition forKey:@"position"];
-        [regionSelfDic setValue:@"ipad@miso.uam.es" forKey:@"identifier"];
-        [beaconsAndPositionsRegistered addObject:regionSelfDic];
+        NSMutableDictionary * entityDic = [[NSMutableDictionary alloc] init];
+        [entityDic setValue:@"Corner" forKey:@"name"];
+        NSMutableDictionary * regionPos1Dic = [[NSMutableDictionary alloc] init];
+        [regionPos1Dic setValue:@"position" forKey:@"type"];
+        [regionPos1Dic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [regionPos1Dic setValue:@"0.0" forKey:@"x"];
+        [regionPos1Dic setValue:@"0.0" forKey:@"y"];
+        [regionPos1Dic setValue:@"0.0" forKey:@"z"];
+        RDPosition * position1 = [[RDPosition alloc] init];
+        position1.x = [NSNumber numberWithFloat:0.0];
+        position1.y = [NSNumber numberWithFloat:0.0];
+        position1.z = [NSNumber numberWithFloat:0.0];
+        [regionPos1Dic setValue:position1 forKey:@"position"];
+        [regionPos1Dic setValue:entityDic forKey:@"entity"];
+        [regionPos1Dic setValue:@"position1@miso.uam.es" forKey:@"identifier"];
+        [beaconsAndPositionsRegistered addObject:regionPos1Dic];
+        NSMutableDictionary * regionPos2Dic = [[NSMutableDictionary alloc] init];
+        [regionPos2Dic setValue:@"position" forKey:@"type"];
+        [regionPos2Dic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [regionPos2Dic setValue:@"3.5" forKey:@"x"];
+        [regionPos2Dic setValue:@"0.0" forKey:@"y"];
+        [regionPos2Dic setValue:@"0.0" forKey:@"z"];
+        RDPosition * position2 = [[RDPosition alloc] init];
+        position2.x = [NSNumber numberWithFloat:3.5];
+        position2.y = [NSNumber numberWithFloat:0.0];
+        position2.z = [NSNumber numberWithFloat:0.0];
+        [regionPos2Dic setValue:position2 forKey:@"position"];
+        [regionPos2Dic setValue:entityDic forKey:@"entity"];
+        [regionPos2Dic setValue:@"position2@miso.uam.es" forKey:@"identifier"];
+        [beaconsAndPositionsRegistered addObject:regionPos2Dic];
+        NSMutableDictionary * regionPos3Dic = [[NSMutableDictionary alloc] init];
+        [regionPos3Dic setValue:@"position" forKey:@"type"];
+        [regionPos3Dic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [regionPos3Dic setValue:@"3.5" forKey:@"x"];
+        [regionPos3Dic setValue:@"13.0" forKey:@"y"];
+        [regionPos3Dic setValue:@"0.0" forKey:@"z"];
+        RDPosition * position3 = [[RDPosition alloc] init];
+        position3.x = [NSNumber numberWithFloat:3.5];
+        position3.y = [NSNumber numberWithFloat:13.0];
+        position3.z = [NSNumber numberWithFloat:0.0];
+        [regionPos3Dic setValue:position3 forKey:@"position"];
+        [regionPos3Dic setValue:entityDic forKey:@"entity"];
+        [regionPos3Dic setValue:@"position3@miso.uam.es" forKey:@"identifier"];
+        [beaconsAndPositionsRegistered addObject:regionPos3Dic];
+        NSMutableDictionary * regionPos4Dic = [[NSMutableDictionary alloc] init];
+        [regionPos4Dic setValue:@"position" forKey:@"type"];
+        [regionPos4Dic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [regionPos4Dic setValue:@"0.0" forKey:@"x"];
+        [regionPos4Dic setValue:@"13.0" forKey:@"y"];
+        [regionPos4Dic setValue:@"0.0" forKey:@"z"];
+        RDPosition * position4 = [[RDPosition alloc] init];
+        position4.x = [NSNumber numberWithFloat:0.0];
+        position4.y = [NSNumber numberWithFloat:13.0];
+        position4.z = [NSNumber numberWithFloat:0.0];
+        [regionPos4Dic setValue:position4 forKey:@"position"];
+        [regionPos4Dic setValue:entityDic forKey:@"entity"];
+        [regionPos4Dic setValue:@"position4@miso.uam.es" forKey:@"identifier"];
+        [beaconsAndPositionsRegistered addObject:regionPos4Dic];
         
         NSMutableDictionary * regionRaspiDic = [[NSMutableDictionary alloc] init];
         [regionRaspiDic setValue:@"beacon" forKey:@"type"];
@@ -144,10 +188,10 @@
         [entityRemoveDic setValue:@"<No entity>" forKey:@"name"];
         [entitiesRegistered addObject:entityRemoveDic];
         NSMutableDictionary * entity1Dic = [[NSMutableDictionary alloc] init];
-        [entity1Dic setValue:@"Entity 1" forKey:@"name"];
+        [entity1Dic setValue:@"Corner" forKey:@"name"];
         [entitiesRegistered addObject:entity1Dic];
         NSMutableDictionary * entity2Dic = [[NSMutableDictionary alloc] init];
-        [entity2Dic setValue:@"Entity 2" forKey:@"name"];
+        [entity2Dic setValue:@"Device" forKey:@"name"];
         [entitiesRegistered addObject:entity2Dic];
     }
     
