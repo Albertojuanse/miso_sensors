@@ -239,7 +239,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     
                     NSMutableDictionary * locatedPositions;
                     
-                    // Precision is arbitrary set to 5 cm
+                    // Precision is arbitrary set to 10 cm
                     NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
                                                  [NSNumber numberWithFloat:0.1], @"xPrecision",
                                                  [NSNumber numberWithFloat:0.1], @"yPrecision",
@@ -338,13 +338,14 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 [mode isEqualToString:@"THETA_THETA_LOCATING"]
                 ) {
                 // Do nothing
+                NSLog(@"[ERROR][LM] Beacons ranged in Theta Theta system based mode.");
             }
             
             
         } else { // If is idle...
             // ...if there is any beacon in the event...
             if (beacons.count > 0) {
-                // ...do something with them or it will be saved in some Ipad's queue and appear later.
+                // ...do something with them or it will be saved in some Ipad's buffering queue and appear later.
                 for (CLBeacon *beacon in beacons) {
                     NSString * uuid = [[beacon proximityUUID] UUIDString];
                     uuid = nil; // ARC dispose
@@ -368,8 +369,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         
         // If a rho type system
         if (
-            [mode isEqualToString:@"RHO_THETA_MODELING"] ||
-            [mode isEqualToString:@"RHO_THETA_LOCATING"]
+            [mode isEqualToString:@"RHO_THETA_MODELING"]
             )
         {
             
@@ -391,12 +391,69 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             }
         }
         
-        // If a theta theta type system
         if (
-            [mode isEqualToString:@"THETA_THETA_MODELING"] ||
+            [mode isEqualToString:@"RHO_THETA_LOCATING"]
+            )
+        {
+            // TO DO: RHO_THETA_MODELING mode. Alberto J. 2019/07/18.
+        }
+        
+        if (
+            [mode isEqualToString:@"THETA_THETA_MODELING"]
+            )
+        {
+            // TO DO: THETA_THETA_MODELING mode. Alberto J. 2019/07/18.
+        }
+        
+        if (
             [mode isEqualToString:@"THETA_THETA_LOCATING"]
-            ) {
-            // TO DO: THETA THETA SYSTEM
+            )
+        {
+            
+            if(positionChosenByUser && locatedPositionUUID) {
+                // The system is reciprocal, so it calculates the device position using the reference positions instead of the way round.
+                
+                // Save the measure
+                RDPosition * measurePosition = [[RDPosition alloc] init];
+                measurePosition.x = positionChosenByUser.x;
+                measurePosition.y = positionChosenByUser.y;
+                measurePosition.z = positionChosenByUser.z;
+                
+                [sharedData inMeasuresDicSetMeasure:[NSNumber numberWithDouble:[newHeading trueHeading]*M_PI/180.0]
+                                             ofType:@"heading"
+                                           withUUID:locatedPositionUUID
+                                         atPosition:measurePosition
+                                       andWithState:measuring];
+                
+                NSMutableDictionary * locatedPositions;
+                // Precision is arbitrary set to 10 cm
+                NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
+                                             [NSNumber numberWithFloat:0.1], @"xPrecision",
+                                             [NSNumber numberWithFloat:0.1], @"yPrecision",
+                                             [NSNumber numberWithFloat:0.1], @"zPrecision",
+                                             nil];
+                
+                // Ask radiolocation of beacons if posible...
+                locatedPositions = [thetaThetaSystem getLocationsUsingBarycenterAproximationWithMeasures:sharedData
+                                                                                           andPrecisions:precisions];
+                
+                // ...and save it in dictionary 'locatedDic'.
+                // In this dictionary keys are the UUID.
+                NSArray *positionKeys = [locatedPositions allKeys];
+                for (id positionKey in positionKeys) {
+                    [sharedData inLocatedDicSetPosition:[locatedPositions objectForKey:positionKey]
+                                               fromUUID:locatedPositionUUID];
+                }
+                
+                NSLog(@"[INFO][LM] Generated locations dictionary:");
+                NSLog(@"[INFO][LM]  -> %@", [sharedData getLocatedDic]);
+            
+                NSLog(@"[INFO][LM] Generated measures dictionary:");
+                NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDic]);
+            } else {
+                NSLog(@"[ERROR][LM] positionChosenByUser && locatedPositionUUID missing in Theta theta system based mode");
+            }
+            
         }
         
     } else { // If is idle...
@@ -464,6 +521,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         // In rho theta based system, user must choose which beacon is the source
         uuidChosenByUser = data[@"uuidChosenByUser"];
         positionChosenByUser = data[@"positionChosenByUser"];
+        positionChosenByUser = data[@"positionChosenByUser"];
+        locatedPositionUUID = data[@"locatedPositionUUID"];
         
         // Register them if it is posible.
         switch (CLLocationManager.authorizationStatus) {

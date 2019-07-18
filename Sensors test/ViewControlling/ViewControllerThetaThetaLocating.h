@@ -29,6 +29,7 @@
     NSMutableArray * entitiesRegistered;
     NSMutableArray * beaconsAndPositionsChosen;
     NSMutableArray * beaconsAndPositionsChosenIndexes;
+    NSString * locatedPositionUUID;
     NSString * entityChosenByUser;
     NSString * uuidChosenByUser;
     RDPosition * positionChosenByUser;

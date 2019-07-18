@@ -1107,6 +1107,9 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wz4-Vo-B97">
                                         <rect key="frame" x="704" y="818" width="32" height="30"/>
                                         <state key="normal" title="Next"/>
+                                        <connections>
+                                            <action selector="handleButtonNext:" destination="iCa-UJ-9hQ" eventType="touchUpInside" id="ZfK-KI-Fjb"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

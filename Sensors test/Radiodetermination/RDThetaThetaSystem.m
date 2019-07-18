@@ -43,7 +43,7 @@
 - (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithMeasures:(SharedData*)sharedData
                                                                 andPrecisions:(NSDictionary*)precisions
 {
-    NSLog(@"[INFO][RT] Start Radiolocating beacons");
+    NSLog(@"[INFO][TT] Start Radiolocating beacons");
     NSMutableDictionary * locatedPositions = [[NSMutableDictionary alloc] init];
     NSMutableDictionary * measuresDic = [sharedData getMeasuresDic];
     
@@ -76,7 +76,7 @@
     NSMutableDictionary * uuidDicDic;
     NSMutableDictionary * positionDic;
     
-    // Each UUID groups the measures taken from a certain beacon and so, for every one of them a RDPosition would be found. It is needed the info about how many beacons there are.
+    // In theta theta based systems each UUID represents a position that must be located, and so, for every one of them a RDPosition would be found. It is needed the info about how many UUID there are.
     NSArray * positionKeys = [measuresDic allKeys];
     NSMutableArray * diferentUUID = [[NSMutableArray alloc] init];
     for (id positionKey in positionKeys) {
@@ -102,23 +102,27 @@
             }
         }
     }
-    NSLog(@"[INFO][RT] Found %.2f different UUID", [[NSNumber numberWithInteger:diferentUUID.count] floatValue]);
+    NSLog(@"[INFO][TT] Found %.2f different UUID", [[NSNumber numberWithInteger:diferentUUID.count] floatValue]);
     
     // And thus, for every beacon that must be located with it unique UUID.
     for (NSString * UUIDtoLocate in diferentUUID) {
         
         NSString * uuid;
         
-        // Measures are only feasible if measures have both heading and rssi types.
-        BOOL isHeadingMeasure = NO;
-        BOOL isRSSIMeasure = NO;
+        // Measures are only feasible if there are heading type measures.
+        NSMutableArray * measuredHeadings = [[NSMutableArray alloc] init];
+        // For saving the positions where the device were aiming with the same index than measurings
+        NSMutableArray * measurePositions = [[NSMutableArray alloc] init];
+        RDPosition * measurePosition = [[RDPosition alloc] init];
+        measurePosition.z = [NSNumber numberWithFloat:0.0]; // For saving any z value
         
-        // For every position where measures were taken, which is usually only one,
+        // For every position where measuremets were aimed when taken
         NSArray * positionKeys = [measuresDic allKeys];
         for (id positionKey in positionKeys) {
             // ...get the dictionary for this position, and also get the position,...
             positionDic = [measuresDic objectForKey:positionKey];
-            RDPosition * measurePosition = positionDic[@"measurePosition"];
+            measurePosition = nil; // For ARC disposing
+            measurePosition = positionDic[@"measurePosition"];
             
             // Get the the dictionary with the UUID's dictionaries...
             uuidDicDic = positionDic[@"positionMeasures"];
@@ -129,8 +133,8 @@
                 uuid = uuidDic[@"uuid"];
                 
                 // ...and only perform the calculus if is the current searched UUID...
-                NSLog(@"[INFO][RT] UUIDtoLocate %@", UUIDtoLocate);
-                NSLog(@"[INFO][RT] uuid %@", uuid);
+                NSLog(@"[INFO][TT] UUIDtoLocate %@", UUIDtoLocate);
+                NSLog(@"[INFO][TT] uuid %@", uuid);
                 if ([UUIDtoLocate isEqualToString:uuid]) {
                     
                     // Get the the dictionary with the measures dictionaries...
@@ -141,13 +145,9 @@
                     
                     // But only do this if the 'measureDicDic' exists
                     if (measureDicDic.count == 0) {
-                        NSLog(@"[INFO][RT] measureDicDic.count == 0 => YES");
                         // Not evaluate
                     } else {
-                        NSLog(@"[INFO][RT] measureDicDic.count == 0 => NO");
-                        NSNumber * measuresRSSIAcumulation = [NSNumber numberWithFloat:0.0];
                         NSNumber * measuresHeadingAcumulation = [NSNumber numberWithFloat:0.0];
-                        NSInteger measureRSSIIndex = 0;
                         NSInteger measureHeadingIndex = 0;
                         NSArray * measuresKeys = [measureDicDic allKeys];
                         for (id measureKey in measuresKeys) {
@@ -155,33 +155,18 @@
                             
                             // Get the data and acumulate it
                             if ([measureDic[@"type"] isEqualToString:@"rssi"]) {
-                                measuresRSSIAcumulation = [NSNumber numberWithFloat:
-                                                           [measuresRSSIAcumulation floatValue] +
-                                                           [measureDic[@"measure"] floatValue]
-                                                           ];
-                                measureRSSIIndex++;
-                                isRSSIMeasure = YES;
+                                // Do nothing; they should no exist.
                             }
                             if ([measureDic[@"type"] isEqualToString:@"heading"]) {
                                 measuresHeadingAcumulation = [NSNumber numberWithFloat:
                                                               [measuresHeadingAcumulation floatValue] +
                                                               [measureDic[@"measure"] floatValue]
                                                               ];
-                                isHeadingMeasure = YES;
                                 measureHeadingIndex++;
                             }
                         }
                         
                         // Calculate the mean averages
-                        NSNumber * measureRSSIIndexFloat = [NSNumber numberWithInteger:measureRSSIIndex];
-                        NSNumber * measuresRSSIAverage = [NSNumber numberWithFloat:0.0];
-                        if (measureRSSIIndex != 0) { // Division by zero preventing
-                            measuresRSSIAverage = [NSNumber numberWithFloat:
-                                                   [measuresRSSIAcumulation floatValue] /
-                                                   [measureRSSIIndexFloat floatValue]
-                                                   ];
-                        }
-                        
                         NSNumber * measureHeadingIndexFloat = [NSNumber numberWithInteger:measureHeadingIndex];
                         NSNumber * measuresHeadingAverage = [NSNumber numberWithFloat:0.0];
                         if (measureHeadingIndex != 0) { // Division by zero preventing
@@ -189,36 +174,90 @@
                                                       [measuresHeadingAcumulation floatValue] /
                                                       [measureHeadingIndexFloat floatValue]
                                                       ];
-                        }
-                        
-                        // Final calculus is only performed if there are both RSSI and heading measures
-                        // (x, y) = (x0, y0) + (RSSI * cos(heading), RSSI * sen(heading)) in radians and meters
-                        NSLog(isRSSIMeasure ? @"[INFO][RT] isRSSIMeasure = YES" : @"[INFO][RT] isRSSIMeasure = NO");
-                        NSLog(isHeadingMeasure ? @"[INFO][RT] isHeadingMeasure = YES" : @"[INFO][RT] isHeadingMeasure = NO");
-                        if (isRSSIMeasure && isHeadingMeasure) {
-                            RDPosition * locatedPosition = [[RDPosition alloc] init];
-                            locatedPosition.x = [NSNumber numberWithFloat:[measurePosition.x floatValue] +
-                                                 [measuresRSSIAverage floatValue] *
-                                                 cos([measuresHeadingAverage doubleValue])
-                                                 ];
-                            locatedPosition.y = [NSNumber numberWithFloat:[measurePosition.y floatValue] +
-                                                 [measuresRSSIAverage floatValue] *
-                                                 sin([measuresHeadingAverage doubleValue])
-                                                 ];
-                            locatedPosition.z = measurePosition.z;
                             
-                            NSLog(@"[INFO][RT] locatedPosition.x: %.2f", [locatedPosition.x floatValue]);
-                            NSLog(@"[INFO][RT] locatedPosition.y: %.2f", [locatedPosition.y floatValue]);
-                            NSLog(@"[INFO][RT] locatedPosition.z: %.2f", [locatedPosition.z floatValue]);
-                            
-                            [locatedPositions setObject:locatedPosition forKey:uuid];
+                            // Save the measure and the position
+                            [measuredHeadings addObject:measuresHeadingAverage];
+                            [measurePositions addObject:measurePosition];
                         }
                     }
                 }
             }
         }
+        
+        // Finally, calculus for this UUID is only performed if there are more than two heading measures
+        if (headingMeasures.count > 2) {
+            
+            // In this aproximate calculus, the first trigonometrical ecuation got from the measures is solved with the rest of them, in pairs, and then calculated the barycenter of the results.
+            
+            RDPosition * locatedPosition = [[RDPosition alloc] init];
+            NSMutableArray * solutions = [[NSMutableArray alloc] init];
+            
+            NSNumber * firstHeading = nil;
+            RDPosition * firstPosition = nil;
+            NSUInteger headingIndex = 0;
+            for (NSNumber * eachHeading in measuredHeadings) {
+                
+                // The first one is saved.
+                if (headingIndex == 0) {
+                    firstHeading = eachHeading;
+                    firstPosition = [measurePositions objectAtIndex:headingIndex];
+                } else {
+                    // The rest of iterations, the code executed is the following
+                    
+                    RDPosition * eachPosition = [measurePositions objectAtIndex:headingIndex];
+                    
+                    RDPosition * solution = [[RDPosition alloc] init];
+                    solution.x = [NSNumber numberWithFloat:
+                                  (
+                                   (cos([firstHeading doubleValue]) * [firstPosition.x floatValue]
+                                    - sin([firstHeading doubleValue]) * [firstPosition.y floatValue]) *
+                                   (-sin([eachHeading doubleValue])) -
+                                   (cos([eachHeading doubleValue]) * [eachPosition.x floatValue]
+                                    - sin([eachHeading doubleValue]) * [eachPosition.y floatValue]) *
+                                   (-sin([firstHeading doubleValue]))
+                                   ) /
+                                  (
+                                   (cos([firstHeading doubleValue])) *
+                                   (- sin([eachHeading doubleValue])) -
+                                   (cos([eachHeading doubleValue])) *
+                                   (-sin([firstHeading doubleValue]))
+                                   )
+                                  ];
+                    solution.y = [NSNumber numberWithFloat:
+                                  (
+                                   (cos([firstHeading doubleValue])) *
+                                   (cos([firstHeading doubleValue]) * [firstPosition.x floatValue]
+                                    - sin([firstHeading doubleValue]) * [firstPosition.y floatValue]) -
+                                   (cos([eachHeading doubleValue])) *
+                                   (cos([eachHeading doubleValue]) * [eachPosition.x floatValue]
+                                    - sin([eachHeading doubleValue]) * [eachPosition.y floatValue])
+                                   ) /
+                                  (
+                                   (cos([firstHeading doubleValue])) *
+                                   (- sin([eachHeading doubleValue])) -
+                                   (cos([eachHeading doubleValue])) *
+                                   (-sin([firstHeading doubleValue]))
+                                   )
+                                  ];
+                    solution.z = measurePosition.z;
+                    
+                    
+                    [solutions addObject:solution];
+                }
+                headingIndex++;
+            }
+            
+            // And aproximate the solution by the barycenter of the set of parcial solutions
+            locatedPosition = [self getBarycenterOf:solutions];
+            
+            NSLog(@"[INFO][TT] locatedPosition.x: %.2f", [locatedPosition.x floatValue]);
+            NSLog(@"[INFO][TT] locatedPosition.y: %.2f", [locatedPosition.y floatValue]);
+            NSLog(@"[INFO][TT] locatedPosition.z: %.2f", [locatedPosition.z floatValue]);
+            
+            [locatedPositions setObject:locatedPosition forKey:uuid];
+        }
     }
-    NSLog(@"[INFO][RT] Finish Radiolocating beacons");
+    NSLog(@"[INFO][TT] Finish Radiolocating beacons");
     return locatedPositions;
 }
 

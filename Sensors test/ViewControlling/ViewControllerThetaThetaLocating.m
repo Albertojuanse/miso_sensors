@@ -22,6 +22,7 @@
     // Variables
     idle = YES;
     measuring = NO;
+    locatedPositionUUID = [[NSUUID UUID] UUIDString];
     
     // Ask canvas to initialize
     [self.canvas prepareCanvas];
@@ -143,6 +144,7 @@
             [data setObject:beaconsAndPositionsChosenToSend forKey:@"beaconsAndPositions"];
             [data setObject:positionChosenByUser forKey:@"positionChosenByUser"];
             [data setObject:uuidChosenByUser forKey:@"uuidChosenByUser"];
+            [data setObject:locatedPositionUUID forKey:@"locatedPositionUUID"];
             [data setObject:@"THETA_THETA_LOCATING" forKey:@"mode"];
             // And send the notification
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
@@ -172,6 +174,15 @@
  */
 - (IBAction)handleBackButton:(id)sender {
     [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToMain" sender:sender];
+}
+
+/*!
+ @method handleButtonNext:
+ @discussion This method is called one the user wnats to locate a new position and thus a new UUID is generated for it.
+ */
+- (IBAction)handleButtonNext:(id)sender {
+    // New UUID
+    locatedPositionUUID = [[NSUUID UUID] UUIDString];
 }
 
 /*!

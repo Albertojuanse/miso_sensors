@@ -33,6 +33,7 @@
     BOOL idle;
     NSString * mode;
     NSString * uuidChosenByUser;
+    NSString * locatedPositionUUID;
     RDPosition * positionChosenByUser;
     BOOL isUuidChosenByUserRanged;
     
