@@ -108,7 +108,7 @@
                         <segue destination="Crx-eI-vrX" kind="show" identifier="fromMainToAdd" id="AQR-tb-zhA"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="fromMainToRHO_RHO_MODELING" id="N3R-vg-jtW"/>
                         <segue destination="1M1-iA-J20" kind="show" identifier="fromMainToRHO_THETA_MODELING" id="ZVX-zW-HeN"/>
-                        <segue destination="zBC-hA-n0a" kind="show" identifier="fromMainToAddPositions" id="DJm-0E-zOi"/>
+                        <segue destination="zBC-hA-n0a" kind="show" identifier="fromMainToSelectPositions" id="DJm-0E-zOi"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WTd-at-ldf" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -885,7 +885,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="zil-AZ-XAM" customClass="ViewCon">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="zil-AZ-XAM">
                                 <rect key="frame" x="32" y="187" width="704" height="744"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
@@ -950,8 +950,8 @@
                     </view>
                     <connections>
                         <outlet property="tableBeaconsAndPositions" destination="zil-AZ-XAM" id="AoX-da-XFj"/>
-                        <segue destination="iCa-UJ-9hQ" kind="show" identifier="fromAddPositionsToTHETA_THETA_LOCATING" id="VRl-DF-dLN"/>
-                        <segue destination="lVP-jp-YaV" kind="show" identifier="fromAddPositionsToMain" id="OWJ-G0-Y79"/>
+                        <segue destination="iCa-UJ-9hQ" kind="show" identifier="fromSelectPositionsToTHETA_THETA_LOCATING" id="VRl-DF-dLN"/>
+                        <segue destination="lVP-jp-YaV" kind="show" identifier="fromSelectPositionsToMain" id="OWJ-G0-Y79"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ewG-5j-Hqc" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1141,6 +1141,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="CUv-vL-aFj"/>
+        <segue reference="OWJ-G0-Y79"/>
     </inferredMetricsTieBreakers>
 </document>

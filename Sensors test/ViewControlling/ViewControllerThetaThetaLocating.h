@@ -13,9 +13,9 @@
 
 /*!
  @class ViewControllerThetaThetaLocating
- @discussion This class extends UIViewController and controls the interface for locating the device with the rho theta location system.
+ @discussion This class extends UIViewController and controls the interface for locating the device with the theta theta location system.
  */
-@interface ViewControllerThetaThetaLocating : UIViewController {
+@interface ViewControllerThetaThetaLocating : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     // For update canvas
     NSMutableDictionary * measuresDic;
     NSMutableDictionary * locatedDic;
@@ -29,7 +29,7 @@
     NSMutableArray * entitiesRegistered;
     NSMutableArray * beaconsAndPositionsChosen;
     NSMutableArray * beaconsAndPositionsChosenIndexes;
-    NSString * uuidChosenByUser;
+    RDPosition * positionChosenByUser;
     
 }
 

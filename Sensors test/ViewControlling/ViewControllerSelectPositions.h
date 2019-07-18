@@ -25,7 +25,6 @@
     NSMutableArray * entitiesRegistered;
     NSMutableArray * beaconsAndPositionsChosen;
     NSMutableArray * beaconsAndPositionsChosenIndexes;
-    NSString * uuidChosenByUser;    
     
 }
 

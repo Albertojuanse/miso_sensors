@@ -34,7 +34,7 @@
     
     // Visualization
     [self.buttonMeasure setEnabled:YES];
-    [self.labelStatus setText:@"IDLE; please, aid the iBEacon device and tap 'Measure' for starting. Tap back for finishing."];
+    [self.labelStatus setText:@"IDLE; please, aim the iBEacon device and tap 'Measure' for starting. Tap back for finishing."];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableBeaconsAndPositions.delegate = self;
@@ -135,7 +135,7 @@
         [self.buttonMeasure setEnabled:YES];
         idle = YES;
         measuring = NO;
-        [self.labelStatus setText:@"IDLE; please, aid the iBEacon device and tap 'Measure' for starting. Tap back for finishing."];
+        [self.labelStatus setText:@"IDLE; please, aim the iBEacon device and tap 'Measure' for starting. Tap back for finishing."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
                                                             object:nil];
         NSLog(@"[NOTI][VCRTM] Notification \"stopMeasuring\" posted.");

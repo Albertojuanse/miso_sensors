@@ -74,7 +74,7 @@
  @discussion This method handles the Back button action and segue back to the main menu; 'prepareForSegue:sender:' method is called before.
  */
 - (IBAction)handleButtonBack:(id)sender {
-    [self performSegueWithIdentifier:@"fromAddPositionsToMain" sender:sender];
+    [self performSegueWithIdentifier:@"fromSelectPositionsToMain" sender:sender];
 }
 
 /*!
@@ -82,6 +82,8 @@
  @discussion This method handles the 'Go' button action and segue to theta theta system locating view; 'prepareForSegue:sender:' method is called before.
  */
 - (IBAction)handleButtonGo:(id)sender {
+    
+    NSLog(@"[INFO][VCSP]: Button GO pressed.");
     
     // This button can segue with different views depending on the mode chosen by the user in the main menu
     if ([chosenMode isEqualToString:@"RHO_RHO_LOCATING"]) {
@@ -93,7 +95,12 @@
         return;
     }
     if ([chosenMode isEqualToString:@"THETA_THETA_LOCATING"]) {
-        [self performSegueWithIdentifier:@"fromAddPositionsToTHETA_THETA_LOCATING" sender:sender];
+        // Go is only allowed if the user did choose at least one position in the table
+        NSLog(@"[INFO][VCSP]: Chosen mode is THETA_THETA_LOCATING.");
+        if (beaconsAndPositionsChosen.count > 0) {
+            NSLog(@"[INFO][VCSP]: beaconsAndPositionsChosen is not empty.");
+            [self performSegueWithIdentifier:@"fromSelectPositionsToTHETA_THETA_LOCATING" sender:sender];
+        }
     }
 }
 
@@ -131,15 +138,18 @@
      return;
     */
         
-    if ([[segue identifier] isEqualToString:@"fromAddPositionsToTHETA_THETA_LOCATING"]) {
+    if ([[segue identifier] isEqualToString:@"fromSelectPositionsToTHETA_THETA_LOCATING"]) {
         
         // Get destination view
         ViewControllerThetaThetaLocating * viewControllerThetaThetaLocating = [segue destinationViewController];
         // Set the variables
         [viewControllerThetaThetaLocating setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+        [viewControllerThetaThetaLocating setBeaconsAndPositionsChosen:beaconsAndPositionsChosen];
+        [viewControllerThetaThetaLocating setBeaconsAndPositionsChosenIndexes:beaconsAndPositionsChosenIndexes];
+        [viewControllerThetaThetaLocating setEntitiesRegistered:entitiesRegistered];
         
     }
-    if ([[segue identifier] isEqualToString:@"fromAddPositionsToMain"]) {
+    if ([[segue identifier] isEqualToString:@"fromSelectPositionsToMain"]) {
         
         // Get destination view
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
