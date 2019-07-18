@@ -32,7 +32,7 @@
 
     // The schema of the beaconsAndPositionsRegistered object is:
     //
-    //  [{ "type": @"beacon" | @"position" | @"model";                  //  regionDic
+    //  [{ "type": @"beacon" | @"position";                             //  regionDic
     //     "identifier": (NSString *)identifier1;
     //
     //     "uuid": (NSString *)uuid1;
@@ -47,9 +47,8 @@
     //
     //     "entity": (NSMutableDictionary *)entityDic1;                 //  entityDic
     //
-    //     "model": (NSMutableDictionary *)modelDic1;                   //  modelDic
     //   },
-    //   { "type": @"beacon" | @"position";                             //  regionDic
+    //   { "type": @"beacon" | @"position";
     //     "identifier": (NSString *)identifier2;
     //     "uuid": (NSString *)uuid2;
     //     (···)
@@ -80,10 +79,12 @@
     // The schema of modelComponents is
     //
     //  [{ "type": @"beacon" | @"position";                            //  modelDic
-    //     "entity": (NSMutableDictionary *)entityDic1                 //  entityDic
+    //     "entity": (NSMutableDictionary *)entityDic1;                //  entityDic
+    //     "regionDic": (NSMutableDictionary *)regionDic1              //  regionDic
     //   },
     //   { "type": @"beacon" | @"position";
-    //     "entity": (NSMutableDictionary *)entityDic2
+    //     "entity": (NSMutableDictionary *)entityDic2;
+    //     "regionDic": (NSMutableDictionary *)regionDic2
     //   },
     //   (···)
     //  ]
@@ -193,6 +194,10 @@
         NSMutableDictionary * entity2Dic = [[NSMutableDictionary alloc] init];
         [entity2Dic setValue:@"Device" forKey:@"name"];
         [entitiesRegistered addObject:entity2Dic];
+    }
+    
+    if (!modelsGenerated) {
+        modelsGenerated = [[NSMutableArray alloc] init];
     }
     
     if (!regionBeaconIdNumber) {

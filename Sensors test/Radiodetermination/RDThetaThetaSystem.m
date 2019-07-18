@@ -1,14 +1,14 @@
 //
-//  RDRhoThetaSystem.m
+//  RDThetaThetaSystem.m
 //  Sensors test
 //
-//  Created by Alberto J. on 10/7/19.
+//  Created by Alberto J. on 18/7/19.
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
-#import "RDRhoThetaSystem.h"
+#import "RDThetaThetaSystem.h"
 
-@implementation RDRhoThetaSystem : NSObject
+@implementation RDThetaThetaSystem : NSObject
 
 - (instancetype)init
 {
@@ -16,10 +16,34 @@
     return self;
 }
 
-- (NSMutableDictionary *) getLocationsWithMeasures:(SharedData*)sharedData
-                                     andPrecisions:(NSDictionary*)precisions
+/*!
+ @method getBarycenterOf:
+ @discussion This method calculated the barycenter of a given set of RDPosition objects.
+ */
+- (RDPosition *) getBarycenterOf:(NSMutableArray *)points {
+    RDPosition * barycenter = [[RDPosition alloc] init];
+    float sumx = 0.0;
+    float sumy = 0.0;
+    float sumz = 0.0;
+    for (RDPosition * point in points) {
+        sumx = sumx + [point.x floatValue];
+        sumy = sumy + [point.y floatValue];
+        sumz = sumz + [point.z floatValue];
+    }
+    barycenter.x = [[NSNumber alloc] initWithFloat: sumx / points.count];
+    barycenter.y = [[NSNumber alloc] initWithFloat: sumy / points.count];
+    barycenter.z = [[NSNumber alloc] initWithFloat: sumz / points.count];
+    return barycenter;
+}
+
+/*!
+ @method getLocationsUsingBarycenterAproximationWithMeasures:andPrecisions:
+ @discussion This method ocates a point given the heading measures from different points aiming it and calculates the barycenter of the solutions.
+ */
+- (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithMeasures:(SharedData*)sharedData
+                                                                andPrecisions:(NSDictionary*)precisions
 {
- NSLog(@"[INFO][RT] Start Radiolocating beacons");
+    NSLog(@"[INFO][RT] Start Radiolocating beacons");
     NSMutableDictionary * locatedPositions = [[NSMutableDictionary alloc] init];
     NSMutableDictionary * measuresDic = [sharedData getMeasuresDic];
     
@@ -147,7 +171,7 @@
                                 measureHeadingIndex++;
                             }
                         }
-                            
+                        
                         // Calculate the mean averages
                         NSNumber * measureRSSIIndexFloat = [NSNumber numberWithInteger:measureRSSIIndex];
                         NSNumber * measuresRSSIAverage = [NSNumber numberWithFloat:0.0];
@@ -166,7 +190,7 @@
                                                       [measureHeadingIndexFloat floatValue]
                                                       ];
                         }
-                            
+                        
                         // Final calculus is only performed if there are both RSSI and heading measures
                         // (x, y) = (x0, y0) + (RSSI * cos(heading), RSSI * sen(heading)) in radians and meters
                         NSLog(isRSSIMeasure ? @"[INFO][RT] isRSSIMeasure = YES" : @"[INFO][RT] isRSSIMeasure = NO");

@@ -26,6 +26,7 @@
     // Beacons' region identifiers
     NSMutableArray * beaconsAndPositionsRegistered;
     NSMutableArray * entitiesRegistered;
+    NSMutableArray * modelsGenerated;
     NSNumber * regionBeaconIdNumber;
     NSNumber * regionPositionIdNumber;
     

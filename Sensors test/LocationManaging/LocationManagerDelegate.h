@@ -11,6 +11,7 @@
 #import "RDPosition.h"
 #import "RDRhoRhoSystem.h"
 #import "RDRhoThetaSystem.h"
+#import "RDThetaThetaSystem.h"
 #import "SharedData.h"
 
 /*!
@@ -23,6 +24,7 @@
     SharedData * sharedData;
     RDRhoRhoSystem * rhoRhoSystem;
     RDRhoThetaSystem * rhoThetaSystem;
+    RDThetaThetaSystem * thetaThetaSystem;
     
     // Variables
     RDPosition * position;
@@ -31,10 +33,12 @@
     BOOL idle;
     NSString * mode;
     NSString * uuidChosenByUser;
+    RDPosition * positionChosenByUser;
     BOOL isUuidChosenByUserRanged;
     
     // Data store
     NSMutableArray * monitoredRegions;
+    NSMutableArray * monitoredPositions;
     NSMutableArray * rangedRegions;
     CLLocationManager * locationManager;
     NSMutableArray * rangedBeacons;

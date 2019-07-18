@@ -23,6 +23,7 @@
         sharedData = sharedDataFromAppDelegate;
         rhoRhoSystem = [[RDRhoRhoSystem alloc] init];
         rhoThetaSystem = [[RDRhoThetaSystem alloc] init];
+        thetaThetaSystem = [[RDThetaThetaSystem alloc] init];
         
         // Instance variables
         // Set device's location at the origin
@@ -35,6 +36,7 @@
         idle = YES;
         mode = nil;
         uuidChosenByUser = nil;
+        positionChosenByUser = nil;
         isUuidChosenByUserRanged = NO;
         // Heading is not delivered unless new values avalible; when RSSI measures from the chosen UUID is saved, no heading is saved until user moves the device; thus, this location is saved if no heading measure is taken
         lastHeadingPosition = [NSNumber numberWithFloat:0.0];
@@ -276,8 +278,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                                            andWithState:measuring];
                                     
                                     // Ask radiolocation of beacons if posible...
-                                    locatedPositions = [rhoThetaSystem getLocationsUsingGridAproximationWithMeasures:sharedData
-                                                                                                       andPrecisions:precisions];
+                                    locatedPositions = [rhoThetaSystem getLocationsWithMeasures:sharedData
+                                                                                  andPrecisions:precisions];
                                 }
                             }
                         }
@@ -441,8 +443,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 
 #pragma mark - Notification event handles
 
-
-
 /*!
  @method startMeasuring
  @discussion This method sets the flag 'measuring' true, and thus the measures are stored.
@@ -454,12 +454,16 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         measuring = YES;
         idle = NO;
         
-        // The notification payload is the array with the beacons that must be ranged, mode and UUID source selected by user
+        // The notification payload is the array with the positions or beacons that must be ranged, its associated entities, modeling mode and UUID or position source selected by user
         NSDictionary *data = notification.userInfo;
-        mode = [data valueForKey:@"mode"];
+        // This cannot be null
+        mode = data[@"mode"];
+        NSMutableArray * beaconsAndPositions = data[@"beaconsAndPositions"];
+        
+        // This can be null
         // In rho theta based system, user must choose which beacon is the source
-        uuidChosenByUser = [data valueForKey:@"uuidChosenByUser"];
-        NSMutableArray * beaconsAndPositionsRegistered = [data valueForKey:@"beaconsAndPositionsRegistered"];
+        uuidChosenByUser = data[@"uuidChosenByUser"];
+        positionChosenByUser = data[@"positionChosenByUser"];
         
         // Register them if it is posible.
         switch (CLLocationManager.authorizationStatus) {
@@ -517,13 +521,13 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         }
         
         monitoredRegions = [[NSMutableArray alloc] init];
+        monitoredPositions = [[NSMutableArray alloc] init];
         rangedRegions = [[NSMutableArray alloc] init];
         
         // If using location services is allowed
         if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
            CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
             
-            // If a rho type system
             if (
                 [mode isEqualToString:@"RHO_RHO_MODELING"] ||
                 [mode isEqualToString:@"RHO_THETA_MODELING"] ||
@@ -532,24 +536,39 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 ) {
                 
                 // Resgiter the regions to be monitorized
-                for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
+                for (NSMutableDictionary * regionDic in beaconsAndPositions) {
                     
-                    NSString * uuidString = regionDic[@"uuid"];
-                    NSInteger major = [regionDic[@"major"] integerValue];
-                    NSInteger minor = [regionDic[@"minor"] integerValue];
-                    NSString * identifier = regionDic[@"identifier"];
+                    // Could be a position or a beacon
+                    if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+                        NSString * uuidString = regionDic[@"uuid"];
+                        NSInteger major = [regionDic[@"major"] integerValue];
+                        NSInteger minor = [regionDic[@"minor"] integerValue];
+                        NSString * identifier = regionDic[@"identifier"];
+                        
+                        // Create a NSUUID with proximity UUID of the broadcasting beacons
+                        NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:uuidString];
+                        
+                        // Setup searching region with proximity UUID as the broadcasting beacon
+                        CLBeaconRegion * region = [[CLBeaconRegion alloc] initWithProximityUUID:uuid major:major minor:minor identifier:identifier];
+                        [monitoredRegions addObject:region];
+                        
+                        [locationManager startRangingBeaconsInRegion:region];
+                        [rangedRegions addObject:region];
+                        NSLog(@"[INFO][LM] Device monitorizes a region:");
+                        NSLog(@"[INFO][LM] -> %@", [[region proximityUUID] UUIDString]);
+                        
+                        // But if its position is loaded, the user wants to use it to locate itself against them
+                        if (regionDic[@"position"]) {
+                            [monitoredPositions addObject:regionDic[@"position"]];
+                        }
+                    }
+                    if ([@"position" isEqualToString:regionDic[@"type"]]) {
+                        [monitoredPositions addObject:regionDic[@"position"]];
+                    }
+                    if ([@"model" isEqualToString:regionDic[@"type"]]) {
+                        // TO DO: What needs Location manager of previus models?. Alberto J. 2019/07/18.
+                    }
                     
-                    // Create a NSUUID with proximity UUID of the broadcasting beacons
-                    NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:uuidString];
-                    
-                    // Setup searching region with proximity UUID as the broadcasting beacon
-                    CLBeaconRegion * region = [[CLBeaconRegion alloc] initWithProximityUUID:uuid major:major minor:minor identifier:identifier];
-                    [monitoredRegions addObject:region];
-                    
-                    [locationManager startRangingBeaconsInRegion:region];
-                    [rangedRegions addObject:region];
-                    NSLog(@"[INFO][LM] Device monitorizes a region:");
-                    NSLog(@"[INFO][LM] -> %@", [[region proximityUUID] UUIDString]);
                 }
                 NSLog(@"[INFO][LM] Start monitoring regions.");
             }
@@ -574,6 +593,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             }
             [locationManager stopUpdatingHeading];
             monitoredRegions = nil; // For ARC disposing
+            monitoredPositions = nil;
             rangedRegions = nil;
         }
     }
@@ -584,7 +604,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  @discussion This method sets the flag 'measuring' false, and thus the measures are not stored; it also deletes the monitored regions from location manager.
  */
 - (void) stopMeasuring:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"stopMeasuring"]){
+    if ([[notification name] isEqualToString:@"stopMeasuring"]) {
         NSLog(@"[NOTI][LM] Notfication \"stopMeasuring\" recived.");
     
         // Instance variables
@@ -598,6 +618,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         }
         [locationManager stopUpdatingHeading];
         monitoredRegions = nil; // For ARC disposing
+        monitoredPositions = nil;
         rangedRegions = nil;
     }
 }
@@ -664,6 +685,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         idle = YES;
         mode = nil;
         uuidChosenByUser = nil;
+        positionChosenByUser = nil;
         isUuidChosenByUserRanged = NO;
         // Heading is not delivered unless new values avalible; when RSSI measures from the chosen UUID is saved, no heading is saved until user moves the device; thus, this location is saved if no heading measure is taken
         lastHeadingPosition = nil;
@@ -675,6 +697,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         }
         [locationManager stopUpdatingHeading];
         monitoredRegions = nil; // For ARC disposing
+        monitoredPositions = nil;
         rangedRegions = nil;
     }
 }

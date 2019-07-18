@@ -29,12 +29,15 @@
     NSMutableArray * entitiesRegistered;
     NSMutableArray * beaconsAndPositionsChosen;
     NSMutableArray * beaconsAndPositionsChosenIndexes;
+    NSString * entityChosenByUser;
+    NSString * uuidChosenByUser;
     RDPosition * positionChosenByUser;
     
 }
 
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;
 @property (weak, nonatomic) IBOutlet UITableView *tableBeaconsAndPositionsChosen;
+@property (weak, nonatomic) IBOutlet UITableView *tableEntities;
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 

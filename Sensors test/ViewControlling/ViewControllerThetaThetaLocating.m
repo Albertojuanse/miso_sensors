@@ -38,9 +38,12 @@
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableBeaconsAndPositionsChosen.delegate = self;
+    self.tableEntities.delegate = self;
     self.tableBeaconsAndPositionsChosen.dataSource = self;
+    self.tableEntities.dataSource = self;
     
     [self.tableBeaconsAndPositionsChosen reloadData];
+    [self.tableEntities reloadData];
 }
 
 /*!
@@ -137,8 +140,9 @@
             for (NSMutableDictionary * regionDic in beaconsAndPositionsChosen) {
                 [beaconsAndPositionsChosenToSend addObject:regionDic];
             }
-            [data setObject:beaconsAndPositionsChosenToSend forKey:@"beaconsAndPositionsRegistered"];
+            [data setObject:beaconsAndPositionsChosenToSend forKey:@"beaconsAndPositions"];
             [data setObject:positionChosenByUser forKey:@"positionChosenByUser"];
+            [data setObject:uuidChosenByUser forKey:@"uuidChosenByUser"];
             [data setObject:@"THETA_THETA_LOCATING" forKey:@"mode"];
             // And send the notification
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
@@ -210,6 +214,9 @@
 {
     if (tableView == self.tableBeaconsAndPositionsChosen) {
         return [beaconsAndPositionsChosen count];
+    }
+    if (tableView == self.tableEntities) {
+        return [entitiesRegistered count];
     }
     return 0;
 }
@@ -316,6 +323,15 @@
             
         }
     }
+    // Configure individual cells
+    if (tableView == self.tableEntities) {
+        NSMutableDictionary * entityDic = [entitiesRegistered objectAtIndex:indexPath.row];
+        cell.textLabel.numberOfLines = 0; // Means any number
+        
+        cell.textLabel.text = [NSString stringWithFormat:@"%@", entityDic[@"name"]];
+        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+    }
+    
     return cell;
 }
 
@@ -330,9 +346,14 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
              ])
         {
             positionChosenByUser = [beaconsAndPositionsChosen objectAtIndex:indexPath.row][@"position"];
+            uuidChosenByUser = [beaconsAndPositionsChosen objectAtIndex:indexPath.row][@"uuid"];
         } else {
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
         }
+    }
+    if (tableView == self.tableEntities) {
+        // Get the chosen entity name
+        entityChosenByUser = [entitiesRegistered objectAtIndex:indexPath.row][@"name"];
     }
 }
 
