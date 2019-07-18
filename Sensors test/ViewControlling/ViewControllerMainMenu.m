@@ -212,14 +212,14 @@
         }
         if ([chosenMode isEqualToString:[modes objectAtIndex:3]]) { // RHO_RHO_LOCATING
             return;
-            // [self performSegueWithIdentifier:@"fromMainToAddPositions" sender:sender];
+            // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
         }
         if ([chosenMode isEqualToString:[modes objectAtIndex:4]]) { // RHO_THETA_LOCATING
             return;
-            // [self performSegueWithIdentifier:@"fromMainToAddPositions" sender:sender];
+            // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
         }
         if ([chosenMode isEqualToString:[modes objectAtIndex:5]]) { // THETA_THETA_LOCATING
-            [self performSegueWithIdentifier:@"fromMainToAddPositions" sender:sender];
+            [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
         }
         
         return;
@@ -285,13 +285,14 @@
     }
     
     // If Rho Theta Syetem or Rho Rho Sytem based Locating is going to be displayed, pass it the beaconsAndPositionsRegistered array.
-    if ([[segue identifier] isEqualToString:@"fromMainToAddPositions"]) {
+    if ([[segue identifier] isEqualToString:@"fromMainToSelectPositions"]) {
         
         // Get destination view
         ViewControllerSelectPositions * viewControllerSelectPositions = [segue destinationViewController];
         // Set the variable
         [viewControllerSelectPositions setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerSelectPositions setEntitiesRegistered:entitiesRegistered];
+        [viewControllerSelectPositions setChosenMode:chosenMode];
         
     }
 }

@@ -441,6 +441,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 
 #pragma mark - Notification event handles
 
+
+
 /*!
  @method startMeasuring
  @discussion This method sets the flag 'measuring' true, and thus the measures are stored.
