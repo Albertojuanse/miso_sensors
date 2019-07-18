@@ -32,7 +32,7 @@
 
     // The schema of the beaconsAndPositionsRegistered object is:
     //
-    //  [{ "type": @"beacon" | @"position";                             //  regionDic
+    //  [{ "type": @"beacon" | @"position" | @"model";                  //  regionDic
     //     "identifier": (NSString *)identifier1;
     //
     //     "uuid": (NSString *)uuid1;
@@ -45,6 +45,8 @@
     //     "z": (NSString *)z1
     //
     //     "entity": (NSMutableDictionary *)entityDic1;                 //  entityDic
+    //
+    //     "model": (NSMutableDictionary *)modelDic1;                   //  modelDic
     //   },
     //   { "type": @"beacon" | @"position";                             //  regionDic
     //     "identifier": (NSString *)identifier2;
@@ -54,11 +56,36 @@
     //   (···)
     //  ]
     //
-    // And the schema of entitiesRegistered is
+    // The schema of entitiesRegistered is
     //
     //  [{ "name": name1                                               //  entityDic
     //   },
     //   { "name": name2
+    //   },
+    //   (···)
+    //  ]
+    //
+    //
+    // The schema of modelsGenerated is
+    //
+    //  [{ "name": name1;                                              //  modelDic
+    //     "components": (NSMutableArray *)modelComponents1            //  modelComponents
+    //   },
+    //   { "name": name2;
+    //     "components": (NSMutableArray *)modelComponents2
+    //   },
+    //   (···)
+    //  ]
+    //
+    //
+    //
+    // The schema of modelComponents is
+    //
+    //  [{ "type": @"beacon" | @"position";                            //  modelDic
+    //     "entity": (NSMutableDictionary *)entityDic1                 //  entityDic
+    //   },
+    //   { "type": @"beacon" | @"position";
+    //     "entity": (NSMutableDictionary *)entityDic2
     //   },
     //   (···)
     //  ]
