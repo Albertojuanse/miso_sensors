@@ -628,9 +628,7 @@
         if (selectedSegmentIndex == 1) { // position mode
             
             [newRegionDic setValue:@"position" forKey:@"type"];
-            [newRegionDic setValue:[self.textUUID text] forKey:@"uuid"];
-            [newRegionDic setValue:[self.textMajor text] forKey:@"major"];
-            [newRegionDic setValue:[self.textMinor text] forKey:@"minor"];
+            [newRegionDic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
             
             regionPositionIdNumber = [NSNumber numberWithInt:[regionPositionIdNumber intValue] + 1];
             NSString * regionId = [@"position" stringByAppendingString:[regionPositionIdNumber stringValue]];
@@ -790,7 +788,6 @@
         [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
         [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
         [viewControllerMainMenu setRegionPositionIdNumber:regionPositionIdNumber];
-        
         
     }
 }
