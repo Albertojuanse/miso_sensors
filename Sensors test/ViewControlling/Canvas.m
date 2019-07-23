@@ -174,7 +174,7 @@
     //     { "measurePosition": measurePosition;          //  positionDic
     //       "positionMeasures":
     //         { "measureUuid1":                          //  uuidDicDic
-    //             { "uuid" : uuid1;                      //  uuidDic
+    //             { "uuid": uuid1;                       //  uuidDic
     //               "uuidMeasures":
     //                 { "measure1":                      //  measureDicDic
     //                     { "type": "rssi"/"heading";    //  measureDic
@@ -482,7 +482,19 @@
                     [[self layer] addSublayer:beaconLayer];
                 }
                 if ([type isEqualToString:@"heading"]) {
-                    // TO DO: Heading representation. Alberto J. 2019/07/10.
+                    // Represent a line from the point to the heading direction.
+                    UIBezierPath *measureBezierPath = [UIBezierPath bezierPathWithOvalInRect:rect];
+                    [measureBezierPath moveToPoint:CGPointMake([canvasPosition.x doubleValue], [canvasPosition.y doubleValue])];
+                    [measureBezierPath addLineToPoint:CGPointMake(
+                                                                  [canvasPosition.x doubleValue] + 200.0 * rWidth * cos([measure doubleValue]),
+                                                                  [canvasPosition.y doubleValue] + 200.0 * rHeight * sin([measure doubleValue])
+                                                                  )];
+                    
+                    CAShapeLayer *headingLayer = [[CAShapeLayer alloc] init];
+                    [headingLayer setPath:measureBezierPath.CGPath];
+                    [headingLayer setStrokeColor:colorUUID.CGColor];
+                    [headingLayer setFillColor:[UIColor clearColor].CGColor];
+                    [[self layer] addSublayer:headingLayer];
                 }
                 /* *********  * END * DEFINE MEASURE CANVAS REPRESENTATION (METHOD)  ************ */
             }

@@ -454,6 +454,16 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 NSLog(@"[ERROR][LM] positionChosenByUser && locatedPositionUUID missing in Theta theta system based mode");
             }
             
+            // Ask view controller to refresh the canvas
+            NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
+            NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+            [data setObject:[sharedData getMeasuresDic] forKey:@"measuresDic"];
+            [data setObject:[sharedData getLocatedDic] forKey:@"locatedDic"];
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"refreshCanvas"
+             object:nil
+             userInfo:data];
+            
         }
         
     } else { // If is idle...
