@@ -17,7 +17,7 @@
  @discussion This class creates a system capable of locate a position in space given other positions and values related to its heading.
  */
 @interface RDThetaThetaSystem : NSObject {
-    NSMutableArray * headingMeasures;
+    
 }
 
 - (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithMeasures:(SharedData*)sharedData

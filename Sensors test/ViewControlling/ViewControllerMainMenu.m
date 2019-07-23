@@ -127,11 +127,11 @@
         [regionPos3Dic setValue:@"position" forKey:@"type"];
         [regionPos3Dic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
         [regionPos3Dic setValue:@"3.5" forKey:@"x"];
-        [regionPos3Dic setValue:@"13.0" forKey:@"y"];
+        [regionPos3Dic setValue:@"-13.0" forKey:@"y"];
         [regionPos3Dic setValue:@"0.0" forKey:@"z"];
         RDPosition * position3 = [[RDPosition alloc] init];
         position3.x = [NSNumber numberWithFloat:3.5];
-        position3.y = [NSNumber numberWithFloat:13.0];
+        position3.y = [NSNumber numberWithFloat:-13.0];
         position3.z = [NSNumber numberWithFloat:0.0];
         [regionPos3Dic setValue:position3 forKey:@"position"];
         [regionPos3Dic setValue:entityDic forKey:@"entity"];
@@ -141,11 +141,11 @@
         [regionPos4Dic setValue:@"position" forKey:@"type"];
         [regionPos4Dic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
         [regionPos4Dic setValue:@"0.0" forKey:@"x"];
-        [regionPos4Dic setValue:@"13.0" forKey:@"y"];
+        [regionPos4Dic setValue:@"-13.0" forKey:@"y"];
         [regionPos4Dic setValue:@"0.0" forKey:@"z"];
         RDPosition * position4 = [[RDPosition alloc] init];
         position4.x = [NSNumber numberWithFloat:0.0];
-        position4.y = [NSNumber numberWithFloat:13.0];
+        position4.y = [NSNumber numberWithFloat:-13.0];
         position4.z = [NSNumber numberWithFloat:0.0];
         [regionPos4Dic setValue:position4 forKey:@"position"];
         [regionPos4Dic setValue:entityDic forKey:@"entity"];
