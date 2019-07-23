@@ -21,6 +21,7 @@
     // Data for display
     NSMutableArray * displayedUUID;
     NSString * displayedUUIDString;
+    NSString * mode;
     
     // For canvas relation of aspect
     CGPoint center;
@@ -35,6 +36,6 @@ typedef CGPoint NSPoint;
 @property NSMutableDictionary * locatedDic;
 @property NSMutableArray * currentLayers;
 
-- (void) prepareCanvas;
+-(void)prepareCanvasWithMode:(NSString *) mode;
 
 @end

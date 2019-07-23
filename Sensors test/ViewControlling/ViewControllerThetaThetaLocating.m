@@ -25,7 +25,7 @@
     locatedPositionUUID = [[NSUUID UUID] UUIDString];
     
     // Ask canvas to initialize
-    [self.canvas prepareCanvas];
+    [self.canvas prepareCanvasWithMode:@"THETA_THETA_LOCATING"];
     
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self

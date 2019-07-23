@@ -24,7 +24,7 @@
     measuring = NO;
     
     // Ask canvas to initialize
-    [self.canvas prepareCanvas];
+    [self.canvas prepareCanvasWithMode:@"RHO_THETA_MODELING"];
     
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self

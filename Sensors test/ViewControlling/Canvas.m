@@ -35,12 +35,15 @@
     return self;
 }
 
+#pragma mark - Instance methods
+
 /*!
- @method prepareCanvas
+ @method prepareCanvasWithMode:
  @discussion This method initializes some properties of the canvas; is called when the main view is loaded by its controller.
  */
--(void)prepareCanvas{
+-(void)prepareCanvasWithMode:(NSString *) setMode{
     // Initialize variables
+    mode = setMode;
     self.measuresDic = [[NSMutableDictionary alloc] init];
     rHeight = 1.0;
     rWidth = 1.0;
@@ -48,99 +51,110 @@
     barycenter.x = [NSNumber numberWithFloat:0.0];
     barycenter.y = [NSNumber numberWithFloat:0.0];
     barycenter.z = [NSNumber numberWithFloat:0.0];
+    mode = nil; // If it is not initialized, the information won't be displayed until initialized
     
     // Canvas configurations
     [self setUserInteractionEnabled:NO];
     self.backgroundColor = [UIColor colorWithRed:218/255.0 green:224/255.0 blue:235/255.0 alpha:0.6];
     
     // Center point
-    UIBezierPath *centerBezierPath = [UIBezierPath bezierPath];
-    center.x = self.frame.size.width/2;
-    center.y = self.frame.size.height/2;
-    [centerBezierPath moveToPoint:CGPointMake(center.x - 3.0, center.y)];
-    [centerBezierPath addLineToPoint:CGPointMake(center.x + 3.0, center.y)];
-    [centerBezierPath moveToPoint:CGPointMake(center.x, center.y - 3.0)];
-    [centerBezierPath addLineToPoint:CGPointMake(center.x, center.y + 3.0)];
-    
-    CAShapeLayer *centerLayer = [[CAShapeLayer alloc] init];
-    [centerLayer setPath:centerBezierPath.CGPath];
-    [centerLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-    [centerLayer setFillColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-    // TO DO: This one is not centered
-    // [self.layer addSublayer:centerLayer];
-    
+    [self displayCenter];
+
+    [self setNeedsDisplay];
+}
+
+#pragma mark - Drawing methods
+
+/*!
+ @method testCanvas
+ @discussion This method displays a pattern of 8 points in canvas to test its adjustment.
+ */
+- (void)testCanvas {
+    NSMutableArray * realPoints = [[NSMutableArray alloc] init];
+
+    RDPosition * point1 = [[RDPosition alloc] init];
+    point1.x = [[NSNumber alloc] initWithFloat:1000.0];
+    point1.y = [[NSNumber alloc] initWithFloat:1000.0];
+    point1.z = [[NSNumber alloc] initWithFloat:0.0];
+    RDPosition * point2 = [[RDPosition alloc] init];
+    point2.x = [[NSNumber alloc] initWithFloat:1000.0];
+    point2.y = [[NSNumber alloc] initWithFloat:-1000.0];
+    point2.z = [[NSNumber alloc] initWithFloat:0.0];
+    RDPosition * point3 = [[RDPosition alloc] init];
+    point3.x = [[NSNumber alloc] initWithFloat:-1000.0];
+    point3.y = [[NSNumber alloc] initWithFloat:1000.0];
+    point3.z = [[NSNumber alloc] initWithFloat:0.0];
+    RDPosition * point4 = [[RDPosition alloc] init];
+    point4.x = [[NSNumber alloc] initWithFloat:-1000.0];
+    point4.y = [[NSNumber alloc] initWithFloat:-1000.0];
+    point4.z = [[NSNumber alloc] initWithFloat:0.0];
+    RDPosition * point5 = [[RDPosition alloc] init];
+    point5.x = [[NSNumber alloc] initWithFloat:500.0];
+    point5.y = [[NSNumber alloc] initWithFloat:0.0];
+    point5.z = [[NSNumber alloc] initWithFloat:0.0];
+    RDPosition * point6 = [[RDPosition alloc] init];
+    point6.x = [[NSNumber alloc] initWithFloat:0.0];
+    point6.y = [[NSNumber alloc] initWithFloat:-500.0];
+    point6.z = [[NSNumber alloc] initWithFloat:0.0];
+    RDPosition * point7 = [[RDPosition alloc] init];
+    point7.x = [[NSNumber alloc] initWithFloat:0.0];
+    point7.y = [[NSNumber alloc] initWithFloat:500.0];
+    point7.z = [[NSNumber alloc] initWithFloat:0.0];
+    RDPosition * point8 = [[RDPosition alloc] init];
+    point8.x = [[NSNumber alloc] initWithFloat:-500.0];
+    point8.y = [[NSNumber alloc] initWithFloat:0.0];
+    point8.z = [[NSNumber alloc] initWithFloat:0.0];
+
+    [realPoints addObject:point1];
+    [realPoints addObject:point2];
+    [realPoints addObject:point3];
+    [realPoints addObject:point4];
+    [realPoints addObject:point5];
+    [realPoints addObject:point6];
+    [realPoints addObject:point7];
+    [realPoints addObject:point8];
+
+    NSMutableArray * canvasPoints = [self transformRealPointsToCanvasPoints:realPoints];
+
+    for (RDPosition * canvasPoint in canvasPoints) {
+        UIBezierPath *bezierPath = [UIBezierPath bezierPath];
+        [bezierPath addArcWithCenter:[canvasPoint toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+        
+        CAShapeLayer *pointLayer = [[CAShapeLayer alloc] init];
+        [pointLayer setPath:bezierPath.CGPath];
+        [pointLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
+        [pointLayer setFillColor:[UIColor clearColor].CGColor];
+        [[self layer] addSublayer:pointLayer];
+    }
+    NSLog(@"[INFO][CA] Testing finished.");
+
     [self setNeedsDisplay];
 }
 
 /*!
  @method drawRect:
- @discussion This method controls the display of a new drown area; is called when a new draw must be created and displayed.
+ @discussion This method controls the display of a new drawn area; is called when a new draw must be created and displayed.
  */
 - (void)drawRect:(CGRect)rect {
- 
-    /* TEST CANVAS
-     NSMutableArray * realPoints = [[NSMutableArray alloc] init];
-     
-     RDPosition * point1 = [[RDPosition alloc] init];
-     point1.x = [[NSNumber alloc] initWithFloat:1000.0];
-     point1.y = [[NSNumber alloc] initWithFloat:1000.0];
-     point1.z = [[NSNumber alloc] initWithFloat:0.0];
-     RDPosition * point2 = [[RDPosition alloc] init];
-     point2.x = [[NSNumber alloc] initWithFloat:1000.0];
-     point2.y = [[NSNumber alloc] initWithFloat:-1000.0];
-     point2.z = [[NSNumber alloc] initWithFloat:0.0];
-     RDPosition * point3 = [[RDPosition alloc] init];
-     point3.x = [[NSNumber alloc] initWithFloat:-1000.0];
-     point3.y = [[NSNumber alloc] initWithFloat:1000.0];
-     point3.z = [[NSNumber alloc] initWithFloat:0.0];
-     RDPosition * point4 = [[RDPosition alloc] init];
-     point4.x = [[NSNumber alloc] initWithFloat:-1000.0];
-     point4.y = [[NSNumber alloc] initWithFloat:-1000.0];
-     point4.z = [[NSNumber alloc] initWithFloat:0.0];
-     RDPosition * point5 = [[RDPosition alloc] init];
-     point5.x = [[NSNumber alloc] initWithFloat:500.0];
-     point5.y = [[NSNumber alloc] initWithFloat:0.0];
-     point5.z = [[NSNumber alloc] initWithFloat:0.0];
-     RDPosition * point6 = [[RDPosition alloc] init];
-     point6.x = [[NSNumber alloc] initWithFloat:0.0];
-     point6.y = [[NSNumber alloc] initWithFloat:-500.0];
-     point6.z = [[NSNumber alloc] initWithFloat:0.0];
-     RDPosition * point7 = [[RDPosition alloc] init];
-     point7.x = [[NSNumber alloc] initWithFloat:0.0];
-     point7.y = [[NSNumber alloc] initWithFloat:500.0];
-     point7.z = [[NSNumber alloc] initWithFloat:0.0];
-     RDPosition * point8 = [[RDPosition alloc] init];
-     point8.x = [[NSNumber alloc] initWithFloat:-500.0];
-     point8.y = [[NSNumber alloc] initWithFloat:0.0];
-     point8.z = [[NSNumber alloc] initWithFloat:0.0];
-     
-     [realPoints addObject:point1];
-     [realPoints addObject:point2];
-     [realPoints addObject:point3];
-     [realPoints addObject:point4];
-     [realPoints addObject:point5];
-     [realPoints addObject:point6];
-     [realPoints addObject:point7];
-     [realPoints addObject:point8];
-     
-     NSMutableArray * canvasPoints = [self transformRealPointsToCanvasPoints:realPoints];
-     
-     for (RDPosition * canvasPoint in canvasPoints) {
-     UIBezierPath *bezierPath = [UIBezierPath bezierPath];
-     [bezierPath addArcWithCenter:[canvasPoint toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
-     
-     CAShapeLayer *pointLayer = [[CAShapeLayer alloc] init];
-     [pointLayer setPath:bezierPath.CGPath];
-     [pointLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-     [pointLayer setFillColor:[UIColor clearColor].CGColor];
-     [[self layer] addSublayer:pointLayer];
-     }
-     
-     [self setNeedsDisplay];
-     NSLog(@"[INFO][CA] Test finished.");
     
-    ************************** END TEST CANVAS ****************************** */
+    // Remove the old layers
+    [self removeLayers];
     
+    // Display the center point
+    [self displayCenter];
+    
+    // Inspect dictionary from location manager for data retrieving
+    [self inspectDataDicsAndDrawTheInfoInRect:rect];
+    
+    [self setNeedsDisplay];
+}
+
+/*!
+ @method removeLayers
+ @discussion This method removes every layer displayed from the canvas; it is called by 'drawRect:' every time it is called.
+ */
+- (void)removeLayers
+{
     // Delete previus layers
     if (self.layer.sublayers.count > 0) {
         NSArray *oldLayers = [NSArray arrayWithArray:self.layer.sublayers];
@@ -152,7 +166,14 @@
     }
     
     NSLog(@"[INFO][CA] Old layers removing; layers displayed: %ld", self.layer.sublayers.count);
-    
+}
+
+/*!
+ @method displayCenter
+ @discussion This method removes every layer displayed from the canvas; it is called by 'drawRect:' every.
+ */
+- (void)displayCenter
+{
     // Center point; if canvas' dimensions change, the center must be updated, so this is always done.
     center.x = self.frame.size.width/2;
     center.y = self.frame.size.height/2;
@@ -167,10 +188,17 @@
     [centerLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
     [centerLayer setFillColor:[UIColor clearColor].CGColor];
     [self.layer addSublayer:centerLayer];
+}
+
+/*!
+ @method inspectDataDicsAndDrawTheInfoInRect:
+ @discussion This method inspects dictionaries from location manager for data retrieving and ask to display the information.
+ */
+- (void) inspectDataDicsAndDrawTheInfoInRect:(CGRect)rect {
     
     // Inspect dictionary from location manager for data retrieving
     //
-    // { "measurePosition1":                              //  measuresDic
+    // { "measurePosition1":                              //  self.measuresDic
     //     { "measurePosition": measurePosition;          //  positionDic
     //       "positionMeasures":
     //         { "measureUuid1":                          //  uuidDicDic
@@ -189,6 +217,7 @@
     //   "measurePosition2": { (···) }
     // }
     //
+    
     // Declare the inner dictionaries.
     NSMutableDictionary * measureDic;
     NSMutableDictionary * measureDicDic;
@@ -197,6 +226,7 @@
     NSMutableDictionary * positionDic;
     
     // The positions must be scaled before its displaying
+    // Get the measures positions and the located positions
     NSMutableArray * realPositions = [[NSMutableArray alloc] init];
     NSArray * positionKeys = [self.measuresDic allKeys];
     for (id positionKey in positionKeys) {
@@ -211,18 +241,6 @@
         NSLog(@"[INFO][CA] Added real position %@", position);
         [realPositions addObject:position];
     }
-    
-    /* ************************** LOCATED DIC ****************************** */
-    // Add the located positions
-    // The schema of the locatedDic object is:
-    //
-    // { "locatedPosition1":                              //  locatedDic
-    //     { "locatedUUID": locatedUUID;                  //  positionDic
-    //       "locatedPosition": locatedPosition;
-    //     };
-    //   "locatedPosition2": { (···) }
-    // }
-    //
     NSArray * locatedKeys = [self.locatedDic allKeys];
     for (id locatedKey in locatedKeys) {
         // ...get the dictionary for this position...
@@ -236,17 +254,13 @@
         NSLog(@"[INFO][CA] Added real position %@", position);
         [realPositions addObject:position];
     }
-    /* ************************** END LOCATED DIC **************************** */
-    
-    NSLog(@"[INFO][CA] Real positions to show:");
-    for (RDPosition * pos in realPositions) {
-        NSLog(@"[INFO][CA] -> %@", pos);
-    }
     
     // Transform the real positions to an apropiate canvas ones, with the barycenter of the set of points in the center of the canvas
-    // This method sets the ratios in the class variables 'rWidth' and 'rHeight'; then, they will be used for transform every single point
+    // This method also sets the ratios in the class variables 'rWidth' and 'rHeight'; then, they will be used for transform every single point
     [self calculateRatiosOfTransformationFromRealPointsToCanvasPoints:realPositions
                                                     withSafeAreaRatio:[NSNumber numberWithFloat:0.35]];
+    
+    // Now, inspect the dictionary and get the information to display
     
     // For every (canvas) position where measures were taken
     for (id positionKey in positionKeys) {
@@ -255,37 +269,14 @@
         // ...but also get the transformed position.
         RDPosition * realPosition = positionDic[@"measurePosition"];
         RDPosition * canvasPosition = [self transformSingleRealPointToCanvasPoint:realPosition];
-        NSLog(@"[INFO][CA] Real position to show: %@", realPosition);
-        NSLog(@"[INFO][CA] Canvas position to show: %@",  canvasPosition);
+        
+        //NSLog(@"[INFO][CA] Real position to show: %@", realPosition);
+        //NSLog(@"[INFO][CA] Canvas position to show: %@",  canvasPosition);
         //NSLog(@"[INFO][CA] rWith: %.2f", rWidth);
         //NSLog(@"[INFO][CA] rHeight: %.2f", rHeight);
         
-        /* *******  DEFINE POSITION CANVAS REPRESENTATION (METHOD)  ************ */
-        
-        // Draw the point
-        UIBezierPath *positionBezierPath = [UIBezierPath bezierPath];
-        [positionBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
-        CAShapeLayer *positionLayer = [[CAShapeLayer alloc] init];
-        [positionLayer setPath:positionBezierPath.CGPath];
-        [positionLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-        [positionLayer setFillColor:[UIColor clearColor].CGColor];
-        [[self layer] addSublayer:positionLayer];
-        
-        // Text of real position but in canvas position
-        CATextLayer *positionTextLayer = [CATextLayer layer];
-        positionTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] + 5.0);
-        positionTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 5.0,
-                                             [canvasPosition.y floatValue] + 5.0,
-                                             100,
-                                             20);
-        positionTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)", [realPosition.x floatValue], [realPosition.y floatValue]];
-        positionTextLayer.fontSize = 10;
-        positionTextLayer.alignmentMode = kCAAlignmentCenter;
-        positionTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-        positionTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
-        [[self layer] addSublayer:positionTextLayer];
-        
-        /* *******  END * DEFINE POSITION CANVAS REPRESENTATION (METHOD)  ************ */
+        // ...and draw it.
+        [self drawPosition:realPosition inCanvasPosition:canvasPosition];
         
         // Get the the dictionary with the UUID's dictionaries...
         uuidDicDic = positionDic[@"positionMeasures"];
@@ -300,150 +291,12 @@
             // ...and get the uuid.
             NSString * uuid = [NSString stringWithString:uuidDic[@"uuid"]];
             
+            // Also get the color for its representation, both
+            // - the beacon device or the reference position aimed that is the measures source and
+            // - the radiolocated positions, which could be or not the measure source or not.
             
-            /* ************************** SEARCH LOCATED UUID **************************** */
-            NSArray * locatedKeys = [self.locatedDic allKeys];
-            for (id locatedKey in locatedKeys) {
-                // ...get the dictionary for this position...
-                positionDic = [self.locatedDic objectForKey:locatedKey];
-                // ...and the UUID. If it is equal, draw the located position
-                NSString * locatedUUID = positionDic[@"locatedUUID"];
-                if ([locatedUUID isEqualToString:uuid]) {
-                    RDPosition * locatedPosition = positionDic[@"locatedPosition"];
-                    NSLog(@"[INFO][CA] Real located position to show: %@", locatedPosition);
-                    RDPosition * canvasLocatedPosition = [self transformSingleRealPointToCanvasPoint:locatedPosition];
-                    NSLog(@"[INFO][CA] Canvas located position to show: %@", canvasLocatedPosition);
-                    
-                    UIBezierPath * locatedBezierPath = [UIBezierPath bezierPath];
-                    
-                    // Choose a color for each UUID
-                    UIColor *colorUUID;
-                    switch (UUIDindex % 8) {
-                        case 0:
-                            colorUUID = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
-                            break;
-                        case 1:
-                            colorUUID = [UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:0.2];
-                            break;
-                        case 2:
-                            colorUUID = [UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:0.2];
-                            break;
-                        case 3:
-                            colorUUID = [UIColor colorWithRed:127.0/255.0 green:128.0/255.0 blue:0.0 alpha:0.2];
-                            break;
-                        case 4:
-                            colorUUID = [UIColor colorWithRed:127.0/255.0 green:0.0 blue:128.0/255.0 alpha:0.2];
-                            break;
-                        case 5:
-                            colorUUID = [UIColor colorWithRed:0.0 green:127.0/255.0 blue:128.0/255.0 alpha:0.2];
-                            break;
-                        case 6:
-                            colorUUID = [UIColor colorWithRed:127.0/255.0 green:64.0 blue:64.0 alpha:0.2];
-                            break;
-                        case 7:
-                            colorUUID = [UIColor colorWithRed:64.0 green:127.0/255.0 blue:64.0 alpha:0.2];
-                            break;
-                        default:
-                            colorUUID = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
-                            break;
-                    }
-                    
-                    // Display the located position
-                    [locatedBezierPath moveToPoint:CGPointMake([canvasLocatedPosition.x floatValue] - 3.0,
-                                                               [canvasLocatedPosition.y floatValue]  - 3.0)];
-                    [locatedBezierPath addLineToPoint:CGPointMake([canvasLocatedPosition.x floatValue] + 3.0,
-                                                                  [canvasLocatedPosition.y floatValue] + 3.0)];
-                    [locatedBezierPath moveToPoint:CGPointMake([canvasLocatedPosition.x floatValue] + 3.0,
-                                                               [canvasLocatedPosition.y floatValue] - 3.0)];
-                    [locatedBezierPath addLineToPoint:CGPointMake([canvasLocatedPosition.x floatValue] - 3.0,
-                                                                  [canvasLocatedPosition.y floatValue] + 3.0)];
-                    
-                    CAShapeLayer *locatedLayer = [[CAShapeLayer alloc] init];
-                    [locatedLayer setPath:locatedBezierPath.CGPath];
-                    [locatedLayer setStrokeColor:colorUUID.CGColor];
-                    [locatedLayer setFillColor:[UIColor clearColor].CGColor];
-                    [self.layer addSublayer:locatedLayer];
-                    
-                    
-                    // Text of real located position but in located canvas position
-                    CATextLayer *locatedTextLayer = [CATextLayer layer];
-                    locatedTextLayer.position = CGPointMake([canvasLocatedPosition.x floatValue] + 5.0,
-                                                            [canvasLocatedPosition.y floatValue] + 5.0);
-                    locatedTextLayer.frame = CGRectMake([canvasLocatedPosition.x floatValue] + 5.0,
-                                                         [canvasLocatedPosition.y floatValue] + 5.0,
-                                                         100,
-                                                         20);
-                    locatedTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)",
-                                               [locatedPosition.x floatValue],
-                                               [locatedPosition.y floatValue]];
-                    locatedTextLayer.fontSize = 10;
-                    locatedTextLayer.alignmentMode = kCAAlignmentCenter;
-                    locatedTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-                    locatedTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
-                    [[self layer] addSublayer:locatedTextLayer];
-
-                }
-            }
-            /* ************************** END SEARCH LOCATED UUID **************************** */
-            
-            /* *********  DEFINE UUID CANVAS REPRESENTATION (METHOD)  ************ */
-            
-            UIBezierPath * uuidBezierPath = [UIBezierPath bezierPath];
-            
-            // Choose a color for each UUID
-            UIColor *colorUUID;
-            switch (UUIDindex % 8) {
-                case 0:
-                    colorUUID = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
-                    break;
-                case 1:
-                    colorUUID = [UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:0.2];
-                    break;
-                case 2:
-                    colorUUID = [UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:0.2];
-                    break;
-                case 3:
-                    colorUUID = [UIColor colorWithRed:127.0/255.0 green:128.0/255.0 blue:0.0 alpha:0.2];
-                    break;
-                case 4:
-                    colorUUID = [UIColor colorWithRed:127.0/255.0 green:0.0 blue:128.0/255.0 alpha:0.2];
-                    break;
-                case 5:
-                    colorUUID = [UIColor colorWithRed:0.0 green:127.0/255.0 blue:128.0/255.0 alpha:0.2];
-                    break;
-                case 6:
-                    colorUUID = [UIColor colorWithRed:127.0/255.0 green:64.0 blue:64.0 alpha:0.2];
-                    break;
-                case 7:
-                    colorUUID = [UIColor colorWithRed:64.0 green:127.0/255.0 blue:64.0 alpha:0.2];
-                    break;
-                default:
-                    colorUUID = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
-                    break;
-            }
-            
-            // Choose a position for display the UUID
-            [uuidBezierPath moveToPoint:CGPointMake(16.0, 16.0 * (UUIDindex + 1.0) + 2.0 + 10.0)];
-            [uuidBezierPath addLineToPoint:CGPointMake(16.0 + 100.0, 16.0 * (UUIDindex + 1.0) + 2.0 + 10.0)];
-            
-            CAShapeLayer *uuidLayer = [[CAShapeLayer alloc] init];
-            [uuidLayer setPath:uuidBezierPath.CGPath];
-            [uuidLayer setStrokeColor:colorUUID.CGColor];
-            [uuidLayer setFillColor:[UIColor clearColor].CGColor];
-            [self.layer addSublayer:uuidLayer];
-            
-            // Add the description
-            CATextLayer *uuidTextLayer = [CATextLayer layer];
-            uuidTextLayer.position = CGPointMake(116.0, 16.0 * (UUIDindex + 1.0));
-            uuidTextLayer.frame = CGRectMake(116.0, 16.0 * (UUIDindex + 1.0), 400, 20);
-            uuidTextLayer.string = [NSString stringWithFormat:@"UUID: %@", uuid];
-            uuidTextLayer.fontSize = 12;
-            uuidTextLayer.alignmentMode = kCAAlignmentCenter;
-            uuidTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-            uuidTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
-            [[self layer] addSublayer:uuidTextLayer];
-            
-            /* *********  * END * DEFINE UUID CANVAS REPRESENTATION (METHOD)  ************ */
+            // Draw the source UUID identifier
+            [self drawMeasureUUID:uuid atIndex:UUIDindex andWithColor:[self getColorForIndex:UUIDindex]];
             
             // Get the the dictionary with the measures dictionaries...
             measureDicDic = uuidDic[@"uuidMeasures"];
@@ -456,53 +309,251 @@
                 NSNumber * measure = [NSNumber numberWithFloat:[measureDic[@"measure"] floatValue]];
                 NSString * type = measureDic[@"type"];
                 
-                /* *********  DEFINE MEASURE CANVAS REPRESENTATION (METHOD)  ************ */
-                    RDPosition * canvasPosition = [self transformSingleRealPointToCanvasPoint:realPosition];
-                if ([type isEqualToString:@"rssi"]) {
-                    //UIBezierPath *measureBezierPath = [UIBezierPath bezierPath];
-                    //[measureBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:[measure floatValue]*(rWidth+rHeight)/2.0 startAngle:0 endAngle:2 * M_PI clockwise:YES];
-                    //NSLog(@"[INFO][CA][TRAN] Radius measured: %.2f",  [measure floatValue]);
-                    //NSLog(@"[INFO][CA][TRAN] Radius canvas: %.2f",  [measure floatValue]*(rWidth+rHeight)/2.0);
+                // Draw the measure
+                [self drawMeasure:measure
+                           ofType:type
+                        withColor:[self getColorForIndex:UUIDindex]
+                       atPosition:realPosition
+                           inRect:rect];
                 
-                
-                    CGRect rect = CGRectMake([canvasPosition.x floatValue] - [measure floatValue] * rWidth,
-                                             [canvasPosition.y floatValue] - [measure floatValue] * rHeight,
-                                             2.0 * [measure floatValue] * rWidth,
-                                             2.0 * [measure floatValue] * rHeight);
-                    UIBezierPath *measureBezierPath = [UIBezierPath bezierPathWithOvalInRect:rect];
-                    //NSLog(@"[INFO][CA][TRAN] Ellipse measured: %.2f, %.2f",  [measure floatValue],  [measure floatValue]);
-                    //NSLog(@"[INFO][CA][TRAN] Ellipse canvas: %.2f, %.2f",  [measure floatValue] * rWidth, [measure floatValue] * rHeight);
-                
-
-                
-                    CAShapeLayer *beaconLayer = [[CAShapeLayer alloc] init];
-                    [beaconLayer setPath:measureBezierPath.CGPath];
-                    [beaconLayer setStrokeColor:colorUUID.CGColor];
-                    [beaconLayer setFillColor:[UIColor clearColor].CGColor];
-                    [[self layer] addSublayer:beaconLayer];
-                }
-                if ([type isEqualToString:@"heading"]) {
-                    // Represent a line from the point to the heading direction.
-                    UIBezierPath *measureBezierPath = [UIBezierPath bezierPathWithOvalInRect:rect];
-                    [measureBezierPath moveToPoint:CGPointMake([canvasPosition.x doubleValue], [canvasPosition.y doubleValue])];
-                    [measureBezierPath addLineToPoint:CGPointMake(
-                                                                  [canvasPosition.x doubleValue] + 200.0 * rWidth * cos([measure doubleValue]),
-                                                                  [canvasPosition.y doubleValue] + 200.0 * rHeight * sin([measure doubleValue])
-                                                                  )];
-                    
-                    CAShapeLayer *headingLayer = [[CAShapeLayer alloc] init];
-                    [headingLayer setPath:measureBezierPath.CGPath];
-                    [headingLayer setStrokeColor:colorUUID.CGColor];
-                    [headingLayer setFillColor:[UIColor clearColor].CGColor];
-                    [[self layer] addSublayer:headingLayer];
-                }
-                /* *********  * END * DEFINE MEASURE CANVAS REPRESENTATION (METHOD)  ************ */
             }
+            
+            // Before finish, draw any radiolocated position that shares UUID with the drawn one; that means that is the source of the measures or the reference position that they define.
+            [self drawLocatedPositionIfItSharesUUIDWith:uuid
+                                              withColor:[self getColorForIndex:UUIDindex]];
+            
             UUIDindex++;
         }
     }
-    [self setNeedsDisplay];
 }
+
+- (void) drawLocatedPositionIfItSharesUUIDWith:(NSString*)uuid
+                                     withColor:(UIColor*)color
+{
+    
+    // The schema of the locatedDic object is:
+    //
+    // { "locatedPosition1":                              //  self.locatedDic
+    //     { "locatedUUID": locatedUUID;                  //  positionDic
+    //       "locatedPosition": locatedPosition;
+    //     };
+    //   "locatedPosition2": { (···) }
+    // }
+    //
+    
+    // Declare the inner dictionaries.
+    NSMutableDictionary * positionDic;
+    
+    NSArray * locatedKeys = [self.locatedDic allKeys];
+    for (id locatedKey in locatedKeys) {
+        // ...get the dictionary for this position...
+        positionDic = [self.locatedDic objectForKey:locatedKey];
+        // ...and the UUID. If it is equal, draw the located position
+        NSString * locatedUUID = positionDic[@"locatedUUID"];
+        if ([locatedUUID isEqualToString:uuid]) {
+            RDPosition * locatedPosition = positionDic[@"locatedPosition"];
+            NSLog(@"[INFO][CA] Real located position to show: %@", locatedPosition);
+            RDPosition * canvasLocatedPosition = [self transformSingleRealPointToCanvasPoint:locatedPosition];
+            NSLog(@"[INFO][CA] Canvas located position to show: %@", canvasLocatedPosition);
+            
+            UIBezierPath * locatedBezierPath = [UIBezierPath bezierPath];
+            
+            // Display the located position
+            [locatedBezierPath moveToPoint:CGPointMake([canvasLocatedPosition.x floatValue] - 3.0,
+                                                       [canvasLocatedPosition.y floatValue]  - 3.0)];
+            [locatedBezierPath addLineToPoint:CGPointMake([canvasLocatedPosition.x floatValue] + 3.0,
+                                                          [canvasLocatedPosition.y floatValue] + 3.0)];
+            [locatedBezierPath moveToPoint:CGPointMake([canvasLocatedPosition.x floatValue] + 3.0,
+                                                       [canvasLocatedPosition.y floatValue] - 3.0)];
+            [locatedBezierPath addLineToPoint:CGPointMake([canvasLocatedPosition.x floatValue] - 3.0,
+                                                          [canvasLocatedPosition.y floatValue] + 3.0)];
+            
+            CAShapeLayer *locatedLayer = [[CAShapeLayer alloc] init];
+            [locatedLayer setPath:locatedBezierPath.CGPath];
+            [locatedLayer setStrokeColor:color.CGColor];
+            [locatedLayer setFillColor:[UIColor clearColor].CGColor];
+            [self.layer addSublayer:locatedLayer];
+            
+            
+            // Text of real located position but in located canvas position
+            CATextLayer *locatedTextLayer = [CATextLayer layer];
+            locatedTextLayer.position = CGPointMake([canvasLocatedPosition.x floatValue] + 5.0,
+                                                    [canvasLocatedPosition.y floatValue] + 5.0);
+            locatedTextLayer.frame = CGRectMake([canvasLocatedPosition.x floatValue] + 5.0,
+                                                [canvasLocatedPosition.y floatValue] + 5.0,
+                                                100,
+                                                20);
+            locatedTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)",
+                                       [locatedPosition.x floatValue],
+                                       [locatedPosition.y floatValue]];
+            locatedTextLayer.fontSize = 10;
+            locatedTextLayer.alignmentMode = kCAAlignmentCenter;
+            locatedTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+            locatedTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
+            [[self layer] addSublayer:locatedTextLayer];
+            
+        }
+    }
+}
+
+/*!
+ @method drawPosition:inCanvasPosition:
+ @discussion This method displays a position in space 'realPosition' using its coordinates in the canvas, 'canvasPosition'.
+ */
+- (void) drawPosition:(RDPosition *)realPosition
+     inCanvasPosition:(RDPosition *)canvasPosition
+{
+    // Draw the point
+    UIBezierPath *positionBezierPath = [UIBezierPath bezierPath];
+    [positionBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+    CAShapeLayer *positionLayer = [[CAShapeLayer alloc] init];
+    [positionLayer setPath:positionBezierPath.CGPath];
+    [positionLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
+    [positionLayer setFillColor:[UIColor clearColor].CGColor];
+    [[self layer] addSublayer:positionLayer];
+    
+    // Text of real position but in canvas position
+    CATextLayer *positionTextLayer = [CATextLayer layer];
+    positionTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] + 5.0);
+    positionTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 5.0,
+                                         [canvasPosition.y floatValue] + 5.0,
+                                         100,
+                                         20);
+    positionTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)", [realPosition.x floatValue], [realPosition.y floatValue]];
+    positionTextLayer.fontSize = 10;
+    positionTextLayer.alignmentMode = kCAAlignmentCenter;
+    positionTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+    positionTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
+    [[self layer] addSublayer:positionTextLayer];
+    
+    return;
+}
+
+/*!
+ @method getColorForIndex:
+ @discussion This method returns a 'UIColor' object given the index in which certain object is found while dictionaries inspection; it provides a feed of different colors.
+ */
+- (UIColor*) getColorForIndex:(NSInteger)index {
+    // Choose a color for each UUID
+    UIColor *color;
+    switch (index % 8) {
+        case 0:
+            color = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
+            break;
+        case 1:
+            color = [UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:0.2];
+            break;
+        case 2:
+            color = [UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:0.2];
+            break;
+        case 3:
+            color = [UIColor colorWithRed:127.0/255.0 green:128.0/255.0 blue:0.0 alpha:0.2];
+            break;
+        case 4:
+            color = [UIColor colorWithRed:127.0/255.0 green:0.0 blue:128.0/255.0 alpha:0.2];
+            break;
+        case 5:
+            color = [UIColor colorWithRed:0.0 green:127.0/255.0 blue:128.0/255.0 alpha:0.2];
+            break;
+        case 6:
+            color = [UIColor colorWithRed:127.0/255.0 green:64.0 blue:64.0 alpha:0.2];
+            break;
+        case 7:
+            color = [UIColor colorWithRed:64.0 green:127.0/255.0 blue:64.0 alpha:0.2];
+            break;
+        default:
+            color = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
+            break;
+    }
+    return color;
+}
+
+/*!
+ @method drawMeasureUUID
+ @discussion This method displays a certain measure source UUID given its color.
+ */
+- (void) drawMeasureUUID:(NSString*)uuid
+                 atIndex:(NSInteger)index
+               andWithColor:(UIColor*)color
+{
+    UIBezierPath * uuidBezierPath = [UIBezierPath bezierPath];
+    
+    
+    
+    // Choose a position for display the UUID
+    [uuidBezierPath moveToPoint:CGPointMake(16.0, 16.0 * (index + 1.0) + 2.0 + 10.0)];
+    [uuidBezierPath addLineToPoint:CGPointMake(16.0 + 100.0, 16.0 * (index + 1.0) + 2.0 + 10.0)];
+    
+    CAShapeLayer *uuidLayer = [[CAShapeLayer alloc] init];
+    [uuidLayer setPath:uuidBezierPath.CGPath];
+    [uuidLayer setStrokeColor:color.CGColor];
+    [uuidLayer setFillColor:[UIColor clearColor].CGColor];
+    [self.layer addSublayer:uuidLayer];
+    
+    // Add the description
+    CATextLayer *uuidTextLayer = [CATextLayer layer];
+    uuidTextLayer.position = CGPointMake(116.0, 16.0 * (index + 1.0));
+    uuidTextLayer.frame = CGRectMake(116.0, 16.0 * (index + 1.0), 400, 20);
+    uuidTextLayer.string = [NSString stringWithFormat:@"Source UUID: %@", uuid];
+    uuidTextLayer.fontSize = 12;
+    uuidTextLayer.alignmentMode = kCAAlignmentCenter;
+    uuidTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+    uuidTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
+    [[self layer] addSublayer:uuidTextLayer];
+}
+
+/*!
+ @method drawMeasure:ofType:withColor:atPosition:inRect:
+ @discussion This method displays a measure given its color, position, type and the object 'CGRect' in which the canvas is being drawn.
+ */
+- (void) drawMeasure:(NSNumber *)measure
+              ofType:(NSString *)type
+           withColor:(UIColor *)color
+          atPosition:(RDPosition *)realPosition
+              inRect:(CGRect)rect
+{
+    RDPosition * canvasPosition = [self transformSingleRealPointToCanvasPoint:realPosition];
+    if ([type isEqualToString:@"rssi"]) {
+        //UIBezierPath *measureBezierPath = [UIBezierPath bezierPath];
+        //[measureBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:[measure floatValue]*(rWidth+rHeight)/2.0 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+        //NSLog(@"[INFO][CA][TRAN] Radius measured: %.2f",  [measure floatValue]);
+        //NSLog(@"[INFO][CA][TRAN] Radius canvas: %.2f",  [measure floatValue]*(rWidth+rHeight)/2.0);
+        
+        
+        CGRect rect = CGRectMake([canvasPosition.x floatValue] - [measure floatValue] * rWidth,
+                                 [canvasPosition.y floatValue] - [measure floatValue] * rHeight,
+                                 2.0 * [measure floatValue] * rWidth,
+                                 2.0 * [measure floatValue] * rHeight);
+        UIBezierPath *measureBezierPath = [UIBezierPath bezierPathWithOvalInRect:rect];
+        //NSLog(@"[INFO][CA][TRAN] Ellipse measured: %.2f, %.2f",  [measure floatValue],  [measure floatValue]);
+        //NSLog(@"[INFO][CA][TRAN] Ellipse canvas: %.2f, %.2f",  [measure floatValue] * rWidth, [measure floatValue] * rHeight);
+        
+        
+        
+        CAShapeLayer *beaconLayer = [[CAShapeLayer alloc] init];
+        [beaconLayer setPath:measureBezierPath.CGPath];
+        [beaconLayer setStrokeColor:color.CGColor];
+        [beaconLayer setFillColor:[UIColor clearColor].CGColor];
+        [[self layer] addSublayer:beaconLayer];
+    }
+    if ([type isEqualToString:@"heading"]) {
+        // Represent a line from the point to the heading direction.
+        UIBezierPath *measureBezierPath = [UIBezierPath bezierPathWithOvalInRect:rect];
+        [measureBezierPath moveToPoint:CGPointMake([canvasPosition.x doubleValue], [canvasPosition.y doubleValue])];
+        [measureBezierPath addLineToPoint:CGPointMake(
+                                                      [canvasPosition.x doubleValue] + 200.0 * rWidth * cos([measure doubleValue]),
+                                                      [canvasPosition.y doubleValue] + 200.0 * rHeight * sin([measure doubleValue])
+                                                      )];
+        
+        CAShapeLayer *headingLayer = [[CAShapeLayer alloc] init];
+        [headingLayer setPath:measureBezierPath.CGPath];
+        [headingLayer setStrokeColor:color.CGColor];
+        [headingLayer setFillColor:[UIColor clearColor].CGColor];
+        [[self layer] addSublayer:headingLayer];
+    }
+}
+
+#pragma mark - Drawing methods helpers
 
 /*!
  @method getBarycenterOf:
