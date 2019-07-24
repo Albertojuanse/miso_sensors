@@ -170,7 +170,7 @@
 
 /*!
  @method displayCenter
- @discussion This method removes every layer displayed from the canvas; it is called by 'drawRect:' every.
+ @discussion This method creates and display a layer with the center point of the canvas.
  */
 - (void)displayCenter
 {
@@ -538,11 +538,11 @@
     }
     if ([type isEqualToString:@"heading"]) {
         // Represent a line from the point to the heading direction.
-        UIBezierPath *measureBezierPath = [UIBezierPath bezierPathWithOvalInRect:rect];
+        UIBezierPath *measureBezierPath = [UIBezierPath bezierPath];
         [measureBezierPath moveToPoint:CGPointMake([canvasPosition.x doubleValue], [canvasPosition.y doubleValue])];
         [measureBezierPath addLineToPoint:CGPointMake(
-                                                      [canvasPosition.x doubleValue] + 200.0 * rWidth * cos([measure doubleValue]),
-                                                      [canvasPosition.y doubleValue] + 200.0 * rHeight * sin([measure doubleValue])
+                                                      [canvasPosition.x doubleValue] + (self.frame.size.width/2 - 100.0) * rWidth * cos([measure doubleValue]),
+                                                      [canvasPosition.y doubleValue] + (self.frame.size.width/2 - 100.0) * rHeight * sin([measure doubleValue])
                                                       )];
         
         CAShapeLayer *headingLayer = [[CAShapeLayer alloc] init];
@@ -660,8 +660,16 @@
         }
         
         // Get the relations of the transformation
-        rWidth = (widthSafeMax - widthSafeMin)/(maxX - minX);
-        rHeight = (heightSafeMax - heightSafeMin)/(maxY - minY);
+        if ( maxX != minX ) { // Division by zero preventing
+            rWidth = (widthSafeMax - widthSafeMin)/(maxX - minX);
+        } else {
+            rWidth = 1.0;
+        }
+        if ( maxY != minY ) { // Division by zero preventing
+            rHeight = (heightSafeMax - heightSafeMin)/(maxY - minY);
+        } else {
+            rHeight = 1.0;
+        }
         
         // Transform the point's coordinates.
         // The first position is always (0, 0), and it is centered at the origin of the canvas, the upper left corner. Hence, a correction must be done in orther to center the set in the canvas. But as is not intended to display (0, 0) in the center of te canvas, but the barycenter of the set es calculated and translated to the center of the canvas. For this, the 'vector' needed for adding is the subtract of the center of the canvas minus the barycenter.
@@ -742,8 +750,16 @@
         }
         
         // Get the relations of the transformation
-        rWidth = (widthSafeMax - widthSafeMin)/(maxX - minX);
-        rHeight = (heightSafeMax - heightSafeMin)/(maxY - minY);
+        if ( maxX != minX ) { // Division by zero preventing
+            rWidth = (widthSafeMax - widthSafeMin)/(maxX - minX);
+        } else {
+            rWidth = 1.0;
+        }
+        if ( maxY != minY ) { // Division by zero preventing
+            rHeight = (heightSafeMax - heightSafeMin)/(maxY - minY);
+        } else {
+            rHeight = 1.0;
+        }
         
         // Transform the point's coordinates.
         // The first position is always (0, 0), and it is centered at the origin of the canvas, the upper left corner. Hence, a correction must be done in orther to center the set in the canvas. But as is not intended to display (0, 0) in the center of te canvas, but the barycenter of the set es calculated and translated to the center of the canvas. For this, the 'vector' needed for adding is the subtract of the center of the canvas minus the barycenter.
