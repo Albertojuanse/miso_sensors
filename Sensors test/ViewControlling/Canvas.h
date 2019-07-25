@@ -18,9 +18,7 @@
  */
 @interface Canvas: UIView {
     
-    // Data for display
-    NSMutableArray * displayedUUID;
-    NSString * displayedUUIDString;
+    // Variables
     NSString * mode;
     
     // For canvas relation of aspect
@@ -34,7 +32,6 @@ typedef CGPoint NSPoint;
 
 @property NSMutableDictionary * measuresDic;
 @property NSMutableDictionary * locatedDic;
-@property NSMutableArray * currentLayers;
 
 -(void)prepareCanvasWithMode:(NSString *) mode;
 

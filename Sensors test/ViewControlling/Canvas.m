@@ -540,9 +540,10 @@
         // Represent a line from the point to the heading direction.
         UIBezierPath *measureBezierPath = [UIBezierPath bezierPath];
         [measureBezierPath moveToPoint:CGPointMake([canvasPosition.x doubleValue], [canvasPosition.y doubleValue])];
+        // The device is aiming the reference position, but an other way round representation is required, such as the heading measure is done from the position; a couterphase in y coordinate is needed (minus sign)
         [measureBezierPath addLineToPoint:CGPointMake(
-                                                      [canvasPosition.x doubleValue] + (self.frame.size.width/2 - 100.0) * rWidth * cos([measure doubleValue]),
-                                                      [canvasPosition.y doubleValue] + (self.frame.size.width/2 - 100.0) * rHeight * sin([measure doubleValue])
+                                                      [canvasPosition.x doubleValue] + (self.frame.size.height/2 - 100.0) * rHeight * sin([measure doubleValue]),
+                                                      [canvasPosition.y doubleValue] - (self.frame.size.width/2 - 100.0) * rWidth * cos([measure doubleValue])
                                                       )];
         
         CAShapeLayer *headingLayer = [[CAShapeLayer alloc] init];

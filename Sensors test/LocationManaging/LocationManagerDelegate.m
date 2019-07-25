@@ -531,7 +531,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         // In rho theta based system, user must choose which beacon is the source
         uuidChosenByUser = data[@"uuidChosenByUser"];
         positionChosenByUser = data[@"positionChosenByUser"];
-        positionChosenByUser = data[@"positionChosenByUser"];
         locatedPositionUUID = data[@"locatedPositionUUID"];
         
         // Register them if it is posible.
