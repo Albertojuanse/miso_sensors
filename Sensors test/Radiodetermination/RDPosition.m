@@ -108,7 +108,7 @@
 
 /*!
  @method description
- @discussion This method creates an NSString ovject for showing and loggin purposes; equivalent to 'toString()'.
+ @discussion This method creates an NSString object for showing and loggin purposes; equivalent to 'toString()'.
  */
 - (NSString *)description {
     return [NSString stringWithFormat: @"(%.2f, %.2f, %.2f)", [self.x floatValue], [self.y floatValue], [self.z floatValue]];
