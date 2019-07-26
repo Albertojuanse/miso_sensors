@@ -1,5 +1,5 @@
 //
-//  Entity.h
+//  MDEntity.h
 //  Sensors test
 //
 //  Created by MISO on 25/7/19.
@@ -9,10 +9,10 @@
 #include <Foundation/Foundation.h>
 
 /*!
- @protocol Entity
+ @protocol MDEntity
  @discussion Abstract definition of any entity that can be used for modeling
  */
-@protocol Entity
+@protocol MDEntity
 
 @required
 - (instancetype)init;
@@ -28,10 +28,10 @@
 @end
 
 /*!
- @class Entity
+ @class MDEntity
  @discussion Definition of any entity that can be used for modeling
  */
-@interface Entity: NSObject <Entity> {
+@interface MDEntity: NSObject <MDEntity> {
     
     NSString * name;
     NSMutableArray * attributes;

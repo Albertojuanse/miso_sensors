@@ -1,14 +1,14 @@
 //
-//  Entity.m
+//  MDEntity.m
 //  Sensors test
 //
 //  Created by MISO on 26/7/19.
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
-#import "Entity.h"
+#import "MDEntity.h"
 
-@implementation Entity: NSObject
+@implementation MDEntity: NSObject
 
 /*!
  @method init
@@ -67,14 +67,14 @@
     if (!other || ![other isKindOfClass:[self class]]) {
         return NO;
     }
-    return [self isEqualToEntity:other];
+    return [self isEqualToMDEntity:other];
 }
 
 /*!
- @method isEqualToRDPosition
+ @method isEqualToMDEntity
  @discussion This method compares two RDPosition objects.
  */
-- (BOOL)isEqualToEntity:(Entity *)entity {
+- (BOOL)isEqualToMDEntity:(MDEntity *)entity {
     if (entity == self) {
         return YES;
     }
