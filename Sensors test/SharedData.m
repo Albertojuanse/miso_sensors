@@ -10,6 +10,111 @@
 
 @implementation SharedData
 
+//              // SESSION DATA //
+//
+// The schema of the sessionData collection is:
+//
+//  [{ "user": { "name": (NSString *)name1;                  // sessionDic; userDic
+//               "role": (NSString *)role1;
+//             }
+//     "mode": (NSString *)mode1;
+//     "itemChosenByUser": (NSString *)item1;
+//     "entityChosenByUser": (NSString *)entity1;
+//   },
+//   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
+//     (···)
+//   },
+//   (···)
+//  ]
+//
+//             // ITEMS DATA //
+//
+// The schema of the itemsData collection is:
+//
+//  [{ "type": @"beacon" | @"position";                      //  itemDic
+//     "identifier": (NSString *)identifier1;
+//
+//     "uuid": (NSString *)uuid1;
+//
+//     "major": (NSString *)major1;
+//     "minor": (NSString *)minor1;
+//
+//     "position": (RDPosition *)position1;
+//
+//     "entity": (NSMutableDictionary *)metamodelDic1;       //  metamodelDic
+//
+//   },
+//   { "type": @"beacon" | @"position";
+//     "identifier": (NSString *)identifier2;
+//     (···)
+//   },
+//   (···)
+//  ]
+//
+//            // MEASURES DATA //
+//
+// The schema of the measuresData collection is:
+//
+//  [{ "position": (RDPosition *)position1;                  //  positionDic
+//     "positionMeasures": [
+//         { "uuid" : (NSString *)uuid1;                     //  uuidDic
+//           "uuidMeasures": [
+//             { "type" : (NSString *)type1;                 //  measuresDic
+//               "measure": (NSNumber *)measure1;
+//             },
+//             (···)
+//           ]
+//         },
+//         (···)
+//     ]
+//   },
+//   { "position": (RDPosition *)position2;                  // positionDic
+//     (···)
+//   },
+//   (···)
+//  ]
+//
+//            // LOCATIONS DATA //
+//
+//
+// The schema of the locationsData collection is:
+//
+//  [{ "locatedUUID": (NSString *)locatedUUID1;              //  locationDic
+//     "locatedPosition": (RDPosition *)locatedPosition1;
+//   },
+//   (···)
+// }
+//
+//            // METAMODEL DATA //
+//
+// The schema of entitiesData collection is
+//
+//  [ (MDEntity*)entity1,
+//    (···)
+//  ]
+//
+//              // MODEL DATA //
+//
+// The schema of modelData collection is is
+//
+//  [{ "name": name1;                                        //  modelDic
+//     "components": [
+//         { "position": (RDPosition *)position1;
+//           "entity": (MDEntity *)entity1;
+//           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
+//         },
+//         { "position": (RDPosition *)position2;
+//           (···)
+//         },
+//         (···)
+//     ]
+//   },
+//   { "name": name2;                                        //  modelDic
+//     (···)
+//   },
+//  ]
+//
+
 /*!
  @method init
  @discussion Constructor
@@ -18,35 +123,193 @@
 {
     self = [super init];
     if (self) {
-        measuresDic = [[NSMutableDictionary alloc] init];
-        locatedDic = [[NSMutableDictionary alloc] init];
-        positionIdNumber = [NSNumber numberWithInt:0];
-        uuidIdNumber = [NSNumber numberWithInt:0];
+        
+        // Colections of data
+        sessionData = [[NSMutableArray alloc] init];
+        itemsData = [[NSMutableArray alloc] init];
+        measuresData = [[NSMutableArray alloc] init];
+        locationsData = [[NSMutableArray alloc] init];
+        metamodelData = [[NSMutableArray alloc] init];
+        modelData = [[NSMutableArray alloc] init];
+        
+        // Identifiers generation variables
+        sessionIdNumber = [NSNumber numberWithInt:0];
+        itemsIdNumber = [NSNumber numberWithInt:0];
         measureIdNumber = [NSNumber numberWithInt:0];
-        locatedIdNumber = [NSNumber numberWithInt:0];
+        locationsIdNumber = [NSNumber numberWithInt:0];
+        metamodelIdNumber = [NSNumber numberWithInt:0];
+        modelIdNumber = [NSNumber numberWithInt:0];
+        
     }
     return self;
 }
 
+#pragma mark - General methods
+
 /*!
  @method reset
- @discussion delete de info.
+ @discussion Set every instance variable to null for ARC disposing and reallocate and init them.
  */
 - (void) reset {
-    measuresDic = nil; // ARC cleaning
-    locatedDic = nil;
-    positionIdNumber = nil;
-    uuidIdNumber = nil;
+    
+    // Colections of data
+    sessionData = nil;
+    itemsData = nil;
+    measuresData = nil;
+    locationsData = nil;
+    metamodelData = nil;
+    modelData = nil;
+    
+    // Identifiers generation variables
+    sessionIdNumber = nil;
+    itemsIdNumber = nil;
     measureIdNumber = nil;
-    locatedIdNumber = nil;
-    measuresDic = [[NSMutableDictionary alloc] init];
-    locatedDic = [[NSMutableDictionary alloc] init];
-    positionIdNumber = [NSNumber numberWithInt:0];
-    uuidIdNumber = [NSNumber numberWithInt:0];
+    locationsIdNumber = nil;
+    metamodelIdNumber = nil;
+    modelIdNumber = nil;
+    
+    // Colections of data
+    sessionData = [[NSMutableArray alloc] init];
+    itemsData = [[NSMutableArray alloc] init];
+    measuresData = [[NSMutableArray alloc] init];
+    locationsData = [[NSMutableArray alloc] init];
+    metamodelData = [[NSMutableArray alloc] init];
+    modelData = [[NSMutableArray alloc] init];
+    
+    // Identifiers generation variables
+    sessionIdNumber = [NSNumber numberWithInt:0];
+    itemsIdNumber = [NSNumber numberWithInt:0];
     measureIdNumber = [NSNumber numberWithInt:0];
-    locatedIdNumber = [NSNumber numberWithInt:0];
+    locationsIdNumber = [NSNumber numberWithInt:0];
+    metamodelIdNumber = [NSNumber numberWithInt:0];
+    modelIdNumber = [NSNumber numberWithInt:0];
     
 }
+
+/*!
+ @method resetInnerDictionaries
+ @discussion Set every inner dictionary variable to null for ARC disposing.
+ */
+- (void) resetInnerDictionaries {
+    sessionDic = nil;
+    userDic = nil;
+    itemDic = nil;
+    positionDic = nil;
+    measureDic = nil;
+    locationDic = nil;
+    metamodelDic = nil;
+    modelDic = nil;
+}
+
+#pragma mark - General getters
+
+/*!
+ @method getSessionData
+ @discussion This method returns the 'NSMutableArray' object with the information generated by the user in each use.
+ */
+- (NSMutableArray *)getSessionData
+{
+    return sessionData;
+}
+
+/*!
+ @method getItemsData
+ @discussion This method returns the 'NSMutableArray' object with the information of every position, beacon... submitted by the user.
+ */
+- (NSMutableArray *)getItemsData
+{
+    return itemsData;
+}
+
+/*!
+ @method getMeasuresData
+ @discussion This method returns the 'NSMutableArray' object with the measures taken.
+ */
+- (NSMutableArray *)getMeasuresData
+{
+    return measuresData;
+}
+
+/*!
+ @method getLocationsData
+ @discussion This method returns the 'NSMutableArray' object with the positions locted in space using location methods.
+ */
+- (NSMutableArray *)getLocationsData
+{
+    return locationsData;
+}
+
+/*!
+ @method getMetamodelData
+ @discussion This method returns the 'NSMutableArray' object with the the metamodeling entities use.
+ */
+- (NSMutableArray *)getMetamodelData
+{
+    return metamodelData;
+}
+
+/*!
+ @method getModelData
+ @discussion This method returns the 'NSMutableArray' object with the models generated or imported.
+ */
+- (NSMutableArray *)getModelData
+{
+    return modelData;
+}
+
+#pragma mark - Specific getters
+
+/*!
+ @method fromSessionDataGetVariable
+ @discussion This method returns the 'NSMutableArray' object with the models generated or imported.
+ */
+- (id)fromSessionDataGetVariable {
+    
+}
+
+- (NSMutableArray *)fromItemDataGetItems;
+
+- (NSMutableArray *)fromMeasuresDataGetMeasures;
+- (NSMutableArray *)fromMeasuresDataGetPositions;
+- (NSMutableArray *)fromMeasuresDataGetSourceUUIDs;
+- (NSMutableArray *)fromMeasuresDataGetTargetUUIDs;
+- (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position;
+- (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromSourceUUID:(NSString*)uuid;
+- (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromTargetUUID:(NSString*)uuid;
+- (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position
+                                                   andSourceUUID:(NSString*)uuid;
+- (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position
+                                                   andTargetUUID:(NSString*)uuid;
+- (NSNumber *)fromMeasuresDataGetMaxMeasureOfType:(NSString *)type;
+
+- (NSMutableArray *)fromLocationsDataGetPositions;
+
+- (NSMutableArray *)fromMetamodelDataGetEntities;
+
+- (NSMutableArray *)fromModelDataGetModels;
+
+// Specific setters
+- (void) inSessionDataSetVariable:(id)variable;
+
+- (void) inItemDataSetItem:(NSMutableDictionary*)item;
+
+- (void) inMeasuresDataSetMeasure:(NSNumber*)measure
+                           ofType:(NSString*)type
+                   withSourceUUID:(NSString*)uuid
+                       atPosition:(RDPosition*)positionp;
+- (void) inMeasuresDataSetMeasure:(NSNumber*)measure
+                           ofType:(NSString*)type
+                   withTargetUUID:(NSString*)uuid
+                       atPosition:(RDPosition*)positionp;
+
+- (void) inLocationsDataSetPosition:(RDPosition*)position
+                           fromUUID:(NSString*)locatedUUID;
+- (void) inLocationsDataSetPosition:(RDPosition*)position
+                             ofUUID:(NSString*)locatedUUID;
+
+- (void) inMetamodelDataSetEntity:(MDEntity*)entity;
+
+- (void) inModelDataSetModel:(NSMutableDictionary*)model;
 
 #pragma mark Measures getters
 
