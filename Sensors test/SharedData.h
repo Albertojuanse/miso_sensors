@@ -57,7 +57,11 @@
 - (NSMutableArray *)getModelData;
 
 // Specific getters
-- (id)fromSessionDataGetVariable;
+- (NSMutableDictionary *)fromSessionDataGetKey:(NSString *)key;
+- (NSMutableDictionary *)fromSessionDataGetUserDic;
+- (NSString *)fromSessionDataGetMode;
+- (NSString *)fromSessionDataGetItemChosenByUser;
+- (NSString *)fromSessionDataGetTypeChosenByUser;
 
 - (NSMutableArray *)fromItemDataGetItems;
 

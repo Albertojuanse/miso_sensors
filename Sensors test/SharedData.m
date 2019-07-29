@@ -257,16 +257,123 @@
     return modelData;
 }
 
-#pragma mark - Specific getters
-
+#pragma mark - Session data specific getters
 /*!
- @method fromSessionDataGetVariable
- @discussion This method returns the 'NSMutableArray' object with the models generated or imported.
+ @method fromSessionDataGetSessionWithUserDic:
+ @discussion This method returns the 'NSMutableDictionary' object with the sessions information of the user described with its user dictionary; if it is not found, return null.
  */
-- (id)fromSessionDataGetVariable {
-    
+- (NSMutableDictionary *)fromSessionDataGetSessionWithUserDic:(NSMutableDictionary*)userDic
+{
+    for (NSMutableDictionary * sessionDic in sessionData) {
+        NSMutableDictionary * storedUserDic = dic[@"user"];
+        if ([storedUserDic isEqualToDictionary:userDic]) {
+            return sessionDic;
+        }
+    }
+    return nil;
 }
 
+/*!
+ @method fromSessionDataGetSessionWithUserName:
+ @discussion This method returns the 'NSMutableDictionary' object with the sessions information of the user described with its user dictionary; if it is not found, return null.
+ */
+- (NSMutableDictionary *)fromSessionDataGetSessionWithUserName:(NSString*)userName {
+    for (NSMutableDictionary * sessionDic in sessionData) {
+        NSMutableDictionary * storedUserDic = dic[@"user"];
+        if ([storedUserDic[@"name"] isEqualToString:userName]) {
+            return sessionDic;
+        }
+    }
+    return nil;
+}
+
+/*!
+ @method fromSessionDataGetKey:fromUserWithUserDic:
+ @discussion This method returns the object with the info determined by the dictionary key from the session data collection given the user's dictionary; if is not found, return nil.
+ */
+- (id)fromSessionDataGetKey:(NSString *)key
+        fromUserWithUserDic:(NSMutableDictionary*)userDic
+{
+    NSMutableDictionary * sessionDic = [self fromSessionDataGetSessionWithUserDic:userDic];
+    // Can be null
+    if (sessionDic) {
+        return sessionDic[key];
+    } else {
+        return nil;
+    }
+}
+
+/*!
+ @method fromSessionDataGetKey:fromUserWithUserName:
+ @discussion This method returns the object with the info determined by the dictionary key from the session data collection given the user's name; if is not found, return nil.
+ */
+- (id)fromSessionDataGetKey:(NSString *)key
+       fromUserWithUsername:(NSString*)userName
+{
+    NSMutableDictionary * sessionDic = [self fromSessionDataGetSessionWithUsername:userName];
+    // Can be null
+    if (sessionDic) {
+        return sessionDic[key];
+    } else {
+        return nil;
+    }
+}
+
+/*!
+ @method fromSessionDataGetModeFromUserWithUserDic:
+ @discussion This method returns the mode from the session data collection given the user's dictionary; if is not found, return nil.
+ */
+- (NSMutableDictionary *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary*)userDic
+{
+    return [self fromSessionDataGetKey:@"mode" fromUserWithUserDic:userDic];
+}
+
+/*!
+ @method fromSessionDataGetModeFromUserWithUserName:
+ @discussion This method returns the mode from the session data collection given the user's name; if is not found, return nil.
+ */
+- (NSMutableDictionary *)fromSessionDataGetModeFromUserWithUserName:(NSString*)userName
+{
+    return [self fromSessionDataGetKey:@"mode" fromUserWithUserDic:userName];
+}
+
+/*!
+ @method fromSessionDataGetItemChosenByUserFromUserWithUserDic:
+ @discussion This method returns the item chosen by user from the session data collection given the user's dictionary; if is not found, return nil.
+ */
+- (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserDic:(NSMutableDictionary*)userDic
+{
+    return [self fromSessionDataGetKey:@"itemChosenByUser" fromUserWithUserDic:userDic];
+}
+
+/*!
+ @method fromSessionDataGetItemChosenByUserFromUserWithUserName:
+ @discussion This method returns the item chosen by user from the session data collection given the user's name; if is not found, return nil.
+ */
+- (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserName:(NSString*)userName
+{
+    return [self fromSessionDataGetKey:@"itemChosenByUser" fromUserWithUserDic:userName];
+}
+
+/*!
+ @method fromSessionDataGetModeChosenByUserFromUserWithUserDic:
+ @discussion This method returns the mode chosen by user from the session data collection given the user's dictionary; if is not found, return nil.
+ */
+- (NSMutableDictionary *)fromSessionDataGetModeChosenByUserFromUserWithUserDic:(NSMutableDictionary*)userDic
+{
+    return [self fromSessionDataGetKey:@"modeChosenByUser" fromUserWithUserDic:userDic];
+}
+
+/*!
+ @method fromSessionDataGetItemChosenByUserFromUserWithUserName:
+ @discussion This method returns the mode chosen by user from the session data collection given the user's name; if is not found, return nil.
+ */
+- (NSMutableDictionary *)fromSessionDataGetModeChosenByUserFromUserWithUserName:(NSString*)userName
+{
+    return [self fromSessionDataGetKey:@"modeChosenByUser" fromUserWithUserDic:userName];
+}
+
+#pragma mark - Item data specific getters
 - (NSMutableArray *)fromItemDataGetItems;
 
 - (NSMutableArray *)fromMeasuresDataGetMeasures;
