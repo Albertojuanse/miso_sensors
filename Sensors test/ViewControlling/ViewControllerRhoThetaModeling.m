@@ -211,15 +211,15 @@
         cell.textLabel.numberOfLines = 0; // Means any number
         
         // If it is a beacon
-        if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+        if ([@"beacon" isEqualToString:regionDic[@"sort"]]) {
             
             // It representation depends on if exist its position or its type
             if (regionDic[@"x"] && regionDic[@"y"] && regionDic[@"z"]) {
-                if (regionDic[@"type"]) {
+                if (regionDic[@"sort"]) {
                     
                     cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
                                            regionDic[@"identifier"],
-                                           regionDic[@"type"][@"name"],
+                                           regionDic[@"sort"][@"name"],
                                            regionDic[@"uuid"],
                                            regionDic[@"major"],
                                            regionDic[@"minor"],
@@ -244,11 +244,11 @@
                     
                 }
             } else {
-                if (regionDic[@"type"]) {
+                if (regionDic[@"sort"]) {
                     
                     cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nmajor: %@ ; minor: %@",
                                            regionDic[@"identifier"],
-                                           regionDic[@"type"][@"name"],
+                                           regionDic[@"sort"][@"name"],
                                            regionDic[@"uuid"],
                                            regionDic[@"major"],
                                            regionDic[@"minor"]
@@ -270,12 +270,12 @@
         }
         
         // And if it is a position
-        if ([@"position" isEqualToString:regionDic[@"type"]]) {
+        if ([@"position" isEqualToString:regionDic[@"sort"]]) {
             // If its type is set
-            if (regionDic[@"type"]) {
+            if (regionDic[@"sort"]) {
                 cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> \n Position: (%@, %@, %@)",
                                        regionDic[@"identifier"],
-                                       regionDic[@"type"][@"name"],
+                                       regionDic[@"sort"][@"name"],
                                        regionDic[@"x"],
                                        regionDic[@"y"],
                                        regionDic[@"z"]
@@ -307,7 +307,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
         // Only beacons can be aimed, positions were marked
         if ([@"position" isEqualToString:
-              [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"type"]
+              [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"sort"]
               ])
         {
             [tableView deselectRowAtIndexPath:indexPath animated:NO];

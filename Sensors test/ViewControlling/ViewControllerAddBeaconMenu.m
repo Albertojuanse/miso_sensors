@@ -131,14 +131,14 @@
              if (uuidChosenByUser) {
                  
                  for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-                     if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+                     if ([@"beacon" isEqualToString:regionDic[@"sort"]]) {
                          if ([regionDic[@"uuid"] isEqualToString:uuidChosenByUser]) {
                              self.textUUID.text = regionDic[@"uuid"];
                              self.textMajor.text = regionDic[@"major"];
                              self.textMinor.text = regionDic[@"minor"];
                              
-                             if (regionDic[@"type"]){
-                                 self.textType.text = regionDic[@"type"][@"name"];
+                             if (regionDic[@"sort"]){
+                                 self.textType.text = regionDic[@"sort"][@"name"];
                              }
                              
                              if (
@@ -209,10 +209,10 @@
              if (positionChosenByUser) {
                  
                  for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-                     if ([@"position" isEqualToString:regionDic[@"type"]]) {
+                     if ([@"position" isEqualToString:regionDic[@"sort"]]) {
                          
-                         if (regionDic[@"type"]){
-                             self.textType.text = regionDic[@"type"][@"name"];
+                         if (regionDic[@"sort"]){
+                             self.textType.text = regionDic[@"sort"][@"name"];
                          }
                          
                          if ([regionDic[@"position"] isEqual:positionChosenByUser]) {
@@ -298,7 +298,7 @@
             
         // Search for it and delete it
         for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-            if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+            if ([@"beacon" isEqualToString:regionDic[@"sort"]]) {
                 if ([[self.textUUID text] isEqualToString:regionDic[@"uuid"]]) {
                     if ([[self.textMajor text] isEqualToString:regionDic[@"major"]]) {
                         if ([[self.textMinor text] isEqualToString:regionDic[@"minor"]]) {
@@ -316,7 +316,7 @@
         
         // Search for it and delete it
         for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-            if ([@"position" isEqualToString:regionDic[@"type"]]) {
+            if ([@"position" isEqualToString:regionDic[@"sort"]]) {
                 
                 RDPosition * positionToRemove = [[RDPosition alloc] init];
                 positionToRemove.x = [NSNumber numberWithFloat:[[self.textPositionX text] floatValue]];
@@ -427,7 +427,7 @@
         // Different behaviour if position or beacon
         if (selectedSegmentIndex == 0) { // iBeacon mode
             // If it is a beacon
-            if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+            if ([@"beacon" isEqualToString:regionDic[@"sort"]]) {
                 if ([[self.textUUID text] isEqualToString:regionDic[@"uuid"]]) {
                     if ([[self.textMajor text] isEqualToString:regionDic[@"major"]]) {
                         if ([[self.textMinor text] isEqualToString:regionDic[@"minor"]]) {
@@ -440,12 +440,12 @@
                                 
                                 // The special type <No type> is selected by user to remove the previous chosen type
                                 if ([typeChosenByUser isEqualToString:@"<No type>"]) {
-                                    regionDic[@"type"] = nil;
+                                    regionDic[@"sort"] = nil;
                                 } else {
                                     // search for its dictionary and set it
                                     for (NSMutableDictionary * typeDic in typesRegistered) {
                                         if ([typeChosenByUser isEqualToString:typeDic[@"name"]]) {
-                                            regionDic[@"type"] = typeDic;
+                                            regionDic[@"sort"] = typeDic;
                                         }
                                     }
                                 }
@@ -494,7 +494,7 @@
         }
         if (selectedSegmentIndex == 1) { // position mode
             // If it is a position
-            if ([@"position" isEqualToString:regionDic[@"type"]]) {
+            if ([@"position" isEqualToString:regionDic[@"sort"]]) {
                 
                 RDPosition * positionToFind = [[RDPosition alloc] init];
                 positionToFind.x = [NSNumber numberWithFloat:[[self.textPositionX text] floatValue]];
@@ -511,12 +511,12 @@
                         
                         // The special type <No type> is selected by user to remove the previous chosen type
                         if ([typeChosenByUser isEqualToString:@"<No type>"]) {
-                            regionDic[@"type"] = nil;
+                            regionDic[@"sort"] = nil;
                         } else {
                             // search for its dictionary and set it
                             for (NSMutableDictionary * typeDic in typesRegistered) {
                                 if ([typeChosenByUser isEqualToString:typeDic[@"name"]]) {
-                                    regionDic[@"type"] = typeDic;
+                                    regionDic[@"sort"] = typeDic;
                                 }
                             }
                         }
@@ -566,7 +566,7 @@
         
         if (selectedSegmentIndex == 0) { // iBeacon mode
        
-            [newRegionDic setValue:@"beacon" forKey:@"type"];
+            [newRegionDic setValue:@"beacon" forKey:@"sort"];
             [newRegionDic setValue:[self.textUUID text] forKey:@"uuid"];
             [newRegionDic setValue:[self.textMajor text] forKey:@"major"];
             [newRegionDic setValue:[self.textMinor text] forKey:@"minor"];
@@ -581,12 +581,12 @@
                 
                 // The special type <No type> is selected by user to remove the previous chosen type
                 if ([typeChosenByUser isEqualToString:@"<No type>"]) {
-                    newRegionDic[@"type"] = nil;
+                    newRegionDic[@"sort"] = nil;
                 } else {
                     // search for its dictionary and set it
                     for (NSMutableDictionary * typeDic in typesRegistered) {
                         if ([typeChosenByUser isEqualToString:typeDic[@"name"]]) {
-                            newRegionDic[@"type"] = typeDic;
+                            newRegionDic[@"sort"] = typeDic;
                         }
                     }
                 }
@@ -627,7 +627,7 @@
         }
         if (selectedSegmentIndex == 1) { // position mode
             
-            [newRegionDic setValue:@"position" forKey:@"type"];
+            [newRegionDic setValue:@"position" forKey:@"sort"];
             [newRegionDic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
             
             regionPositionIdNumber = [NSNumber numberWithInt:[regionPositionIdNumber intValue] + 1];
@@ -645,12 +645,12 @@
                 
                 // The special type <No type> is selected by user to remove the previous chosen type
                 if ([typeChosenByUser isEqualToString:@"<No type>"]) {
-                    newRegionDic[@"type"] = nil;
+                    newRegionDic[@"sort"] = nil;
                 } else {
                     // search for its dictionary and set it
                     for (NSMutableDictionary * typeDic in typesRegistered) {
                         if ([typeChosenByUser isEqualToString:typeDic[@"name"]]) {
-                            newRegionDic[@"type"] = typeDic;
+                            newRegionDic[@"sort"] = typeDic;
                         }
                     }
                 }

@@ -19,7 +19,7 @@
 //             }
 //     "mode": (NSString *)mode1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
-//     "typeChosenByUser": (NSMutableDictionary *)type1;     //  metamodelDic
+//     "typeChosenByUser": (MDType*)type1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
 //     (···)
@@ -31,7 +31,7 @@
 //
 // The schema of the itemsData collection is:
 //
-//  [{ "type": @"beacon" | @"position";                      //  itemDic
+//  [{ "sort": @"beacon" | @"position";                      //  itemDic
 //     "identifier": (NSString *)identifier1;
 //
 //     "uuid": (NSString *)uuid1;
@@ -41,10 +41,10 @@
 //
 //     "position": (RDPosition *)position1;
 //
-//     "type": (NSMutableDictionary *)metamodelDic1;       //  metamodelDic
+//     "type": (MDType*)type1
 //
 //   },
-//   { "type": @"beacon" | @"position";
+//   { "sort": @"beacon" | @"position";
 //     "identifier": (NSString *)identifier2;
 //     (···)
 //   },
@@ -59,7 +59,7 @@
 //     "positionMeasures": [
 //         { "uuid" : (NSString *)uuid1;                     //  uuidDic
 //           "uuidMeasures": [
-//             { "type" : (NSString *)type1;                 //  measuresDic
+//             { "sort" : (NSString *)type1;                 //  measuresDic
 //               "measure": (NSNumber *)measure1;
 //             },
 //             (···)
@@ -137,7 +137,6 @@
         itemsIdNumber = [NSNumber numberWithInt:0];
         measureIdNumber = [NSNumber numberWithInt:0];
         locationsIdNumber = [NSNumber numberWithInt:0];
-        metamodelIdNumber = [NSNumber numberWithInt:0];
         modelIdNumber = [NSNumber numberWithInt:0];
         
     }
@@ -165,7 +164,6 @@
     itemsIdNumber = nil;
     measureIdNumber = nil;
     locationsIdNumber = nil;
-    metamodelIdNumber = nil;
     modelIdNumber = nil;
     
     // Colections of data
@@ -197,7 +195,6 @@
     positionDic = nil;
     measureDic = nil;
     locationDic = nil;
-    metamodelDic = nil;
     modelDic = nil;
 }
 
@@ -258,15 +255,33 @@
 }
 
 #pragma mark - Session data specific getters
+//              // SESSION DATA //
+//
+// The schema of the sessionData collection is:
+//
+//  [{ "user": { "name": (NSString *)name1;                  // sessionDic; userDic
+//               "role": (NSString *)role1;
+//             }
+//     "mode": (NSString *)mode1;
+//     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
+//     "typeChosenByUser": (MDType*)type1
+//   },
+//   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
+//     (···)
+//   },
+//   (···)
+//  ]
+//
+
 /*!
  @method fromSessionDataGetSessionWithUserDic:
  @discussion This method returns the 'NSMutableDictionary' object with the sessions information of the user described with its user dictionary; if it is not found, return null.
  */
-- (NSMutableDictionary *)fromSessionDataGetSessionWithUserDic:(NSMutableDictionary*)userDic
+- (NSMutableDictionary *)fromSessionDataGetSessionWithUserDic:(NSMutableDictionary*)givenUserDic
 {
-    for (NSMutableDictionary * sessionDic in sessionData) {
+    for (sessionDic in sessionData) {
         NSMutableDictionary * storedUserDic = dic[@"user"];
-        if ([storedUserDic isEqualToDictionary:userDic]) {
+        if ([storedUserDic isEqualToDictionary:givenUserDic]) {
             return sessionDic;
         }
     }
@@ -278,7 +293,7 @@
  @discussion This method returns the 'NSMutableDictionary' object with the sessions information of the user described with its user dictionary; if it is not found, return null.
  */
 - (NSMutableDictionary *)fromSessionDataGetSessionWithUserName:(NSString*)userName {
-    for (NSMutableDictionary * sessionDic in sessionData) {
+    for (sessionDic in sessionData) {
         NSMutableDictionary * storedUserDic = dic[@"user"];
         if ([storedUserDic[@"name"] isEqualToString:userName]) {
             return sessionDic;
@@ -292,9 +307,9 @@
  @discussion This method returns the object with the info determined by the dictionary key from the session data collection given the user's dictionary; if is not found, return nil.
  */
 - (id)fromSessionDataGetKey:(NSString *)key
-        fromUserWithUserDic:(NSMutableDictionary*)userDic
+        fromUserWithUserDic:(NSMutableDictionary*)givenUserDic
 {
-    NSMutableDictionary * sessionDic = [self fromSessionDataGetSessionWithUserDic:userDic];
+    NSMutableDictionary * sessionDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic];
     // Can be null
     if (sessionDic) {
         return sessionDic[key];
@@ -323,9 +338,9 @@
  @method fromSessionDataGetModeFromUserWithUserDic:
  @discussion This method returns the mode from the session data collection given the user's dictionary; if is not found, return nil.
  */
-- (NSString *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary*)userDic
+- (NSString *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary*)givenUserDic
 {
-    return [self fromSessionDataGetKey:@"mode" fromUserWithUserDic:userDic];
+    return [self fromSessionDataGetKey:@"mode" fromUserWithUserDic:givenUserDic];
 }
 
 /*!
@@ -341,9 +356,9 @@
  @method fromSessionDataGetItemChosenByUserFromUserWithUserDic:
  @discussion This method returns the item chosen by user from the session data collection given the user's dictionary; if is not found, return nil.
  */
-- (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserDic:(NSMutableDictionary*)userDic
+- (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserDic:(NSMutableDictionary*)givenUserDic
 {
-    return [self fromSessionDataGetKey:@"itemChosenByUser" fromUserWithUserDic:userDic];
+    return [self fromSessionDataGetKey:@"itemChosenByUser" fromUserWithUserDic:givenUserDic];
 }
 
 /*!
@@ -374,9 +389,56 @@
 }
 
 #pragma mark - Item data specific getters
+//             // ITEMS DATA //
+//
+// The schema of the itemsData collection is:
+//
+//  [{ "sort": @"beacon" | @"position";                      //  itemDic
+//     "identifier": (NSString *)identifier1;
+//
+//     "uuid": (NSString *)uuid1;
+//
+//     "major": (NSString *)major1;
+//     "minor": (NSString *)minor1;
+//
+//     "position": (RDPosition *)position1;
+//
+//     "type": (MDType*)type1
+//
+//   },
+//   { "type": @"beacon" | @"position";
+//     "identifier": (NSString *)identifier2;
+//     (···)
+//   },
+//   (···)
+//  ]
+//
 
-- (NSMutableArray *)fromItemDataGetItems;
+/*!
+ @method fromItemDataGetItemsWithSort:
+ @discussion This method returns the 'NSMutableArray' with all item objects with given if sort; if it does not exist anyone returns an empty array.
+ */
+- (NSMutableArray *)fromItemDataGetItemsWithSort:(NSString *)sort
+{
+    NSMutableArray * items = [[NSMutableArray alloc] init];
+    for (itemDic in itemsData) {
+        if ([itemDic[@"sort"] isEqualToString:sort]) {
+            [items addObject:itemDic]
+        }
+    }
+}
 
+/*!
+ @method fromItemDataGetKey:fromItemWithUUID:
+ @discussion This method returns the object with the info determined by the dictionary key from the items data collection given its UUID; if is not found, return nil.
+ */
+- (NSMutableDictionary*)fromItemDataGetKey:(NSString *)key
+                          fromItemWithUUID:(NSString*)uuid
+{
+   
+}
+
+#pragma mark - Measures data specific getters
 - (NSMutableArray *)fromMeasuresDataGetMeasures;
 - (NSMutableArray *)fromMeasuresDataGetPositions;
 - (NSMutableArray *)fromMeasuresDataGetSourceUUIDs;

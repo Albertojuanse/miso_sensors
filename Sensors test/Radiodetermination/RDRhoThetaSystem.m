@@ -32,7 +32,7 @@
     //             { "uuid" : uuid1;                      //  uuidDic
     //               "uuidMeasures":
     //                 { "measure1":                      //  measureDicDic
-    //                     { "type": "rssi"/"heading";    //  measureDic
+    //                     { "sort": "rssi"/"heading";    //  measureDic
     //                       "measure": rssi/heading
     //                     };
     //                   "measure2":  { (···) }
@@ -130,7 +130,7 @@
                             measureDic = [measureDicDic objectForKey:measureKey];
                             
                             // Get the data and acumulate it
-                            if ([measureDic[@"type"] isEqualToString:@"rssi"]) {
+                            if ([measureDic[@"sort"] isEqualToString:@"rssi"]) {
                                 measuresRSSIAcumulation = [NSNumber numberWithFloat:
                                                            [measuresRSSIAcumulation floatValue] +
                                                            [measureDic[@"measure"] floatValue]
@@ -138,7 +138,7 @@
                                 measureRSSIIndex++;
                                 isRSSIMeasure = YES;
                             }
-                            if ([measureDic[@"type"] isEqualToString:@"heading"]) {
+                            if ([measureDic[@"sort"] isEqualToString:@"heading"]) {
                                 measuresHeadingAcumulation = [NSNumber numberWithFloat:
                                                               [measuresHeadingAcumulation floatValue] +
                                                               [measureDic[@"measure"] floatValue]

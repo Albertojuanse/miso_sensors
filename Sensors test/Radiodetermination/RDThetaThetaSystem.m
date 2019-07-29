@@ -56,7 +56,7 @@
     //             { "uuid" : uuid1;                      //  uuidDic
     //               "uuidMeasures":
     //                 { "measure1":                      //  measureDicDic
-    //                     { "type": "rssi"/"heading";    //  measureDic
+    //                     { "sort": "rssi"/"heading";    //  measureDic
     //                       "measure": rssi/heading
     //                     };
     //                   "measure2":  { (···) }
@@ -154,7 +154,7 @@
                             measureDic = [measureDicDic objectForKey:measureKey];
                             
                             // Get the data and acumulate it
-                            if ([measureDic[@"type"] isEqualToString:@"rssi"]) {
+                            if ([measureDic[@"sort"] isEqualToString:@"rssi"]) {
                                 // Do nothing; they should no exist.
                             }
                             if ([measureDic[@"type"] isEqualToString:@"heading"]) {

@@ -607,7 +607,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 for (NSMutableDictionary * regionDic in beaconsAndPositions) {
                     
                     // Could be a position or a beacon
-                    if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+                    if ([@"beacon" isEqualToString:regionDic[@"sort"]]) {
                         NSString * uuidString = regionDic[@"uuid"];
                         NSInteger major = [regionDic[@"major"] integerValue];
                         NSInteger minor = [regionDic[@"minor"] integerValue];
@@ -630,10 +630,10 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                             [monitoredPositions addObject:regionDic[@"position"]];
                         }
                     }
-                    if ([@"position" isEqualToString:regionDic[@"type"]]) {
+                    if ([@"position" isEqualToString:regionDic[@"sort"]]) {
                         [monitoredPositions addObject:regionDic[@"position"]];
                     }
-                    if ([@"model" isEqualToString:regionDic[@"type"]]) {
+                    if ([@"model" isEqualToString:regionDic[@"sort"]]) {
                         // TO DO: What needs Location manager of previus models?. Alberto J. 2019/07/18.
                     }
                     

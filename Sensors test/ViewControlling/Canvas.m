@@ -205,7 +205,7 @@
     //             { "uuid": uuid1;                       //  uuidDic
     //               "uuidMeasures":
     //                 { "measure1":                      //  measureDicDic
-    //                     { "type": "rssi"/"heading";    //  measureDic
+    //                     { "sort": "rssi"/"heading";    //  measureDic
     //                       "measure": rssi/heading
     //                     };
     //                   "measure2":  { (···) }
@@ -307,7 +307,7 @@
                 measureDic = [measureDicDic objectForKey:measureKey];
                 // ...and the measure.
                 NSNumber * measure = [NSNumber numberWithFloat:[measureDic[@"measure"] floatValue]];
-                NSString * type = measureDic[@"type"];
+                NSString * type = measureDic[@"sort"];
                 
                 // Draw the measure
                 [self drawMeasure:measure
