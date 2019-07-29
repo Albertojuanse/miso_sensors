@@ -43,10 +43,10 @@
                     forControlEvents:UIControlEventValueChanged];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
-    self.tableEntities.delegate = self;
-    self.tableEntities.dataSource = self;
+    self.tableTypes.delegate = self;
+    self.tableTypes.dataSource = self;
     
-    [self.tableEntities reloadData];
+    [self.tableTypes reloadData];
 }
 
 /*!
@@ -137,8 +137,8 @@
                              self.textMajor.text = regionDic[@"major"];
                              self.textMinor.text = regionDic[@"minor"];
                              
-                             if (regionDic[@"entity"]){
-                                 self.textEntity.text = regionDic[@"entity"][@"name"];
+                             if (regionDic[@"type"]){
+                                 self.textType.text = regionDic[@"type"][@"name"];
                              }
                              
                              if (
@@ -211,8 +211,8 @@
                  for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
                      if ([@"position" isEqualToString:regionDic[@"type"]]) {
                          
-                         if (regionDic[@"entity"]){
-                             self.textEntity.text = regionDic[@"entity"][@"name"];
+                         if (regionDic[@"type"]){
+                             self.textType.text = regionDic[@"type"][@"name"];
                          }
                          
                          if ([regionDic[@"position"] isEqual:positionChosenByUser]) {
@@ -276,11 +276,11 @@
 }
 
 /*!
- @method setEntitiesRegistered:
- @discussion This method sets the NSMutableArray variable 'entitiesRegistered'.
+ @method setTypesRegistered:
+ @discussion This method sets the NSMutableArray variable 'typesRegistered'.
  */
-- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered {
-    entitiesRegistered = newEntitiesRegistered;
+- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered {
+    typesRegistered = newTypesRegistered;
 }
 
 #pragma mark - Buttons event handles
@@ -435,17 +435,17 @@
                             // If this code is reached, the beacon is registered and its position can be set or uploaded but not registered again.
                             dicFound = YES;
                             
-                            // Also its entity can be modified or set
-                            if (entityChosenByUser) {
+                            // Also its type can be modified or set
+                            if (typeChosenByUser) {
                                 
-                                // The special entity <No entity> is selected by user to remove the previous chosen entity
-                                if ([entityChosenByUser isEqualToString:@"<No entity>"]) {
-                                    regionDic[@"entity"] = nil;
+                                // The special type <No type> is selected by user to remove the previous chosen type
+                                if ([typeChosenByUser isEqualToString:@"<No type>"]) {
+                                    regionDic[@"type"] = nil;
                                 } else {
                                     // search for its dictionary and set it
-                                    for (NSMutableDictionary * entityDic in entitiesRegistered) {
-                                        if ([entityChosenByUser isEqualToString:entityDic[@"name"]]) {
-                                            regionDic[@"entity"] = entityDic;
+                                    for (NSMutableDictionary * typeDic in typesRegistered) {
+                                        if ([typeChosenByUser isEqualToString:typeDic[@"name"]]) {
+                                            regionDic[@"type"] = typeDic;
                                         }
                                     }
                                 }
@@ -468,15 +468,15 @@
                                 regionDic[@"position"] = positionToAdd;
                             } else {
                                 
-                                // If all coordinate values missing the user tries to re-register a beacon, unless the user wanted to set its entity
+                                // If all coordinate values missing the user tries to re-register a beacon, unless the user wanted to set its type
                                 if (
                                     [[self.textBeaconX text] isEqualToString:@""] &&
                                     [[self.textBeaconY text] isEqualToString:@""] &&
                                     [[self.textBeaconZ text] isEqualToString:@""]
                                     )
                                 {
-                                    // This code is reached also when an entity was set or uploaded, so check it
-                                    if (!entityChosenByUser) {
+                                    // This code is reached also when an type was set or uploaded, so check it
+                                    if (!typeChosenByUser) {
                                         self.labelPositionError.text = @"Error. This position is already registered. Please, submit a different one or push \"Back\".";
                                         return;
                                     }
@@ -506,17 +506,17 @@
                     // If this code is reached, the position is registered and its position can be uploaded.
                     dicFound = YES;
                     
-                    // Also its entity can be modified or set
-                    if (entityChosenByUser) {
+                    // Also its type can be modified or set
+                    if (typeChosenByUser) {
                         
-                        // The special entity <No entity> is selected by user to remove the previous chosen entity
-                        if ([entityChosenByUser isEqualToString:@"<No entity>"]) {
-                            regionDic[@"entity"] = nil;
+                        // The special type <No type> is selected by user to remove the previous chosen type
+                        if ([typeChosenByUser isEqualToString:@"<No type>"]) {
+                            regionDic[@"type"] = nil;
                         } else {
                             // search for its dictionary and set it
-                            for (NSMutableDictionary * entityDic in entitiesRegistered) {
-                                if ([entityChosenByUser isEqualToString:entityDic[@"name"]]) {
-                                    regionDic[@"entity"] = entityDic;
+                            for (NSMutableDictionary * typeDic in typesRegistered) {
+                                if ([typeChosenByUser isEqualToString:typeDic[@"name"]]) {
+                                    regionDic[@"type"] = typeDic;
                                 }
                             }
                         }
@@ -542,8 +542,8 @@
                             [[self.textPositionZ text] isEqualToString:@""]
                             )
                         {
-                            // This code is reached also when an entity was set or uploaded, so check it
-                            if (!entityChosenByUser) {
+                            // This code is reached also when an type was set or uploaded, so check it
+                            if (!typeChosenByUser) {
                                 self.labelPositionError.text = @"Error. This position is already registered. Please, submit a different one or push \"Back\".";
                                 return;
                             }
@@ -576,17 +576,17 @@
             regionId = [regionId stringByAppendingString:@"@miso.uam.es"];
             [newRegionDic setValue:regionId forKey:@"identifier"];
             
-            // Its entity can be set
-            if (entityChosenByUser) {
+            // Its type can be set
+            if (typeChosenByUser) {
                 
-                // The special entity <No entity> is selected by user to remove the previous chosen entity
-                if ([entityChosenByUser isEqualToString:@"<No entity>"]) {
-                    newRegionDic[@"entity"] = nil;
+                // The special type <No type> is selected by user to remove the previous chosen type
+                if ([typeChosenByUser isEqualToString:@"<No type>"]) {
+                    newRegionDic[@"type"] = nil;
                 } else {
                     // search for its dictionary and set it
-                    for (NSMutableDictionary * entityDic in entitiesRegistered) {
-                        if ([entityChosenByUser isEqualToString:entityDic[@"name"]]) {
-                            newRegionDic[@"entity"] = entityDic;
+                    for (NSMutableDictionary * typeDic in typesRegistered) {
+                        if ([typeChosenByUser isEqualToString:typeDic[@"name"]]) {
+                            newRegionDic[@"type"] = typeDic;
                         }
                     }
                 }
@@ -640,17 +640,17 @@
             positionToSave.y = [NSNumber numberWithFloat:[[self.textPositionY text] floatValue]];
             positionToSave.z = [NSNumber numberWithFloat:[[self.textPositionZ text] floatValue]];
             
-            // Its entity can be set
-            if (entityChosenByUser) {
+            // Its type can be set
+            if (typeChosenByUser) {
                 
-                // The special entity <No entity> is selected by user to remove the previous chosen entity
-                if ([entityChosenByUser isEqualToString:@"<No entity>"]) {
-                    newRegionDic[@"entity"] = nil;
+                // The special type <No type> is selected by user to remove the previous chosen type
+                if ([typeChosenByUser isEqualToString:@"<No type>"]) {
+                    newRegionDic[@"type"] = nil;
                 } else {
                     // search for its dictionary and set it
-                    for (NSMutableDictionary * entityDic in entitiesRegistered) {
-                        if ([entityChosenByUser isEqualToString:entityDic[@"name"]]) {
-                            newRegionDic[@"entity"] = entityDic;
+                    for (NSMutableDictionary * typeDic in typesRegistered) {
+                        if ([typeChosenByUser isEqualToString:typeDic[@"name"]]) {
+                            newRegionDic[@"type"] = typeDic;
                         }
                     }
                 }
@@ -700,20 +700,20 @@
 }
 
 /*!
- @method handleButtonAddEntity:
- @discussion This method handles the 'Add entity' button action and register the user entity if it does not exit.
+ @method handleButtonAddType:
+ @discussion This method handles the 'Add type' button action and register the user type if it does not exit.
  */
-- (IBAction)handleButtonAddEntity:(id)sender {
+- (IBAction)handleButtonAddType:(id)sender {
     
-    // The user tries to register the entity called
-    NSString * newEntityName = [self.textEntity text];
+    // The user tries to register the type called
+    NSString * newTypeName = [self.textType text];
     
     // Search for it
     BOOL dicFound = NO;
-    for (NSMutableDictionary * entityDic in entitiesRegistered) {
+    for (NSMutableDictionary * typeDic in typesRegistered) {
         
         // If it exists, return
-        if ([entityDic[@"name"] isEqualToString:newEntityName]) {
+        if ([typeDic[@"name"] isEqualToString:newTypeName]) {
             dicFound = YES;
             return;
         } else {
@@ -723,40 +723,40 @@
     
     // If it did not exist, create it
     if (!dicFound) {
-        NSMutableDictionary * entityDic = [[NSMutableDictionary alloc] init];
-        [entityDic setValue:newEntityName forKey:@"name"];
-        [entitiesRegistered addObject:entityDic];
+        NSMutableDictionary * typeDic = [[NSMutableDictionary alloc] init];
+        [typeDic setValue:newTypeName forKey:@"name"];
+        [typesRegistered addObject:typeDic];
     }
     
     // Reload visualization
-    [self.tableEntities reloadData];
+    [self.tableTypes reloadData];
     return;
 }
 
 
 /*!
- @method handleButtonRemoveEntity:
- @discussion This method handles the 'Remove entity' button action and unregister the user entity if it exits.
+ @method handleButtonRemoveType:
+ @discussion This method handles the 'Remove type' button action and unregister the user type if it exits.
  */
-- (IBAction)handleButtonRemoveEntity:(id)sender {
+- (IBAction)handleButtonRemoveType:(id)sender {
     
-    // The user tries to remove the entity called
-    NSString * removeEntityName = [self.textEntity text];
+    // The user tries to remove the type called
+    NSString * removeTypeName = [self.textType text];
     
     // Search for it
-    NSMutableDictionary * entityDicFound;
-    for (NSMutableDictionary * entityDic in entitiesRegistered) {
+    NSMutableDictionary * typeDicFound;
+    for (NSMutableDictionary * typeDic in typesRegistered) {
         // If it exists, save its reference
-        if ([entityDic[@"name"] isEqualToString:removeEntityName]) {
-            entityDicFound = entityDic;
+        if ([typeDic[@"name"] isEqualToString:removeTypeName]) {
+            typeDicFound = typeDic;
         }
     }
-    if (entityDicFound) {
-        [entitiesRegistered removeObject:entityDicFound];
+    if (typeDicFound) {
+        [typesRegistered removeObject:typeDicFound];
     }
     
     // Reload visualization
-    [self.tableEntities reloadData];
+    [self.tableTypes reloadData];
     return;
 }
 
@@ -774,7 +774,7 @@
         ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
         // Set the variable
         [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
+        [viewControllerMainMenu setTypesRegistered:typesRegistered];
         [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
         [viewControllerMainMenu setRegionPositionIdNumber:regionPositionIdNumber];
         
@@ -785,7 +785,7 @@
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
         // Set the variable
         [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
+        [viewControllerMainMenu setTypesRegistered:typesRegistered];
         [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
         [viewControllerMainMenu setRegionPositionIdNumber:regionPositionIdNumber];
         
@@ -802,8 +802,8 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.tableEntities) {
-        return [entitiesRegistered count];
+    if (tableView == self.tableTypes) {
+        return [typesRegistered count];
     }
     return 0;
 }
@@ -819,11 +819,11 @@
     }
     
     // Configure individual cells
-    if (tableView == self.tableEntities) {
-        NSMutableDictionary * entityDic = [entitiesRegistered objectAtIndex:indexPath.row];
+    if (tableView == self.tableTypes) {
+        NSMutableDictionary * typeDic = [typesRegistered objectAtIndex:indexPath.row];
         cell.textLabel.numberOfLines = 0; // Means any number
         
-        cell.textLabel.text = [NSString stringWithFormat:@"%@", entityDic[@"name"]];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@", typeDic[@"name"]];
         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
     }
         
@@ -833,11 +833,11 @@
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (tableView == self.tableEntities) {
+    if (tableView == self.tableTypes) {
         
-        // Get the chosen entity name
-        entityChosenByUser = [entitiesRegistered objectAtIndex:indexPath.row][@"name"];
-        self.textEntity.text = [entitiesRegistered objectAtIndex:indexPath.row][@"name"];
+        // Get the chosen type name
+        typeChosenByUser = [typesRegistered objectAtIndex:indexPath.row][@"name"];
+        self.textType.text = [typesRegistered objectAtIndex:indexPath.row][@"name"];
         
     }
     return;

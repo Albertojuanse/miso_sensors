@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "RDPosition.h"
-#import "MDEntity.h"
+#import "MDType.h"
 
 /*!
  @class SharedData
@@ -21,7 +21,7 @@
     NSMutableArray * itemsData;      // Set of dictionaries with the information of every position, beacon... submitted by the user
     NSMutableArray * measuresData;   // Set of dictionaries with the measures taken
     NSMutableArray * locationsData;  // Set of dictionaries with the positions locted in space using location methods
-    NSMutableArray * metamodelData;  // Set of dictionaries with the metamodeling entities
+    NSMutableArray * metamodelData;  // Set of dictionaries with the metamodeling types
     NSMutableArray * modelData;      // Set of dictionaries with the models generated or imported
     
     
@@ -76,7 +76,7 @@
 
 - (NSMutableArray *)fromLocationsDataGetPositions;
 
-- (NSMutableArray *)fromMetamodelDataGetEntities;
+- (NSMutableArray *)fromMetamodelDataGetTypes;
 
 - (NSMutableArray *)fromModelDataGetModels;
 
@@ -99,7 +99,7 @@
 - (void) inLocationsDataSetPosition:(RDPosition*)position
                              ofUUID:(NSString*)locatedUUID;
 
-- (void) inMetamodelDataSetEntity:(MDEntity*)entity;
+- (void) inMetamodelDataSetType:(MDType*)type;
 
 - (void) inModelDataSetModel:(NSMutableDictionary*)model;
 

@@ -26,11 +26,11 @@
     
     // Variables
     NSMutableArray * beaconsAndPositionsRegistered;
-    NSMutableArray * entitiesRegistered;
+    NSMutableArray * typesRegistered;
     NSMutableArray * beaconsAndPositionsChosen;
     NSMutableArray * beaconsAndPositionsChosenIndexes;
     NSString * locatedPositionUUID;
-    NSString * entityChosenByUser;
+    NSString * typeChosenByUser;
     NSString * uuidChosenByUser;
     RDPosition * positionChosenByUser;
     
@@ -38,13 +38,13 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;
 @property (weak, nonatomic) IBOutlet UITableView *tableBeaconsAndPositionsChosen;
-@property (weak, nonatomic) IBOutlet UITableView *tableEntities;
+@property (weak, nonatomic) IBOutlet UITableView *tableTypes;
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 
 - (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
 - (void) setBeaconsAndPositionsChosen:(NSMutableArray *)newBeaconsAndPositionsChosen;
 - (void) setBeaconsAndPositionsChosenIndexes:(NSMutableArray *)newBeaconsAndPositionsChosenIndexes;
-- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;
+- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 
 @end

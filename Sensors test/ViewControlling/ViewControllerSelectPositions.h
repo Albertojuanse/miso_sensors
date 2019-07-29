@@ -22,7 +22,7 @@
     
     // Beacons' region identifiers
     NSMutableArray * beaconsAndPositionsRegistered;
-    NSMutableArray * entitiesRegistered;
+    NSMutableArray * typesRegistered;
     NSMutableArray * beaconsAndPositionsChosen;
     NSMutableArray * beaconsAndPositionsChosenIndexes;
     
@@ -31,7 +31,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableBeaconsAndPositions;
 
 - (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
-- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;
+- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 - (void) setChosenMode:(NSString *)chosenMode;
 
 @end

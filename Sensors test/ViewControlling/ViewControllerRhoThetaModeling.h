@@ -26,7 +26,7 @@
     
     // Variables
     NSMutableArray * beaconsAndPositionsRegistered;
-    NSMutableArray * entitiesRegistered;
+    NSMutableArray * typesRegistered;
     NSString * uuidChosenByUser;
     
 }
@@ -37,6 +37,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 
 - (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
-- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;
+- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 
 @end

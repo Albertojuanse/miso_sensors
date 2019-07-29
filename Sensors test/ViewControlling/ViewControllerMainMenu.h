@@ -25,7 +25,7 @@
     
     // Beacons' region identifiers
     NSMutableArray * beaconsAndPositionsRegistered;
-    NSMutableArray * entitiesRegistered;
+    NSMutableArray * typesRegistered;
     NSMutableArray * modelsGenerated;
     NSNumber * regionBeaconIdNumber;
     NSNumber * regionPositionIdNumber;
@@ -40,7 +40,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableBeaconsAndPositions;
 
 - (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
-- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;
+- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 - (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;
 - (void) setRegionPositionIdNumber:(NSNumber *)newRegionIdNumber;
 

@@ -45,7 +45,7 @@
     //     "y": (NSString *)y1;
     //     "z": (NSString *)z1;
     //
-    //     "entity": (NSMutableDictionary *)entityDic1;                 //  entityDic
+    //     "type": (NSMutableDictionary *)typeDic1;                 //  typeDic
     //
     //   },
     //   { "type": @"beacon" | @"position";
@@ -56,9 +56,9 @@
     //   (···)
     //  ]
     //
-    // The schema of entitiesRegistered is
+    // The schema of typesRegistered is
     //
-    //  [{ "name": name1                                               //  entityDic
+    //  [{ "name": name1                                               //  typeDic
     //   },
     //   { "name": name2
     //   },
@@ -79,11 +79,11 @@
     // The schema of modelComponents is
     //
     //  [{ "type": @"beacon" | @"position";                            //  modelDic
-    //     "entity": (NSMutableDictionary *)entityDic1;                //  entityDic
+    //     "type": (NSMutableDictionary *)typeDic1;                //  typeDic
     //     "regionDic": (NSMutableDictionary *)regionDic1              //  regionDic
     //   },
     //   { "type": @"beacon" | @"position";
-    //     "entity": (NSMutableDictionary *)entityDic2;
+    //     "type": (NSMutableDictionary *)typeDic2;
     //     "regionDic": (NSMutableDictionary *)regionDic2
     //   },
     //   (···)
@@ -93,8 +93,8 @@
     if (!beaconsAndPositionsRegistered) {
         beaconsAndPositionsRegistered = [[NSMutableArray alloc] init];
         // Pre-registered regions
-        NSMutableDictionary * entityDic = [[NSMutableDictionary alloc] init];
-        [entityDic setValue:@"Corner" forKey:@"name"];
+        NSMutableDictionary * typeDic = [[NSMutableDictionary alloc] init];
+        [typeDic setValue:@"Corner" forKey:@"name"];
         NSMutableDictionary * regionPos1Dic = [[NSMutableDictionary alloc] init];
         [regionPos1Dic setValue:@"position" forKey:@"type"];
         [regionPos1Dic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
@@ -106,7 +106,7 @@
         position1.y = [NSNumber numberWithFloat:0.0];
         position1.z = [NSNumber numberWithFloat:0.0];
         [regionPos1Dic setValue:position1 forKey:@"position"];
-        [regionPos1Dic setValue:entityDic forKey:@"entity"];
+        [regionPos1Dic setValue:typeDic forKey:@"type"];
         [regionPos1Dic setValue:@"position1@miso.uam.es" forKey:@"identifier"];
         [beaconsAndPositionsRegistered addObject:regionPos1Dic];
         NSMutableDictionary * regionPos2Dic = [[NSMutableDictionary alloc] init];
@@ -120,7 +120,7 @@
         position2.y = [NSNumber numberWithFloat:0.0];
         position2.z = [NSNumber numberWithFloat:0.0];
         [regionPos2Dic setValue:position2 forKey:@"position"];
-        [regionPos2Dic setValue:entityDic forKey:@"entity"];
+        [regionPos2Dic setValue:typeDic forKey:@"type"];
         [regionPos2Dic setValue:@"position2@miso.uam.es" forKey:@"identifier"];
         [beaconsAndPositionsRegistered addObject:regionPos2Dic];
         NSMutableDictionary * regionPos3Dic = [[NSMutableDictionary alloc] init];
@@ -134,7 +134,7 @@
         position3.y = [NSNumber numberWithFloat:-13.0];
         position3.z = [NSNumber numberWithFloat:0.0];
         [regionPos3Dic setValue:position3 forKey:@"position"];
-        [regionPos3Dic setValue:entityDic forKey:@"entity"];
+        [regionPos3Dic setValue:typeDic forKey:@"type"];
         [regionPos3Dic setValue:@"position3@miso.uam.es" forKey:@"identifier"];
         [beaconsAndPositionsRegistered addObject:regionPos3Dic];
         NSMutableDictionary * regionPos4Dic = [[NSMutableDictionary alloc] init];
@@ -148,7 +148,7 @@
         position4.y = [NSNumber numberWithFloat:-13.0];
         position4.z = [NSNumber numberWithFloat:0.0];
         [regionPos4Dic setValue:position4 forKey:@"position"];
-        [regionPos4Dic setValue:entityDic forKey:@"entity"];
+        [regionPos4Dic setValue:typeDic forKey:@"type"];
         [regionPos4Dic setValue:@"position4@miso.uam.es" forKey:@"identifier"];
         [beaconsAndPositionsRegistered addObject:regionPos4Dic];
         
@@ -182,18 +182,18 @@
         [beaconsAndPositionsRegistered addObject:regionBeacon3Dic];
     }
     
-    if (!entitiesRegistered) {
-        entitiesRegistered = [[NSMutableArray alloc] init];
-        // Pre-registered entities
-        NSMutableDictionary * entityRemoveDic = [[NSMutableDictionary alloc] init];
-        [entityRemoveDic setValue:@"<No entity>" forKey:@"name"];
-        [entitiesRegistered addObject:entityRemoveDic];
-        NSMutableDictionary * entity1Dic = [[NSMutableDictionary alloc] init];
-        [entity1Dic setValue:@"Corner" forKey:@"name"];
-        [entitiesRegistered addObject:entity1Dic];
-        NSMutableDictionary * entity2Dic = [[NSMutableDictionary alloc] init];
-        [entity2Dic setValue:@"Device" forKey:@"name"];
-        [entitiesRegistered addObject:entity2Dic];
+    if (!typesRegistered) {
+        typesRegistered = [[NSMutableArray alloc] init];
+        // Pre-registered types
+        NSMutableDictionary * typeRemoveDic = [[NSMutableDictionary alloc] init];
+        [typeRemoveDic setValue:@"<No type>" forKey:@"name"];
+        [typesRegistered addObject:typeRemoveDic];
+        NSMutableDictionary * type1Dic = [[NSMutableDictionary alloc] init];
+        [type1Dic setValue:@"Corner" forKey:@"name"];
+        [typesRegistered addObject:type1Dic];
+        NSMutableDictionary * type2Dic = [[NSMutableDictionary alloc] init];
+        [type2Dic setValue:@"Device" forKey:@"name"];
+        [typesRegistered addObject:type2Dic];
     }
     
     if (!modelsGenerated) {
@@ -254,11 +254,11 @@
 }
 
 /*!
- @method setEntitiesRegistered:
- @discussion This method sets the NSMutableArray variable 'entitiesRegistered'.
+ @method setTypesRegistered:
+ @discussion This method sets the NSMutableArray variable 'typesRegistered'.
  */
-- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered {
-    entitiesRegistered = newEntitiesRegistered;
+- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered {
+    typesRegistered = newTypesRegistered;
 }
 
 #pragma mark - Butons event handle
@@ -319,7 +319,7 @@
         ViewControllerAddBeaconMenu *viewControllerAddBeaconMenu = [segue destinationViewController];
         // Set the variable
         [viewControllerAddBeaconMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerAddBeaconMenu setEntitiesRegistered:entitiesRegistered];
+        [viewControllerAddBeaconMenu setTypesRegistered:typesRegistered];
         [viewControllerAddBeaconMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
         [viewControllerAddBeaconMenu setRegionPositionIdNumber:regionPositionIdNumber];
         
@@ -340,7 +340,7 @@
         ViewControllerRhoRhoModeling *viewControllerRhoRhoModeling = [segue destinationViewController];
         // Set the variable
         [viewControllerRhoRhoModeling setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerRhoRhoModeling setEntitiesRegistered:entitiesRegistered];
+        [viewControllerRhoRhoModeling setTypesRegistered:typesRegistered];
         
     }
     
@@ -351,7 +351,7 @@
         ViewControllerRhoThetaModeling *viewControllerRhoThetaModeling = [segue destinationViewController];
         // Set the variable
         [viewControllerRhoThetaModeling setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerRhoThetaModeling setEntitiesRegistered:entitiesRegistered];
+        [viewControllerRhoThetaModeling setTypesRegistered:typesRegistered];
         
     }
     
@@ -367,7 +367,7 @@
         ViewControllerSelectPositions * viewControllerSelectPositions = [segue destinationViewController];
         // Set the variable
         [viewControllerSelectPositions setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerSelectPositions setEntitiesRegistered:entitiesRegistered];
+        [viewControllerSelectPositions setTypesRegistered:typesRegistered];
         [viewControllerSelectPositions setChosenMode:chosenMode];
         
     }
@@ -410,13 +410,13 @@
         // If it is a beacon
         if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
             
-            // It representation depends on if exist its position or its entity
+            // It representation depends on if exist its position or its type
             if (regionDic[@"x"] && regionDic[@"y"] && regionDic[@"z"]) {
-                if (regionDic[@"entity"]) {
+                if (regionDic[@"type"]) {
                     
                     cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
                                            regionDic[@"identifier"],
-                                           regionDic[@"entity"][@"name"],
+                                           regionDic[@"type"][@"name"],
                                            regionDic[@"uuid"],
                                            regionDic[@"major"],
                                            regionDic[@"minor"],
@@ -441,11 +441,11 @@
                     
                 }
             } else {
-                if (regionDic[@"entity"]) {
+                if (regionDic[@"type"]) {
                 
                     cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nmajor: %@ ; minor: %@",
                                            regionDic[@"identifier"],
-                                           regionDic[@"entity"][@"name"],
+                                           regionDic[@"type"][@"name"],
                                            regionDic[@"uuid"],
                                            regionDic[@"major"],
                                            regionDic[@"minor"]
@@ -468,11 +468,11 @@
         
         // And if it is a position
         if ([@"position" isEqualToString:regionDic[@"type"]]) {
-            // If its entity is set
-            if (regionDic[@"entity"]) {
+            // If its type is set
+            if (regionDic[@"type"]) {
                 cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> \n Position: (%@, %@, %@)",
                                        regionDic[@"identifier"],
-                                       regionDic[@"entity"][@"name"],
+                                       regionDic[@"type"][@"name"],
                                        regionDic[@"x"],
                                        regionDic[@"y"],
                                        regionDic[@"z"]

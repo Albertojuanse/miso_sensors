@@ -521,7 +521,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         measuring = YES;
         idle = NO;
         
-        // The notification payload is the array with the positions or beacons that must be ranged, its associated entities, modeling mode and UUID or position source selected by user
+        // The notification payload is the array with the positions or beacons that must be ranged, its associated types, modeling mode and UUID or position source selected by user
         NSDictionary *data = notification.userInfo;
         // This cannot be null
         mode = data[@"mode"];

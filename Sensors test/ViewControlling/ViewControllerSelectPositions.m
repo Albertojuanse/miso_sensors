@@ -60,11 +60,11 @@
 }
 
 /*!
- @method setEntitiesRegistered:
- @discussion This method sets the NSMutableArray variable 'entitiesRegistered'.
+ @method setTypesRegistered:
+ @discussion This method sets the NSMutableArray variable 'typesRegistered'.
  */
-- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered {
-    entitiesRegistered = newEntitiesRegistered;
+- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered {
+    typesRegistered = newTypesRegistered;
 }
 
 #pragma mark - Buttons event handles
@@ -146,7 +146,7 @@
         [viewControllerThetaThetaLocating setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerThetaThetaLocating setBeaconsAndPositionsChosen:beaconsAndPositionsChosen];
         [viewControllerThetaThetaLocating setBeaconsAndPositionsChosenIndexes:beaconsAndPositionsChosenIndexes];
-        [viewControllerThetaThetaLocating setEntitiesRegistered:entitiesRegistered];
+        [viewControllerThetaThetaLocating setTypesRegistered:typesRegistered];
         
     }
     if ([[segue identifier] isEqualToString:@"fromSelectPositionsToMain"]) {
@@ -155,7 +155,7 @@
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
         // Set the variable
         [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
+        [viewControllerMainMenu setTypesRegistered:typesRegistered];
     }
 }
 
@@ -199,13 +199,13 @@
         // If it is a beacon
         if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
             
-            // It representation depends on if exist its position or its entity
+            // It representation depends on if exist its position or its type
             if (regionDic[@"x"] && regionDic[@"y"] && regionDic[@"z"]) {
-                if (regionDic[@"entity"]) {
+                if (regionDic[@"type"]) {
                     
                     cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
                                            regionDic[@"identifier"],
-                                           regionDic[@"entity"][@"name"],
+                                           regionDic[@"type"][@"name"],
                                            regionDic[@"uuid"],
                                            regionDic[@"major"],
                                            regionDic[@"minor"],
@@ -230,11 +230,11 @@
                     
                 }
             } else {
-                if (regionDic[@"entity"]) {
+                if (regionDic[@"type"]) {
                     
                     cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nmajor: %@ ; minor: %@",
                                            regionDic[@"identifier"],
-                                           regionDic[@"entity"][@"name"],
+                                           regionDic[@"type"][@"name"],
                                            regionDic[@"uuid"],
                                            regionDic[@"major"],
                                            regionDic[@"minor"]
@@ -257,11 +257,11 @@
         
         // And if it is a position
         if ([@"position" isEqualToString:regionDic[@"type"]]) {
-            // If its entity is set
-            if (regionDic[@"entity"]) {
+            // If its type is set
+            if (regionDic[@"type"]) {
                 cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> \n Position: (%@, %@, %@)",
                                        regionDic[@"identifier"],
-                                       regionDic[@"entity"][@"name"],
+                                       regionDic[@"type"][@"name"],
                                        regionDic[@"x"],
                                        regionDic[@"y"],
                                        regionDic[@"z"]

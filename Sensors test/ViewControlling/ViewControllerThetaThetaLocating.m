@@ -39,12 +39,12 @@
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableBeaconsAndPositionsChosen.delegate = self;
-    self.tableEntities.delegate = self;
+    self.tableTypes.delegate = self;
     self.tableBeaconsAndPositionsChosen.dataSource = self;
-    self.tableEntities.dataSource = self;
+    self.tableTypes.dataSource = self;
     
     [self.tableBeaconsAndPositionsChosen reloadData];
-    [self.tableEntities reloadData];
+    [self.tableTypes reloadData];
 }
 
 /*!
@@ -84,11 +84,11 @@
 }
 
 /*!
- @method setEntitiesRegistered:
- @discussion This method sets the NSMutableArray variable 'entitiesRegistered'.
+ @method setTypesRegistered:
+ @discussion This method sets the NSMutableArray variable 'typesRegistered'.
  */
-- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered {
-    entitiesRegistered = newEntitiesRegistered;
+- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered {
+    typesRegistered = newTypesRegistered;
 }
 
 
@@ -200,7 +200,7 @@
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
         // Set the variables
         [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
+        [viewControllerMainMenu setTypesRegistered:typesRegistered];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
@@ -226,8 +226,8 @@
     if (tableView == self.tableBeaconsAndPositionsChosen) {
         return [beaconsAndPositionsChosen count];
     }
-    if (tableView == self.tableEntities) {
-        return [entitiesRegistered count];
+    if (tableView == self.tableTypes) {
+        return [typesRegistered count];
     }
     return 0;
 }
@@ -250,13 +250,13 @@
         // If it is a beacon
         if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
             
-            // It representation depends on if exist its position or its entity
+            // It representation depends on if exist its position or its type
             if (regionDic[@"x"] && regionDic[@"y"] && regionDic[@"z"]) {
-                if (regionDic[@"entity"]) {
+                if (regionDic[@"type"]) {
                     
                     cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
                                            regionDic[@"identifier"],
-                                           regionDic[@"entity"][@"name"],
+                                           regionDic[@"type"][@"name"],
                                            regionDic[@"uuid"],
                                            regionDic[@"major"],
                                            regionDic[@"minor"],
@@ -281,11 +281,11 @@
                     
                 }
             } else {
-                if (regionDic[@"entity"]) {
+                if (regionDic[@"type"]) {
                     
                     cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nmajor: %@ ; minor: %@",
                                            regionDic[@"identifier"],
-                                           regionDic[@"entity"][@"name"],
+                                           regionDic[@"type"][@"name"],
                                            regionDic[@"uuid"],
                                            regionDic[@"major"],
                                            regionDic[@"minor"]
@@ -312,11 +312,11 @@
         
         // And if it is a position
         if ([@"position" isEqualToString:regionDic[@"type"]]) {
-            // If its entity is set
-            if (regionDic[@"entity"]) {
+            // If its type is set
+            if (regionDic[@"type"]) {
                 cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> \n Position: (%@, %@, %@)",
                                        regionDic[@"identifier"],
-                                       regionDic[@"entity"][@"name"],
+                                       regionDic[@"type"][@"name"],
                                        regionDic[@"x"],
                                        regionDic[@"y"],
                                        regionDic[@"z"]
@@ -335,11 +335,11 @@
         }
     }
     // Configure individual cells
-    if (tableView == self.tableEntities) {
-        NSMutableDictionary * entityDic = [entitiesRegistered objectAtIndex:indexPath.row];
+    if (tableView == self.tableTypes) {
+        NSMutableDictionary * typeDic = [typesRegistered objectAtIndex:indexPath.row];
         cell.textLabel.numberOfLines = 0; // Means any number
         
-        cell.textLabel.text = [NSString stringWithFormat:@"%@", entityDic[@"name"]];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@", typeDic[@"name"]];
         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
     }
     
@@ -362,9 +362,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
         }
     }
-    if (tableView == self.tableEntities) {
-        // Get the chosen entity name
-        entityChosenByUser = [entitiesRegistered objectAtIndex:indexPath.row][@"name"];
+    if (tableView == self.tableTypes) {
+        // Get the chosen type name
+        typeChosenByUser = [typesRegistered objectAtIndex:indexPath.row][@"name"];
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  MDEntity.h
+//  MDType.h
 //  Sensors test
 //
 //  Created by MISO on 25/7/19.
@@ -9,10 +9,10 @@
 #include <Foundation/Foundation.h>
 
 /*!
- @protocol MDEntity
- @discussion Abstract definition of any entity that can be used for modeling
+ @protocol MDType
+ @discussion Abstract definition of any type that can be used for modeling
  */
-@protocol MDEntity
+@protocol MDType
 
 @required
 - (instancetype)init;
@@ -28,10 +28,10 @@
 @end
 
 /*!
- @class MDEntity
- @discussion Definition of any entity that can be used for modeling
+ @class MDType
+ @discussion Definition of any type that can be used for modeling
  */
-@interface MDEntity: NSObject <MDEntity> {
+@interface MDType: NSObject <MDType> {
     
     NSString * name;
     NSMutableArray * attributes;

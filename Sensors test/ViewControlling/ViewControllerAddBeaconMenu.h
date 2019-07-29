@@ -18,14 +18,14 @@
 @interface ViewControllerAddBeaconMenu : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
     NSMutableArray * beaconsAndPositionsRegistered;
-    NSMutableArray * entitiesRegistered;
+    NSMutableArray * typesRegistered;
     NSNumber * regionBeaconIdNumber;
     NSNumber * regionPositionIdNumber;
     
     // User selection in main manu
     RDPosition * positionChosenByUser;
     NSString * uuidChosenByUser;
-    NSString * entityChosenByUser;
+    NSString * typeChosenByUser;
     NSInteger selectedSegmentIndex;
     
 }
@@ -64,12 +64,12 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonPositionBack;
 @property (weak, nonatomic) IBOutlet UIButton *buttonPositionAdd;
 
-@property (weak, nonatomic) IBOutlet UITextField *textEntity;
-@property (weak, nonatomic) IBOutlet UITableView *tableEntities;
+@property (weak, nonatomic) IBOutlet UITextField *textType;
+@property (weak, nonatomic) IBOutlet UITableView *tableTypes;
 
 
 - (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
-- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;
+- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 - (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;
 - (void) setRegionPositionIdNumber:(NSNumber *)newRegionIdNumber;
 - (void) setUuidChosenByUser:(NSString *)uuidChosenByUser;

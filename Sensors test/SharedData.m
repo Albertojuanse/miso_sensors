@@ -19,7 +19,7 @@
 //             }
 //     "mode": (NSString *)mode1;
 //     "itemChosenByUser": (NSString *)item1;
-//     "entityChosenByUser": (NSString *)entity1;
+//     "typeChosenByUser": (NSString *)type1;
 //   },
 //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
 //     (···)
@@ -41,7 +41,7 @@
 //
 //     "position": (RDPosition *)position1;
 //
-//     "entity": (NSMutableDictionary *)metamodelDic1;       //  metamodelDic
+//     "type": (NSMutableDictionary *)metamodelDic1;       //  metamodelDic
 //
 //   },
 //   { "type": @"beacon" | @"position";
@@ -87,9 +87,9 @@
 //
 //            // METAMODEL DATA //
 //
-// The schema of entitiesData collection is
+// The schema of typesData collection is
 //
-//  [ (MDEntity*)entity1,
+//  [ (MDType*)type1,
 //    (···)
 //  ]
 //
@@ -100,7 +100,7 @@
 //  [{ "name": name1;                                        //  modelDic
 //     "components": [
 //         { "position": (RDPosition *)position1;
-//           "entity": (MDEntity *)entity1;
+//           "type": (MDType *)type1;
 //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
 //         },
 //         { "position": (RDPosition *)position2;
@@ -241,7 +241,7 @@
 
 /*!
  @method getMetamodelData
- @discussion This method returns the 'NSMutableArray' object with the the metamodeling entities use.
+ @discussion This method returns the 'NSMutableArray' object with the the metamodeling types use.
  */
 - (NSMutableArray *)getMetamodelData
 {
@@ -284,7 +284,7 @@
 
 - (NSMutableArray *)fromLocationsDataGetPositions;
 
-- (NSMutableArray *)fromMetamodelDataGetEntities;
+- (NSMutableArray *)fromMetamodelDataGetTypes;
 
 - (NSMutableArray *)fromModelDataGetModels;
 
@@ -307,7 +307,7 @@
 - (void) inLocationsDataSetPosition:(RDPosition*)position
                              ofUUID:(NSString*)locatedUUID;
 
-- (void) inMetamodelDataSetEntity:(MDEntity*)entity;
+- (void) inMetamodelDataSetType:(MDType*)type;
 
 - (void) inModelDataSetModel:(NSMutableDictionary*)model;
 

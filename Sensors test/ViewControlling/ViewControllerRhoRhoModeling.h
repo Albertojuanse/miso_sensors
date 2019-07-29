@@ -27,7 +27,7 @@
     
     // Variables
     NSMutableArray * beaconsAndPositionsRegistered;
-    NSMutableArray * entitiesRegistered;
+    NSMutableArray * typesRegistered;
     
 }
 
@@ -52,7 +52,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonTravel;
 
 - (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
-- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;
+- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 
 @end
 
