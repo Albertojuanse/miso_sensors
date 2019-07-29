@@ -18,8 +18,8 @@
 //               "role": (NSString *)role1;
 //             }
 //     "mode": (NSString *)mode1;
-//     "itemChosenByUser": (NSString *)item1;
-//     "typeChosenByUser": (NSString *)type1;
+//     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
+//     "typeChosenByUser": (NSMutableDictionary *)type1;     //  metamodelDic
 //   },
 //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
 //     (···)
@@ -308,7 +308,7 @@
  @discussion This method returns the object with the info determined by the dictionary key from the session data collection given the user's name; if is not found, return nil.
  */
 - (id)fromSessionDataGetKey:(NSString *)key
-       fromUserWithUsername:(NSString*)userName
+       fromUserWithUserName:(NSString*)userName
 {
     NSMutableDictionary * sessionDic = [self fromSessionDataGetSessionWithUsername:userName];
     // Can be null
@@ -323,7 +323,7 @@
  @method fromSessionDataGetModeFromUserWithUserDic:
  @discussion This method returns the mode from the session data collection given the user's dictionary; if is not found, return nil.
  */
-- (NSMutableDictionary *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary*)userDic
+- (NSString *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary*)userDic
 {
     return [self fromSessionDataGetKey:@"mode" fromUserWithUserDic:userDic];
 }
@@ -332,9 +332,9 @@
  @method fromSessionDataGetModeFromUserWithUserName:
  @discussion This method returns the mode from the session data collection given the user's name; if is not found, return nil.
  */
-- (NSMutableDictionary *)fromSessionDataGetModeFromUserWithUserName:(NSString*)userName
+- (NSString *)fromSessionDataGetModeFromUserWithUserName:(NSString*)userName
 {
-    return [self fromSessionDataGetKey:@"mode" fromUserWithUserDic:userName];
+    return [self fromSessionDataGetKey:@"mode" fromUserWithUserName:userName];
 }
 
 /*!
@@ -352,7 +352,7 @@
  */
 - (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserName:(NSString*)userName
 {
-    return [self fromSessionDataGetKey:@"itemChosenByUser" fromUserWithUserDic:userName];
+    return [self fromSessionDataGetKey:@"itemChosenByUser" fromUserWithUserName:userName];
 }
 
 /*!
@@ -365,15 +365,16 @@
 }
 
 /*!
- @method fromSessionDataGetItemChosenByUserFromUserWithUserName:
+ @method fromSessionDataGetModeChosenByUserFromUserWithUserName:
  @discussion This method returns the mode chosen by user from the session data collection given the user's name; if is not found, return nil.
  */
 - (NSMutableDictionary *)fromSessionDataGetModeChosenByUserFromUserWithUserName:(NSString*)userName
 {
-    return [self fromSessionDataGetKey:@"modeChosenByUser" fromUserWithUserDic:userName];
+    return [self fromSessionDataGetKey:@"modeChosenByUser" fromUserWithUserName:userName];
 }
 
 #pragma mark - Item data specific getters
+
 - (NSMutableArray *)fromItemDataGetItems;
 
 - (NSMutableArray *)fromMeasuresDataGetMeasures;

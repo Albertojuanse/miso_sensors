@@ -57,11 +57,14 @@
 - (NSMutableArray *)getModelData;
 
 // Specific getters
-- (NSMutableDictionary *)fromSessionDataGetKey:(NSString *)key;
-- (NSMutableDictionary *)fromSessionDataGetUserDic;
-- (NSString *)fromSessionDataGetMode;
-- (NSString *)fromSessionDataGetItemChosenByUser;
-- (NSString *)fromSessionDataGetTypeChosenByUser;
+- (NSMutableDictionary *)fromSessionDataGetSessionWithUserDic:(NSMutableDictionary*)userDic;
+- (NSMutableDictionary *)fromSessionDataGetSessionWithUserName:(NSString*)userName;
+- (NSString *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary*)userDic;
+- (NSString *)fromSessionDataGetModeFromUserWithUserName:(NSString*)userName;
+- (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserDic:(NSMutableDictionary*)userDic;
+- (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserName:(NSString*)userName;
+- (NSMutableDictionary *)fromSessionDataGetModeChosenByUserFromUserWithUserDic:(NSMutableDictionary*)userDic;
+- (NSMutableDictionary *)fromSessionDataGetModeChosenByUserFromUserWithUserName:(NSString*)userName;
 
 - (NSMutableArray *)fromItemDataGetItems;
 
