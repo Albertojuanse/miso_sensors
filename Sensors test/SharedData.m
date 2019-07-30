@@ -137,13 +137,6 @@
         metamodelData = [[NSMutableArray alloc] init];
         modelData = [[NSMutableArray alloc] init];
         
-        // Identifiers generation variables
-        sessionIdNumber = [NSNumber numberWithInt:0];
-        itemsIdNumber = [NSNumber numberWithInt:0];
-        measureIdNumber = [NSNumber numberWithInt:0];
-        locationsIdNumber = [NSNumber numberWithInt:0];
-        modelIdNumber = [NSNumber numberWithInt:0];
-        
     }
     return self;
 }
@@ -164,13 +157,6 @@
     metamodelData = nil;
     modelData = nil;
     
-    // Identifiers generation variables
-    sessionIdNumber = nil;
-    itemsIdNumber = nil;
-    measureIdNumber = nil;
-    locationsIdNumber = nil;
-    modelIdNumber = nil;
-    
     // Colections of data
     sessionData = [[NSMutableArray alloc] init];
     itemsData = [[NSMutableArray alloc] init];
@@ -178,14 +164,6 @@
     locationsData = [[NSMutableArray alloc] init];
     metamodelData = [[NSMutableArray alloc] init];
     modelData = [[NSMutableArray alloc] init];
-    
-    // Identifiers generation variables
-    sessionIdNumber = [NSNumber numberWithInt:0];
-    itemsIdNumber = [NSNumber numberWithInt:0];
-    measureIdNumber = [NSNumber numberWithInt:0];
-    locationsIdNumber = [NSNumber numberWithInt:0];
-    metamodelIdNumber = [NSNumber numberWithInt:0];
-    modelIdNumber = [NSNumber numberWithInt:0];
     
 }
 
@@ -941,55 +919,98 @@
     return models;
 }
 
-#pragma mark Measures setters
+#pragma mark - Session data specific setters
+//              // SESSION DATA //
+//
+// The schema of the sessionData collection is:
+//
+//  [{ "user": { "name": (NSString *)name1;                  // sessionDic; userDic
+//               "role": (NSString *)role1;
+//             }
+//     "mode": (NSString *)mode1;
+//     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
+//     "typeChosenByUser": (MDType*)type1
+//   },
+//   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
+//     (···)
+//   },
+//   (···)
+//  ]
+//
+#pragma mark - Item data specific setters
+//             // ITEMS DATA //
+//
+// The schema of the itemsData collection is:
+//
+//  [{ "sort": @"beacon" | @"position";                      //  itemDic
+//     "identifier": (NSString *)identifier1;
+//
+//     "uuid": (NSString *)uuid1;
+//
+//     "major": (NSString *)major1;
+//     "minor": (NSString *)minor1;
+//
+//     "position": (RDPosition *)position1;
+//
+//     "type": (MDType*)type1
+//
+//   },
+//   { "type": @"beacon" | @"position";
+//     "identifier": (NSString *)identifier2;
+//     (···)
+//   },
+//   (···)
+//  ]
+//
+
+#pragma mark - Measures data specific setters
+//            // MEASURES DATA //
+//
+// The schema of the measuresData collection is:
+//
+//  [{ "position": (RDPosition *)position1;                  //  positionDic
+//     "positionMeasures": [                                 //  uuidArray
+//         { "uuid" : (NSString *)uuid1;                     //  uuidDic
+//           "uuidMeasures": [                               //  measuresArray
+//             { "sort" : (NSString *)type1;                 //  measuresDic
+//               "measure": (NSNumber *)measure1;
+//             },
+//             (···)
+//           ]
+//         },
+//         (···)
+//     ]
+//   },
+//   { "position": (RDPosition *)position2;                  // positionDic
+//     (···)
+//   },
+//   (···)
+//  ]
+//
+
 /*!
- @method inMeasuresDicSetMeasure:ofType:withUUID:atPosition:andWithState:
- @discussion This method saves in the NSDictionary with the measures information a new one; if the state MEASURING is not true, is saved the position without any measure.
+ @method inMeasuresDicSetMeasure:ofSort:withUUID:atPosition:andWithState:
+ @discussion This method saves in the measures data collection a new one; if the state MEASURING is not true, is saved the position without any measure.
  */
 - (void) inMeasuresDicSetMeasure:(NSNumber*)measure
-                          ofType:(NSString*)type
+                          ofSort:(NSString*)sort
                         withUUID:(NSString*)uuid
-                      atPosition:(RDPosition*)measurePosition
+                      atPosition:(RDPosition*)position
                     andWithState:(BOOL)measuring
 {
-    
-    // The schema of the measuresDic object is:
-    //
-    // { "measurePosition1":                              //  measuresDic
-    //     { "measurePosition": measurePosition;          //  positionDic
-    //       "positionMeasures":
-    //         { "measureUuid1":                          //  uuidDicDic
-    //             { "uuid" : uuid1;                      //  uuidDic
-    //               "uuidMeasures":
-    //                 { "measure1":                      //  measureDicDic
-    //                     { "type": "rssi"/"heading";    //  measureDic
-    //                       "measure": rssi/heading
-    //                     };
-    //                   "measure2":  { (···) }
-    //                 }
-    //             };
-    //           "measureUuid2": { (···) }
-    //         }
-    //     };
-    //   "measurePosition2": { (···) }
-    // }
-    //
-    
     // The 'measureDic', the innermost one, is always new.
     measureDic = [[NSMutableDictionary alloc] init];
-    measureDic[@"type"] = type;
+    measureDic[@"sort"] = sort;
     measureDic[@"measure"] = measure;
     
-    if (measuresDic.count == 0) {
+    if (measuresData.count == 0) {
         // First initialization
         
         // Compose the dictionary from the innermost to the outermost
-        // Wrap measureDic with another dictionary and an unique measure's identifier key
-        measureDicDic = [[NSMutableDictionary alloc] init];
+        // Wrap measureDic with an array
+        measuresArray = [[NSMutableArray alloc] init];
         if (measuring) {
-            measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
-            NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
-            measureDicDic[measureId] = measureDic;
+            [measuresArray addObject:measureDic];
         } else {
             // saves nothing
         }
@@ -997,23 +1018,19 @@
         // Create the 'uuidDic' dictionary
         uuidDic = [[NSMutableDictionary alloc] init];
         uuidDic[@"uuid"] = uuid;
-        uuidDic[@"uuidMeasures"] = measureDicDic;
+        uuidDic[@"uuidMeasures"] = measuresArray;
         
-        // Wrap uuidDic with another dictionary and an unique uuid's identifier key
-        uuidIdNumber = [NSNumber numberWithInt:[uuidIdNumber intValue] + 1];
-        NSString * uuidId = [@"measureUuid" stringByAppendingString:[uuidIdNumber stringValue]];
-        uuidDicDic = [[NSMutableDictionary alloc] init];
-        uuidDicDic[uuidId] = uuidDic;
+        // Wrap uuidDic with an array
+        uuidArray = [[NSMutableArray alloc] init];
+        [uuidArray addObject:uuidDic];
         
         // Create the 'positionDic' dictionary
         positionDic = [[NSMutableDictionary alloc] init];
-        positionDic[@"measurePosition"] = measurePosition;
-        positionDic[@"positionMeasures"] = uuidDicDic;
+        positionDic[@"position"] = position;
+        positionDic[@"positionMeasures"] = uuidArray;
         
-        // Set positionDic in the main dictionary 'measuresDic' with an unique position's identifier key
-        positionIdNumber = [NSNumber numberWithInt:[positionIdNumber intValue] + 1];
-        NSString * positionId = [@"measurePosition" stringByAppendingString:[positionIdNumber stringValue]];
-        measuresDic[positionId] = positionDic;
+        // Add the position to the main collection
+        [measuresData addObject:positionDic];
         
     } else {
         // Find if already exists position and uuid and create it if not.
@@ -1023,19 +1040,14 @@
         BOOL positionFound = NO;
         BOOL uuidFound = NO;
         // For each position already saved...
-        NSArray *positionKeys = [measuresDic allKeys];
-        for (id positionKey in positionKeys) {
-            // ...get the dictionary for this position...
-            positionDic = [measuresDic objectForKey:positionKey];
-            // ...and checks if the current position 'measurePosition' already exists comparing it with the saved ones.
-            RDPosition *dicPosition = positionDic[@"measurePosition"];
-            if ([dicPosition isEqualToRDPosition:measurePosition]) {
+        for (positionDic in measuresData) {
+            
+            // ...check if the current position 'measurePosition' already exists comparing it with the saved ones.
+            if ([position isEqualToRDPosition:positionDic[@"position"]]) {
                 positionFound = YES;
                 
                 // For each uuid already saved...
-                uuidDicDic = positionDic[@"positionMeasures"];
-                NSArray *uuidKeys = [uuidDicDic allKeys];
-                for (id uuidKey in uuidKeys) {
+                for (uuidDic in positionDic[@"positionMeasures"]) {
                     // ...get the dictionary for this uuid...
                     uuidDic = [uuidDicDic objectForKey:uuidKey];
                     // ...and checks if the uuid already exists.
@@ -1054,7 +1066,7 @@
                     }
                 }
                 // If only the UUID was not found, but te positions was found, create all the inner dictionaries.
-                if (uuidFound == NO) {
+                if (!uuidFound) {
                     // Compose the dictionary from the innermost to the outermost
                     // Wrap measureDic with another dictionary and an unique measure's identifier key
                     measureDicDic = [[NSMutableDictionary alloc] init];
@@ -1079,7 +1091,7 @@
         }
         
         // If both position and UUID was not found create all the inner dictionaries.
-        if (positionFound == NO) {
+        if (!positionFound) {
             // Compose the dictionary from the innermost to the outermost
             // Wrap measureDic with another dictionary and an unique measure's identifier key
             measureDicDic = [[NSMutableDictionary alloc] init];
@@ -1116,8 +1128,18 @@
     }
 }
 
-
-#pragma mark Located setters
+#pragma mark - Locations data specific setters
+//            // LOCATIONS DATA //
+//
+//
+// The schema of the locationsData collection is:
+//
+//  [{ "locatedUUID": (NSString *)locatedUUID1;              //  locationDic
+//     "locatedPosition": (RDPosition *)locatedPosition1;
+//   },
+//   (···)
+// }
+//
 
 /*!
  @method inLocatedDicSetPosition:fromUUID:
@@ -1193,4 +1215,41 @@
     }
 }
 
+#pragma mark - Metamodel data specific setters
+//            // METAMODEL DATA //
+//
+// The schema of typesData collection is
+//
+//  [ (MDType *)type1,
+//    (···)
+//  ]
+//
+
+#pragma mark - Model data specific setters
+//              // MODEL DATA //
+//
+// The schema of modelData collection is is
+//
+//  [{ "name": name1;                                        //  modelDic
+//     "components": [
+//         { "position": (RDPosition *)position1;            //  componentDic
+//           "type": (MDType *)type1;
+//           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
+//           "references": [
+//               { "position": (RDPosition *)positionA;      //  componentDic
+//                 "type": (MDType *)typeA;
+//                 "sourceItem": (NSMutableDictionary *)itemDicA;
+//               },
+//           ];
+//         { "position": (RDPosition *)positionB;
+//           (···)
+//         },
+//         (···)
+//     ];
+//   },
+//   { "name": name2;                                        //  modelDic
+//     (···)
+//   },
+//  ]
+//
 @end

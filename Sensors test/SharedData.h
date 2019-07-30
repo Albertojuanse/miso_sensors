@@ -24,15 +24,6 @@
     NSMutableArray * metamodelData;  // Set of dictionaries with the metamodeling types
     NSMutableArray * modelData;      // Set of dictionaries with the models generated or imported
     
-    
-    // Identifiers generation variables
-    NSNumber * sessionIdNumber;
-    NSNumber * itemsIdNumber;
-    NSNumber * measureIdNumber;
-    NSNumber * locationsIdNumber;
-    NSNumber * metamodelIdNumber;
-    NSNumber * modelIdNumber;
-    
     // Declare the inner dictionaries; they will be created or gotten if they already exists each use
     NSMutableDictionary * sessionDic;
     NSMutableDictionary * userDic;
@@ -77,8 +68,7 @@
                                         andMinor:(NSString *)minor;
 - (NSMutableArray *)fromItemDataGetItemsWithPosition:(RDPosition *)position;
 - (NSMutableArray *)fromItemDataGetItemsWithType:(MDType *)type;
-
-// Specific session data getters
+// Specific measures data getters
 - (NSMutableArray *)fromMeasuresDataGetPositionDics;
 - (NSMutableArray *)fromMeasuresDataGetPositions;
 - (NSMutableArray *)fromMeasuresDataGetSourceUUIDDics;
@@ -110,5 +100,22 @@
 // Specific model data specific getters
 - (NSMutableArray *)fromMetamodelDataGetModelDics;
 - (NSMutableArray *)fromMetamodelDataGetModelDicWithName:(NSString*)name;
+
+// Specific session data setters
+
+// Specific items data setters
+
+// Specific measures data setters
+- (void) inMeasuresDicSetMeasure:(NSNumber*)measure
+                          ofSort:(NSString*)sort
+                        withUUID:(NSString*)uuid
+                      atPosition:(RDPosition*)measurePosition
+                    andWithState:(BOOL)measuring;
+
+// Specific locations data specific setters
+
+// Specific metamodel data specific setters
+
+// Specific model data specific setters
 
 @end
