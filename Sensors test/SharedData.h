@@ -79,17 +79,28 @@
 - (NSMutableArray *)fromItemDataGetItemsWithType:(MDType *)type;
 
 // Specific session data getters
+- (NSMutableArray *)fromMeasuresDataGetPositionDics;
 - (NSMutableArray *)fromMeasuresDataGetPositions;
+- (NSMutableArray *)fromMeasuresDataGetSourceUUIDDics;
 - (NSMutableArray *)fromMeasuresDataGetSourceUUIDs;
+- (NSMutableArray *)fromMeasuresDataGetTargetUUIDDics;
 - (NSMutableArray *)fromMeasuresDataGetTargetUUIDs;
 - (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position
                                                   fromUUIDSource:(NSString *)uuid
                                                        andOfSort:(NSString*)sort;
+- (NSMutableArray *)fromMeasuresDataGetMeasureDicsTakenFromPosition:(RDPosition*)position
+                                                     fromUUIDSource:(NSString *)uuid
+                                                          andOfSort:(NSString*)sort;
 - (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position
                                                     ofUUIDTarget:(NSString *)uuid
                                                        andOfSort:(NSString*)sort;
+- (NSMutableArray *)fromMeasuresDataGetMeasureDicsTakenFromPosition:(RDPosition*)position
+                                                       ofUUIDTarget:(NSString *)uuid
+                                                          andOfSort:(NSString*)sort;
 
+// Specific locations data specific getters
 - (NSMutableArray *)fromLocationsDataGetPositions;
+
 
 - (NSMutableArray *)fromMetamodelDataGetTypes;
 
