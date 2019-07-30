@@ -99,15 +99,20 @@
 //
 //  [{ "name": name1;                                        //  modelDic
 //     "components": [
-//         { "position": (RDPosition *)position1;
+//         { "position": (RDPosition *)position1;            //  componentDic
 //           "type": (MDType *)type1;
 //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
-//         },
-//         { "position": (RDPosition *)position2;
+//           "references": [
+//               { "position": (RDPosition *)positionA;      //  componentDic
+//                 "type": (MDType *)typeA;
+//                 "sourceItem": (NSMutableDictionary *)itemDicA;
+//               },
+//           ];
+//         { "position": (RDPosition *)positionB;
 //           (···)
 //         },
 //         (···)
-//     ]
+//     ];
 //   },
 //   { "name": name2;                                        //  modelDic
 //     (···)
@@ -822,10 +827,83 @@
 }
 
 #pragma mark - Metamodel data specific getters
-- (NSMutableArray *)fromMetamodelDataGetTypes;
+//            // METAMODEL DATA //
+//
+// The schema of typesData collection is
+//
+//  [ (MDType *)type1,
+//    (···)
+//  ]
+//
+
+/*!
+ @method fromMetamodelDataGetTypes
+ @discussion This method returns the 'NSMutableArray' with all 'MDTypes' stored; if it does not exist anyone returns an empty array.
+ */
+- (NSMutableArray *)fromMetamodelDataGetTypes
+{
+    NSMutableArray * metamodel = [[NSMutableArray alloc] init];
+    for (MDType * type in metamodelData) {
+        [metamodel addObject:type];
+    }
+    return metamodel;
+}
 
 #pragma mark - Model data specific getters
-- (NSMutableArray *)fromModelDataGetModels;
+//              // MODEL DATA //
+//
+// The schema of modelData collection is is
+//
+//  [{ "name": name1;                                        //  modelDic
+//     "components": [
+//         { "position": (RDPosition *)position1;            //  componentDic
+//           "type": (MDType *)type1;
+//           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
+//           "references": [
+//               { "position": (RDPosition *)positionA;      //  componentDic
+//                 "type": (MDType *)typeA;
+//                 "sourceItem": (NSMutableDictionary *)itemDicA;
+//               },
+//           ];
+//         { "position": (RDPosition *)positionB;
+//           (···)
+//         },
+//         (···)
+//     ];
+//   },
+//   { "name": name2;                                        //  modelDic
+//     (···)
+//   },
+//  ]
+//
+
+/*!
+ @method fromMetamodelDataGetModelDics
+ @discussion This method returns the 'NSMutableArray' with all 'MDTypes' stored; if it does not exist anyone returns an empty array.
+ */
+- (NSMutableArray *)fromMetamodelDataGetModelDics
+{
+    NSMutableArray * models = [[NSMutableArray alloc] init];
+    for (modelDic in modelData) {
+        [models addObject:modelDic];
+    }
+    return models;
+}
+
+/*!
+ @method fromMetamodelDataGetModelDicWithName:
+ @discussion This method returns the 'NSMutableArray' with all 'MDTypes' stored; if it does not exist anyone returns an empty array.
+ */
+- (NSMutableArray *)fromMetamodelDataGetModelDicWithName:(NSString*)name
+{
+    NSMutableArray * models = [[NSMutableArray alloc] init];
+    for (modelDic in modelData) {
+        if ([name isEqualToString:modelDic[@"name"]]) {
+            [models addObject:modelDic];
+        }
+    }
+    return models;
+}
 
 #pragma mark - Session data specific setters
 - (void) inSessionDataSetVariable:(id)variable;

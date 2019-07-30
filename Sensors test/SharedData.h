@@ -108,7 +108,8 @@
 - (NSMutableArray *)fromMetamodelDataGetTypes;
 
 // Specific model data specific getters
-- (NSMutableArray *)fromModelDataGetModels;
+- (NSMutableArray *)fromMetamodelDataGetModelDics;
+- (NSMutableArray *)fromMetamodelDataGetModelDicWithName:(NSString*)name;
 
 // Specific setters
 - (void) inSessionDataSetVariable:(id)variable;
