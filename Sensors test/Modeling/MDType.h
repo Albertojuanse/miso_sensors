@@ -44,6 +44,7 @@
 - (void)setAttributes:(NSMutableArray*)newAttributes;
 - (NSMutableArray*)getAttributes;
 - (BOOL)isEqual:(id)object;
+- (BOOL)isEqualToMDType:(MDType *)type;
 - (NSString *)description;
 
 @end

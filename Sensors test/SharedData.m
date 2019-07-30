@@ -416,26 +416,98 @@
 
 /*!
  @method fromItemDataGetItemsWithSort:
- @discussion This method returns the 'NSMutableArray' with all item objects with given if sort; if it does not exist anyone returns an empty array.
+ @discussion This method returns the 'NSMutableArray' with all item objects given its sort; if it does not exist anyone returns an empty array.
  */
 - (NSMutableArray *)fromItemDataGetItemsWithSort:(NSString *)sort
 {
     NSMutableArray * items = [[NSMutableArray alloc] init];
     for (itemDic in itemsData) {
         if ([itemDic[@"sort"] isEqualToString:sort]) {
-            [items addObject:itemDic]
+            [items addObject:itemDic];
         }
     }
+    return items;
 }
 
 /*!
- @method fromItemDataGetKey:fromItemWithUUID:
- @discussion This method returns the object with the info determined by the dictionary key from the items data collection given its UUID; if is not found, return nil.
+ @method fromItemDataGetItemsWithIdentifier:
+ @discussion This method returns the 'NSMutableArray' with all item objects given its identifier; if it does not exist anyone returns an empty array.
  */
-- (NSMutableDictionary*)fromItemDataGetKey:(NSString *)key
-                          fromItemWithUUID:(NSString*)uuid
+- (NSMutableArray *)fromItemDataGetItemsWithIdentifier:(NSString *)identifier
 {
-   
+    NSMutableArray * items = [[NSMutableArray alloc] init];
+    for (itemDic in itemsData) {
+        if ([itemDic[@"identifier"] isEqualToString:identifier]) {
+            [items addObject:itemDic];
+        }
+    }
+    return items;
+}
+
+/*!
+ @method fromItemDataGetItemsWithUUID:
+ @discussion This method returns the 'NSMutableArray' with all item objects given its UUID; if it does not exist anyone returns an empty array.
+ */
+- (NSMutableArray *)fromItemDataGetItemsWithUUID:(NSString *)uuid
+{
+    NSMutableArray * items = [[NSMutableArray alloc] init];
+    for (itemDic in itemsData) {
+        if ([itemDic[@"uuid"] isEqualToString:uuid]) {
+            [items addObject:itemDic];
+        }
+    }
+    return items;
+}
+
+/*!
+ @method fromItemDataGetItemsWithUUID:major:andMinor
+ @discussion This method returns the 'NSMutableArray' with all item objects given its UUID, major and minor values; if it does not exist anyone returns an empty array.
+ */
+- (NSMutableArray *)fromItemDataGetItemsWithUUID:(NSString *)uuid
+                                           major:(NSString *)major
+                                        andMinor:(NSString *)minor
+{
+    NSMutableArray * items = [[NSMutableArray alloc] init];
+    for (itemDic in itemsData) {
+        if ([itemDic[@"uuid"] isEqualToString:uuid]) {
+            if ([itemDic[@"minor"] isEqualToString:minor]) {
+                if ([itemDic[@"major"] isEqualToString:major]) {
+                    [items addObject:itemDic];
+                }
+            }
+        }
+    }
+    return items;
+}
+
+/*!
+ @method fromItemDataGetItemsWithPosition:
+ @discussion This method returns the 'NSMutableArray' with all item objects given its UUID; if it does not exist anyone returns an empty array.
+ */
+- (NSMutableArray *)fromItemDataGetItemsWithPosition:(RDPosition *)position
+{
+    NSMutableArray * items = [[NSMutableArray alloc] init];
+    for (itemDic in itemsData) {
+        if ([position isEqualToRDPosition:itemDic[@"position"]]) {
+            [items addObject:itemDic];
+        }
+    }
+    return items;
+}
+
+/*!
+ @method fromItemDataGetItemsWithType:
+ @discussion This method returns the 'NSMutableArray' with all item objects given its 'MDType'; if it does not exist anyone returns an empty array.
+ */
+- (NSMutableArray *)fromItemDataGetItemsWithType:(MDType *)type
+{
+    NSMutableArray * items = [[NSMutableArray alloc] init];
+    for (itemDic in itemsData) {
+        if ([type isEqualToMDType:itemDic[@"type"]]) {
+            [items addObject:itemDic];
+        }
+    }
+    return items;
 }
 
 #pragma mark - Measures data specific getters
