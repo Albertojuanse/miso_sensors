@@ -56,9 +56,9 @@
 // The schema of the measuresData collection is:
 //
 //  [{ "position": (RDPosition *)position1;                  //  positionDic
-//     "positionMeasures": [
+//     "positionMeasures": [                                 //  uuidArray
 //         { "uuid" : (NSString *)uuid1;                     //  uuidDic
-//           "uuidMeasures": [
+//           "uuidMeasures": [                               //  measuresArray
 //             { "sort" : (NSString *)type1;                 //  measuresDic
 //               "measure": (NSNumber *)measure1;
 //             },
@@ -193,7 +193,10 @@
     userDic = nil;
     itemDic = nil;
     positionDic = nil;
+    uuidDic = nil;
+    uuidArray = nil;
     measureDic = nil;
+    measuresArray = nil;
     locationDic = nil;
     modelDic = nil;
 }
@@ -280,7 +283,7 @@
 - (NSMutableDictionary *)fromSessionDataGetSessionWithUserDic:(NSMutableDictionary*)givenUserDic
 {
     for (sessionDic in sessionData) {
-        NSMutableDictionary * storedUserDic = dic[@"user"];
+        NSMutableDictionary * storedUserDic = sessionDic[@"user"];
         if ([storedUserDic isEqualToDictionary:givenUserDic]) {
             return sessionDic;
         }
@@ -294,7 +297,7 @@
  */
 - (NSMutableDictionary *)fromSessionDataGetSessionWithUserName:(NSString*)userName {
     for (sessionDic in sessionData) {
-        NSMutableDictionary * storedUserDic = dic[@"user"];
+        NSMutableDictionary * storedUserDic = sessionDic[@"user"];
         if ([storedUserDic[@"name"] isEqualToString:userName]) {
             return sessionDic;
         }
@@ -325,7 +328,7 @@
 - (id)fromSessionDataGetKey:(NSString *)key
        fromUserWithUserName:(NSString*)userName
 {
-    NSMutableDictionary * sessionDic = [self fromSessionDataGetSessionWithUsername:userName];
+    NSMutableDictionary * sessionDic = [self fromSessionDataGetSessionWithUserName:userName];
     // Can be null
     if (sessionDic) {
         return sessionDic[key];
@@ -511,18 +514,138 @@
 }
 
 #pragma mark - Measures data specific getters
-- (NSMutableArray *)fromMeasuresDataGetMeasures;
-- (NSMutableArray *)fromMeasuresDataGetPositions;
-- (NSMutableArray *)fromMeasuresDataGetSourceUUIDs;
-- (NSMutableArray *)fromMeasuresDataGetTargetUUIDs;
-- (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position;
-- (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromSourceUUID:(NSString*)uuid;
-- (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromTargetUUID:(NSString*)uuid;
+//            // MEASURES DATA //
+//
+// The schema of the measuresData collection is:
+//
+//  [{ "position": (RDPosition *)position1;                  //  positionDic
+//     "positionMeasures": [                                 //  uuidArray
+//         { "uuid" : (NSString *)uuid1;                     //  uuidDic
+//           "uuidMeasures": [                               //  measuresArray
+//             { "sort" : (NSString *)type1;                 //  measuresDic
+//               "measure": (NSNumber *)measure1;
+//             },
+//             (···)
+//           ]
+//         },
+//         (···)
+//     ]
+//   },
+//   { "position": (RDPosition *)position2;                  // positionDic
+//     (···)
+//   },
+//   (···)
+//  ]
+//
+
+/*!
+ @method fromMeasuresDataGetPositions
+ @discussion This method returns the 'NSMutableArray' with all positions dictionaries; if it does not exist anyone returns an empty array.
+ */
+- (NSMutableArray *)fromMeasuresDataGetPositions
+{
+    NSMutableArray * positions = [[NSMutableArray alloc] init];
+    for (positionDic in measuresData) {
+        [positions addObject:positionDic];
+    }
+    return positions;
+}
+
+/*!
+ @method fromMeasuresDataGetSourceUUIDs
+ @discussion This method returns the 'NSMutableArray' with all UUID dictionaries; if it does not exist anyone returns an empty array.
+ */
+- (NSMutableArray *)fromMeasuresDataGetSourceUUIDs
+{
+    // Allocate and init an array for saving the different found UUIDs
+    NSMutableArray * uuids = [[NSMutableArray alloc] init];
+    
+    // Inspect every position dictionary...
+    for (positionDic in measuresData) {
+        
+        // ...and get its UUIDs...
+        uuidArray = positionDic[@"positionMeasures"];
+        for (uuidDic in uuidArray) {
+            NSString * uuid = uuidDic[@"uuid"];
+            
+            // ...but before save it check if it is already saved.
+            BOOL uuidFound = NO;
+            for (NSMutableDictionary * savedUuidDic in uuids) {
+                if ([uuid isEqualToString:savedUuidDic[@"uuid"]]) {
+                    uuidFound = YES;
+                }
+            }
+            if (!uuidFound) {
+                [uuids addObject:uuidDic];
+            }
+        }
+    }
+    return uuids;
+}
+
+/*!
+ @method fromMeasuresDataGetTargetUUIDs
+ @discussion This method returns the 'NSMutableArray' with all UUID dictionaries; if it does not exist anyone returns an empty array.
+ */
+// Exists two different ways of name UUIDs just for semantic issues and to ease the developing.
+- (NSMutableArray *)fromMeasuresDataGetTargetUUIDs
+{
+    return [self fromMeasuresDataGetSourceUUIDs];
+}
+
+/*!
+ @method fromMeasuresDataGetMeasuresTakenFromPosition:fromUUIDSource:andOfSort:
+ @discussion This method returns the 'NSMutableArray' with all measure dictionaries taken from a 'RDPosition' from a given UUID and of a given sort; if it does not exist anyone returns an empty array.
+ */
 - (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position
-                                                   andSourceUUID:(NSString*)uuid;
+                                                  fromUUIDSource:(NSString *)uuid
+                                                       andOfSort:(NSString*)sort
+{
+    
+    // Allocate and init an array for saving the different found measures
+    NSMutableArray * measures = [[NSMutableArray alloc] init];
+    
+    // Inspect every position dictionary...
+    for (positionDic in measuresData) {
+        
+        // ..and find the searched one...
+        if ([position isEqualToRDPosition:positionDic[@"position"]]) {
+            
+            // ...if found, get its UUIDs...
+            uuidArray = positionDic[@"positionMeasures"];
+            for (uuidDic in uuidArray) {
+                
+                // ...and find the seacheUUID;...
+                if ([uuid isEqualToString:uuidDic[@"uuid"]]) {
+                 
+                    // ...if found, for every measure, check the sort, and save it.
+                    measuresArray = uuidDic[@"uuidMeasures"];
+                    for (measureDic in measuresArray) {
+                        if ([sort isEqualToString:measureDic[@"sort"]]) {
+                            [measures addObject:measureDic];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return measures;
+}
+
+/*!
+ @method fromMeasuresDataGetMeasuresTakenFromPosition:ofUUIDTarget:andOfSort:
+ @discussion This method returns the 'NSMutableArray' with all measure dictionaries taken from a 'RDPosition' of a given UUID and of a given sort; if it does not exist anyone returns an empty array.
+ */
 - (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position
-                                                   andTargetUUID:(NSString*)uuid;
-- (NSNumber *)fromMeasuresDataGetMaxMeasureOfType:(NSString *)type;
+                                                    ofUUIDTarget:(NSString *)uuid
+                                                       andOfSort:(NSString*)sort
+{
+return [self fromMeasuresDataGetMeasuresTakenFromPosition:position
+                                           fromUUIDSource:uuid
+                                                andOfSort:sort];
+}
+
+#pragma mark - Locations data specific getters
 
 - (NSMutableArray *)fromLocationsDataGetPositions;
 

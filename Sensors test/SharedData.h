@@ -39,7 +39,9 @@
     NSMutableDictionary * itemDic;
     NSMutableDictionary * positionDic;
     NSMutableDictionary * uuidDic;
+    NSMutableArray * uuidArray;
     NSMutableDictionary * measureDic;
+    NSMutableArray * measuresArray;
     NSMutableDictionary * locationDic;
     NSMutableDictionary * modelDic;
     
@@ -56,7 +58,7 @@
 - (NSMutableArray *)getMetamodelData;
 - (NSMutableArray *)getModelData;
 
-// Specific getters
+// Specific session data getters
 - (NSMutableDictionary *)fromSessionDataGetSessionWithUserDic:(NSMutableDictionary*)userDic;
 - (NSMutableDictionary *)fromSessionDataGetSessionWithUserName:(NSString*)userName;
 - (NSString *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary*)userDic;
@@ -66,20 +68,26 @@
 - (NSMutableDictionary *)fromSessionDataGetModeChosenByUserFromUserWithUserDic:(NSMutableDictionary*)userDic;
 - (NSMutableDictionary *)fromSessionDataGetModeChosenByUserFromUserWithUserName:(NSString*)userName;
 
-- (NSMutableArray *)fromItemDataGetItems;
+// Specific items data getters
+- (NSMutableArray *)fromItemDataGetItemsWithSort:(NSString *)sort;
+- (NSMutableArray *)fromItemDataGetItemsWithIdentifier:(NSString *)identifier;
+- (NSMutableArray *)fromItemDataGetItemsWithUUID:(NSString *)uuid;
+- (NSMutableArray *)fromItemDataGetItemsWithUUID:(NSString *)uuid
+                                           major:(NSString *)major
+                                        andMinor:(NSString *)minor;
+- (NSMutableArray *)fromItemDataGetItemsWithPosition:(RDPosition *)position;
+- (NSMutableArray *)fromItemDataGetItemsWithType:(MDType *)type;
 
-- (NSMutableArray *)fromMeasuresDataGetMeasures;
+// Specific session data getters
 - (NSMutableArray *)fromMeasuresDataGetPositions;
 - (NSMutableArray *)fromMeasuresDataGetSourceUUIDs;
 - (NSMutableArray *)fromMeasuresDataGetTargetUUIDs;
-- (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position;
-- (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromSourceUUID:(NSString*)uuid;
-- (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromTargetUUID:(NSString*)uuid;
 - (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position
-                                                   andSourceUUID:(NSString*)uuid;
+                                                  fromUUIDSource:(NSString *)uuid
+                                                       andOfSort:(NSString*)sort;
 - (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position
-                                                   andTargetUUID:(NSString*)uuid;
-- (NSNumber *)fromMeasuresDataGetMaxMeasureOfType:(NSString *)type;
+                                                    ofUUIDTarget:(NSString *)uuid
+                                                       andOfSort:(NSString*)sort;
 
 - (NSMutableArray *)fromLocationsDataGetPositions;
 
