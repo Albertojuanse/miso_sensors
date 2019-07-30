@@ -99,11 +99,15 @@
                                                           andOfSort:(NSString*)sort;
 
 // Specific locations data specific getters
+- (NSMutableArray *)fromLocationsDataGetPositionDics;
 - (NSMutableArray *)fromLocationsDataGetPositions;
+- (NSMutableArray *)fromLocationsDataGetPositionDicsOfUUID:(NSString*)uuid;
+- (NSMutableArray *)fromLocationsDataGetPositionsOfUUID:(NSString*)uuid;
 
-
+// Specific metamodel data specific getters
 - (NSMutableArray *)fromMetamodelDataGetTypes;
 
+// Specific model data specific getters
 - (NSMutableArray *)fromModelDataGetModels;
 
 // Specific setters

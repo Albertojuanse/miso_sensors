@@ -766,13 +766,60 @@
 //
 
 /*!
- @method fromMeasuresDataGetMeasuresTakenFromPosition:ofUUIDTarget:andOfSort:
- @discussion This method returns the 'NSMutableArray' with all measure dictionaries taken from a 'RDPosition' of a given UUID and of a given sort; if it does not exist anyone returns an empty array.
+ @method fromLocationsDataGetPositionDics
+ @discussion This method returns the 'NSMutableArray' with all located positions dictionaries stored; if it does not exist anyone returns an empty array.
  */
-- (NSMutableArray *)fromLocationsDataGetPositions{
-    
+- (NSMutableArray *)fromLocationsDataGetPositionDics
+{
+    NSMutableArray * positions = [[NSMutableArray alloc] init];
+    for (locationDic in locationsData) {
+        [positions addObject:locationDic];
+    }
+    return positions;
 }
 
+/*!
+ @method fromLocationsDataGetPositions
+ @discussion This method returns the 'NSMutableArray' with all located positions 'RDPosition' stored; if it does not exist anyone returns an empty array.
+ */
+- (NSMutableArray *)fromLocationsDataGetPositions
+{
+    NSMutableArray * positions = [[NSMutableArray alloc] init];
+    for (locationDic in locationsData) {
+        [positions addObject:locationDic[@"locatedPosition"]];
+    }
+    return positions;
+}
+
+/*!
+ @method fromLocationsDataGetPositionDicsOfUUID:
+ @discussion This method returns the 'NSMutableArray' with all located positions dictionaries stored given their UUID; if it does not exist anyone returns an empty array.
+ */
+- (NSMutableArray *)fromLocationsDataGetPositionDicsOfUUID:(NSString*)uuid
+{
+    NSMutableArray * positions = [[NSMutableArray alloc] init];
+    for (locationDic in locationsData) {
+        if ([uuid isEqualToString:locationDic[@"locatedUUID"]]){
+            [positions addObject:locationDic];
+        }
+    }
+    return positions;
+}
+
+/*!
+ @method fromLocationsDataGetPositionsOfUUID:
+ @discussion This method returns the 'NSMutableArray' with all located positions 'RDPosition' stored given their UUID; if it does not exist anyone returns an empty array.
+ */
+- (NSMutableArray *)fromLocationsDataGetPositionsOfUUID:(NSString*)uuid
+{
+    NSMutableArray * positions = [[NSMutableArray alloc] init];
+    for (locationDic in locationsData) {
+        if ([uuid isEqualToString:locationDic[@"locatedUUID"]]){
+            [positions addObject:locationDic[@"locatedPosition"]];
+        }
+    }
+    return positions;
+}
 
 #pragma mark - Metamodel data specific getters
 - (NSMutableArray *)fromMetamodelDataGetTypes;
