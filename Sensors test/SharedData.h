@@ -111,27 +111,4 @@
 - (NSMutableArray *)fromMetamodelDataGetModelDics;
 - (NSMutableArray *)fromMetamodelDataGetModelDicWithName:(NSString*)name;
 
-// Specific setters
-- (void) inSessionDataSetVariable:(id)variable;
-
-- (void) inItemDataSetItem:(NSMutableDictionary*)item;
-
-- (void) inMeasuresDataSetMeasure:(NSNumber*)measure
-                           ofType:(NSString*)type
-                   withSourceUUID:(NSString*)uuid
-                       atPosition:(RDPosition*)positionp;
-- (void) inMeasuresDataSetMeasure:(NSNumber*)measure
-                           ofType:(NSString*)type
-                   withTargetUUID:(NSString*)uuid
-                       atPosition:(RDPosition*)positionp;
-
-- (void) inLocationsDataSetPosition:(RDPosition*)position
-                           fromUUID:(NSString*)locatedUUID;
-- (void) inLocationsDataSetPosition:(RDPosition*)position
-                             ofUUID:(NSString*)locatedUUID;
-
-- (void) inMetamodelDataSetType:(MDType*)type;
-
-- (void) inModelDataSetModel:(NSMutableDictionary*)model;
-
 @end

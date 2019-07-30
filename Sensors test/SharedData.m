@@ -757,6 +757,42 @@
                                                     andOfSort:sort];
 }
 
+/*!
+ @method fromMeasuresDataGetMaxMeasureOfSort:
+ @discussion This method returns a 'NSNumber' that contains the maximum of the measures taken.
+ */
+- (NSNumber *) fromMeasuresDataGetMaxMeasureOfSort:(NSString *)sort {
+    NSNumber * maxMeasure = [NSNumber numberWithFloat:0.0];
+    if (measuresData.count == 0) {
+        // Do nothing
+    } else {
+        // For every position where measures were taken...
+        for (positionDic in measuresData) {
+            
+            // ...get the UUID's dictionaries...
+            uuidArray = positionDic[@"positionMeasures"];
+            // ...and for every UUID...
+            for (uuidDic in uuidArray) {
+                
+                // get the the measures dictionaries...
+                measuresArray = uuidDic[@"uuidMeasures"];
+                // ...and for every measure...
+                for (measureDic in measuresArray) {
+                    
+                    // ...check it.
+                    NSNumber * measure = [NSNumber numberWithFloat:[measureDic[@"measure"] floatValue]];
+                    if ([sort isEqualToString:measureDic[@"sort"]]) {
+                        if ([measure floatValue] > [maxMeasure floatValue]) {
+                            maxMeasure = measure;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return maxMeasure;
+}
+
 #pragma mark - Locations data specific getters
 //            // LOCATIONS DATA //
 //
@@ -879,7 +915,7 @@
 
 /*!
  @method fromMetamodelDataGetModelDics
- @discussion This method returns the 'NSMutableArray' with all 'MDTypes' stored; if it does not exist anyone returns an empty array.
+ @discussion This method returns the 'NSMutableArray' with all models dictionaries stored; if it does not exist anyone returns an empty array.
  */
 - (NSMutableArray *)fromMetamodelDataGetModelDics
 {
@@ -892,7 +928,7 @@
 
 /*!
  @method fromMetamodelDataGetModelDicWithName:
- @discussion This method returns the 'NSMutableArray' with all 'MDTypes' stored; if it does not exist anyone returns an empty array.
+ @discussion This method returns the 'NSMutableArray' with the models whose name is the given one; if it does not exist anyone returns an empty array.
  */
 - (NSMutableArray *)fromMetamodelDataGetModelDicWithName:(NSString*)name
 {
@@ -905,111 +941,7 @@
     return models;
 }
 
-#pragma mark - Session data specific setters
-- (void) inSessionDataSetVariable:(id)variable;
-
-#pragma mark - Items data specific setters
-- (void) inItemDataSetItem:(NSMutableDictionary*)item;
-
-#pragma mark - Measures data specific setters
-- (void) inMeasuresDataSetMeasure:(NSNumber*)measure
-                           ofType:(NSString*)type
-                   withSourceUUID:(NSString*)uuid
-                       atPosition:(RDPosition*)positionp;
-- (void) inMeasuresDataSetMeasure:(NSNumber*)measure
-                           ofType:(NSString*)type
-                   withTargetUUID:(NSString*)uuid
-                       atPosition:(RDPosition*)positionp;
-
-#pragma mark - Location data specific setters
-- (void) inLocationsDataSetPosition:(RDPosition*)position
-                           fromUUID:(NSString*)locatedUUID;
-- (void) inLocationsDataSetPosition:(RDPosition*)position
-                             ofUUID:(NSString*)locatedUUID;
-
-#pragma mark - Metamodel data specific setters
-- (void) inMetamodelDataSetType:(MDType*)type;
-
-#pragma mark - Model data specific setters
-- (void) inModelDataSetModel:(NSMutableDictionary*)model;
-
-#pragma mark Measures getters
-
-/*!
- @method getMeasuresDic
- @discussion This method returns the NSDictionary with all the measures taken
- */
-- (NSMutableDictionary *) getMeasuresDic {
-    return measuresDic;
-}
-
-/*!
- @method fromMeasuresDicGetPositions
- @discussion This method returns a 'NSMutableArray' object with all the positions where the measures were taken.
- */
-- (NSMutableArray *) fromMeasuresDicGetPositions {
-    NSArray * positionKeys = [measuresDic allKeys];
-    NSMutableArray * measurePositions = [[NSMutableArray alloc] init];
-    for (id positionKey in positionKeys) {
-        // ...get the dictionary for this position...
-        positionDic = [measuresDic objectForKey:positionKey];
-        // ...and the position.
-        RDPosition * dicPosition = positionDic[@"measurePosition"];
-        RDPosition * position = [[RDPosition alloc] init];
-        position.x = dicPosition.x;
-        position.y = dicPosition.y;
-        position.z = dicPosition.z;
-        [measurePositions addObject:position];
-    }
-    return measurePositions;
-}
-
-/*!
- @method fromMeasuresDicGetMaxMeasureOfType:
- @discussion This method returns a 'NSNumber' that contains the maximum of the measures taken.
- */
-- (NSNumber *) fromMeasuresDicGetMaxMeasureOfType:(NSString *)type {
-    NSNumber * maxMeasure = [NSNumber numberWithFloat:0.0];
-    if (measuresDic.count == 0) {
-        // Do nothing
-    } else {
-        // For every position where measures were taken...
-        NSArray * positionKeys = [measuresDic allKeys];
-        for (id positionKey in positionKeys) {
-            // ...get the dictionary for this position.
-            positionDic = [measuresDic objectForKey:positionKey];
-            
-            // Get the the dictionary with the UUID's dictionaries...
-            uuidDicDic = positionDic[@"positionMeasures"];
-            // ...and for every UUID...
-            NSArray * uuidKeys = [uuidDicDic allKeys];
-            for (id uuidKey in uuidKeys) {
-                // ...get the dictionary.
-                uuidDic = [uuidDicDic objectForKey:uuidKey];
-                
-                // Get the the dictionary with the measures dictionaries...
-                measureDicDic = uuidDic[@"uuidMeasures"];
-                // ...and for every measure...
-                NSArray * measuresKeys = [measureDicDic allKeys];
-                for (id measureKey in measuresKeys) {
-                    // ...get the dictionary for this measure...
-                    measureDic = [measureDicDic objectForKey:measureKey];
-                    // ...and the measure.
-                    NSNumber * measure = [NSNumber numberWithFloat:[measureDic[@"measure"] floatValue]];
-                    if ([measureDic[@"type"] isEqualToString:type]) {
-                        if ([measure floatValue] > [maxMeasure floatValue]) {
-                            maxMeasure = measure;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return maxMeasure;
-}
-
 #pragma mark Measures setters
-
 /*!
  @method inMeasuresDicSetMeasure:ofType:withUUID:atPosition:andWithState:
  @discussion This method saves in the NSDictionary with the measures information a new one; if the state MEASURING is not true, is saved the position without any measure.
@@ -1184,36 +1116,6 @@
     }
 }
 
-#pragma mark Located getters
-
-/*!
- @method inMeasuresDicSetMeasure:ofType:withUUID:atPosition:andWithState:
- @discussion This method saves in the NSDictionary with the measures information a new one; if the state MEASURING is not true, is saved the position without any measure.
- */
-- (NSMutableDictionary *) getLocatedDic {
-    return locatedDic;
-}
-
-/*!
- @method fromLocatedDicGetPositions
- @discussion This method returns a 'NSMutableArray' object with all the positions where the measures were taken
- */
-- (NSMutableArray *) fromLocatedDicGetPositions {
-    NSArray * positionKeys = [locatedDic allKeys];
-    NSMutableArray * locatedPositions = [[NSMutableArray alloc] init];
-    for (id positionKey in positionKeys) {
-        // ...get the dictionary for this position...
-        positionDic = [measuresDic objectForKey:positionKey];
-        // ...and the position.
-        RDPosition * dicPosition = positionDic[@"locatedPosition"];
-        RDPosition * position = [[RDPosition alloc] init];
-        position.x = dicPosition.x;
-        position.y = dicPosition.y;
-        position.z = dicPosition.z;
-        [locatedPositions addObject:position];
-    }
-    return locatedPositions;
-}
 
 #pragma mark Located setters
 
