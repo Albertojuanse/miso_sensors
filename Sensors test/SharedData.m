@@ -18,6 +18,7 @@
 //               "role": (NSString *)role1;
 //             }
 //     "mode": (NSString *)mode1;
+//     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
 //     "typeChosenByUser": (MDType*)type1
 //   },
@@ -249,6 +250,7 @@
 //               "role": (NSString *)role1;
 //             }
 //     "mode": (NSString *)mode1;
+//     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
 //     "typeChosenByUser": (MDType*)type1
 //   },
@@ -336,6 +338,108 @@
 - (NSString *)fromSessionDataGetModeFromUserWithUserName:(NSString*)userName
 {
     return [self fromSessionDataGetKey:@"mode" fromUserWithUserName:userName];
+}
+
+/*!
+ @method fromSessionDataGetStateFromUserWithUserDic:
+ @discussion This method returns the mode from the session data collection given the user's dictionary; if is not found, return nil.
+ */
+- (NSString *)fromSessionDataGetStateFromUserWithUserDic:(NSMutableDictionary*)givenUserDic
+{
+    return [self fromSessionDataGetKey:@"state" fromUserWithUserDic:givenUserDic];
+}
+
+/*!
+ @method fromSessionDataGetStateFromUserWithUserName:
+ @discussion This method returns the state from the session data collection given the user's name; if is not found, return nil.
+ */
+- (NSString *)fromSessionDataGetStateFromUserWithUserName:(NSString*)userName
+{
+    return [self fromSessionDataGetKey:@"state" fromUserWithUserName:userName];
+}
+
+/*!
+ @method fromSessionDataIsMeasuringUserWithUserDic:
+ @discussion This method checks in session data collection if the given user's dictionary is measuring and returns YES if so.
+ */
+- (BOOL)fromSessionDataIsMeasuringUserWithUserDic:(NSMutableDictionary*)givenUserDic
+{
+    NSString * state = [self fromSessionDataGetKey:@"state" fromUserWithUserDic:givenUserDic];
+    if ([state isEqualToString:@"MEASURING"]) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+/*!
+ @method fromSessionDataIsMeasuringUserWithUserName:
+ @discussion This method checks in session data collection if the given user's name is measuring and returns YES if so.
+ */
+- (BOOL)fromSessionDataIsMeasuringUserWithUserName:(NSString*)userName
+{
+    NSString * state = [self fromSessionDataGetKey:@"state" fromUserWithUserName:userName];
+    if ([state isEqualToString:@"MEASURING"]) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+/*!
+ @method fromSessionDataIsIdleUserWithUserDic:
+ @discussion This method checks in session data collection if the given user's dictionary is idle and returns YES if so.
+ */
+- (BOOL)fromSessionDataIsIdleUserWithUserDic:(NSMutableDictionary*)givenUserDic
+{
+    NSString * state = [self fromSessionDataGetKey:@"state" fromUserWithUserDic:givenUserDic];
+    if ([state isEqualToString:@"IDLE"]) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+/*!
+ @method fromSessionDataIsIdleUserWithUserName:
+ @discussion This method checks in session data collection if the given user's name is idle and returns YES if so.
+ */
+- (BOOL)fromSessionDataIsIdleUserWithUserName:(NSString*)userName
+{
+    NSString * state = [self fromSessionDataGetKey:@"state" fromUserWithUserName:userName];
+    if ([state isEqualToString:@"IDLE"]) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+/*!
+ @method fromSessionDataIsTravelingUserWithUserDic:
+ @discussion This method checks in session data collection if the given user's dictionary is traveling and returns YES if so.
+ */
+- (BOOL)fromSessionDataIsTravelingUserWithUserDic:(NSMutableDictionary*)givenUserDic
+{
+    NSString * state = [self fromSessionDataGetKey:@"state" fromUserWithUserDic:givenUserDic];
+    if ([state isEqualToString:@"TRAVELING"]) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+/*!
+ @method fromSessionDataIsTravelingUserWithUserName:
+ @discussion This method checks in session data collection if the given user's name is idle and returns YES if so.
+ */
+- (BOOL)fromSessionDataIsTravelingUserWithUserName:(NSString*)userName
+{
+    NSString * state = [self fromSessionDataGetKey:@"state" fromUserWithUserName:userName];
+    if ([state isEqualToString:@"TRAVELING"]) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 /*!
@@ -928,6 +1032,7 @@
 //               "role": (NSString *)role1;
 //             }
 //     "mode": (NSString *)mode1;
+//     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
 //     "typeChosenByUser": (MDType*)type1
 //   },
@@ -937,6 +1042,74 @@
 //   (···)
 //  ]
 //
+
+/*!
+ @method inSessionDataSetMeasuringUserWithUserDic:
+ @discussion This method sets in session data collection the state measuring to the given user's dictionary.
+ */
+- (void)inSessionDataSetMeasuringUserWithUserDic:(NSMutableDictionary*)givenUserDic
+{
+    userDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic];
+    [userDic setObject:@"MEASURING" forKey:@"state"];
+    return;
+}
+
+/*!
+ @method inSessionDataSetMeasuringUserWithUserName:
+ @discussion This method sets in session data collection the state measuring to the given user's name.
+ */
+- (void)inSessionDataSetMeasuringUserWithUserName:(NSString*)userName
+{
+    userDic = [self fromSessionDataGetSessionWithUserName:userName];
+    [userDic setObject:@"MEASURING" forKey:@"state"];
+    return;
+    
+}
+
+/*!
+ @method inSessionDataSetMeasuringUserWithUserDic:
+ @discussion This method sets in session data collection the state idle to the given user's dictionary.
+ */
+- (void)inSessionDataSetIdleUserWithUserDic:(NSMutableDictionary*)givenUserDic
+{
+    userDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic];
+    [userDic setObject:@"IDLE" forKey:@"state"];
+    return;
+}
+
+/*!
+ @method inSessionDataSetMeasuringUserWithUserDic:
+ @discussion This method sets in session data collection the state idle to the given user's name.
+ */
+- (void)inSessionDataSetIdleUserWithUserName:(NSString*)userName
+{
+    userDic = [self fromSessionDataGetSessionWithUserName:userName];
+    [userDic setObject:@"IDLE" forKey:@"state"];
+    return;
+}
+
+/*!
+ @method inSessionDataSetMeasuringUserWithUserDic:
+ @discussion This method sets in session data collection the state traveling to the given user's dictionary.
+ */
+- (void)inSessionDataSetTravelingUserWithUserDic:(NSMutableDictionary*)givenUserDic
+{
+    userDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic];
+    [userDic setObject:@"TRAVELING" forKey:@"state"];
+    return;
+}
+
+/*!
+ @method inSessionDataSetMeasuringUserWithUserDic:
+ @discussion This method sets in session data collection the state traveling to the given user's name.
+ */
+- (void)inSessionDataSetTravelingUserWithUserName:(NSString*)userName
+{
+    userDic = [self fromSessionDataGetSessionWithUserName:userName];
+    [userDic setObject:@"TRAVELING" forKey:@"state"];
+    return;
+}
+
 #pragma mark - Item data specific setters
 //             // ITEMS DATA //
 //
@@ -989,15 +1162,18 @@
 //
 
 /*!
- @method inMeasuresDicSetMeasure:ofSort:withUUID:atPosition:andWithState:
- @discussion This method saves in the measures data collection a new one; if the state MEASURING is not true, is saved the position without any measure.
+ @method inMeasuresDicSetMeasure:ofSort:withUUID:atPosition:andWithUserDic:
+ @discussion This method saves in the measures data collection a new one; if the state MEASURING is not true for the given user credentials 'userDic', is saved only the position but no measure.
  */
 - (void) inMeasuresDicSetMeasure:(NSNumber*)measure
                           ofSort:(NSString*)sort
                         withUUID:(NSString*)uuid
                       atPosition:(RDPosition*)position
-                    andWithState:(BOOL)measuring
+                  andWithUserDic:(NSMutableDictionary*)givenUserDic
 {
+    
+    // TO DO: Get measuring state directly from this database. Alberto J. 2019/07/31.
+    
     // The 'measureDic', the innermost one, is always new.
     measureDic = [[NSMutableDictionary alloc] init];
     measureDic[@"sort"] = sort;
@@ -1009,7 +1185,7 @@
         // Compose the dictionary from the innermost to the outermost
         // Wrap measureDic with an array
         measuresArray = [[NSMutableArray alloc] init];
-        if (measuring) {
+        if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic]) {
             [measuresArray addObject:measureDic];
         } else {
             // saves nothing
@@ -1047,45 +1223,43 @@
                 positionFound = YES;
                 
                 // For each uuid already saved...
-                for (uuidDic in positionDic[@"positionMeasures"]) {
-                    // ...get the dictionary for this uuid...
-                    uuidDic = [uuidDicDic objectForKey:uuidKey];
-                    // ...and checks if the uuid already exists.
-                    if ([uuidDic[@"uuid"] isEqual:uuid]) {
+                uuidArray = positionDic[@"positionMeasures"];
+                for (uuidDic in uuidArray) {
+                    // ... checks if the uuid already exists.
+                    if ([uuid isEqualToString:uuidDic[@"uuid"]]) {
                         uuidFound = YES;
                         
-                        // If both position and uuid are found, set the 'measureDic' into 'measureDicDic' with an unique measure's identifier key.
-                        measureDicDic = uuidDic[@"uuidMeasures"];
-                        if (measuring) {
-                            measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
-                            NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
-                            measureDicDic[measureId] = measureDic;
+                        // If both position and uuid are found, set the 'measureDic' into 'measuresArray' with an unique measure's identifier key.
+                        measuresArray = uuidDic[@"uuidMeasures"];
+                        if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic]) { // Only save if in state measuring
+                            [measuresArray addObject:measureDic];
                         } else {
                             // saves nothing
                         }
                     }
                 }
+                
                 // If only the UUID was not found, but te positions was found, create all the inner dictionaries.
                 if (!uuidFound) {
                     // Compose the dictionary from the innermost to the outermost
-                    // Wrap measureDic with another dictionary and an unique measure's identifier key
-                    measureDicDic = [[NSMutableDictionary alloc] init];
-                    if (measuring) {
-                        measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
-                        NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
-                        measureDicDic[measureId] = measureDic;
+                    
+                    
+                    // Wrap measureDic with an array
+                    measuresArray = [[NSMutableArray alloc] init];
+                    if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic]) {
+                        [measuresArray addObject:measureDic];
                     } else {
+                        // saves nothing
                     }
                     
                     // Create the 'uuidDic' dictionary
                     uuidDic = [[NSMutableDictionary alloc] init];
                     uuidDic[@"uuid"] = uuid;
-                    uuidDic[@"uuidMeasures"] = measureDicDic;
+                    uuidDic[@"uuidMeasures"] = measuresArray;
                     
-                    // Allocate 'uuidDic' into 'uuidDicDic' with an unique uuid's identifier key
-                    uuidIdNumber = [NSNumber numberWithInt:[uuidIdNumber intValue] + 1];
-                    NSString * uuidId = [@"measureUuid" stringByAppendingString:[uuidIdNumber stringValue]];
-                    uuidDicDic[uuidId] = uuidDic;
+                    // Get the collection of UUID and add the new one
+                    uuidArray = positionDic[@"positionMeasures"];
+                    [uuidArray addObject:uuidDic];
                 }
             }
         }
@@ -1093,37 +1267,33 @@
         // If both position and UUID was not found create all the inner dictionaries.
         if (!positionFound) {
             // Compose the dictionary from the innermost to the outermost
-            // Wrap measureDic with another dictionary and an unique measure's identifier key
-            measureDicDic = [[NSMutableDictionary alloc] init];
-            if (measuring) {
-                measureIdNumber = [NSNumber numberWithInt:[measureIdNumber intValue] + 1];
-                NSString * measureId = [@"measure" stringByAppendingString:[measureIdNumber stringValue]];
-                measureDicDic[measureId] = measureDic;
+            
+            
+            // Compose the dictionary from the innermost to the outermost
+            // Wrap measureDic with an array
+            measuresArray = [[NSMutableArray alloc] init];
+            if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic]) {
+                [measuresArray addObject:measureDic];
             } else {
                 // saves nothing
             }
             
             // Create the 'uuidDic' dictionary
             uuidDic = [[NSMutableDictionary alloc] init];
-            uuidDic[@"uuid"] = [NSString stringWithString:uuid];
-            uuidDic[@"uuidMeasures"] = measureDicDic;
+            uuidDic[@"uuid"] = uuid;
+            uuidDic[@"uuidMeasures"] = measuresArray;
             
-            // Wrap uuidDic with another dictionary and an unique uuid's identifier key
-            uuidIdNumber = [NSNumber numberWithInt:[uuidIdNumber intValue] + 1];
-            NSString * uuidId = [@"measureUuid" stringByAppendingString:[uuidIdNumber stringValue]];
-            uuidDicDic = [[NSMutableDictionary alloc] init];
-            uuidDicDic[uuidId] = uuidDic;
+            // Wrap uuidDic with an array
+            uuidArray = [[NSMutableArray alloc] init];
+            [uuidArray addObject:uuidDic];
             
             // Create the 'positionDic' dictionary
             positionDic = [[NSMutableDictionary alloc] init];
-            positionDic[@"measurePosition"] = measurePosition;
-            positionDic[@"positionMeasures"] = uuidDicDic;
-            NSLog(@"[INFO][LM] New position saved in dictionary: (%.2f, %.2f)", [measurePosition.x floatValue], [measurePosition.y floatValue]);
+            positionDic[@"position"] = position;
+            positionDic[@"positionMeasures"] = uuidArray;
             
-            // Set positionDic in the main dictionary 'measuresDic' with an unique position's identifier key
-            positionIdNumber = [NSNumber numberWithInt:[positionIdNumber intValue] + 1];
-            NSString * positionId = [@"measurePosition" stringByAppendingString:[positionIdNumber stringValue]];
-            measuresDic[positionId] = positionDic;
+            // Add the position to the main collection
+            [measuresData addObject:positionDic];
         }
     }
 }

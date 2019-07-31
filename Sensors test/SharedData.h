@@ -54,6 +54,12 @@
 - (NSMutableDictionary *)fromSessionDataGetSessionWithUserName:(NSString*)userName;
 - (NSString *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary*)userDic;
 - (NSString *)fromSessionDataGetModeFromUserWithUserName:(NSString*)userName;
+- (BOOL)fromSessionDataIsMeasuringUserWithUserDic:(NSMutableDictionary*)givenUserDic;
+- (BOOL)fromSessionDataIsMeasuringUserWithUserName:(NSString*)userName;
+- (BOOL)fromSessionDataIsIdleUserWithUserDic:(NSMutableDictionary*)givenUserDic;
+- (BOOL)fromSessionDataIsIdleUserWithUserName:(NSString*)userName;
+- (BOOL)fromSessionDataIsTravelingUserWithUserDic:(NSMutableDictionary*)givenUserDic;
+- (BOOL)fromSessionDataIsTravelingUserWithUserName:(NSString*)userName;
 - (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserDic:(NSMutableDictionary*)userDic;
 - (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserName:(NSString*)userName;
 - (NSMutableDictionary *)fromSessionDataGetModeChosenByUserFromUserWithUserDic:(NSMutableDictionary*)userDic;
@@ -102,6 +108,12 @@
 - (NSMutableArray *)fromMetamodelDataGetModelDicWithName:(NSString*)name;
 
 // Specific session data setters
+- (void)inSessionDataSetMeasuringUserWithUserDic:(NSMutableDictionary*)givenUserDic;
+- (void)inSessionDataSetMeasuringUserWithUserName:(NSString*)userName;
+- (void)inSessionDataSetIdleUserWithUserDic:(NSMutableDictionary*)givenUserDic;
+- (void)inSessionDataSetIdleUserWithUserName:(NSString*)userName;
+- (void)inSessionDataSetTravelingUserWithUserDic:(NSMutableDictionary*)givenUserDic;
+- (void)inSessionDataSetTravelingUserWithUserName:(NSString*)userName;
 
 // Specific items data setters
 
@@ -110,7 +122,7 @@
                           ofSort:(NSString*)sort
                         withUUID:(NSString*)uuid
                       atPosition:(RDPosition*)measurePosition
-                    andWithState:(BOOL)measuring;
+                  andWithUserDic:(NSMutableDictionary*)givenUserDic
 
 // Specific locations data specific setters
 
