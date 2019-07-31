@@ -118,13 +118,19 @@
 // Specific items data setters
 
 // Specific measures data setters
-- (void) inMeasuresDicSetMeasure:(NSNumber*)measure
-                          ofSort:(NSString*)sort
-                        withUUID:(NSString*)uuid
-                      atPosition:(RDPosition*)measurePosition
-                  andWithUserDic:(NSMutableDictionary*)givenUserDic
+- (void) inMeasuresDataSetMeasure:(NSNumber*)measure
+                           ofSort:(NSString*)sort
+                         withUUID:(NSString*)uuid
+                       atPosition:(RDPosition*)measurePosition
+                   andWithUserDic:(NSMutableDictionary*)givenUserDic;
 
 // Specific locations data specific setters
+- (void) inLocationsDataSetPosition:(RDPosition*)locatedPosition
+                     fromUUIDSource:(NSString *)uuid
+                     andWithUserDic:(NSMutableDictionary*)givenUserDic;
+- (void) inLocationsDataSetPosition:(RDPosition*)locatedPosition
+                       ofUUIDTarget:(NSString *)uuid
+                     andWithUserDic:(NSMutableDictionary*)givenUserDic;
 
 // Specific metamodel data specific setters
 

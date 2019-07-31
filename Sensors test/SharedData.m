@@ -1162,14 +1162,14 @@
 //
 
 /*!
- @method inMeasuresDicSetMeasure:ofSort:withUUID:atPosition:andWithUserDic:
+ @method inMeasuresDataSetMeasure:ofSort:withUUID:atPosition:andWithUserDic:
  @discussion This method saves in the measures data collection a new one; if the state MEASURING is not true for the given user credentials 'userDic', is saved only the position but no measure.
  */
-- (void) inMeasuresDicSetMeasure:(NSNumber*)measure
-                          ofSort:(NSString*)sort
-                        withUUID:(NSString*)uuid
-                      atPosition:(RDPosition*)position
-                  andWithUserDic:(NSMutableDictionary*)givenUserDic
+- (void) inMeasuresDataSetMeasure:(NSNumber*)measure
+                           ofSort:(NSString*)sort
+                         withUUID:(NSString*)uuid
+                       atPosition:(RDPosition*)position
+                   andWithUserDic:(NSMutableDictionary*)givenUserDic
 {
     
     // TO DO: Get measuring state directly from this database. Alberto J. 2019/07/31.
@@ -1301,7 +1301,6 @@
 #pragma mark - Locations data specific setters
 //            // LOCATIONS DATA //
 //
-//
 // The schema of the locationsData collection is:
 //
 //  [{ "locatedUUID": (NSString *)locatedUUID1;              //  locationDic
@@ -1312,77 +1311,70 @@
 //
 
 /*!
- @method inLocatedDicSetPosition:fromUUID:
+ @method inLocationsDataSetPosition:fromUUIDSource:andWithUserDic:
  @discussion This method saves in the NSDictionary with the located positions information a new one.
  */
-- (void) inLocatedDicSetPosition:(RDPosition*)locatedPosition
-                        fromUUID:(NSString*)locatedUUID
+- (void) inLocationsDataSetPosition:(RDPosition*)locatedPosition
+                     fromUUIDSource:(NSString *)uuid
+                     andWithUserDic:(NSMutableDictionary*)givenUserDic
 {
-    NSLog(@"[INFO][SD] Located positions to save:");
-    NSLog(@"[INFO][SD]  -> Position %@", locatedPosition);
-    NSLog(@"[INFO][SD]  -> from %@", locatedUUID);
-    // The schema of the locatedDic object is:
-    //
-    // { "locatedPosition1":                              //  locatedDic
-    //     { "locatedUUID": locatedUUID;                  //  positionDic
-    //       "locatedPosition": locatedPosition;
-    //     };
-    //   "locatedPosition2": { (···) }
-    // }
-    //
-    
-    if (locatedDic.count == 0) {
-        NSLog(@"[INFO][SD] locatedDic.count == 0 => YES");
+    if (locationsData.count == 0) {
         // First initialization
         
         // Compose the dictionary from the innermost to the outermost
         // Wrap locatedPosition in a dictionary with its UUID
-        positionDic = [[NSMutableDictionary alloc] init];
-        positionDic[@"locatedPosition"] = locatedPosition;
-        positionDic[@"locatedUUID"] = locatedUUID;
+        locationDic = [[NSMutableDictionary alloc] init];
+        locationDic[@"locatedPosition"] = locatedPosition;
+        locationDic[@"locatedUUID"] = uuid;
         
         // Set it into locatedDic
-        locatedIdNumber = [NSNumber numberWithInt:[locatedIdNumber intValue] + 1];
-        NSString * locatedId = [@"locatedPosition" stringByAppendingString:[measureIdNumber stringValue]];
-        locatedDic[locatedId] = positionDic;
+        [locationsData addObject:locationDic];
         
     } else {
-        NSLog(@"[INFO][SD] locatedDic.count == 0 => NO");
         // A beacon only can exists in a position, hence no mobility solutions are considered
         
         // If UUID exists, position is actualized; if UUID does not exist, it will be created.
         // For each position already saved...
         BOOL UUIDfound = NO;
-        NSArray *positionKeys = [locatedDic allKeys];
-        for (id positionKey in positionKeys) {
-            // ...get the dictionary for this position...
-            positionDic = [locatedDic objectForKey:positionKey];
-            // ...and checks if the current UUID's locatedUUID already exists comparing it with the saved ones.
+        for (locationDic in locationsData) {
+            // ...check if the current UUID's locatedUUID already exists comparing it with the saved ones.
+            
             NSString * savedUUID = positionDic[@"locatedUUID"];
-            NSLog(@"[INFO][SD] UUID saved in %@ is %@", positionDic[@"locatedPosition"], savedUUID);
-            if ([savedUUID isEqualToString:locatedUUID]) { // UUID already exists
-                NSLog(@"[INFO][SD] UUID saved is equals to %@; upload to %@", locatedUUID, locatedPosition);
+            if ([uuid isEqualToString:savedUUID]) { // UUID already exists
                 positionDic[@"locatedPosition"] = locatedPosition;
                 UUIDfound = YES;
             } else {
-                
+                // Do not upload the position
             }
+            
         }
         
         // If UUID did not be found, create its dictionary
         if (!UUIDfound) {
-            NSLog(@"[INFO][SD] UUID saved are not equals to %@; creating new dic", locatedUUID);
+            
+            // Compose the dictionary from the innermost to the outermost
             // Wrap locatedPosition in a dictionary with its UUID
-            NSMutableDictionary * newPositionDic = [[NSMutableDictionary alloc] init];
-            newPositionDic[@"locatedPosition"] = locatedPosition;
-            newPositionDic[@"locatedUUID"] = locatedUUID;
+            locationDic = [[NSMutableDictionary alloc] init];
+            locationDic[@"locatedPosition"] = locatedPosition;
+            locationDic[@"locatedUUID"] = uuid;
             
             // Set it into locatedDic
-            locatedIdNumber = [NSNumber numberWithInt:[locatedIdNumber intValue] + 1];
-            NSString * locatedId = [@"locatedPosition" stringByAppendingString:[measureIdNumber stringValue]];
-            locatedDic[locatedId] = newPositionDic;
+            [locationsData addObject:locationDic];
         }
     }
+}
+
+/*!
+ @method inLocationsDataSetPosition:ofUUIDTarget:andWithUserDic:
+ @discussion This method saves in the locatios collection data a located position  with the located positions information a new one.
+ */
+- (void) inLocationsDataSetPosition:(RDPosition*)locatedPosition
+                       ofUUIDTarget:(NSString *)uuid
+                     andWithUserDic:(NSMutableDictionary*)givenUserDic
+{
+    [self inLocationsDataSetPosition:locatedPosition
+                      fromUUIDSource:uuid
+                      andWithUserDic:givenUserDic];
 }
 
 #pragma mark - Metamodel data specific setters
