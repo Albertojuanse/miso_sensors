@@ -1387,6 +1387,15 @@
 //  ]
 //
 
+/*!
+ @method inMetamodelDataAddType:
+ @discussion This method saves in the locatios collection data a located position  with the located positions information a new one.
+ */
+- (void) inMetamodelDataAddType:(MDType*)type
+{
+    [metamodelData addObject:type];
+}
+
 #pragma mark - Model data specific setters
 //              // MODEL DATA //
 //
@@ -1414,4 +1423,42 @@
 //   },
 //  ]
 //
+
+/*!
+ @method inModelDataAddModelWithName:
+ @discussion This method saves in the locatios collection data a located position  with the located positions information a new one.
+ */
+- (void) inModelDataAddModelWithName:(NSString*)name
+                       andComponents:(NSMutableArray*)components
+{
+    // If name exists, model is actualized; if name does not exist, the whole dictionary is created.
+    // For each model already saved...
+    BOOL modelFound = NO;
+    for (modelDic in modelData) {
+        // ...check if the current name already exists comparing it with the saved ones.
+        
+        NSString * savedName = modelDic[@"name"];
+        if ([name isEqualToString:savedName]) { // Name already exists
+            modelDic[@"components"] = components;
+            modelFound = YES;
+        } else {
+            // Do not upload the model
+        }
+        
+    }
+    
+    // If name did not be found, create its dictionary
+    if (!modelFound) {
+        
+        // Compose the dictionary from the innermost to the outermost
+        // Wrap components collection in a dictionary with its name
+        modelDic = [[NSMutableDictionary alloc] init];
+        modelDic[@"name"] = name;
+        modelDic[@"components"] = components;
+        
+        // Set it into locatedDic
+        [modelData addObject:modelDic];
+    }
+}
+
 @end

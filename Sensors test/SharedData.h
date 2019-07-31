@@ -133,6 +133,7 @@
                      andWithUserDic:(NSMutableDictionary*)givenUserDic;
 
 // Specific metamodel data specific setters
+- (void) inMetamodelDataAddType:(MDType*)type;
 
 // Specific model data specific setters
 
