@@ -10,6 +10,19 @@
 
 @implementation SharedData
 
+//                // USER DATA //
+//
+// The schema of the userData collection is:
+//
+//  [{ "name": (NSString *)name1;                  // userDic
+//     "role": (NSString *)role1;
+//   },
+//   { "name": (NSString *)name2;                  // userDic
+//     (···)
+//   },
+//   (···)
+//  ]
+//
 //              // SESSION DATA //
 //
 // The schema of the sessionData collection is:
@@ -131,6 +144,7 @@
     if (self) {
         
         // Colections of data
+        userData = [[NSMutableArray alloc] init];
         sessionData = [[NSMutableArray alloc] init];
         itemsData = [[NSMutableArray alloc] init];
         measuresData = [[NSMutableArray alloc] init];
@@ -151,6 +165,7 @@
 - (void) reset {
     
     // Colections of data
+    userData = nil;
     sessionData = nil;
     itemsData = nil;
     measuresData = nil;
@@ -159,6 +174,7 @@
     modelData = nil;
     
     // Colections of data
+    userData = [[NSMutableArray alloc] init];
     sessionData = [[NSMutableArray alloc] init];
     itemsData = [[NSMutableArray alloc] init];
     measuresData = [[NSMutableArray alloc] init];
@@ -186,6 +202,15 @@
 }
 
 #pragma mark - General getters
+
+/*!
+ @method getUserData
+ @discussion This method returns the 'NSMutableArray' object  with the user's credentials.
+ */
+- (NSMutableArray *)getUserData
+{
+    return userData;
+}
 
 /*!
  @method getSessionData
@@ -239,6 +264,51 @@
 - (NSMutableArray *)getModelData
 {
     return modelData;
+}
+
+#pragma mark - User data specific getters
+//                // USER DATA //
+//
+// The schema of the userData collection is:
+//
+//  [{ "name": (NSString *)name1;                  // userDic
+//     "role": (NSString *)role1;
+//   },
+//   { "name": (NSString *)name2;                  // userDic
+//     (···)
+//   },
+//   (···)
+//  ]
+//
+
+/*!
+ @method fromUserDataGetUsedDicWithName:
+ @discussion This method returns the 'NSMutableDictionary' object with the user credentials of the user described with its user name; if it is not found, return null.
+ */
+- (NSMutableDictionary *) fromUserDataGetUsedDicWithName:(NSString*)name
+{
+    for (userDic in userData) {
+        if ([name isEqualToString:userDic[@"name"]]) {
+            return userDic;
+        }
+    }
+    return nil;
+}
+
+/*!
+ @method validateUserDic:
+ @discussion This method returns YES if the given dictionary with the user credentials is compliant; is there is not users in the collection, returns null.
+ */
+- (BOOL) validateUserDic:(NSMutableDictionary*)givenUserDic
+{
+    for (userDic in userData) {
+        if ([givenUserDic isEqualToDictionary:userDic]) {
+            return YES;
+        } else {
+            return NO;
+        }
+    }
+    return nil;
 }
 
 #pragma mark - Session data specific getters
@@ -1021,6 +1091,66 @@
         }
     }
     return models;
+}
+
+#pragma mark - User data specific setters
+//                // USER DATA //
+//
+// The schema of the userData collection is:
+//
+//  [{ "name": (NSString *)name1;                  // userDic
+//     "role": (NSString *)role1;
+//   },
+//   { "name": (NSString *)name2;                  // userDic
+//     (···)
+//   },
+//   (···)
+//  ]
+//
+
+/*!
+ @method inUserDataSetUsedDic:
+ @discussion This method sets in the user data collection a new user credentials dictionary; if its name already exists, its information is replaced.
+ */
+- (void) inUserDataSetUsedDic:(NSMutableDictionary*)givenUserDic
+{
+    [self inUserDataSetUsedDicWithName:givenUserDic[@"name"] andRole:givenUserDic[@"role"]];
+}
+
+/*!
+ @method inUserDataSetUsedDicWithName:andRol:
+ @discussion This method sets in the user data collection a new user credentials dictionary given its information; if its name already exists, its information is replaced.
+ */
+- (void) inUserDataSetUsedDicWithName:(NSString*)name
+                              andRole:(NSString*)role
+{
+    // If name exists, user is actualized; if name does not exist, the whole dictionary is created.
+    // For each user already saved...
+    BOOL userFound = NO;
+    for (userDic in userData) {
+        
+        // ...check if the current name already exists comparing it with the saved ones.
+        NSString * savedName = userDic[@"name"];
+        if ([name isEqualToString:savedName]) { // Name already exists
+            userDic[@"role"] = role;
+            userFound = YES;
+        } else {
+            // Do not upload the user
+        }
+    }
+    
+    // If name did not be found, create its dictionary
+    if (!userFound) {
+        
+        // Compose the dictionary from the innermost to the outermost
+        // Wrap components collection in a dictionary with its name
+        userDic = [[NSMutableDictionary alloc] init];
+        userDic[@"name"] = name;
+        userDic[@"role"] = role;
+        
+        // Set it into locatedDic
+        [userData addObject:userDic];
+    }
 }
 
 #pragma mark - Session data specific setters
