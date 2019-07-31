@@ -144,40 +144,53 @@
                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific user data setters
-- (void) inUserDataSetUsedDic:(NSMutableDictionary*)givenUserDic;
-- (void) inUserDataSetUsedDicWithName:(NSString*)name
-                              andRole:(NSString*)role;
+- (BOOL) inUserDataSetUsedDic:(NSMutableDictionary*)givenUserDic
+       withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL) inUserDataSetUsedDicWithName:(NSString*)name
+                                 role:(NSString*)role
+            andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific session data setters
-- (void)inSessionDataSetMeasuringUserWithUserDic:(NSMutableDictionary*)givenUserDic;
-- (void)inSessionDataSetMeasuringUserWithUserName:(NSString*)userName;
-- (void)inSessionDataSetIdleUserWithUserDic:(NSMutableDictionary*)givenUserDic;
-- (void)inSessionDataSetIdleUserWithUserName:(NSString*)userName;
-- (void)inSessionDataSetTravelingUserWithUserDic:(NSMutableDictionary*)givenUserDic;
-- (void)inSessionDataSetTravelingUserWithUserName:(NSString*)userName;
+- (BOOL)inSessionDataSetMeasuringUserWithUserDic:(NSMutableDictionary*)givenUserDic
+                       andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)inSessionDataSetMeasuringUserWithUserName:(NSString*)userName
+                        andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)inSessionDataSetIdleUserWithUserDic:(NSMutableDictionary*)givenUserDic
+                  andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)inSessionDataSetIdleUserWithUserName:(NSString*)userName
+                   andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)inSessionDataSetTravelingUserWithUserDic:(NSMutableDictionary*)givenUserDic
+                       andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)inSessionDataSetTravelingUserWithUserName:(NSString*)userName
+                        andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific items data setters
 
 // Specific measures data setters
-- (void) inMeasuresDataSetMeasure:(NSNumber*)measure
+- (BOOL) inMeasuresDataSetMeasure:(NSNumber*)measure
                            ofSort:(NSString*)sort
                          withUUID:(NSString*)uuid
-                       atPosition:(RDPosition*)measurePosition
-                   andWithUserDic:(NSMutableDictionary*)givenUserDic;
+                       atPosition:(RDPosition*)position
+                      withUserDic:(NSMutableDictionary*)givenUserDic
+        andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific locations data specific setters
-- (void) inLocationsDataSetPosition:(RDPosition*)locatedPosition
+- (BOOL) inLocationsDataSetPosition:(RDPosition*)locatedPosition
                      fromUUIDSource:(NSString *)uuid
-                     andWithUserDic:(NSMutableDictionary*)givenUserDic;
-- (void) inLocationsDataSetPosition:(RDPosition*)locatedPosition
+                        withUserDic:(NSMutableDictionary*)givenUserDic
+          andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL) inLocationsDataSetPosition:(RDPosition*)locatedPosition
                        ofUUIDTarget:(NSString *)uuid
-                     andWithUserDic:(NSMutableDictionary*)givenUserDic;
+                        withUserDic:(NSMutableDictionary*)givenUserDic
+          andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific metamodel data specific setters
-- (void) inMetamodelDataAddType:(MDType*)type;
+- (BOOL) inMetamodelDataAddType:(MDType*)type
+         withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific model data specific setters
-- (void) inModelDataAddModelWithName:(NSString*)name
-                       andComponents:(NSMutableArray*)components;
+- (BOOL) inModelDataAddModelWithName:(NSString*)name
+                          components:(NSMutableArray*)components
+           andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 @end

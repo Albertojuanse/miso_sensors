@@ -1348,47 +1348,55 @@
 //
 
 /*!
- @method inUserDataSetUsedDic:
- @discussion This method sets in the user data collection a new user credentials dictionary; if its name already exists, its information is replaced.
+ @method inUserDataSetUsedDic:withCredentialsUserDic:
+ @discussion This method sets in the user data collection a new user credentials dictionary; if its name already exists, its information is replaced; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (void) inUserDataSetUsedDic:(NSMutableDictionary*)givenUserDic
+- (BOOL) inUserDataSetUsedDic:(NSMutableDictionary*)givenUserDic
+       withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    [self inUserDataSetUsedDicWithName:givenUserDic[@"name"] andRole:givenUserDic[@"role"]];
+    return [self inUserDataSetUsedDicWithName:givenUserDic[@"name"] role:givenUserDic[@"role"] andWithCredentialsUserDic:credentialsUserDic];
 }
 
 /*!
- @method inUserDataSetUsedDicWithName:andRol:
- @discussion This method sets in the user data collection a new user credentials dictionary given its information; if its name already exists, its information is replaced.
+ @method inUserDataSetUsedDicWithName:rol:andWithCredentialsUserDic:
+ @discussion This method sets in the user data collection a new user credentials dictionary given its information; if its name already exists, its information is replaced; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (void) inUserDataSetUsedDicWithName:(NSString*)name
-                              andRole:(NSString*)role
+- (BOOL) inUserDataSetUsedDicWithName:(NSString*)name
+                                 role:(NSString*)role
+            andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    // If name exists, user is actualized; if name does not exist, the whole dictionary is created.
-    // For each user already saved...
-    BOOL userFound = NO;
-    for (userDic in userData) {
-        
-        // ...check if the current name already exists comparing it with the saved ones.
-        NSString * savedName = userDic[@"name"];
-        if ([name isEqualToString:savedName]) { // Name already exists
-            userDic[@"role"] = role;
-            userFound = YES;
-        } else {
-            // Do not upload the user
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        // If name exists, user is actualized; if name does not exist, the whole dictionary is created.
+        // For each user already saved...
+        BOOL userFound = NO;
+        for (userDic in userData) {
+            
+            // ...check if the current name already exists comparing it with the saved ones.
+            NSString * savedName = userDic[@"name"];
+            if ([name isEqualToString:savedName]) { // Name already exists
+                userDic[@"role"] = role;
+                userFound = YES;
+            } else {
+                // Do not upload the user
+            }
         }
-    }
-    
-    // If name did not be found, create its dictionary
-    if (!userFound) {
         
-        // Compose the dictionary from the innermost to the outermost
-        // Wrap components collection in a dictionary with its name
-        userDic = [[NSMutableDictionary alloc] init];
-        userDic[@"name"] = name;
-        userDic[@"role"] = role;
-        
-        // Set it into locatedDic
-        [userData addObject:userDic];
+        // If name did not be found, create its dictionary
+        if (!userFound) {
+            
+            // Compose the dictionary from the innermost to the outermost
+            // Wrap components collection in a dictionary with its name
+            userDic = [[NSMutableDictionary alloc] init];
+            userDic[@"name"] = name;
+            userDic[@"role"] = role;
+            
+            // Set it into locatedDic
+            [userData addObject:userDic];
+        }
+        return YES;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
     }
 }
 
@@ -1413,70 +1421,105 @@
 //
 
 /*!
- @method inSessionDataSetMeasuringUserWithUserDic:
- @discussion This method sets in session data collection the state measuring to the given user's dictionary.
+ @method inSessionDataSetMeasuringUserWithUserDic:andWithCredentialsUserDic:
+ @discussion This method sets in session data collection the state measuring to the given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (void)inSessionDataSetMeasuringUserWithUserDic:(NSMutableDictionary*)givenUserDic
+- (BOOL)inSessionDataSetMeasuringUserWithUserDic:(NSMutableDictionary*)givenUserDic
+                       andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    userDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic];
-    [userDic setObject:@"MEASURING" forKey:@"state"];
-    return;
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        userDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
+        [userDic setObject:@"MEASURING" forKey:@"state"];
+        return YES;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
+    }
 }
 
 /*!
- @method inSessionDataSetMeasuringUserWithUserName:
- @discussion This method sets in session data collection the state measuring to the given user's name.
+ @method inSessionDataSetMeasuringUserWithUserName:andWithCredentialsUserDic:
+ @discussion This method sets in session data collection the state measuring to the given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (void)inSessionDataSetMeasuringUserWithUserName:(NSString*)userName
+- (BOOL)inSessionDataSetMeasuringUserWithUserName:(NSString*)userName
+                        andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    userDic = [self fromSessionDataGetSessionWithUserName:userName];
-    [userDic setObject:@"MEASURING" forKey:@"state"];
-    return;
-    
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        userDic = [self fromSessionDataGetSessionWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+        [userDic setObject:@"MEASURING" forKey:@"state"];
+        return YES;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
+    }
 }
 
 /*!
- @method inSessionDataSetMeasuringUserWithUserDic:
- @discussion This method sets in session data collection the state idle to the given user's dictionary.
+ @method inSessionDataSetMeasuringUserWithUserDic:andWithCredentialsUserDic:
+ @discussion This method sets in session data collection the state idle to the given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (void)inSessionDataSetIdleUserWithUserDic:(NSMutableDictionary*)givenUserDic
+- (BOOL)inSessionDataSetIdleUserWithUserDic:(NSMutableDictionary*)givenUserDic
+                  andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    userDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic];
-    [userDic setObject:@"IDLE" forKey:@"state"];
-    return;
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        userDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
+        [userDic setObject:@"IDLE" forKey:@"state"];
+        return YES;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
+    }
 }
 
 /*!
- @method inSessionDataSetMeasuringUserWithUserDic:
- @discussion This method sets in session data collection the state idle to the given user's name.
+ @method inSessionDataSetMeasuringUserWithUserName:andWithCredentialsUserDic:
+ @discussion This method sets in session data collection the state idle to the given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (void)inSessionDataSetIdleUserWithUserName:(NSString*)userName
+- (BOOL)inSessionDataSetIdleUserWithUserName:(NSString*)userName
+                   andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    userDic = [self fromSessionDataGetSessionWithUserName:userName];
-    [userDic setObject:@"IDLE" forKey:@"state"];
-    return;
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        userDic = [self fromSessionDataGetSessionWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+        [userDic setObject:@"IDLE" forKey:@"state"];
+        return YES;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
+    }
 }
 
 /*!
- @method inSessionDataSetMeasuringUserWithUserDic:
- @discussion This method sets in session data collection the state traveling to the given user's dictionary.
+ @method inSessionDataSetMeasuringUserWithUserDic:andWithCredentialsUserDic:
+ @discussion This method sets in session data collection the state traveling to the given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (void)inSessionDataSetTravelingUserWithUserDic:(NSMutableDictionary*)givenUserDic
+- (BOOL)inSessionDataSetTravelingUserWithUserDic:(NSMutableDictionary*)givenUserDic
+                       andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    userDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic];
-    [userDic setObject:@"TRAVELING" forKey:@"state"];
-    return;
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        userDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
+        [userDic setObject:@"TRAVELING" forKey:@"state"];
+        return YES;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
+    }
 }
 
 /*!
- @method inSessionDataSetMeasuringUserWithUserDic:
- @discussion This method sets in session data collection the state traveling to the given user's name.
+ @method inSessionDataSetMeasuringUserWithUserName:andWithCredentialsUserDic:
+ @discussion This method sets in session data collection the state traveling to the given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (void)inSessionDataSetTravelingUserWithUserName:(NSString*)userName
+- (BOOL)inSessionDataSetTravelingUserWithUserName:(NSString*)userName
+                        andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    userDic = [self fromSessionDataGetSessionWithUserName:userName];
-    [userDic setObject:@"TRAVELING" forKey:@"state"];
-    return;
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        userDic = [self fromSessionDataGetSessionWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+        [userDic setObject:@"TRAVELING" forKey:@"state"];
+        return YES;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
+    }
 }
 
 #pragma mark - Item data specific setters
@@ -1531,117 +1574,33 @@
 //
 
 /*!
- @method inMeasuresDataSetMeasure:ofSort:withUUID:atPosition:andWithUserDic:
- @discussion This method saves in the measures data collection a new one; if the state MEASURING is not true for the given user credentials 'userDic', is saved only the position but no measure.
+ @method inMeasuresDataSetMeasure:ofSort:withUUID:atPosition:withUserDic:andWithCredentialsUserDic:
+ @discussion This method saves in the measures data collection a new one; if the state MEASURING is not true for the given user credentials 'userDic', is saved only the position but no measure; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (void) inMeasuresDataSetMeasure:(NSNumber*)measure
+- (BOOL) inMeasuresDataSetMeasure:(NSNumber*)measure
                            ofSort:(NSString*)sort
                          withUUID:(NSString*)uuid
                        atPosition:(RDPosition*)position
-                   andWithUserDic:(NSMutableDictionary*)givenUserDic
+                      withUserDic:(NSMutableDictionary*)givenUserDic
+        andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     
     // TO DO: Get measuring state directly from this database. Alberto J. 2019/07/31.
     
-    // The 'measureDic', the innermost one, is always new.
-    measureDic = [[NSMutableDictionary alloc] init];
-    measureDic[@"sort"] = sort;
-    measureDic[@"measure"] = measure;
-    
-    if (measuresData.count == 0) {
-        // First initialization
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+
+        // The 'measureDic', the innermost one, is always new.
+        measureDic = [[NSMutableDictionary alloc] init];
+        measureDic[@"sort"] = sort;
+        measureDic[@"measure"] = measure;
         
-        // Compose the dictionary from the innermost to the outermost
-        // Wrap measureDic with an array
-        measuresArray = [[NSMutableArray alloc] init];
-        if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic]) {
-            [measuresArray addObject:measureDic];
-        } else {
-            // saves nothing
-        }
-        
-        // Create the 'uuidDic' dictionary
-        uuidDic = [[NSMutableDictionary alloc] init];
-        uuidDic[@"uuid"] = uuid;
-        uuidDic[@"uuidMeasures"] = measuresArray;
-        
-        // Wrap uuidDic with an array
-        uuidArray = [[NSMutableArray alloc] init];
-        [uuidArray addObject:uuidDic];
-        
-        // Create the 'positionDic' dictionary
-        positionDic = [[NSMutableDictionary alloc] init];
-        positionDic[@"position"] = position;
-        positionDic[@"positionMeasures"] = uuidArray;
-        
-        // Add the position to the main collection
-        [measuresData addObject:positionDic];
-        
-    } else {
-        // Find if already exists position and uuid and create it if not.
-        // If a 'parent' dictionary exists, there will exist at least one 'child' dictionary, since they are created that way; there not will be [ if(dic.count == 0) ] checks
-        
-        // If position and UUID already exists, the measure is allocated there; if not, they will be created later.
-        BOOL positionFound = NO;
-        BOOL uuidFound = NO;
-        // For each position already saved...
-        for (positionDic in measuresData) {
-            
-            // ...check if the current position 'measurePosition' already exists comparing it with the saved ones.
-            if ([position isEqualToRDPosition:positionDic[@"position"]]) {
-                positionFound = YES;
-                
-                // For each uuid already saved...
-                uuidArray = positionDic[@"positionMeasures"];
-                for (uuidDic in uuidArray) {
-                    // ... checks if the uuid already exists.
-                    if ([uuid isEqualToString:uuidDic[@"uuid"]]) {
-                        uuidFound = YES;
-                        
-                        // If both position and uuid are found, set the 'measureDic' into 'measuresArray' with an unique measure's identifier key.
-                        measuresArray = uuidDic[@"uuidMeasures"];
-                        if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic]) { // Only save if in state measuring
-                            [measuresArray addObject:measureDic];
-                        } else {
-                            // saves nothing
-                        }
-                    }
-                }
-                
-                // If only the UUID was not found, but te positions was found, create all the inner dictionaries.
-                if (!uuidFound) {
-                    // Compose the dictionary from the innermost to the outermost
-                    
-                    
-                    // Wrap measureDic with an array
-                    measuresArray = [[NSMutableArray alloc] init];
-                    if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic]) {
-                        [measuresArray addObject:measureDic];
-                    } else {
-                        // saves nothing
-                    }
-                    
-                    // Create the 'uuidDic' dictionary
-                    uuidDic = [[NSMutableDictionary alloc] init];
-                    uuidDic[@"uuid"] = uuid;
-                    uuidDic[@"uuidMeasures"] = measuresArray;
-                    
-                    // Get the collection of UUID and add the new one
-                    uuidArray = positionDic[@"positionMeasures"];
-                    [uuidArray addObject:uuidDic];
-                }
-            }
-        }
-        
-        // If both position and UUID was not found create all the inner dictionaries.
-        if (!positionFound) {
-            // Compose the dictionary from the innermost to the outermost
-            
+        if (measuresData.count == 0) {
+            // First initialization
             
             // Compose the dictionary from the innermost to the outermost
             // Wrap measureDic with an array
             measuresArray = [[NSMutableArray alloc] init];
-            if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic]) {
+            if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic]) {
                 [measuresArray addObject:measureDic];
             } else {
                 // saves nothing
@@ -1663,7 +1622,102 @@
             
             // Add the position to the main collection
             [measuresData addObject:positionDic];
+            
+        } else {
+            // Find if already exists position and uuid and create it if not.
+            // If a 'parent' dictionary exists, there will exist at least one 'child' dictionary, since they are created that way; there not will be [ if(dic.count == 0) ] checks
+            
+            // If position and UUID already exists, the measure is allocated there; if not, they will be created later.
+            BOOL positionFound = NO;
+            BOOL uuidFound = NO;
+            // For each position already saved...
+            for (positionDic in measuresData) {
+                
+                // ...check if the current position 'measurePosition' already exists comparing it with the saved ones.
+                if ([position isEqualToRDPosition:positionDic[@"position"]]) {
+                    positionFound = YES;
+                    
+                    // For each uuid already saved...
+                    uuidArray = positionDic[@"positionMeasures"];
+                    for (uuidDic in uuidArray) {
+                        // ... checks if the uuid already exists.
+                        if ([uuid isEqualToString:uuidDic[@"uuid"]]) {
+                            uuidFound = YES;
+                            
+                            // If both position and uuid are found, set the 'measureDic' into 'measuresArray' with an unique measure's identifier key.
+                            measuresArray = uuidDic[@"uuidMeasures"];
+                            if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic]) { // Only save if in state measuring
+                                [measuresArray addObject:measureDic];
+                            } else {
+                                // saves nothing
+                            }
+                        }
+                    }
+                    
+                    // If only the UUID was not found, but te positions was found, create all the inner dictionaries.
+                    if (!uuidFound) {
+                        // Compose the dictionary from the innermost to the outermost
+                        
+                        
+                        // Wrap measureDic with an array
+                        measuresArray = [[NSMutableArray alloc] init];
+                        if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic]) {
+                            [measuresArray addObject:measureDic];
+                        } else {
+                            // saves nothing
+                        }
+                        
+                        // Create the 'uuidDic' dictionary
+                        uuidDic = [[NSMutableDictionary alloc] init];
+                        uuidDic[@"uuid"] = uuid;
+                        uuidDic[@"uuidMeasures"] = measuresArray;
+                        
+                        // Get the collection of UUID and add the new one
+                        uuidArray = positionDic[@"positionMeasures"];
+                        [uuidArray addObject:uuidDic];
+                    }
+                }
+            }
+            
+            // If both position and UUID was not found create all the inner dictionaries.
+            if (!positionFound) {
+                // Compose the dictionary from the innermost to the outermost
+                
+                
+                // Compose the dictionary from the innermost to the outermost
+                // Wrap measureDic with an array
+                measuresArray = [[NSMutableArray alloc] init];
+                if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic]) {
+                    [measuresArray addObject:measureDic];
+                } else {
+                    // saves nothing
+                }
+                
+                // Create the 'uuidDic' dictionary
+                uuidDic = [[NSMutableDictionary alloc] init];
+                uuidDic[@"uuid"] = uuid;
+                uuidDic[@"uuidMeasures"] = measuresArray;
+                
+                // Wrap uuidDic with an array
+                uuidArray = [[NSMutableArray alloc] init];
+                [uuidArray addObject:uuidDic];
+                
+                // Create the 'positionDic' dictionary
+                positionDic = [[NSMutableDictionary alloc] init];
+                positionDic[@"position"] = position;
+                positionDic[@"positionMeasures"] = uuidArray;
+                
+                // Add the position to the main collection
+                [measuresData addObject:positionDic];
+            }
         }
+        
+        // Everything OK
+        return YES;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
     }
 }
 
@@ -1680,46 +1734,17 @@
 //
 
 /*!
- @method inLocationsDataSetPosition:fromUUIDSource:andWithUserDic:
- @discussion This method saves in the NSDictionary with the located positions information a new one.
+ @method inLocationsDataSetPosition:fromUUIDSource:withUserDic:andWithCredentialsUserDic:
+ @discussion This method saves in the NSDictionary with the located positions information a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (void) inLocationsDataSetPosition:(RDPosition*)locatedPosition
+- (BOOL) inLocationsDataSetPosition:(RDPosition*)locatedPosition
                      fromUUIDSource:(NSString *)uuid
-                     andWithUserDic:(NSMutableDictionary*)givenUserDic
+                        withUserDic:(NSMutableDictionary*)givenUserDic
+          andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    if (locationsData.count == 0) {
-        // First initialization
-        
-        // Compose the dictionary from the innermost to the outermost
-        // Wrap locatedPosition in a dictionary with its UUID
-        locationDic = [[NSMutableDictionary alloc] init];
-        locationDic[@"locatedPosition"] = locatedPosition;
-        locationDic[@"locatedUUID"] = uuid;
-        
-        // Set it into locatedDic
-        [locationsData addObject:locationDic];
-        
-    } else {
-        // A beacon only can exists in a position, hence no mobility solutions are considered
-        
-        // If UUID exists, position is actualized; if UUID does not exist, it will be created.
-        // For each position already saved...
-        BOOL UUIDfound = NO;
-        for (locationDic in locationsData) {
-            // ...check if the current UUID's locatedUUID already exists comparing it with the saved ones.
-            
-            NSString * savedUUID = positionDic[@"locatedUUID"];
-            if ([uuid isEqualToString:savedUUID]) { // UUID already exists
-                positionDic[@"locatedPosition"] = locatedPosition;
-                UUIDfound = YES;
-            } else {
-                // Do not upload the position
-            }
-            
-        }
-        
-        // If UUID did not be found, create its dictionary
-        if (!UUIDfound) {
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        if (locationsData.count == 0) {
+            // First initialization
             
             // Compose the dictionary from the innermost to the outermost
             // Wrap locatedPosition in a dictionary with its UUID
@@ -1729,21 +1754,61 @@
             
             // Set it into locatedDic
             [locationsData addObject:locationDic];
+            
+        } else {
+            // A beacon only can exists in a position, hence no mobility solutions are considered
+            
+            // If UUID exists, position is actualized; if UUID does not exist, it will be created.
+            // For each position already saved...
+            BOOL UUIDfound = NO;
+            for (locationDic in locationsData) {
+                // ...check if the current UUID's locatedUUID already exists comparing it with the saved ones.
+                
+                NSString * savedUUID = positionDic[@"locatedUUID"];
+                if ([uuid isEqualToString:savedUUID]) { // UUID already exists
+                    positionDic[@"locatedPosition"] = locatedPosition;
+                    UUIDfound = YES;
+                } else {
+                    // Do not upload the position
+                }
+                
+            }
+            
+            // If UUID did not be found, create its dictionary
+            if (!UUIDfound) {
+                
+                // Compose the dictionary from the innermost to the outermost
+                // Wrap locatedPosition in a dictionary with its UUID
+                locationDic = [[NSMutableDictionary alloc] init];
+                locationDic[@"locatedPosition"] = locatedPosition;
+                locationDic[@"locatedUUID"] = uuid;
+                
+                // Set it into locatedDic
+                [locationsData addObject:locationDic];
+            }
         }
+        // Everythong OK
+        return YES;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
     }
 }
 
 /*!
- @method inLocationsDataSetPosition:ofUUIDTarget:andWithUserDic:
- @discussion This method saves in the locatios collection data a located position  with the located positions information a new one.
+ @method inLocationsDataSetPosition:ofUUIDTarget:withUserDic:andWithCredentialsUserDic:
+ @discussion This method saves in the locatios collection data a located position  with the located positions information a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (void) inLocationsDataSetPosition:(RDPosition*)locatedPosition
+- (BOOL) inLocationsDataSetPosition:(RDPosition*)locatedPosition
                        ofUUIDTarget:(NSString *)uuid
-                     andWithUserDic:(NSMutableDictionary*)givenUserDic
+                        withUserDic:(NSMutableDictionary*)givenUserDic
+          andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    [self inLocationsDataSetPosition:locatedPosition
-                      fromUUIDSource:uuid
-                      andWithUserDic:givenUserDic];
+    return [self inLocationsDataSetPosition:locatedPosition
+                             fromUUIDSource:uuid
+                                withUserDic:givenUserDic
+                  andWithCredentialsUserDic:credentialsUserDic];
 }
 
 #pragma mark - Metamodel data specific setters
@@ -1757,12 +1822,19 @@
 //
 
 /*!
- @method inMetamodelDataAddType:
- @discussion This method saves in the locatios collection data a located position  with the located positions information a new one.
+ @method inMetamodelDataAddType:withCredentialsUserDic:
+ @discussion This method saves in the locatios collection data a located position  with the located positions information a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (void) inMetamodelDataAddType:(MDType*)type
+- (BOOL) inMetamodelDataAddType:(MDType*)type
+         withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    [metamodelData addObject:type];
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        [metamodelData addObject:type];
+        return YES;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
+    }
 }
 
 #pragma mark - Model data specific setters
@@ -1794,39 +1866,49 @@
 //
 
 /*!
- @method inModelDataAddModelWithName:
- @discussion This method saves in the locatios collection data a located position  with the located positions information a new one.
+ @method inModelDataAddModelWithName:components:andWithCredentialsUserDic:
+ @discussion This method saves in the locatios collection data a located position  with the located positions information a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (void) inModelDataAddModelWithName:(NSString*)name
-                       andComponents:(NSMutableArray*)components
+- (BOOL) inModelDataAddModelWithName:(NSString*)name
+                          components:(NSMutableArray*)components
+           andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    // If name exists, model is actualized; if name does not exist, the whole dictionary is created.
-    // For each model already saved...
-    BOOL modelFound = NO;
-    for (modelDic in modelData) {
-        // ...check if the current name already exists comparing it with the saved ones.
-        
-        NSString * savedName = modelDic[@"name"];
-        if ([name isEqualToString:savedName]) { // Name already exists
-            modelDic[@"components"] = components;
-            modelFound = YES;
-        } else {
-            // Do not upload the model
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        // If name exists, model is actualized; if name does not exist, the whole dictionary is created.
+        // For each model already saved...
+        BOOL modelFound = NO;
+        for (modelDic in modelData) {
+            // ...check if the current name already exists comparing it with the saved ones.
+            
+            NSString * savedName = modelDic[@"name"];
+            if ([name isEqualToString:savedName]) { // Name already exists
+                modelDic[@"components"] = components;
+                modelFound = YES;
+            } else {
+                // Do not upload the model
+            }
+            
         }
         
-    }
-    
-    // If name did not be found, create its dictionary
-    if (!modelFound) {
+        // If name did not be found, create its dictionary
+        if (!modelFound) {
+            
+            // Compose the dictionary from the innermost to the outermost
+            // Wrap components collection in a dictionary with its name
+            modelDic = [[NSMutableDictionary alloc] init];
+            modelDic[@"name"] = name;
+            modelDic[@"components"] = components;
+            
+            // Set it into locatedDic
+            [modelData addObject:modelDic];
+        }
         
-        // Compose the dictionary from the innermost to the outermost
-        // Wrap components collection in a dictionary with its name
-        modelDic = [[NSMutableDictionary alloc] init];
-        modelDic[@"name"] = name;
-        modelDic[@"components"] = components;
+        // Everything OK
+        return YES;
         
-        // Set it into locatedDic
-        [modelData addObject:modelDic];
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
     }
 }
 
