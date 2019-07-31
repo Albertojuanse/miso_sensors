@@ -1548,6 +1548,68 @@
 //  ]
 //
 
+/*!
+ @method inModelDataAddModelWithName:components:andWithCredentialsUserDic:
+ @discussion This method saves in the items collection data an item with the provided information in the information dictionary, its sort and its identifier; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL) inItemDataAddItemOfSort:(NSString*)sort
+                  withIdentifier:(NSString*)identifier
+                     withInfoDic:(NSMutableDictionary*)infoDic
+       andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        // If identifier exists, model is actualized; if identifier does not exist, the whole dictionary is created.
+        // For each item already saved...
+        BOOL identifierFound = NO;
+        for (itemDic in itemsData) {
+            // ...check if the current identifier already exists comparing it with the saved ones.
+            
+            NSString * savedIdentifier =itemDic[@"identifier"];
+            if ([identifier isEqualToString:savedIdentifier]) { // Identifier already exists
+                identifierFound = YES;
+                
+                // Retrieve the information
+                NSArray * infoDicKeys = [infoDic allKeys];
+                for (id key in infoDicKeys) {
+                    itemDic[key] = infoDic[key];
+                }
+                
+            } else {
+                // Do nothing
+            }
+            
+        }
+        
+        // If identifier did not be found, create its dictionary
+        if (!identifierFound) {
+            
+            // Compose the dictionary from the innermost to the outermost
+            // Generate a new dictionary with the information od the provided one and add sort and identifier
+            
+            itemDic = [[NSMutableDictionary alloc] init];
+            itemDic[@"sort"] = sort;
+            itemDic[@"identifier"] = identifier;
+            
+            // Retrieve the information
+            NSArray * infoDicKeys = [infoDic allKeys];
+            for (id key in infoDicKeys) {
+                itemDic[key] = infoDic[key];
+            }
+             
+            [itemsData addObject:itemDic];
+            
+        }
+        
+        // Everything OK
+        return YES;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
+    }
+}
+
 #pragma mark - Measures data specific setters
 //            // MEASURES DATA //
 //
