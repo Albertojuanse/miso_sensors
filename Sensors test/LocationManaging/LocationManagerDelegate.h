@@ -50,6 +50,7 @@
 - (instancetype)initWithSharedData:(SharedData *)initSharedData;
 - (RDPosition *) getPosition;
 - (void) setPosition:(RDPosition *)newPosition;
+- (void) setSharedData:(SharedData *)newSharedData;
 
 @end
 

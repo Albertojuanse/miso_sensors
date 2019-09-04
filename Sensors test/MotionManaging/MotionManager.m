@@ -131,7 +131,10 @@ if (self) {
                                              selector:@selector(startTravelingFrom:)
                                                  name:@"getPositionRespond"
                                                object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(setSharedDataUsingNotification:)
+                                                 name:@"setSharedData"
+                                               object:nil];
     
     NSLog(@"[INFO][MM] MotionManager prepared");
     }
@@ -690,6 +693,16 @@ if (self) {
     */
 }
 
+#pragma mark - Instance methods
+
+/*!
+ @method setSharedData:
+ @discussion Setter of shared data collection.
+ */
+- (void) setSharedData:(SharedData *)newSharedData {
+    sharedData = newSharedData;
+}
+
 #pragma mark - Notification event handles
 
 /*!
@@ -748,6 +761,19 @@ if (self) {
         position.x = [NSNumber numberWithFloat:[initialPosition.x floatValue] + rndValue1];
         position.y = [NSNumber numberWithFloat:[initialPosition.y floatValue] + rndValue2];
         position.z = [NSNumber numberWithFloat:[initialPosition.z floatValue]];
+    }
+}
+
+/*!
+ @method setSharedDataUsingNotification:
+ @discussion Setter of current position of the device using observer pattern.
+ */
+- (void) setSharedDataUsingNotification:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"setSharedData"]){
+        NSLog(@"[NOTI][LM] Notfication \"SharedData\" recived.");
+        
+        NSDictionary * data = notification.userInfo;
+        sharedData = data[@"sharedData"];
     }
 }
 

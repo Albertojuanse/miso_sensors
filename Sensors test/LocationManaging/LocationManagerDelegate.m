@@ -98,6 +98,10 @@
                                                      name:@"setPosition"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(setSharedDataUsingNotification:)
+                                                     name:@"setSharedData"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reset:)
                                                      name:@"reset"
                                                    object:nil];
@@ -483,7 +487,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     else return NO; // All is good. Compass is precise enough.
 }
 
-#pragma mark - Instance method
+#pragma mark - Instance methods
 
 /*!
  @method getPosition
@@ -506,6 +510,14 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     position.x = [NSNumber numberWithFloat:[newPosition.x floatValue]];
     position.y = [NSNumber numberWithFloat:[newPosition.y floatValue]];
     position.z = [NSNumber numberWithFloat:[newPosition.z floatValue]];
+}
+
+/*!
+ @method setSharedData:
+ @discussion Setter of shared data collection.
+ */
+- (void) setSharedData:(SharedData *)newSharedData {
+    sharedData = newSharedData;
 }
 
 #pragma mark - Notification event handles
@@ -728,6 +740,19 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         position.x = [NSNumber numberWithFloat:[newPosition.x floatValue]];
         position.y = [NSNumber numberWithFloat:[newPosition.y floatValue]];
         position.z = [NSNumber numberWithFloat:[newPosition.z floatValue]];
+    }
+}
+
+/*!
+ @method setSharedDataUsingNotification:
+ @discussion Setter of current position of the device using observer pattern.
+ */
+- (void) setSharedDataUsingNotification:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"setSharedData"]){
+        NSLog(@"[NOTI][LM] Notfication \"SharedData\" recived.");
+        
+        NSDictionary * data = notification.userInfo;
+        sharedData = data[@"sharedData"];
     }
 }
 
