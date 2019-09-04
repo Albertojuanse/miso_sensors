@@ -40,7 +40,10 @@
 }
 
 // General methods
-- (void) reset;
+- (instancetype)initWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (instancetype)initWithName:(NSString*)name
+                     andRole:(NSString*)role;
+- (void)resetWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // General getters
 - (NSMutableArray *)getUserDataWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;

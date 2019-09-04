@@ -156,32 +156,72 @@
     return self;
 }
 
+/*!
+ @method initWithCredentialsUserDic:
+ @discussion Constructor given it first user as the credential user dictionary.
+ */
+- (instancetype)initWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    self = [self init];
+    
+    // Add first user
+    [userData addObject:userDic];
+    
+    return self;
+}
+
+/*!
+ @method initWithName:andRole:
+ @discussion Constructor given it first user as its name and role.
+ */
+- (instancetype)initWithName:(NSString*)name
+                     andRole:(NSString*)role
+{
+    self = [self init];
+    
+    // Add first user
+    // Compose the dictionary from the innermost to the outermost
+    // Wrap components collection in a dictionary with its name
+    userDic = [[NSMutableDictionary alloc] init];
+    userDic[@"name"] = name;
+    userDic[@"role"] = role;
+    
+    // Set it into locatedDic
+    [userData addObject:userDic];
+    
+    return self;
+}
+
 #pragma mark - General methods
 
 /*!
- @method reset
- @discussion Set every instance variable to null for ARC disposing and reallocate and init them.
+ @method resetWithCredentialsUserDic:
+ @discussion Set every instance variable to null for ARC disposing and reallocate and init them;
  */
-- (void) reset {
+- (void) resetWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic {
     
-    // Colections of data
-    userData = nil;
-    sessionData = nil;
-    itemsData = nil;
-    measuresData = nil;
-    locationsData = nil;
-    metamodelData = nil;
-    modelData = nil;
-    
-    // Colections of data
-    userData = [[NSMutableArray alloc] init];
-    sessionData = [[NSMutableArray alloc] init];
-    itemsData = [[NSMutableArray alloc] init];
-    measuresData = [[NSMutableArray alloc] init];
-    locationsData = [[NSMutableArray alloc] init];
-    metamodelData = [[NSMutableArray alloc] init];
-    modelData = [[NSMutableArray alloc] init];
-    
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        // Colections of data
+        userData = nil;
+        sessionData = nil;
+        itemsData = nil;
+        measuresData = nil;
+        locationsData = nil;
+        metamodelData = nil;
+        modelData = nil;
+        
+        // Colections of data
+        userData = [[NSMutableArray alloc] init];
+        sessionData = [[NSMutableArray alloc] init];
+        itemsData = [[NSMutableArray alloc] init];
+        measuresData = [[NSMutableArray alloc] init];
+        locationsData = [[NSMutableArray alloc] init];
+        metamodelData = [[NSMutableArray alloc] init];
+        modelData = [[NSMutableArray alloc] init];
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+    }
+    return;
 }
 
 /*!
@@ -1565,7 +1605,7 @@
         for (itemDic in itemsData) {
             // ...check if the current identifier already exists comparing it with the saved ones.
             
-            NSString * savedIdentifier =itemDic[@"identifier"];
+            NSString * savedIdentifier = itemDic[@"identifier"];
             if ([identifier isEqualToString:savedIdentifier]) { // Identifier already exists
                 identifierFound = YES;
                 
@@ -1859,8 +1899,8 @@
 }
 
 /*!
- @method inLocationsDataSetPosition:ofUUIDTarget:withUserDic:andWithCredentialsUserDic:
- @discussion This method saves in the locatios collection data a located position  with the located positions information a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ @method inLocationsDataSetPosition:fromUUIDSource:withUserDic:andWithCredentialsUserDic:
+ @discussion This method saves in the NSDictionary with the located positions information a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL) inLocationsDataSetPosition:(RDPosition*)locatedPosition
                        ofUUIDTarget:(NSString *)uuid
@@ -1885,13 +1925,30 @@
 
 /*!
  @method inMetamodelDataAddType:withCredentialsUserDic:
- @discussion This method saves in the locatios collection data a located position  with the located positions information a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ @discussion This method saves in the metamodel collection data a new MDType type if it does not exist; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL) inMetamodelDataAddType:(MDType*)type
          withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
-        [metamodelData addObject:type];
+        
+        // Check if it exists
+        BOOL typeFound = NO;
+        for (MDType * savedType in metamodelData) {
+            
+            if ([savedType isEqualToMDType:type]) {
+                typeFound = YES;
+            } else {
+                // Do nothing
+            }
+        }
+        
+        // If type did not be found, add it
+        if (!typeFound) {
+            [metamodelData addObject:type];
+        }
+        
+        
         return YES;
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
@@ -1929,7 +1986,7 @@
 
 /*!
  @method inModelDataAddModelWithName:components:andWithCredentialsUserDic:
- @discussion This method saves in the locatios collection data a located position  with the located positions information a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ @discussion This method saves in the model collection data a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL) inModelDataAddModelWithName:(NSString*)name
                           components:(NSMutableArray*)components
