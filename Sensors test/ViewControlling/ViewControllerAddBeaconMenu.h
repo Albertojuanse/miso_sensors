@@ -17,6 +17,9 @@
  */
 @interface ViewControllerAddBeaconMenu : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
+    // Session and user context
+    NSMutableDictionary * credentialsUserDic;
+    
     NSMutableArray * beaconsAndPositionsRegistered;
     NSMutableArray * typesRegistered;
     NSNumber * regionBeaconIdNumber;
@@ -68,6 +71,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableTypes;
 
 
+- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic;
 - (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
 - (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 - (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;

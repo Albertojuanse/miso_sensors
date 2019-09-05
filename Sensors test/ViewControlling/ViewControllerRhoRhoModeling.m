@@ -51,6 +51,14 @@
 #pragma mark - Instance methods
 
 /*!
+ @method setCredentialsUserDic
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ */
+- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic {
+    credentialsUserDic = newCredentialsUserDic;
+}
+
+/*!
  @method setBeaconsAndPositionsRegistered:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */

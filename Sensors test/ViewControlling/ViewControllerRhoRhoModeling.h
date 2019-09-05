@@ -16,6 +16,10 @@
  @discussion This class extends UIViewController and controls the interface for modeling with the rho rho location system.
  */
 @interface ViewControllerRhoRhoModeling : UIViewController{
+    
+    // Session and user context
+    NSMutableDictionary * credentialsUserDic;
+    
     // For update canvas
     NSMutableDictionary * measuresDic;
     NSMutableDictionary * locatedDic;
@@ -51,6 +55,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 @property (weak, nonatomic) IBOutlet UIButton *buttonTravel;
 
+- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic;
 - (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
 - (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 

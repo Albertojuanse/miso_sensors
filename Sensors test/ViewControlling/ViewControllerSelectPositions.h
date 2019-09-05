@@ -18,6 +18,9 @@
 
 @interface ViewControllerSelectPositions : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
+    // Session and user context
+    NSMutableDictionary * credentialsUserDic;
+    
     NSString * chosenMode;
     
     // Beacons' region identifiers
@@ -30,6 +33,7 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *tableBeaconsAndPositions;
 
+- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic;
 - (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
 - (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 - (void) setChosenMode:(NSString *)chosenMode;

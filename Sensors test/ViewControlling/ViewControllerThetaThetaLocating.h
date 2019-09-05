@@ -16,6 +16,10 @@
  @discussion This class extends UIViewController and controls the interface for locating the device with the theta theta location system.
  */
 @interface ViewControllerThetaThetaLocating : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+    
+    // Session and user context
+    NSMutableDictionary * credentialsUserDic;
+    
     // For update canvas
     NSMutableDictionary * measuresDic;
     NSMutableDictionary * locatedDic;
@@ -42,6 +46,7 @@
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 
+- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic;
 - (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
 - (void) setBeaconsAndPositionsChosen:(NSMutableArray *)newBeaconsAndPositionsChosen;
 - (void) setBeaconsAndPositionsChosenIndexes:(NSMutableArray *)newBeaconsAndPositionsChosenIndexes;

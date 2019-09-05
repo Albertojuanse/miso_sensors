@@ -16,6 +16,10 @@
  @discussion This class extends UIViewController and controls the interface for modeling with the rho theta location system.
  */
 @interface ViewControllerRhoThetaModeling : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+    
+    // Session and user context
+    NSMutableDictionary * credentialsUserDic;
+    
     // For update canvas
     NSMutableDictionary * measuresDic;
     NSMutableDictionary * locatedDic;
@@ -36,6 +40,7 @@
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 
+- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic;
 - (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
 - (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 

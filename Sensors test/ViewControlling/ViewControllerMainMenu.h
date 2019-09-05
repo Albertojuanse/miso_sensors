@@ -19,6 +19,9 @@
  */
 @interface ViewControllerMainMenu : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
+    // Session and user context
+    NSMutableDictionary * credentialsUserDic;
+    
     // Modes
     NSMutableArray * modes;
     NSString * chosenMode;
@@ -39,6 +42,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableModes;
 @property (weak, nonatomic) IBOutlet UITableView *tableBeaconsAndPositions;
 
+- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic;
 - (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
 - (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 - (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;
