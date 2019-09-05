@@ -15,6 +15,7 @@
 // The schema of the userData collection is:
 //
 //  [{ "name": (NSString *)name1;                  // userDic
+//     "pass": (NSString *)pass1;
 //     "role": (NSString *)role1;
 //   },
 //   { "name": (NSString *)name2;                  // userDic
@@ -28,6 +29,7 @@
 // The schema of the sessionData collection is:
 //
 //  [{ "user": { "name": (NSString *)name1;                  // sessionDic; userDic
+//               "pass": (NSString *)pass1;
 //               "role": (NSString *)role1;
 //             }
 //     "mode": (NSString *)mode1;
@@ -347,6 +349,7 @@
 // The schema of the userData collection is:
 //
 //  [{ "name": (NSString *)name1;                  // userDic
+//     "pass": (NSString *)pass1;
 //     "role": (NSString *)role1;
 //   },
 //   { "name": (NSString *)name2;                  // userDic
@@ -403,6 +406,7 @@
 // The schema of the sessionData collection is:
 //
 //  [{ "user": { "name": (NSString *)name1;                  // sessionDic; userDic
+//               "pass": (NSString *)pass1;
 //               "role": (NSString *)role1;
 //             }
 //     "mode": (NSString *)mode1;
@@ -1378,6 +1382,7 @@
 // The schema of the userData collection is:
 //
 //  [{ "name": (NSString *)name1;                  // userDic
+//     "pass": (NSString *)pass1;
 //     "role": (NSString *)role1;
 //   },
 //   { "name": (NSString *)name2;                  // userDic
@@ -1446,6 +1451,7 @@
 // The schema of the sessionData collection is:
 //
 //  [{ "user": { "name": (NSString *)name1;                  // sessionDic; userDic
+//               "pass": (NSString *)pass1;
 //               "role": (NSString *)role1;
 //             }
 //     "mode": (NSString *)mode1;

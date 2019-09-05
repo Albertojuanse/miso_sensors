@@ -19,22 +19,27 @@
 - (void)viewDidLoad
 {
     
+    credentialsUserDicArray = [[NSMutableArray alloc] init];
+    
     // TO DO: Check for stored user data. Alberto J. 2019/09/05.
-    // Alert the user that the next log in will be the administration one
-    UIAlertController * alertUsersNotFound = [UIAlertController
-                                              alertControllerWithTitle:@"No user found"
-                                              message:@"No user credentials were found. Please, sign in as a new user."
-                                              preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction * okButton = [UIAlertAction
-                               actionWithTitle:@"Ok"
-                               style:UIAlertActionStyleDefault
-                               handler:^(UIAlertAction * action) {
-                                   [self.loginButton setEnabled:NO];
-                               }];
-    
-    [alertUsersNotFound addAction:okButton];
-    [self presentViewController:alertUsersNotFound animated:YES completion:nil];
+    // Alert the user that must create an user if no other is found
+    if (credentialsUserDicArray.count == 0){
+        UIAlertController * alertUsersNotFound = [UIAlertController
+                                                  alertControllerWithTitle:@"No user found"
+                                                  message:@"No user credentials were found. Please, sign in as a new user."
+                                                  preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction * okButton = [UIAlertAction
+                                   actionWithTitle:@"Ok"
+                                   style:UIAlertActionStyleDefault
+                                   handler:^(UIAlertAction * action) {
+                                       [self.buttonLogin setEnabled:NO];
+                                   }];
+        
+        [alertUsersNotFound addAction:okButton];
+        [self presentViewController:alertUsersNotFound animated:YES completion:nil];
+    }
     
 }
 
@@ -67,6 +72,43 @@
  */
 - (IBAction)handleButtonLogin:(id)sender
 {
+    // Validate the user entries
+    NSString * userRegex = @"^[a-zA-Z0-9_-ñç]+$";
+    NSPredicate * userTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", userRegex];
+    if ([userTest evaluateWithObject:[self.userText text]]){
+        //Matches
+    } else {
+        self.labelStatus.text = @"Error. User not valid. Please, only accepted a-z, A-Z, 0-9, \"_\" and \"-\".";
+        return;
+    }
+    
+    NSString * passRegex = @"^[a-zA-Z0-9_-ñç]{4,}$";
+    NSPredicate * passTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", passRegex];
+    if ([passTest evaluateWithObject:[self.passText text]]){
+        //Matches
+    } else {
+        self.labelStatus.text = @"Error. Password not valid; minimum length 8 characters: a-z, A-Z, 0-9, \"_\" and \"-\".";
+        return;
+    }
+    
+    // Wrap the user name and password in the user's credetials dictionary
+    //  { "name": (NSString *)name1;                  // userDic
+    //    "pass": (NSString *)pass1;
+    //    "role": (NSString *)role1;
+    //  }
+    if(!credentialsUserDic) {
+        credentialsUserDic = [[NSMutableDictionary alloc] init];
+    }
+    credentialsUserDic[@"name"] = [self.userText text];
+    credentialsUserDic[@"pass"] = [self.passText text];
+    
+    // Validate if the user have access granted.
+    if ([self validateCredentialsUserDic:credentialsUserDic]) {
+        [self performSegueWithIdentifier:@"loginFromLoginToMain" sender:sender];
+    } else {
+        self.labelStatus.text = @"Error. Invalid user name or password.";
+        return;
+    }
     
     return;
 }
@@ -77,6 +119,50 @@
  */
 - (IBAction)handleButtonSignin:(id)sender
 {
+    // Validate the user entries
+    NSString * userRegex = @"^[a-zA-Z0-9_-ñç]+$";
+    NSPredicate * userTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", userRegex];
+    if ([userTest evaluateWithObject:[self.userText text]]){
+        //Matches
+    } else {
+        self.labelStatus.text = @"Error. User not valid. Please, only accepted a-z, A-Z, 0-9, \"_\" and \"-\".";
+        return;
+    }
+    
+    NSString * passRegex = @"^[a-zA-Z0-9_-ñç]{4,}$";
+    NSPredicate * passTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", passRegex];
+    if ([passTest evaluateWithObject:[self.passText text]]){
+        //Matches
+    } else {
+        self.labelStatus.text = @"Error. Password not valid; minimum length 8 characters: a-z, A-Z, 0-9, \"_\" and \"-\".";
+        return;
+    }
+    
+    // Wrap the user name and password in the user's credetials dictionary
+    //  { "name": (NSString *)name1;                  // userDic
+    //    "pass": (NSString *)pass1;
+    //    "role": (NSString *)role1;
+    //  }
+    if(!credentialsUserDic) {
+        credentialsUserDic = [[NSMutableDictionary alloc] init];
+    }
+    credentialsUserDic[@"name"] = [self.userText text];
+    credentialsUserDic[@"pass"] = [self.passText text];
+    
+    // Validate if the user have access granted.
+    if ([self validateNewCredentialsUserDic:credentialsUserDic]) {
+        
+        if ([self registerNewUserWithCredentialsUserDic:credentialsUserDic]) {
+            [self performSegueWithIdentifier:@"loginFromLoginToMain" sender:sender];
+        } else {
+            self.labelStatus.text = @"Error. An error occurred while registering. Please, wait a moment and try again.";
+            return;
+        }
+        
+    } else {
+        self.labelStatus.text = @"Error. Invalid user name or password.";
+        return;
+    }
     
     return;
 }
@@ -98,6 +184,16 @@
 - (BOOL)validateNewCredentialsUserDic:(NSMutableDictionary*)userDic
 {
     // TO DO: Validation. Alberto J. 2019/09/05.
+    return YES;
+}
+
+/*!
+ @method registerNewUserWithCredentialsUserDic:
+ @discussion This method verifies the name and password of the user.
+ */
+- (BOOL)registerNewUserWithCredentialsUserDic:(NSMutableDictionary*)userDic
+{
+    // TO DO: Registration. Alberto J. 2019/09/05.
     return YES;
 }
 

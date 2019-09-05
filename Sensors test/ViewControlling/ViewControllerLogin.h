@@ -18,6 +18,7 @@
     
     // When the user logs in a credentials dictionary is created if access is granted.
     NSMutableDictionary * credentialsUserDic;
+    NSMutableArray * credentialsUserDicArray;
     
 }
 
