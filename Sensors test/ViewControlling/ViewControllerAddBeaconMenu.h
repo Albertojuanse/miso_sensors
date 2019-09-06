@@ -25,15 +25,11 @@
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
     
-    NSMutableArray * beaconsAndPositionsRegistered;
-    NSMutableArray * typesRegistered;
+    // Beacons' region identifiers
     NSNumber * regionBeaconIdNumber;
     NSNumber * regionPositionIdNumber;
     
     // User selection in main manu
-    RDPosition * positionChosenByUser;
-    NSString * uuidChosenByUser;
-    NSString * typeChosenByUser;
     NSInteger selectedSegmentIndex;
     
 }
@@ -81,12 +77,8 @@
 - (void) setMotionManager:(MotionManager *)newMotion;
 - (void) setLocationManager:(LocationManagerDelegate *)newLocation;
 
-- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
-- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 - (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;
 - (void) setRegionPositionIdNumber:(NSNumber *)newRegionIdNumber;
-- (void) setUuidChosenByUser:(NSString *)uuidChosenByUser;
-- (void) setPositionChosenByUser:(RDPosition *)newPositionChosenByUser;
 
 @end
 

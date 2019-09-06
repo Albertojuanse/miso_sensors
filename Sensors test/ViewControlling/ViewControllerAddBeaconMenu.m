@@ -22,19 +22,31 @@
     
     // Visualization
     // Sets if the user wants to modify a beacon device or a position, or nothing
-    if (uuidChosenByUser) {
+    NSDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:credentialsUserDic
+                                                                                  andCredentialsUserDic:credentialsUserDic];
+    if (
+        ![@"beacon" isEqualToString:itemChosenByUser[@"sort"]] &&
+        ![@"position" isEqualToString:itemChosenByUser[@"sort"]]
+        )
+    { // Add new one
         selectedSegmentIndex = 0;
+    } else {
+        if ([@"beacon" isEqualToString:itemChosenByUser[@"sort"]]) {
+            selectedSegmentIndex = 0;
+        }
+        if ([@"position" isEqualToString:itemChosenByUser[@"sort"]]) {
+            selectedSegmentIndex = 1;
+        }
+         if (
+             [@"beacon" isEqualToString:itemChosenByUser[@"sort"]] &&
+             [@"position" isEqualToString:itemChosenByUser[@"sort"]]
+             )
+         {
+             NSLog(@"[ERROR][VCAB] User did choose both Beacon and Position to change; UUID by default.");
+             selectedSegmentIndex = 0;
+         }
     }
-    if (positionChosenByUser) {
-        selectedSegmentIndex = 1;
-    }
-    if (!uuidChosenByUser && !positionChosenByUser) { // Add new one
-        selectedSegmentIndex = 0;
-    }
-    if (uuidChosenByUser && positionChosenByUser) {
-        NSLog(@"[ERROR][VCAB] User did choose both Beacon and Position to change; UUID by default.");
-        selectedSegmentIndex = 0;
-    }
+    
     [self.segmentedControl setSelectedSegmentIndex:selectedSegmentIndex];
     [self changeView];
     
@@ -56,7 +68,6 @@
  */
 - (void) uploadSegmentIndex:(id)sender
 {
-    
     // Upload global variable value
     selectedSegmentIndex = [self.segmentedControl selectedSegmentIndex];
     [self changeView];
@@ -84,7 +95,7 @@
      
      // Different behaviour if position or beacon
      switch (selectedSegmentIndex) {
-         case 0: // iBeacon mode
+         case 0: {// iBeacon mode
              
              // Visualization
              // Enable beacon elements
@@ -131,28 +142,26 @@
              self.textPositionZ.placeholder = @"";
              
              // If user did select an object to modify, search for it and display it on texts.
-             if (uuidChosenByUser) {
-                 
-                 for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-                     if ([@"beacon" isEqualToString:regionDic[@"sort"]]) {
-                         if ([regionDic[@"uuid"] isEqualToString:uuidChosenByUser]) {
-                             self.textUUID.text = regionDic[@"uuid"];
-                             self.textMajor.text = regionDic[@"major"];
-                             self.textMinor.text = regionDic[@"minor"];
+             NSMutableDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:credentialsUserDic
+                                                                                                  andCredentialsUserDic:credentialsUserDic];
+             NSMutableArray * itemsData = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
+             if ([@"beacon" isEqualToString:itemChosenByUser[@"sort"]]) {
+                 for (NSMutableDictionary * itemDic in itemsData) {
+                     if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
+                         if ([itemDic[@"uuid"] isEqualToString:itemChosenByUser[@"uuid"]]) {
+                             self.textUUID.text = itemDic[@"uuid"];
+                             self.textMajor.text = itemDic[@"major"];
+                             self.textMinor.text = itemDic[@"minor"];
                              
-                             if (regionDic[@"sort"]){
-                                 self.textType.text = regionDic[@"sort"][@"name"];
+                             if (itemDic[@"type"]){
+                                 self.textType.text = [NSString stringWithFormat:@"%@", itemDic[@"type"]];
                              }
                              
-                             if (
-                                 regionDic[@"x"] &&
-                                 regionDic[@"y"] &&
-                                 regionDic[@"z"]
-                                 )
-                             {
-                                 self.textBeaconX.text = regionDic[@"x"];
-                                 self.textBeaconY.text = regionDic[@"y"];
-                                 self.textBeaconZ.text = regionDic[@"z"];
+                             if (itemDic[@"position"]) {
+                                 RDPosition * position = itemDic[@"position"];
+                                 self.textBeaconX.text = [position.x stringValue];
+                                 self.textBeaconY.text = [position.y stringValue];
+                                 self.textBeaconZ.text = [position.z stringValue];
                              }
                          }
                      }
@@ -161,8 +170,9 @@
              }
              
              break;
+         }
              
-         case 1: // position mode
+         case 1: { // position mode
              
              // Visualization
              // Enable beacon elements
@@ -209,19 +219,23 @@
              self.textPositionZ.placeholder = @"0.0";
              
              // If user did select an object to modify, search for it and display it on texts.
-             if (positionChosenByUser) {
+             NSMutableDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:credentialsUserDic
+                                                                                                  andCredentialsUserDic:credentialsUserDic];
+             NSMutableArray * itemsData = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
+             if ([@"position" isEqualToString:itemChosenByUser[@"sort"]]) {
                  
-                 for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-                     if ([@"position" isEqualToString:regionDic[@"sort"]]) {
+                 for (NSMutableDictionary * itemDic in itemsData) {
+                     if ([@"position" isEqualToString:itemDic[@"sort"]]) {
                          
-                         if (regionDic[@"sort"]){
-                             self.textType.text = regionDic[@"sort"][@"name"];
+                         if (itemDic[@"type"]){
+                             self.textType.text = [NSString stringWithFormat:@"%@", itemDic[@"type"]];
                          }
                          
-                         if ([regionDic[@"position"] isEqual:positionChosenByUser]) {
-                             self.textPositionX.text = regionDic[@"x"];
-                             self.textPositionY.text = regionDic[@"y"];
-                             self.textPositionZ.text = regionDic[@"z"];
+                         if (itemDic[@"position"]) {
+                             RDPosition * position = itemDic[@"position"];
+                             self.textBeaconX.text = [position.x stringValue];
+                             self.textBeaconY.text = [position.y stringValue];
+                             self.textBeaconZ.text = [position.z stringValue];
                          }
                      }
                  }
@@ -229,7 +243,7 @@
              }
              
              break;
-             
+         }
          default:
              break;
      }
@@ -242,7 +256,8 @@
  @method setCredentialsUserDic
  @discussion This method sets the credentials of the user for accessing data shared.
  */
-- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic {
+- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic
+{
     credentialsUserDic = newCredentialsUserDic;
 }
 
@@ -289,33 +304,6 @@
 - (void) setRegionPositionIdNumber:(NSNumber *)newRegionPositionIdNumber
 {
     regionPositionIdNumber = newRegionPositionIdNumber;
-}
-
-/*!
- @method setUuidChosenByUser:
- @discussion This method sets the NSString variable 'uuidChosenByUser'.
- */
-- (void) setUuidChosenByUser:(NSString *)newUuidChosenByUser
-{
-    uuidChosenByUser = newUuidChosenByUser;
-}
-
-/*!
- @method setPositionChosenByUser:
- @discussion This method sets the NSString variable 'uuidChosenByUser'.
- */
-- (void) setPositionChosenByUser:(RDPosition *)newPositionChosenByUser
-{
-    positionChosenByUser = newPositionChosenByUser;
-}
-
-/*!
- @method setTypesRegistered:
- @discussion This method sets the NSMutableArray variable 'typesRegistered'.
- */
-- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered
-{
-    typesRegistered = newTypesRegistered;
 }
 
 #pragma mark - Buttons event handles
