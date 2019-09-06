@@ -25,6 +25,35 @@
 }
 
 /*!
+ @method initWithName:
+ @discussion Constructor
+ */
+- (instancetype)initWithName:(NSString *)newName
+{
+    self = [self init];
+    if (self) {
+        name = nil;
+        name = newName;
+    }
+    return self;
+}
+
+/*!
+ @method initWithName:andAttributes:
+ @discussion Constructor
+ */
+- (instancetype)initWithName:(NSString *)newName
+               andAttributes:(NSMutableArray *)newAttributes
+{
+    self = [self initWithName:newName];
+    if (self) {
+        attributes = nil;
+        attributes = newAttributes;
+    }
+    return self;
+}
+
+/*!
  @method getName
  @discussion Getter of the 'name' attribute.
  */

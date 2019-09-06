@@ -39,6 +39,9 @@
 }
 
 - (instancetype)init;
+- (instancetype)initWithName:(NSString *)newName;
+- (instancetype)initWithName:(NSString *)newName
+               andAttributes:(NSMutableArray *)newAttributes;
 - (void)setName:(NSString*)newName;
 - (NSString*)getName;
 - (void)setAttributes:(NSMutableArray*)newAttributes;
