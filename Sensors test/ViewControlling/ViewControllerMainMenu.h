@@ -35,15 +35,10 @@
     NSString * chosenMode;
     
     // Beacons' region identifiers
-    NSMutableArray * beaconsAndPositionsRegistered;
-    NSMutableArray * typesRegistered;
-    NSMutableArray * modelsGenerated;
     NSNumber * regionBeaconIdNumber;
     NSNumber * regionPositionIdNumber;
     
-    // User choose to pass to add beacon and positions view controller; one of both must be alwais nil
-    NSString * uuidChosenByUser;
-    RDPosition * positionChosenByUser;
+
     
 }
 

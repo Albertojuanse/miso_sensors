@@ -54,6 +54,14 @@
 - (NSMutableArray *)getMetamodelDataWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (NSMutableArray *)getModelDataWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
+- (BOOL)isUserDataEmptyWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)isSessionDataEmptyWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)isItemsDataEmptyWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)isMeasuresDataEmptyWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)isLocationsDataEmptyWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)isMetamodelDataEmptyWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)isModelDataEmptyWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+
 // Specific user data getters
 - (NSMutableDictionary *) fromUserDataGetUserDicWithName:(NSString*)name
                                    andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
@@ -68,6 +76,10 @@
                                   andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (NSString *)fromSessionDataGetModeFromUserWithUserName:(NSString*)userName
                                    andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (NSString *)fromSessionDataGetStateFromUserWithUserDic:(NSMutableDictionary*)givenUserDic
+                                   andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (NSString *)fromSessionDataGetStateFromUserWithUserName:(NSString*)userName
+                                    andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (BOOL)fromSessionDataIsMeasuringUserWithUserDic:(NSMutableDictionary*)givenUserDic
                             andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (BOOL)fromSessionDataIsMeasuringUserWithUserName:(NSString*)userName
@@ -154,6 +166,18 @@
             andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific session data setters
+- (BOOL)inSessionDataSetMode:(NSString*)givenMode
+           toUserWithUserDic:(NSMutableDictionary*)userDic
+       andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)inSessionDataSetMode:(NSString*)givenMode
+          toUserWithUserName:(NSString*)userName
+       andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)inSessionDataSetState:(NSString*)givenState
+            toUserWithUserDic:(NSMutableDictionary*)givenUserDic
+        andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)inSessionDataSetState:(NSString*)givenState
+           toUserWithUserName:(NSString*)givenUserName
+        andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (BOOL)inSessionDataSetMeasuringUserWithUserDic:(NSMutableDictionary*)givenUserDic
                        andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (BOOL)inSessionDataSetMeasuringUserWithUserName:(NSString*)userName
@@ -166,8 +190,24 @@
                        andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (BOOL)inSessionDataSetTravelingUserWithUserName:(NSString*)userName
                         andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)inSessionDataSetItemChosenByUser:(NSMutableDictionary*)itemChosenByUser
+                       toUserWithUserDic:(NSMutableDictionary*)userDic
+                   andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)inSessionDataSetItemChosenByUser:(NSMutableDictionary*)itemChosenByUser
+                      toUserWithUserName:(NSString*)userName
+                   andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)inSessionDataSetTypeChosenByUser:(MDType*)typeChosenByUser
+                       toUserWithUserDic:(NSMutableDictionary*)userDic
+                   andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL)inSessionDataSetTypeChosenByUser:(MDType*)typeChosenByUser
+                      toUserWithUserName:(NSString*)userName
+                   andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific items data setters
+- (BOOL) inItemDataAddItemOfSort:(NSString*)sort
+                  withIdentifier:(NSString*)identifier
+                     withInfoDic:(NSMutableDictionary*)infoDic
+       andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific measures data setters
 - (BOOL) inMeasuresDataSetMeasure:(NSNumber*)measure

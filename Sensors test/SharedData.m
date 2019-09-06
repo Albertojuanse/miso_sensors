@@ -99,7 +99,7 @@
 //     "locatedPosition": (RDPosition *)locatedPosition1;
 //   },
 //   (···)
-// }
+//  ]
 //
 //            // METAMODEL DATA //
 //
@@ -337,6 +337,132 @@
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         return modelData;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method isUserDataEmptyWithCredentialsUserDic:
+ @discussion This method returns YES if the collection 'User data' is empty; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (BOOL)isUserDataEmptyWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        if (userData.count == 0) {
+            return YES;
+        } else {
+            return NO;
+        }
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method isSessionDataEmptyWithCredentialsUserDic:
+ @discussion This method returns YES if the collection 'Session data' is empty; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (BOOL)isSessionDataEmptyWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        if (sessionData.count == 0) {
+            return YES;
+        } else {
+            return NO;
+        }
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method isItemsDataEmptyWithCredentialsUserDic:
+ @discussion This method returns YES if the collection 'Items data' is empty; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (BOOL)isItemsDataEmptyWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        if (itemsData.count == 0) {
+            return YES;
+        } else {
+            return NO;
+        }
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method isMeasuresDataEmptyWithCredentialsUserDic:
+ @discussion This method returns YES if the collection 'Measures data' is empty; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (BOOL)isMeasuresDataEmptyWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        if (measuresData.count == 0) {
+            return YES;
+        } else {
+            return NO;
+        }
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method isLocationsDataEmptyWithCredentialsUserDic:
+ @discussion This method returns YES if the collection 'Locations data' is empty; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (BOOL)isLocationsDataEmptyWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        if (userData.count == 0) {
+            return YES;
+        } else {
+            return NO;
+        }
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method isMetamodelDataEmptyWithCredentialsUserDic:
+ @discussion This method returns YES if the collection 'Metamodel data' is empty; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (BOOL)isMetamodelDataEmptyWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        if (metamodelData.count == 0) {
+            return YES;
+        } else {
+            return NO;
+        }
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method isModelDataEmptyWithCredentialsUserDic:
+ @discussion This method returns YES if the collection 'Model data' is empty; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (BOOL)isModelDataEmptyWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        if (modelData.count == 0) {
+            return YES;
+        } else {
+            return NO;
+        }
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return nil;
@@ -1467,20 +1593,108 @@
 //
 
 /*!
+ @method inSessionDataSetObject:forKey:toUserWithUserDic:andCredentialsUserDic:
+ @discussion This method sets the object as the info determined by the dictionary key from the session data collection given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (BOOL)inSessionDataSetObject:(id)object
+                        forKey:(NSString*)key
+             toUserWithUserDic:(NSMutableDictionary*)givenUserDic
+         andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        NSMutableDictionary * sessionDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
+        // Can be null
+        if (sessionDic) {
+            [sessionDic setObject:object forKey:key];
+            return YES;
+        } else {
+            return NO;
+        }
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+    return nil;
+}
+
+/*!
+ @method inSessionDataSetObject:forKey:toUserWithUserName:andCredentialsUserDic:
+ @discussion This method sets the object as the info determined by the dictionary key from the session data collection given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (BOOL)inSessionDataSetObject:(id)object
+                        forKey:(NSString*)key
+            toUserWithUserName:(NSString*)userName
+         andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        NSMutableDictionary * sessionDic = [self fromSessionDataGetSessionWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+        // Can be null
+        if (sessionDic) {
+            [sessionDic setObject:object forKey:key];
+            return YES;
+        } else {
+            return NO;
+        }
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+    return nil;
+}
+
+/*!
+ @method inSessionDataSetMode:toUserWithUserDic:andCredentialsUserDic:
+ @discussion This method sets in session data collection the user's mode given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL)inSessionDataSetMode:(NSString*)givenMode
+           toUserWithUserDic:(NSMutableDictionary*)userDic
+       andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    return [self inSessionDataSetObject:givenMode forKey:@"mode" toUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method inSessionDataSetMode:toUserWithUserName:andCredentialsUserDic:
+ @discussion This method sets in session data collection the user's mode given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL)inSessionDataSetMode:(NSString*)givenMode
+          toUserWithUserName:(NSString*)userName
+       andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+        return [self inSessionDataSetObject:givenMode forKey:@"mode" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method inSessionDataSetState:toUserWithUserDic:andCredentialsUserDic:
+ @discussion This method sets in session data collection the given state to the given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL)inSessionDataSetState:(NSString*)givenState
+            toUserWithUserDic:(NSMutableDictionary*)givenUserDic
+        andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    return [self inSessionDataSetObject:givenState forKey:@"state" toUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method inSessionDataSetState:toUserWithUserName:andCredentialsUserDic:
+ @discussion This method sets in session data collection the given state to the given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL)inSessionDataSetState:(NSString*)givenState
+           toUserWithUserName:(NSString*)givenUserName
+        andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    return [self inSessionDataSetObject:givenState forKey:@"state" toUserWithUserName:givenUserName andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
  @method inSessionDataSetMeasuringUserWithUserDic:andWithCredentialsUserDic:
  @discussion This method sets in session data collection the state measuring to the given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL)inSessionDataSetMeasuringUserWithUserDic:(NSMutableDictionary*)givenUserDic
                        andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        userDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
-        [userDic setObject:@"MEASURING" forKey:@"state"];
-        return YES;
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return NO;
-    }
+    return [self inSessionDataSetObject:@"MEASURING" forKey:@"state" toUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
 }
 
 /*!
@@ -1490,82 +1704,91 @@
 - (BOOL)inSessionDataSetMeasuringUserWithUserName:(NSString*)userName
                         andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        userDic = [self fromSessionDataGetSessionWithUserName:userName andCredentialsUserDic:credentialsUserDic];
-        [userDic setObject:@"MEASURING" forKey:@"state"];
-        return YES;
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return NO;
-    }
+    return [self inSessionDataSetObject:@"MEASURING" forKey:@"state" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
 }
 
 /*!
- @method inSessionDataSetMeasuringUserWithUserDic:andWithCredentialsUserDic:
+ @method inSessionDataSetIdleUserWithUserDic:andWithCredentialsUserDic:
  @discussion This method sets in session data collection the state idle to the given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL)inSessionDataSetIdleUserWithUserDic:(NSMutableDictionary*)givenUserDic
                   andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        userDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
-        [userDic setObject:@"IDLE" forKey:@"state"];
-        return YES;
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return NO;
-    }
+    return [self inSessionDataSetObject:@"IDLE" forKey:@"state" toUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
 }
 
 /*!
- @method inSessionDataSetMeasuringUserWithUserName:andWithCredentialsUserDic:
+ @method inSessionDataSetIdleUserWithUserName:andWithCredentialsUserDic:
  @discussion This method sets in session data collection the state idle to the given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL)inSessionDataSetIdleUserWithUserName:(NSString*)userName
                    andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        userDic = [self fromSessionDataGetSessionWithUserName:userName andCredentialsUserDic:credentialsUserDic];
-        [userDic setObject:@"IDLE" forKey:@"state"];
-        return YES;
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return NO;
-    }
+    return [self inSessionDataSetObject:@"IDLE" forKey:@"state" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
 }
 
 /*!
- @method inSessionDataSetMeasuringUserWithUserDic:andWithCredentialsUserDic:
+ @method inSessionDataSetTravelingUserWithUserDic:andWithCredentialsUserDic:
  @discussion This method sets in session data collection the state traveling to the given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL)inSessionDataSetTravelingUserWithUserDic:(NSMutableDictionary*)givenUserDic
                        andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        userDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
-        [userDic setObject:@"TRAVELING" forKey:@"state"];
-        return YES;
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return NO;
-    }
+    return [self inSessionDataSetObject:@"TRAVELING" forKey:@"state" toUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
 }
 
 /*!
- @method inSessionDataSetMeasuringUserWithUserName:andWithCredentialsUserDic:
+ @method inSessionDataSetTravelingUserWithUserName:andWithCredentialsUserDic:
  @discussion This method sets in session data collection the state traveling to the given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL)inSessionDataSetTravelingUserWithUserName:(NSString*)userName
                         andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        userDic = [self fromSessionDataGetSessionWithUserName:userName andCredentialsUserDic:credentialsUserDic];
-        [userDic setObject:@"TRAVELING" forKey:@"state"];
-        return YES;
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return NO;
-    }
+    return [self inSessionDataSetObject:@"TRAVELING" forKey:@"state" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method inSessionDataSetItemChosenByUser:toUserWithUserDic:andCredentialsUserDic:
+ @discussion This method sets in session data collection the parameter 'itemChosenByUser' state to the given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL)inSessionDataSetItemChosenByUser:(NSMutableDictionary*)itemChosenByUser
+                       toUserWithUserDic:(NSMutableDictionary*)userDic
+                   andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    return [self inSessionDataSetObject:itemChosenByUser forKey:@"itemChosenByUser" toUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method inSessionDataSetItemChosenByUser:toUserWithUserName:andCredentialsUserDic:
+ @discussion This method sets in session data collection the parameter 'itemChosenByUser' state to the given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL)inSessionDataSetItemChosenByUser:(NSMutableDictionary*)itemChosenByUser
+                      toUserWithUserName:(NSString*)userName
+                   andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    return [self inSessionDataSetObject:itemChosenByUser forKey:@"itemChosenByUser" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method inSessionDataSetTypeChosenByUser:toUserWithUserDic:andCredentialsUserDic:
+ @discussion This method sets in session data collection the parameter 'typeChosenByUser' state to the given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL)inSessionDataSetTypeChosenByUser:(MDType*)typeChosenByUser
+                       toUserWithUserDic:(NSMutableDictionary*)userDic
+                   andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    return [self inSessionDataSetObject:typeChosenByUser forKey:@"typeChosenByUser" toUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method inSessionDataSetTypeChosenByUser:toUserWithUserName:andCredentialsUserDic:
+ @discussion This method sets in session data collection the parameter 'typeChosenByUser' state to the given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL)inSessionDataSetTypeChosenByUser:(MDType*)typeChosenByUser
+                      toUserWithUserName:(NSString*)userName
+                   andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    return [self inSessionDataSetObject:typeChosenByUser forKey:@"typeChosenByUser" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
 }
 
 #pragma mark - Item data specific setters
