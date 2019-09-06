@@ -23,9 +23,9 @@
 @interface ViewControllerMainMenu : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
     // Other components
+    SharedData * sharedData;
     MotionManager * motion;
     LocationManagerDelegate * location;
-    SharedData * sharedData;
     
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
@@ -50,7 +50,12 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableModes;
 @property (weak, nonatomic) IBOutlet UITableView *tableBeaconsAndPositions;
 
+
 - (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic;
+- (void) setSharedData:(SharedData *)newSharedData;
+- (void) setMotionManager:(MotionManager *)newMotion;
+- (void) setLocationManager:(LocationManagerDelegate *)newLocation;
+
 - (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
 - (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 - (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;

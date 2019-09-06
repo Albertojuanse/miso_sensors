@@ -16,7 +16,8 @@
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
  */
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
     // Variables
@@ -43,7 +44,8 @@
  @method didReceiveMemoryWarning
  @discussion This method dispose of any resources that can be recreated id a memory warning is recived.
  */
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
@@ -52,17 +54,46 @@
 
 /*!
  @method setCredentialsUserDic
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ @discussion This method sets the credentials of the user for accessing data shared.
  */
-- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic {
+- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic
+{
     credentialsUserDic = newCredentialsUserDic;
+}
+
+/*!
+ @method setSharedData:
+ @discussion This method sets the shared data collection.
+ */
+- (void) setSharedData:(SharedData *)newSharedData
+{
+    sharedData = newSharedData;
+}
+
+/*!
+ @method setMotionManager:
+ @discussion This method sets the motion manager.
+ */
+- (void) setMotionManager:(MotionManager *)newMotion
+{
+    motion = newMotion;
+}
+
+/*!
+ @method setLocationManager:
+ @discussion This method sets the location manager.
+ */
+- (void) setLocationManager:(LocationManagerDelegate *)newLocation
+{
+    location = newLocation;
 }
 
 /*!
  @method setBeaconsAndPositionsRegistered:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered {
+- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered
+{
     beaconsAndPositionsRegistered = newBeaconsAndPositionsRegistered;
 }
 
@@ -70,7 +101,8 @@
  @method setTypesRegistered:
  @discussion This method sets the NSMutableArray variable 'typesRegistered'.
  */
-- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered {
+- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered
+{
     typesRegistered = newTypesRegistered;
 }
 
@@ -106,7 +138,8 @@
  @method handleButtonTravel:
  @discussion This method handles the action in which the Travel button is pressed; it must disable both control buttons and ask motion manager to start traveling.
  */
-- (IBAction)handleButtonTravel:(id)sender {
+- (IBAction)handleButtonTravel:(id)sender
+{
     
     // In every state the button performs different behaviours
     if (idle) { // If idle, user can travel or measuring; if 'Travel' is tapped, ask start traveling.
@@ -150,7 +183,8 @@
  @method handleButtonMeasure:
  @discussion This method handles the action in which the Measure button is pressed; it must disable 'Travel' control buttons and ask location manager delegate to start measuring.
  */
-- (IBAction)handleButtonMeasure:(id)sender {
+- (IBAction)handleButtonMeasure:(id)sender
+{
     
     // In every state the button performs different behaviours
     if (idle) { // If idle, user can travel or measuring; if 'Measuring' is tapped, ask start measuring.
@@ -206,7 +240,8 @@
  @method handleBackButton:
  @discussion This method dismiss this view and ask main menu view to be displayed; 'prepareForSegue:sender:' method is called before.
  */
-- (IBAction)handleBackButton:(id)sender {
+- (IBAction)handleBackButton:(id)sender
+{
     [self performSegueWithIdentifier:@"fromRHO_RHO_MODELINGToMain" sender:sender];
 }
 
@@ -223,7 +258,13 @@
         
         // Get destination view
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
+        
         // Set the variables
+        [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerMainMenu setSharedData:sharedData];
+        [viewControllerMainMenu setMotionManager:motion];
+        [viewControllerMainMenu setLocationManager:location];
+        
         [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerMainMenu setTypesRegistered:typesRegistered];
         

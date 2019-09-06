@@ -17,6 +17,11 @@
  */
 @interface ViewControllerRhoThetaModeling : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
+    // Other components
+    SharedData * sharedData;
+    MotionManager * motion;
+    LocationManagerDelegate * location;
+    
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
     
@@ -41,6 +46,10 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 
 - (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic;
+- (void) setSharedData:(SharedData *)newSharedData;
+- (void) setMotionManager:(MotionManager *)newMotion;
+- (void) setLocationManager:(LocationManagerDelegate *)newLocation;
+
 - (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
 - (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 

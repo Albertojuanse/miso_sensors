@@ -16,7 +16,8 @@
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
  */
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
     // Visualization
@@ -53,7 +54,8 @@
  @method uploadSegmentIndex:
  @discussion This method is called when the segmented control is tapped and changes the enable and view values of the forms to alternate between them.
  */
-- (void) uploadSegmentIndex:(id)sender {
+- (void) uploadSegmentIndex:(id)sender
+{
     
     // Upload global variable value
     selectedSegmentIndex = [self.segmentedControl selectedSegmentIndex];
@@ -66,7 +68,8 @@
  @method changeView
  @discussion This method is called when the segmented control is tapped and changes the enable and view values of the forms to alternate between them.
  */
- - (void) changeView {
+ - (void) changeView
+{
      
      // Empty text boxes
      self.textUUID.text = @"";
@@ -237,25 +240,45 @@
 
 /*!
  @method setCredentialsUserDic
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ @discussion This method sets the credentials of the user for accessing data shared.
  */
 - (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic {
     credentialsUserDic = newCredentialsUserDic;
 }
 
 /*!
- @method setBeaconsAndPositionsRegistered:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ @method setSharedData:
+ @discussion This method sets the shared data collection.
  */
-- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered {
-    beaconsAndPositionsRegistered = newBeaconsAndPositionsRegistered;
+- (void) setSharedData:(SharedData *)newSharedData
+{
+    sharedData = newSharedData;
+}
+
+/*!
+ @method setMotionManager:
+ @discussion This method sets the motion manager.
+ */
+- (void) setMotionManager:(MotionManager *)newMotion
+{
+    motion = newMotion;
+}
+
+/*!
+ @method setLocationManager:
+ @discussion This method sets the location manager.
+ */
+- (void) setLocationManager:(LocationManagerDelegate *)newLocation
+{
+    location = newLocation;
 }
 
 /*!
  @method setRegionBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionBeaconIdNumber {
+- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionBeaconIdNumber
+{
     regionBeaconIdNumber = newRegionBeaconIdNumber;
 }
 
@@ -263,7 +286,8 @@
  @method setRegionPositionIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionPositionIdNumber:(NSNumber *)newRegionPositionIdNumber {
+- (void) setRegionPositionIdNumber:(NSNumber *)newRegionPositionIdNumber
+{
     regionPositionIdNumber = newRegionPositionIdNumber;
 }
 
@@ -271,7 +295,8 @@
  @method setUuidChosenByUser:
  @discussion This method sets the NSString variable 'uuidChosenByUser'.
  */
-- (void) setUuidChosenByUser:(NSString *)newUuidChosenByUser {
+- (void) setUuidChosenByUser:(NSString *)newUuidChosenByUser
+{
     uuidChosenByUser = newUuidChosenByUser;
 }
 
@@ -279,7 +304,8 @@
  @method setPositionChosenByUser:
  @discussion This method sets the NSString variable 'uuidChosenByUser'.
  */
-- (void) setPositionChosenByUser:(RDPosition *)newPositionChosenByUser {
+- (void) setPositionChosenByUser:(RDPosition *)newPositionChosenByUser
+{
     positionChosenByUser = newPositionChosenByUser;
 }
 
@@ -287,7 +313,8 @@
  @method setTypesRegistered:
  @discussion This method sets the NSMutableArray variable 'typesRegistered'.
  */
-- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered {
+- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered
+{
     typesRegistered = newTypesRegistered;
 }
 
@@ -297,7 +324,8 @@
  @method handleButtonDelete:
  @discussion This method handles the 'Delete' button action and ask the main menu to delete the beacon submitted by the user.
  */
-- (IBAction)handleButtonDelete:(id)sender {
+- (IBAction)handleButtonDelete:(id)sender
+{
     
     NSMutableDictionary * regionDicToRemove;
     
@@ -348,7 +376,8 @@
  @method handleButtonAdd:
  @discussion This method handles the Add button action and ask the main menu to add the new beacon submitted by the user.
  */
-- (IBAction)handleButtonAdd:(id)sender {
+- (IBAction)handleButtonAdd:(id)sender
+{
     
     // The beacons cannot be registered twice with different ID because Location Manager will fail their initialization; because of coherence, two equals positions cannot be registered. Thus, the data of every item must be searched and not only its identifier.
     
@@ -703,7 +732,8 @@
  @method handleButtonBack:
  @discussion This method handles the 'Back' button action and segue back to the main menu; 'prepareForSegue:sender:' method is called before.
  */
-- (IBAction)handleButtonBack:(id)sender {
+- (IBAction)handleButtonBack:(id)sender
+{
     [self performSegueWithIdentifier:@"backFromAddToMain" sender:sender];
 }
 
@@ -711,7 +741,8 @@
  @method handleButtonAddType:
  @discussion This method handles the 'Add type' button action and register the user type if it does not exit.
  */
-- (IBAction)handleButtonAddType:(id)sender {
+- (IBAction)handleButtonAddType:(id)sender
+{
     
     // The user tries to register the type called
     NSString * newTypeName = [self.textType text];
@@ -746,7 +777,8 @@
  @method handleButtonRemoveType:
  @discussion This method handles the 'Remove type' button action and unregister the user type if it exits.
  */
-- (IBAction)handleButtonRemoveType:(id)sender {
+- (IBAction)handleButtonRemoveType:(id)sender
+{
     
     // The user tries to remove the type called
     NSString * removeTypeName = [self.textType text];
@@ -780,7 +812,12 @@
         
         // Get destination view
         ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
-        // Set the variable
+        // Set the variables
+        [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerMainMenu setSharedData:sharedData];
+        [viewControllerMainMenu setMotionManager:motion];
+        [viewControllerMainMenu setLocationManager:location];
+        
         [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerMainMenu setTypesRegistered:typesRegistered];
         [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
@@ -791,7 +828,12 @@
         
         // Get destination view
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
-        // Set the variable
+        // Set the variables
+        [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerMainMenu setSharedData:sharedData];
+        [viewControllerMainMenu setMotionManager:motion];
+        [viewControllerMainMenu setLocationManager:location];
+        
         [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerMainMenu setTypesRegistered:typesRegistered];
         [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
@@ -839,7 +881,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView
-didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     
     if (tableView == self.tableTypes) {
         

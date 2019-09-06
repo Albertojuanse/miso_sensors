@@ -16,7 +16,8 @@
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
  */
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
     // Instance variables
@@ -36,7 +37,8 @@
  @method didReceiveMemoryWarning
  @discussion This method dispose of any resources that can be recreated id a memory warning is recived.
  */
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
@@ -45,17 +47,46 @@
 
 /*!
  @method setCredentialsUserDic
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ @discussion This method sets the credentials of the user for accessing data shared.
  */
-- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic {
+- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic
+{
     credentialsUserDic = newCredentialsUserDic;
+}
+
+/*!
+ @method setSharedData:
+ @discussion This method sets the shared data collection.
+ */
+- (void) setSharedData:(SharedData *)newSharedData
+{
+    sharedData = newSharedData;
+}
+
+/*!
+ @method setMotionManager:
+ @discussion This method sets the motion manager.
+ */
+- (void) setMotionManager:(MotionManager *)newMotion
+{
+    motion = newMotion;
+}
+
+/*!
+ @method setLocationManager:
+ @discussion This method sets the location manager.
+ */
+- (void) setLocationManager:(LocationManagerDelegate *)newLocation
+{
+    location = newLocation;
 }
 
 /*!
  @method setBeaconsAndPositionsRegistered:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered {
+- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered
+{
     beaconsAndPositionsRegistered = newBeaconsAndPositionsRegistered;
 }
 
@@ -63,7 +94,8 @@
  @method setChosenMode:
  @discussion This method sets the NSString variable 'chosenMode'.
  */
-- (void) setChosenMode:(NSString *)newChosenMode {
+- (void) setChosenMode:(NSString *)newChosenMode
+{
     chosenMode = newChosenMode;
 }
 
@@ -71,7 +103,8 @@
  @method setTypesRegistered:
  @discussion This method sets the NSMutableArray variable 'typesRegistered'.
  */
-- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered {
+- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered
+{
     typesRegistered = newTypesRegistered;
 }
 
@@ -81,7 +114,8 @@
  @method handleButtonBack:
  @discussion This method handles the Back button action and segue back to the main menu; 'prepareForSegue:sender:' method is called before.
  */
-- (IBAction)handleButtonBack:(id)sender {
+- (IBAction)handleButtonBack:(id)sender
+{
     [self performSegueWithIdentifier:@"fromSelectPositionsToMain" sender:sender];
 }
 
@@ -89,7 +123,8 @@
  @method handleButtonGo:
  @discussion This method handles the 'Go' button action and segue to theta theta system locating view; 'prepareForSegue:sender:' method is called before.
  */
-- (IBAction)handleButtonGo:(id)sender {
+- (IBAction)handleButtonGo:(id)sender
+{
     
     NSLog(@"[INFO][VCSP]: Button GO pressed.");
     
@@ -127,7 +162,12 @@
      
         // Get destination view
         ViewControllerRhoRhoLocating * viewControllerRhoRhoLocating = [segue destinationViewController];
-        // Set the variables
+         // Set the variables
+         [ViewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+         [ViewControllerMainMenu setSharedData:sharedData];
+         [ViewControllerMainMenu setMotionManager:motion];
+         [ViewControllerMainMenu setLocationManager:location];
+     
         [viewControllerRhoRhoLocating setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
      
     }
@@ -139,7 +179,12 @@
      
         // Get destination view
         ViewControllerRhoThetaLocating * viewControllerRhoThetaLocating = [segue destinationViewController];
-        // Set the variables
+         // Set the variables
+         [ViewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+         [ViewControllerMainMenu setSharedData:sharedData];
+         [ViewControllerMainMenu setMotionManager:motion];
+         [ViewControllerMainMenu setLocationManager:location];
+     
         [viewControllerRhoThetaLocating setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
      
     }
@@ -151,6 +196,11 @@
         // Get destination view
         ViewControllerThetaThetaLocating * viewControllerThetaThetaLocating = [segue destinationViewController];
         // Set the variables
+        [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerMainMenu setSharedData:sharedData];
+        [viewControllerMainMenu setMotionManager:motion];
+        [viewControllerMainMenu setLocationManager:location];
+        
         [viewControllerThetaThetaLocating setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerThetaThetaLocating setBeaconsAndPositionsChosen:beaconsAndPositionsChosen];
         [viewControllerThetaThetaLocating setBeaconsAndPositionsChosenIndexes:beaconsAndPositionsChosenIndexes];
@@ -161,10 +211,16 @@
         
         // Get destination view
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
-        // Set the variable
+        // Set the variables
+        [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerMainMenu setSharedData:sharedData];
+        [viewControllerMainMenu setMotionManager:motion];
+        [viewControllerMainMenu setLocationManager:location];
+        
         [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerMainMenu setTypesRegistered:typesRegistered];
     }
+    return;
 }
 
 #pragma mark - UItableView delegate methods
@@ -290,7 +346,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView
-didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     
     if (tableView == self.tableBeaconsAndPositions) {
         

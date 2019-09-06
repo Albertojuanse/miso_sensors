@@ -258,11 +258,38 @@
 
 /*!
  @method setCredentialsUserDic
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ @discussion This method sets the credentials of the user for accessing data shared.
  */
 - (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic
 {
     credentialsUserDic = newCredentialsUserDic;
+}
+
+/*!
+ @method setSharedData:
+ @discussion This method sets the shared data collection.
+ */
+- (void) setSharedData:(SharedData *)newSharedData
+{
+    sharedData = newSharedData;
+}
+
+/*!
+ @method setMotionManager:
+ @discussion This method sets the motion manager.
+ */
+- (void) setMotionManager:(MotionManager *)newMotion
+{
+    motion = newMotion;
+}
+
+/*!
+ @method setLocationManager:
+ @discussion This method sets the location manager.
+ */
+- (void) setLocationManager:(LocationManagerDelegate *)newLocation
+{
+    location = newLocation;
 }
 
 /*!
@@ -358,7 +385,12 @@
         
         // Get destination view
         ViewControllerAddBeaconMenu *viewControllerAddBeaconMenu = [segue destinationViewController];
-        // Set the variable
+        // Set the variables
+        [viewControllerAddBeaconMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerAddBeaconMenu setSharedData:sharedData];
+        [viewControllerAddBeaconMenu setMotionManager:motion];
+        [viewControllerAddBeaconMenu setLocationManager:location];
+        
         [viewControllerAddBeaconMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerAddBeaconMenu setTypesRegistered:typesRegistered];
         [viewControllerAddBeaconMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
@@ -379,7 +411,12 @@
         
         // Get destination view
         ViewControllerRhoRhoModeling *viewControllerRhoRhoModeling = [segue destinationViewController];
-        // Set the variable
+        // Set the variables
+        [viewControllerRhoRhoModeling setCredentialsUserDic:credentialsUserDic];
+        [viewControllerRhoRhoModeling setSharedData:sharedData];
+        [viewControllerRhoRhoModeling setMotionManager:motion];
+        [viewControllerRhoRhoModeling setLocationManager:location];
+        
         [viewControllerRhoRhoModeling setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerRhoRhoModeling setTypesRegistered:typesRegistered];
         
@@ -390,7 +427,12 @@
         
         // Get destination view
         ViewControllerRhoThetaModeling *viewControllerRhoThetaModeling = [segue destinationViewController];
-        // Set the variable
+        // Set the variables
+        [viewControllerRhoThetaModeling setCredentialsUserDic:credentialsUserDic];
+        [viewControllerRhoThetaModeling setSharedData:sharedData];
+        [viewControllerRhoThetaModeling setMotionManager:motion];
+        [viewControllerRhoThetaModeling setLocationManager:location];
+        
         [viewControllerRhoThetaModeling setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerRhoThetaModeling setTypesRegistered:typesRegistered];
         
@@ -398,7 +440,9 @@
     
     // If Theta Theta Syetem based Modeling is going to be displayed, there is no need of the beaconsAndPositionsRegistered array.
     if ([[segue identifier] isEqualToString:@"fromMainToTHETA_THETA_MODELING"]) {
-        // Do nothing
+        
+        // TO DO. Alberto J. 2019/09/06.
+        
     }
     
     // If Rho Theta Syetem or Rho Rho Sytem based Locating is going to be displayed, pass it the beaconsAndPositionsRegistered array.
@@ -406,7 +450,12 @@
         
         // Get destination view
         ViewControllerSelectPositions * viewControllerSelectPositions = [segue destinationViewController];
-        // Set the variable
+        // Set the variables
+        [viewControllerSelectPositions setCredentialsUserDic:credentialsUserDic];
+        [viewControllerSelectPositions setSharedData:sharedData];
+        [viewControllerSelectPositions setMotionManager:motion];
+        [viewControllerSelectPositions setLocationManager:location];
+        
         [viewControllerSelectPositions setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
         [viewControllerSelectPositions setTypesRegistered:typesRegistered];
         [viewControllerSelectPositions setChosenMode:chosenMode];
