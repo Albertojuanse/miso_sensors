@@ -21,6 +21,9 @@
  */
 @interface MotionManager : CMMotionManager {
     
+    // Session and user context
+    NSMutableDictionary * credentialsUserDic;
+    
     // Components
     SharedData * sharedData;
     
@@ -130,6 +133,8 @@
 
 // Methods
 - (instancetype) initWithSharedData:(SharedData *)initSharedData;
+- (instancetype) initWithSharedData:(SharedData *)sharedData
+              andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (void) startAccelerometers;
 - (void) stopAccelerometers;
 - (void) startGyroscopes;

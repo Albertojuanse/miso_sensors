@@ -12,7 +12,7 @@
 
 /*!
  @method init
- @discussion Constructor.
+ @discussion Constructor given the shared data collection.
  */
 - (instancetype)initWithSharedData:(SharedData *)sharedDataFromAppDelegate
 {
@@ -108,6 +108,18 @@
         
         NSLog(@"[INFO][LM] LocationManager prepared");
     }
+    return self;
+}
+
+/*!
+ @method init
+ @discussion Constructor given the shared data collection and the credentials of the user for access it.
+ */
+- (instancetype) initWithSharedData:(SharedData *)initSharedData
+              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
+{
+    self = [self initWithSharedData:initSharedData];
+    credentialsUserDic = initCredentialsUserDic;
     return self;
 }
 

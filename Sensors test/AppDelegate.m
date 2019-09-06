@@ -18,24 +18,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-    
-    // Instance constants
-    
-    // Other components
-    // TO DO: This shared data is never used; the views will create and set a new one when the user sets a new credential as owner. Alberto J. 2019/09/05.
-    // TO DO: If the user did create that credential and it is saved in the device in a persistent variable, use it and initialize the final shared data collection here. Alberto J. 2019/09/05.
-    sharedData = [[SharedData alloc] init];
-    motion = [[MotionManager alloc] initWithSharedData:sharedData];
-    
-    motion.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
-    motion.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
-    motion.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
-    motion.acce_biasBuffer_capacity = [NSNumber numberWithInt:500];
-    motion.gyro_measuresBuffer_capacity = [NSNumber numberWithInt:500];
-    motion.gyro_biasBuffer_capacity = [NSNumber numberWithInt:500];
-    
-    location = [[LocationManagerDelegate alloc] initWithSharedData:sharedData];
-    
     return YES;
 }
 

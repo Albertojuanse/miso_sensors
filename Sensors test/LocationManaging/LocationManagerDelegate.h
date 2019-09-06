@@ -20,6 +20,9 @@
  */
 @interface LocationManagerDelegate: NSObject<CLLocationManagerDelegate>{
     
+    // Session and user context
+    NSMutableDictionary * credentialsUserDic;
+    
     // Components
     SharedData * sharedData;
     RDRhoRhoSystem * rhoRhoSystem;
@@ -48,6 +51,9 @@
 }
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData;
+- (instancetype)initWithSharedData:(SharedData *)sharedData
+             andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+
 - (RDPosition *) getPosition;
 - (void) setPosition:(RDPosition *)newPosition;
 - (void) setSharedData:(SharedData *)newSharedData;

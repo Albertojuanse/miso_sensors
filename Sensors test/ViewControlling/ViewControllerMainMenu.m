@@ -16,8 +16,34 @@
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
  */
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
+    
+    // Other components; only inizialated if they didn't be so
+    // Init the shared data collection with the credentials of the device user.
+    if (!sharedData) {
+        sharedData = [[SharedData alloc] initWithCredentialsUserDic:credentialsUserDic];
+    }
+    
+    // Init the motion manager, given the shared data component and the credentials of the device user.
+    if(!motion) {
+        motion = [[MotionManager alloc] initWithSharedData:sharedData
+                                     andCredentialsUserDic:credentialsUserDic];
+        
+        motion.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
+        motion.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
+        motion.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.acce_biasBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.gyro_measuresBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.gyro_biasBuffer_capacity = [NSNumber numberWithInt:500];
+    }
+    
+    // Init the location manager, given the shared data component and the credentials of the device user.
+    if (!location) {
+        location = [[LocationManagerDelegate alloc] initWithSharedData:sharedData
+                                             andCredentialsUserDic:credentialsUserDic];
+    }
     
     // Variables; only inizialated if they didn't be so.
     if (!modes) {
@@ -29,7 +55,7 @@
         [modes addObject:@"RHO_THETA_LOCATING"];
         [modes addObject:@"THETA_THETA_LOCATING"];
     }
-
+    
     // The schema of the beaconsAndPositionsRegistered object is:
     //
     //  [{ "sort": @"beacon" | @"position";                             //  regionDic
@@ -45,7 +71,7 @@
     //     "y": (NSString *)y1;
     //     "z": (NSString *)z1;
     //
-    //     "sort": (NSMutableDictionary *)typeDic1;                 //  typeDic
+    //     "sort": (NSMutableDictionary *)typeDic1;                    //  typeDic
     //
     //   },
     //   { "sort": @"beacon" | @"position";
@@ -79,7 +105,7 @@
     // The schema of modelComponents is
     //
     //  [{ "sort": @"beacon" | @"position";                            //  modelDic
-    //     "sort": (NSMutableDictionary *)typeDic1;                //  typeDic
+    //     "sort": (NSMutableDictionary *)typeDic1;                    //  typeDic
     //     "regionDic": (NSMutableDictionary *)regionDic1              //  regionDic
     //   },
     //   { "sort": @"beacon" | @"position";
@@ -222,7 +248,8 @@
  @method didReceiveMemoryWarning
  @discussion This method dispose of any resources that can be recreated id a memory warning is recived.
  */
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
@@ -233,7 +260,8 @@
  @method setCredentialsUserDic
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic {
+- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic
+{
     credentialsUserDic = newCredentialsUserDic;
 }
 
@@ -241,7 +269,8 @@
  @method setBeaconsAndPositionsRegistered:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered {
+- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered
+{
     beaconsAndPositionsRegistered = newBeaconsAndPositionsRegistered;
 }
 
@@ -249,7 +278,8 @@
  @method setRegionBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionBeaconIdNumber {
+- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionBeaconIdNumber
+{
     regionBeaconIdNumber = newRegionBeaconIdNumber;
 }
 
@@ -257,7 +287,8 @@
  @method setRegionPositionIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionPositionIdNumber:(NSNumber *)newRegionPositionIdNumber {
+- (void) setRegionPositionIdNumber:(NSNumber *)newRegionPositionIdNumber
+{
     regionPositionIdNumber = newRegionPositionIdNumber;
 }
 
@@ -265,7 +296,8 @@
  @method setTypesRegistered:
  @discussion This method sets the NSMutableArray variable 'typesRegistered'.
  */
-- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered {
+- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered
+{
     typesRegistered = newTypesRegistered;
 }
 
@@ -280,7 +312,8 @@
     [self performSegueWithIdentifier:@"fromMainToAdd" sender:sender];
 }
 
-- (IBAction)handleButonStart:(id)sender {
+- (IBAction)handleButonStart:(id)sender
+{
     // If user did select a row in the table
     if (chosenMode) {
         
@@ -505,7 +538,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView
-didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     
     if (tableView == self.tableBeaconsAndPositions) {
         

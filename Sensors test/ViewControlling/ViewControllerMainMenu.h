@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "MotionManager.h"
+#import "LocationManagerDelegate.h"
+#import "SharedData.h"
 #import "ViewControllerAddBeaconMenu.h"
 #import "ViewControllerSelectPositions.h"
 #import "ViewControllerRhoRhoModeling.h"
@@ -18,6 +21,11 @@
  @discussion This class extends UIViewController and controls the main menu interface.
  */
 @interface ViewControllerMainMenu : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+    
+    // Other components
+    MotionManager * motion;
+    LocationManagerDelegate * location;
+    SharedData * sharedData;
     
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
@@ -33,7 +41,7 @@
     NSNumber * regionBeaconIdNumber;
     NSNumber * regionPositionIdNumber;
     
-    // user choose to pass to add beacon and positions view controller; one of both must be alwais nil
+    // User choose to pass to add beacon and positions view controller; one of both must be alwais nil
     NSString * uuidChosenByUser;
     RDPosition * positionChosenByUser;
     
