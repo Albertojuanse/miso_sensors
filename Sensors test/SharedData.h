@@ -236,4 +236,20 @@
                           components:(NSMutableArray*)components
            andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
+// Specific user data specific removers
+
+// Specific session data specific removers
+
+// Specific items data specific removers
+- (BOOL) inItemDataRemoveItemWithInfoDic:(NSMutableDictionary*)infoDic
+                  withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+
+// Specific measures data specific removers
+
+// Specific locations data specific removers
+
+// Specific metamodel data specific removers
+
+// Specific model data specific removers
+
 @end

@@ -2260,4 +2260,85 @@
     }
 }
 
+#pragma mark - User data specific removers
+
+#pragma mark - Session data specific removers
+
+#pragma mark - Items data specific removers
+/*!
+ @method inItemDataRemoveItemWithInfoDic:withCredentialsUserDic:
+ @discussion This method removes in the items collection data the one whose data is equals to the information dictionary provided (sort and uuid keys are required); it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL) inItemDataRemoveItemWithInfoDic:(NSMutableDictionary*)infoDic
+                  withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    // The info dictionary must describe the item enough to delete it; for that, sort and uuid keys are required
+    // Calidate the keys
+    NSArray * infoDicKeys = [infoDic allKeys];
+    BOOL sortFound = NO;
+    BOOL uuidFound = NO;
+    for (NSString * key in infoDicKeys) {
+        if ([key isEqualToString:@"sort"]) {
+            sortFound = YES;
+        }
+        if ([key isEqualToString:@"uuid"]) {
+            uuidFound = YES;
+        }
+    }
+    if (sortFound && uuidFound) {
+        // Do nothing
+    } else {
+        NSLog(@"[ERROR][SD] Information provided for deleting an item had not \"sort\" or \"uuid\" keys.");
+        return NO;
+    }
+    
+    // Search for the item
+    BOOL itemFound = NO;
+    NSMutableDictionary * itemToRemove = nil;
+
+    // Search for it and delete it
+    for (NSMutableDictionary * itemDic in itemsData) {
+        
+        NSString * givenSort = infoDic[@"sort"];
+        if ([givenSort isEqualToString:itemDic[@"sort"]]) {
+            
+            NSString * givenUuid = infoDic[@"uuid"];
+            if ([givenUuid isEqualToString:itemDic[@"uuid"]]) {
+                
+                itemFound = YES;
+                itemToRemove = itemDic;
+                // Verify that searched values are not different to this one...
+                for (NSString * key in infoDicKeys) {
+                    // ...if they exist.
+                    if (itemDic[key]) {
+                        
+                        id givenValue = infoDic[key];
+                        if ([givenValue isEqual:itemDic[key]]) {
+                            // Do nothing
+                        } else {
+                            itemFound = NO;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // If not found, return; if found, remove it
+        if (itemFound) {
+            [itemsData removeObject:itemToRemove];
+        } else {
+            return NO;
+        }
+        return YES;
+    }
+}
+
+#pragma mark - Measures data specific removers
+
+#pragma mark - Locations data specific removers
+
+#pragma mark - Metamodel data specific removers
+
+#pragma mark - Model data specific removers
+
 @end
