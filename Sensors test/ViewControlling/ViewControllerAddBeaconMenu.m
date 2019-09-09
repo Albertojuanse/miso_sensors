@@ -314,48 +314,27 @@
  */
 - (IBAction)handleButtonDelete:(id)sender
 {
+    // Validate data
+    if (![self validateUserEntries]) {
+        return;
+    }
     
-    NSMutableDictionary * regionDicToRemove;
+    // Compose a dictionary with the information provided
+    NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
     
     // Different behaviour if position or beacon
     if (selectedSegmentIndex == 0) { // iBeacon mode
-            
-        // Search for it and delete it
-        for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-            if ([@"beacon" isEqualToString:regionDic[@"sort"]]) {
-                if ([[self.textUUID text] isEqualToString:regionDic[@"uuid"]]) {
-                    if ([[self.textMajor text] isEqualToString:regionDic[@"major"]]) {
-                        if ([[self.textMinor text] isEqualToString:regionDic[@"minor"]]) {
-                            
-                            // Save its reference
-                            regionDicToRemove = regionDic;
-                            
-                        }
-                    }
-                }
-            }
-        }
+        infoDic[@"sort"] = @"beacon";
     }
     if (selectedSegmentIndex == 1) { // position mode
-        
-        // Search for it and delete it
-        for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-            if ([@"position" isEqualToString:regionDic[@"sort"]]) {
-                
-                RDPosition * positionToRemove = [[RDPosition alloc] init];
-                positionToRemove.x = [NSNumber numberWithFloat:[[self.textPositionX text] floatValue]];
-                positionToRemove.y = [NSNumber numberWithFloat:[[self.textPositionY text] floatValue]];
-                positionToRemove.z = [NSNumber numberWithFloat:[[self.textPositionZ text] floatValue]];
-                
-                if ([positionToRemove isEqual:regionDic[@"position"]]) {
-                    // Save its reference
-                    regionDicToRemove = regionDic;
-                }
-            }
-        }
+        infoDic[@"sort"] = @"position";
     }
+    infoDic[@"uuid"] = [self.textUUID text];
+    infoDic[@"major"] = [self.textMajor text];
+    infoDic[@"minor"] = [self.textMinor text];
     
-    [beaconsAndPositionsRegistered removeObject:regionDicToRemove];
+    // Ask shared data to remove it.
+    [sharedData inItemDataRemoveItemWithInfoDic:infoDic withCredentialsUserDic:credentialsUserDic];
     
     [self performSegueWithIdentifier:@"backFromAddToMain" sender:sender];
 }
@@ -366,352 +345,73 @@
  */
 - (IBAction)handleButtonAdd:(id)sender
 {
-    
     // The beacons cannot be registered twice with different ID because Location Manager will fail their initialization; because of coherence, two equals positions cannot be registered. Thus, the data of every item must be searched and not only its identifier.
     
     // Different behaviour if position or beacon
-    
     // Validate data
+    if (![self validateUserEntries]) {
+        return;
+    }
+    
+    // Compose a dictionary with the information provided
+    NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
+    // Different behaviour if position or beacon
     if (selectedSegmentIndex == 0) { // iBeacon mode
-        
-        NSString * uuidRegex = @"[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}";
-        NSPredicate * uuidTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", uuidRegex];
-        if ([uuidTest evaluateWithObject:[self.textUUID text]]){
-            //Matches
-        } else {
-            self.labelBeaconError.text = @"Error. UUID not valid. Please, submit a valid UUID.";
-            return;
-        }
-        
-        NSString * majorAndMinorRegex = @"[0-9]{1}|[0-9]{1}[0-9]{1}|[0-9]{1}[0-9]{1}[0-9]{1}|[0-9]{1}[0-9]{1}[0-9]{1}[0-9]{1}";
-        NSPredicate * majorAndMinorTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", majorAndMinorRegex];
-        if ([majorAndMinorTest evaluateWithObject:[self.textMajor text]]){
-            //Matches
-        } else {
-            self.labelBeaconError.text = @"Error. Major value not valid. Please, submit a valid major value.";
-            return;
-        }
-        if ([majorAndMinorTest evaluateWithObject:[self.textMinor text]]){
-            //Matches
-        } else {
-            self.labelBeaconError.text = @"Error. Minor value not valid. Please, submit a valid minor value.";
-            return;
-        }
-        
-        NSString * floatRegex = @"^$|[+-]?([0-9]*[.])?[0-9]+";
-        NSPredicate * floatTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", floatRegex];
-        if ([floatTest evaluateWithObject:[self.textBeaconX text]]){
-            //Matches
-        } else {
-            self.labelBeaconError.text = @"Error. X value not valid. Please, use decimal dot: 0.01";
-            return;
-        }
-        if ([floatTest evaluateWithObject:[self.textBeaconY text]]){
-            //Matches
-        } else {
-            self.labelBeaconError.text = @"Error. Y value not valid. Please, use decimal dot: 0.01";
-            return;
-        }
-        if ([floatTest evaluateWithObject:[self.textBeaconZ text]]){
-            //Matches
-        } else {
-            self.labelBeaconError.text = @"Error. Z value not valid. Please, use decimal dot: 0.01";
-            return;
-        }
-        
+        infoDic[@"sort"] = @"beacon";
     }
     if (selectedSegmentIndex == 1) { // position mode
-        
-        NSString * floatRegex = @"^$|[+-]?([0-9]*[.])?[0-9]+";
-        NSPredicate * floatTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", floatRegex];
-        if ([floatTest evaluateWithObject:[self.textPositionX text]]){
-            //Matches
-        } else {
-            self.labelPositionError.text = @"Error. X value not valid. Please, use decimal dot: 0.01";
-            return;
-        }
-        if ([floatTest evaluateWithObject:[self.textPositionY text]]){
-            //Matches
-        } else {
-            self.labelPositionError.text = @"Error. Y value not valid. Please, use decimal dot: 0.01";
-            return;
-        }
-        if ([floatTest evaluateWithObject:[self.textPositionZ text]]){
-            //Matches
-        } else {
-            self.labelPositionError.text = @"Error. Z value not valid. Please, use decimal dot: 0.01";
-            return;
-        }
+        infoDic[@"sort"] = @"position";
+    }
+    infoDic[@"uuid"] = [self.textUUID text];
+    infoDic[@"major"] = [self.textMajor text];
+    infoDic[@"minor"] = [self.textMinor text];
+    if ([sharedData fromSessionDataGetSessionWithUserDic:credentialsUserDic
+                                   andCredentialsUserDic:credentialsUserDic]) {
+        MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:credentialsUserDic
+                                                                    andCredentialsUserDic:credentialsUserDic];
+        infoDic[@"type"] = type;
         
     }
-    
-    // Search the submitted in the dictionary
-    BOOL dicFound = NO;
-    for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
+    // If the three coordinate values had been submitted
+    if (
+        ![[self.textBeaconX text] isEqualToString:@""] &&
+        ![[self.textBeaconY text] isEqualToString:@""] &&
+        ![[self.textBeaconZ text] isEqualToString:@""]
+        )
+    {
+
+        RDPosition * positionToAdd = [[RDPosition alloc] init];
+        positionToAdd.x = [NSNumber numberWithFloat:[[self.textBeaconX text] floatValue]];
+        positionToAdd.y = [NSNumber numberWithFloat:[[self.textBeaconY text] floatValue]];
+        positionToAdd.z = [NSNumber numberWithFloat:[[self.textBeaconZ text] floatValue]];
+        infoDic[@"position"] = positionToAdd;
+    } else {
         
-        // Different behaviour if position or beacon
-        if (selectedSegmentIndex == 0) { // iBeacon mode
-            // If it is a beacon
-            if ([@"beacon" isEqualToString:regionDic[@"sort"]]) {
-                if ([[self.textUUID text] isEqualToString:regionDic[@"uuid"]]) {
-                    if ([[self.textMajor text] isEqualToString:regionDic[@"major"]]) {
-                        if ([[self.textMinor text] isEqualToString:regionDic[@"minor"]]) {
-                            
-                            // If this code is reached, the beacon is registered and its position can be set or uploaded but not registered again.
-                            dicFound = YES;
-                            
-                            // Also its type can be modified or set
-                            if (typeChosenByUser) {
-                                
-                                // The special type <No type> is selected by user to remove the previous chosen type
-                                if ([typeChosenByUser isEqualToString:@"<No type>"]) {
-                                    regionDic[@"sort"] = nil;
-                                } else {
-                                    // search for its dictionary and set it
-                                    for (NSMutableDictionary * typeDic in typesRegistered) {
-                                        if ([typeChosenByUser isEqualToString:typeDic[@"name"]]) {
-                                            regionDic[@"sort"] = typeDic;
-                                        }
-                                    }
-                                }
-                            }
-                            
-                            // If the three coordinate values had been submitted
-                            if (
-                                ![[self.textBeaconX text] isEqualToString:@""] &&
-                                ![[self.textBeaconY text] isEqualToString:@""] &&
-                                ![[self.textBeaconZ text] isEqualToString:@""]
-                                )
-                            {
-                                regionDic[@"x"] = [self.textBeaconX text];
-                                regionDic[@"y"] = [self.textBeaconY text];
-                                regionDic[@"z"] = [self.textBeaconZ text];
-                                RDPosition * positionToAdd = [[RDPosition alloc] init];
-                                positionToAdd.x = [NSNumber numberWithFloat:[[self.textBeaconX text] floatValue]];
-                                positionToAdd.y = [NSNumber numberWithFloat:[[self.textBeaconY text] floatValue]];
-                                positionToAdd.z = [NSNumber numberWithFloat:[[self.textBeaconZ text] floatValue]];
-                                regionDic[@"position"] = positionToAdd;
-                            } else {
-                                
-                                // If all coordinate values missing the user tries to re-register a beacon, unless the user wanted to set its type
-                                if (
-                                    [[self.textBeaconX text] isEqualToString:@""] &&
-                                    [[self.textBeaconY text] isEqualToString:@""] &&
-                                    [[self.textBeaconZ text] isEqualToString:@""]
-                                    )
-                                {
-                                    // This code is reached also when an type was set or uploaded, so check it
-                                    if (!typeChosenByUser) {
-                                        self.labelPositionError.text = @"Error. This position is already registered. Please, submit a different one or push \"Back\".";
-                                        return;
-                                    }
-                                } else {
-                                    // If ths code is reached means that there is only some coordinate values but not all of them
-                                    self.labelBeaconError.text = @"Error. Some coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
-                                    return;
-                                }
-                            }
-                            
-                        }
-                    }
-                }
+        // If all coordinate values missing the user tries to re-register a beacon, unless the user wanted to set its type
+        if (
+            [[self.textBeaconX text] isEqualToString:@""] &&
+            [[self.textBeaconY text] isEqualToString:@""] &&
+            [[self.textBeaconZ text] isEqualToString:@""]
+            )
+        {
+            // This code is reached also when an type was set or uploaded, so check it
+            if (![sharedData fromSessionDataGetSessionWithUserDic:credentialsUserDic
+                                           andCredentialsUserDic:credentialsUserDic]) {
+                self.labelPositionError.text = @"Warning. As no coordinate values were introduced, the item's position is null.";
+                infoDic[@"position"] = nil;
             }
-        }
-        if (selectedSegmentIndex == 1) { // position mode
-            // If it is a position
-            if ([@"position" isEqualToString:regionDic[@"sort"]]) {
-                
-                RDPosition * positionToFind = [[RDPosition alloc] init];
-                positionToFind.x = [NSNumber numberWithFloat:[[self.textPositionX text] floatValue]];
-                positionToFind.y = [NSNumber numberWithFloat:[[self.textPositionY text] floatValue]];
-                positionToFind.z = [NSNumber numberWithFloat:[[self.textPositionZ text] floatValue]];
-                
-                if ([positionToFind isEqual:regionDic[@"position"]]) {
-                    
-                    // If this code is reached, the position is registered and its position can be uploaded.
-                    dicFound = YES;
-                    
-                    // Also its type can be modified or set
-                    if (typeChosenByUser) {
-                        
-                        // The special type <No type> is selected by user to remove the previous chosen type
-                        if ([typeChosenByUser isEqualToString:@"<No type>"]) {
-                            regionDic[@"sort"] = nil;
-                        } else {
-                            // search for its dictionary and set it
-                            for (NSMutableDictionary * typeDic in typesRegistered) {
-                                if ([typeChosenByUser isEqualToString:typeDic[@"name"]]) {
-                                    regionDic[@"sort"] = typeDic;
-                                }
-                            }
-                        }
-                    }
-                    
-                    // If the three coordinate values had been submitted
-                    if (
-                        ![[self.textPositionX text] isEqualToString:@""] &&
-                        ![[self.textPositionY text] isEqualToString:@""] &&
-                        ![[self.textPositionZ text] isEqualToString:@""]
-                        )
-                    {
-                        regionDic[@"x"] = [self.textPositionX text];
-                        regionDic[@"y"] = [self.textPositionY text];
-                        regionDic[@"z"] = [self.textPositionZ text];
-                        regionDic[@"position"] = positionToFind;
-                    } else {
-                        
-                        // If all coordinate values missing the user tries to re-register the same position, unless user wants to set its entoty
-                        if (
-                            [[self.textPositionX text] isEqualToString:@""] &&
-                            [[self.textPositionY text] isEqualToString:@""] &&
-                            [[self.textPositionZ text] isEqualToString:@""]
-                            )
-                        {
-                            // This code is reached also when an type was set or uploaded, so check it
-                            if (!typeChosenByUser) {
-                                self.labelPositionError.text = @"Error. This position is already registered. Please, submit a different one or push \"Back\".";
-                                return;
-                            }
-                        } else {
-                            // If ths code is reached means that there is only some coordinate values but not all of them
-                            self.labelPositionError.text = @"Error. Some coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
-                            return;
-                        }
-                    }
-                    
-                }
-            }
+        } else {
+            // If ths code is reached means that there is only some coordinate values but not all of them
+            self.labelBeaconError.text = @"Error. Some coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+            return;
         }
     }
     
-    // But if not found in the dictionary, the user is subitting a new device or position
-    if (!dicFound) {
-        
-        NSMutableDictionary * newRegionDic = [[NSMutableDictionary alloc] init];
-        
-        if (selectedSegmentIndex == 0) { // iBeacon mode
-       
-            [newRegionDic setValue:@"beacon" forKey:@"sort"];
-            [newRegionDic setValue:[self.textUUID text] forKey:@"uuid"];
-            [newRegionDic setValue:[self.textMajor text] forKey:@"major"];
-            [newRegionDic setValue:[self.textMinor text] forKey:@"minor"];
-            
-            regionBeaconIdNumber = [NSNumber numberWithInt:[regionBeaconIdNumber intValue] + 1];
-            NSString * regionId = [@"beacon" stringByAppendingString:[regionBeaconIdNumber stringValue]];
-            regionId = [regionId stringByAppendingString:@"@miso.uam.es"];
-            [newRegionDic setValue:regionId forKey:@"identifier"];
-            
-            // Its type can be set
-            if (typeChosenByUser) {
-                
-                // The special type <No type> is selected by user to remove the previous chosen type
-                if ([typeChosenByUser isEqualToString:@"<No type>"]) {
-                    newRegionDic[@"sort"] = nil;
-                } else {
-                    // search for its dictionary and set it
-                    for (NSMutableDictionary * typeDic in typesRegistered) {
-                        if ([typeChosenByUser isEqualToString:typeDic[@"name"]]) {
-                            newRegionDic[@"sort"] = typeDic;
-                        }
-                    }
-                }
-            }
-            
-            // If exists the three coordinate values
-            if (
-                ![[self.textBeaconX text] isEqualToString:@""] &&
-                ![[self.textBeaconY text] isEqualToString:@""] &&
-                ![[self.textBeaconZ text] isEqualToString:@""]
-                )
-            {
-                newRegionDic[@"x"] = [self.textBeaconX text];
-                newRegionDic[@"y"] = [self.textBeaconY text];
-                newRegionDic[@"z"] = [self.textBeaconZ text];
-                RDPosition * positionToAdd = [[RDPosition alloc] init];
-                positionToAdd.x = [NSNumber numberWithFloat:[[self.textBeaconX text] floatValue]];
-                positionToAdd.y = [NSNumber numberWithFloat:[[self.textBeaconY text] floatValue]];
-                positionToAdd.z = [NSNumber numberWithFloat:[[self.textBeaconZ text] floatValue]];
-                newRegionDic[@"position"] = positionToAdd;
-            } else {
-                
-                // If all coordinate values missing, the user does not want to save the position
-                if (
-                    [[self.textBeaconX text] isEqualToString:@""] &&
-                    [[self.textBeaconY text] isEqualToString:@""] &&
-                    [[self.textBeaconZ text] isEqualToString:@""]
-                    )
-                {
-                    // Do nothing
-                } else {
-                    // If ths code is reached means that there is only some coordinate values but not all of them
-                    self.labelBeaconError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
-                    return;
-                }
-            }
-            
-        }
-        if (selectedSegmentIndex == 1) { // position mode
-            
-            [newRegionDic setValue:@"position" forKey:@"sort"];
-            [newRegionDic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-            
-            regionPositionIdNumber = [NSNumber numberWithInt:[regionPositionIdNumber intValue] + 1];
-            NSString * regionId = [@"position" stringByAppendingString:[regionPositionIdNumber stringValue]];
-            regionId = [regionId stringByAppendingString:@"@miso.uam.es"];
-            [newRegionDic setValue:regionId forKey:@"identifier"];
-            
-            RDPosition * positionToSave = [[RDPosition alloc] init];
-            positionToSave.x = [NSNumber numberWithFloat:[[self.textPositionX text] floatValue]];
-            positionToSave.y = [NSNumber numberWithFloat:[[self.textPositionY text] floatValue]];
-            positionToSave.z = [NSNumber numberWithFloat:[[self.textPositionZ text] floatValue]];
-            
-            // Its type can be set
-            if (typeChosenByUser) {
-                
-                // The special type <No type> is selected by user to remove the previous chosen type
-                if ([typeChosenByUser isEqualToString:@"<No type>"]) {
-                    newRegionDic[@"sort"] = nil;
-                } else {
-                    // search for its dictionary and set it
-                    for (NSMutableDictionary * typeDic in typesRegistered) {
-                        if ([typeChosenByUser isEqualToString:typeDic[@"name"]]) {
-                            newRegionDic[@"sort"] = typeDic;
-                        }
-                    }
-                }
-            }
-            
-            if (
-                ![[self.textPositionX text] isEqualToString:@""] &&
-                ![[self.textPositionY text] isEqualToString:@""] &&
-                ![[self.textPositionZ text] isEqualToString:@""]
-                )
-            {
-                newRegionDic[@"x"] = [self.textPositionX text];
-                newRegionDic[@"y"] = [self.textPositionY text];
-                newRegionDic[@"z"] = [self.textPositionZ text];
-                newRegionDic[@"position"] = positionToSave;
-            } else {
-                
-                // If all coordinate values missing the user tries to re-register the same position
-                if (
-                    [[self.textPositionX text] isEqualToString:@""] &&
-                    [[self.textPositionY text] isEqualToString:@""] &&
-                    [[self.textPositionZ text] isEqualToString:@""]
-                    )
-                {
-                    // Do nothing
-                } else {
-                    // If ths code is reached means that there is only some coordinate values but not all of them
-                    self.labelPositionError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
-                    return;
-                }
-            }
-            
-        }
-        
-        [beaconsAndPositionsRegistered addObject:newRegionDic];
-    }
+    // Add the item
+    [sharedData inItemDataAddItemOfSort:infoDic[@"sort"]
+                               withUUID:infoDic[@"uuid"]
+                            withInfoDic:infoDic
+              andWithCredentialsUserDic:credentialsUserDic];
 
     [self performSegueWithIdentifier:@"submitFromAddToMain" sender:sender];
 }
@@ -788,6 +488,87 @@
     return;
 }
 
+/*!
+ @method prepareForSegue:sender:
+ @discussion This method is called before any segue and it is used for pass other views variables.
+ */
+- (BOOL) validateUserEntries {
+    
+    // Validate data
+    if (selectedSegmentIndex == 0) { // iBeacon mode
+        
+        NSString * uuidRegex = @"[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}";
+        NSPredicate * uuidTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", uuidRegex];
+        if ([uuidTest evaluateWithObject:[self.textUUID text]]){
+            //Matches
+        } else {
+            self.labelBeaconError.text = @"Error. UUID not valid. Please, submit a valid UUID.";
+            return NO;
+        }
+        
+        NSString * majorAndMinorRegex = @"[0-9]{1}|[0-9]{1}[0-9]{1}|[0-9]{1}[0-9]{1}[0-9]{1}|[0-9]{1}[0-9]{1}[0-9]{1}[0-9]{1}";
+        NSPredicate * majorAndMinorTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", majorAndMinorRegex];
+        if ([majorAndMinorTest evaluateWithObject:[self.textMajor text]]){
+            //Matches
+        } else {
+            self.labelBeaconError.text = @"Error. Major value not valid. Please, submit a valid major value.";
+            return NO;
+        }
+        if ([majorAndMinorTest evaluateWithObject:[self.textMinor text]]){
+            //Matches
+        } else {
+            self.labelBeaconError.text = @"Error. Minor value not valid. Please, submit a valid minor value.";
+            return NO;
+        }
+        
+        NSString * floatRegex = @"^$|[+-]?([0-9]*[.])?[0-9]+";
+        NSPredicate * floatTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", floatRegex];
+        if ([floatTest evaluateWithObject:[self.textBeaconX text]]){
+            //Matches
+        } else {
+            self.labelBeaconError.text = @"Error. X value not valid. Please, use decimal dot: 0.01";
+            return NO;
+        }
+        if ([floatTest evaluateWithObject:[self.textBeaconY text]]){
+            //Matches
+        } else {
+            self.labelBeaconError.text = @"Error. Y value not valid. Please, use decimal dot: 0.01";
+            return NO;
+        }
+        if ([floatTest evaluateWithObject:[self.textBeaconZ text]]){
+            //Matches
+        } else {
+            self.labelBeaconError.text = @"Error. Z value not valid. Please, use decimal dot: 0.01";
+            return NO;
+        }
+    }
+    
+    if (selectedSegmentIndex == 1) { // position mode
+        
+        NSString * floatRegex = @"^$|[+-]?([0-9]*[.])?[0-9]+";
+        NSPredicate * floatTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", floatRegex];
+        if ([floatTest evaluateWithObject:[self.textPositionX text]]){
+            //Matches
+        } else {
+            self.labelPositionError.text = @"Error. X value not valid. Please, use decimal dot: 0.01";
+            return NO;
+        }
+        if ([floatTest evaluateWithObject:[self.textPositionY text]]){
+            //Matches
+        } else {
+            self.labelPositionError.text = @"Error. Y value not valid. Please, use decimal dot: 0.01";
+            return NO;
+        }
+        if ([floatTest evaluateWithObject:[self.textPositionZ text]]){
+            //Matches
+        } else {
+            self.labelPositionError.text = @"Error. Z value not valid. Please, use decimal dot: 0.01";
+            return NO;
+        }
+    }
+    
+    return YES;
+}
 
 /*!
  @method prepareForSegue:sender:

@@ -486,7 +486,7 @@
 //
 
 /*!
- @method fromUserDataGetUserDicWithName:andCredentialsUserDic
+ @method fromUserDataGetUserDicWithName:andCredentialsUserDic:
  @discussion This method returns the 'NSMutableDictionary' object with the user credentials of the user described with its user name; if it is not found, return null; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableDictionary *) fromUserDataGetUserDicWithName:(NSString*)name
@@ -548,7 +548,7 @@
 //
 
 /*!
- @method fromSessionDataGetSessionWithUserDic:andCredentialsUserDic
+ @method fromSessionDataGetSessionWithUserDic:andCredentialsUserDic:
  @discussion This method returns the 'NSMutableDictionary' object with the sessions information of the user described with its user dictionary; if it is not found, return null; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableDictionary *)fromSessionDataGetSessionWithUserDic:(NSMutableDictionary*)givenUserDic
@@ -570,7 +570,7 @@
 }
 
 /*!
- @method fromSessionDataGetSessionWithUserName:andCredentialsUserDic
+ @method fromSessionDataGetSessionWithUserName:andCredentialsUserDic:
  @discussion This method returns the 'NSMutableDictionary' object with the sessions information of the user described with its user dictionary; if it is not found, return null; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableDictionary *)fromSessionDataGetSessionWithUserName:(NSString*)userName
@@ -591,7 +591,7 @@
 }
 
 /*!
- @method fromSessionDataGetKey:fromUserWithUserDic:andCredentialsUserDic
+ @method fromSessionDataGetKey:fromUserWithUserDic:andCredentialsUserDic:
  @discussion This method returns the object with the info determined by the dictionary key from the session data collection given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (id)fromSessionDataGetKey:(NSString *)key
@@ -615,7 +615,7 @@
 }
 
 /*!
- @method fromSessionDataGetKey:fromUserWithUserName:andCredentialsUserDic
+ @method fromSessionDataGetKey:fromUserWithUserName:andCredentialsUserDic:
  @discussion This method returns the object with the info determined by the dictionary key from the session data collection given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (id)fromSessionDataGetKey:(NSString *)key
@@ -638,7 +638,7 @@
 }
 
 /*!
- @method fromSessionDataGetModeFromUserWithUserDic:andCredentialsUserDic
+ @method fromSessionDataGetModeFromUserWithUserDic:andCredentialsUserDic:
  @discussion This method returns the mode from the session data collection given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSString *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary*)givenUserDic
@@ -648,7 +648,7 @@
 }
 
 /*!
- @method fromSessionDataGetModeFromUserWithUserName:andCredentialsUserDic
+ @method fromSessionDataGetModeFromUserWithUserName:andCredentialsUserDic:
  @discussion This method returns the mode from the session data collection given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSString *)fromSessionDataGetModeFromUserWithUserName:(NSString*)userName
@@ -668,7 +668,7 @@
 }
 
 /*!
- @method fromSessionDataGetStateFromUserWithUserName:andCredentialsUserDic
+ @method fromSessionDataGetStateFromUserWithUserName:andCredentialsUserDic:
  @discussion This method returns the state from the session data collection given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSString *)fromSessionDataGetStateFromUserWithUserName:(NSString*)userName
@@ -678,7 +678,7 @@
 }
 
 /*!
- @method fromSessionDataIsMeasuringUserWithUserDic:andCredentialsUserDic
+ @method fromSessionDataIsMeasuringUserWithUserDic:andCredentialsUserDic:
  @discussion This method checks in session data collection if the given user's dictionary is measuring and returns YES if so; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (BOOL)fromSessionDataIsMeasuringUserWithUserDic:(NSMutableDictionary*)givenUserDic
@@ -699,7 +699,7 @@
 }
 
 /*!
- @method fromSessionDataIsMeasuringUserWithUserName:andCredentialsUserDic
+ @method fromSessionDataIsMeasuringUserWithUserName:andCredentialsUserDic:
  @discussion This method checks in session data collection if the given user's name is measuring and returns YES if so; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (BOOL)fromSessionDataIsMeasuringUserWithUserName:(NSString*)userName
@@ -720,7 +720,7 @@
 }
 
 /*!
- @method fromSessionDataIsIdleUserWithUserDic:andCredentialsUserDic
+ @method fromSessionDataIsIdleUserWithUserDic:andCredentialsUserDic:
  @discussion This method checks in session data collection if the given user's dictionary is idle and returns YES if so; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (BOOL)fromSessionDataIsIdleUserWithUserDic:(NSMutableDictionary*)givenUserDic
@@ -741,7 +741,7 @@
 }
 
 /*!
- @method fromSessionDataIsIdleUserWithUserName:andCredentialsUserDic
+ @method fromSessionDataIsIdleUserWithUserName:andCredentialsUserDic:
  @discussion This method checks in session data collection if the given user's name is idle and returns YES if so; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (BOOL)fromSessionDataIsIdleUserWithUserName:(NSString*)userName
@@ -761,7 +761,7 @@
 }
 
 /*!
- @method fromSessionDataIsTravelingUserWithUserDic:andCredentialsUserDic
+ @method fromSessionDataIsTravelingUserWithUserDic:andCredentialsUserDic:
  @discussion This method checks in session data collection if the given user's dictionary is traveling and returns YES if so; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (BOOL)fromSessionDataIsTravelingUserWithUserDic:(NSMutableDictionary*)givenUserDic
@@ -782,7 +782,7 @@
 }
 
 /*!
- @method fromSessionDataIsTravelingUserWithUserName:andCredentialsUserDic
+ @method fromSessionDataIsTravelingUserWithUserName:andCredentialsUserDic:
  @discussion This method checks in session data collection if the given user's name is idle and returns YES if so; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (BOOL)fromSessionDataIsTravelingUserWithUserName:(NSString*)userName
@@ -803,7 +803,7 @@
 }
 
 /*!
- @method fromSessionDataGetItemChosenByUserFromUserWithUserDic:andCredentialsUserDic
+ @method fromSessionDataGetItemChosenByUserFromUserWithUserDic:andCredentialsUserDic:
  @discussion This method returns the item chosen by user from the session data collection given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserDic:(NSMutableDictionary*)givenUserDic
@@ -813,7 +813,7 @@
 }
 
 /*!
- @method fromSessionDataGetItemChosenByUserFromUserWithUserName:andCredentialsUserDic
+ @method fromSessionDataGetItemChosenByUserFromUserWithUserName:andCredentialsUserDic:
  @discussion This method returns the item chosen by user from the session data collection given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserName:(NSString*)userName
@@ -823,23 +823,43 @@
 }
 
 /*!
- @method fromSessionDataGetModeChosenByUserFromUserWithUserDic:andCredentialsUserDic
+ @method fromSessionDataGetModeChosenByUserFromUserWithUserDic:andCredentialsUserDic:
  @discussion This method returns the mode chosen by user from the session data collection given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (NSMutableDictionary *)fromSessionDataGetModeChosenByUserFromUserWithUserDic:(NSMutableDictionary*)userDic
-                                                         andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+- (NSString *)fromSessionDataGetModeChosenByUserFromUserWithUserDic:(NSMutableDictionary*)userDic
+                                              andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    return [self fromSessionDataGetKey:@"modeChosenByUser" fromUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
+    return [self fromSessionDataGetKey:@"mode" fromUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
 }
 
 /*!
- @method fromSessionDataGetModeChosenByUserFromUserWithUserName:andCredentialsUserDic
+ @method fromSessionDataGetModeChosenByUserFromUserWithUserName:andCredentialsUserDic:
  @discussion This method returns the mode chosen by user from the session data collection given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (NSMutableDictionary *)fromSessionDataGetModeChosenByUserFromUserWithUserName:(NSString*)userName
-                                                          andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+- (NSString *)fromSessionDataGetModeChosenByUserFromUserWithUserName:(NSString*)userName
+                                               andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    return [self fromSessionDataGetKey:@"modeChosenByUser" fromUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+    return [self fromSessionDataGetKey:@"mode" fromUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method fromSessionDataGetTypeChosenByUserFromUserWithUserDic:andCredentialsUserDic:
+ @discussion This method returns the type chosen by user from the session data collection given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (MDType *)fromSessionDataGetTypeChosenByUserFromUserWithUserDic:(NSMutableDictionary*)userDic
+                                            andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    return [self fromSessionDataGetKey:@"typeChosenByUser" fromUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method fromSessionDataGetTypeChosenByUserFromUserWithUserName:andCredentialsUserDic:
+ @discussion This method returns the type chosen by user from the session data collection given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (MDType *)fromSessionDataGetTypeChosenByUserFromUserWithUserName:(NSString*)userName
+                                             andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    return [self fromSessionDataGetKey:@"typeChosenByUser" fromUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
 }
 
 #pragma mark - Item data specific getters
@@ -869,8 +889,8 @@
 //
 
 /*!
- @method fromItemDataGetItemsWithSort:andCredentialsUserDic
- @discussion This method returns the 'NSMutableArray' with all item objects given its sort; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromItemDataGetItemsWithSort:andCredentialsUserDic:
+ @discussion This method returns the 'NSMutableArray' with all item objects given its sort; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromItemDataGetItemsWithSort:(NSString *)sort
                            andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
@@ -890,8 +910,8 @@
 }
 
 /*!
- @method fromItemDataGetItemsWithIdentifier:andCredentialsUserDic
- @discussion This method returns the 'NSMutableArray' with all item objects given its identifier; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromItemDataGetItemsWithIdentifier:andCredentialsUserDic:
+ @discussion This method returns the 'NSMutableArray' with all item objects given its identifier; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromItemDataGetItemsWithIdentifier:(NSString *)identifier
                                  andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
@@ -911,8 +931,8 @@
 }
 
 /*!
- @method fromItemDataGetItemsWithUUID:andCredentialsUserDic
- @discussion This method returns the 'NSMutableArray' with all item objects given its UUID; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromItemDataGetItemsWithUUID:andCredentialsUserDic:
+ @discussion This method returns the 'NSMutableArray' with all item objects given its UUID; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromItemDataGetItemsWithUUID:(NSString *)uuid
                            andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
@@ -932,8 +952,8 @@
 }
 
 /*!
- @method fromItemDataGetItemsWithUUID:major:andMinor:andCredentialsUserDic
- @discussion This method returns the 'NSMutableArray' with all item objects given its UUID, major and minor values; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromItemDataGetItemsWithUUID:major:andMinor:andCredentialsUserDic:
+ @discussion This method returns the 'NSMutableArray' with all item objects given its UUID, major and minor values; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromItemDataGetItemsWithUUID:(NSString *)uuid
                                            major:(NSString *)major
@@ -959,8 +979,8 @@
 }
 
 /*!
- @method fromItemDataGetItemsWithPosition:andCredentialsUserDic
- @discussion This method returns the 'NSMutableArray' with all item objects given its UUID; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromItemDataGetItemsWithPosition:andCredentialsUserDic:
+ @discussion This method returns the 'NSMutableArray' with all item objects given its UUID; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromItemDataGetItemsWithPosition:(RDPosition *)position
                                andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
@@ -980,8 +1000,8 @@
 }
 
 /*!
- @method fromItemDataGetItemsWithType:andCredentialsUserDic
- @discussion This method returns the 'NSMutableArray' with all item objects given its 'MDType'; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromItemDataGetItemsWithType:andCredentialsUserDic:
+ @discussion This method returns the 'NSMutableArray' with all item objects given its 'MDType'; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromItemDataGetItemsWithType:(MDType *)type
                            andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
@@ -994,6 +1014,94 @@
             }
         }
         return items;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromItemDataGetItemsWithType:andCredentialsUserDic:
+ @discussion This method returns an 'NSMutableArray' collection with every item whose values are the same that in a given 'infoDic' dictionary ("uuid" key and value is required); if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromItemDataGetItemWithInfoDic:(NSMutableDictionary*)infoDic
+                             andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        NSMutableArray * itemsFound = [[NSMutableArray alloc] init];
+        // The info dictionary must describe the item enough to find it; for that, uuid key is required
+        // Validate the keys
+        NSArray * infoDicKeys = [infoDic allKeys];
+        BOOL uuidFound = NO;
+        for (NSString * key in infoDicKeys) {
+            if ([key isEqualToString:@"uuid"]) {
+                uuidFound = YES;
+            }
+        }
+        if (uuidFound) {
+            // Do nothing
+        } else {
+            NSLog(@"[ERROR][SD] Information provided for deleting an item had not \"uuid\" key.");
+            return itemsFound;
+        }
+        
+        // Search for the item
+        BOOL itemFound = NO;
+        NSMutableDictionary * itemToAdd = nil;
+        
+        // Search for it and delete it
+        for (NSMutableDictionary * itemDic in itemsData) {
+            
+            // Search for the same UUID.
+            NSString * givenUuid = infoDic[@"uuid"];
+            if ([givenUuid isEqualToString:itemDic[@"uuid"]]) {
+                
+                itemFound = YES;
+                itemToAdd = itemDic;
+                // Verify that searched values are not different to this one...
+                for (NSString * key in infoDicKeys) {
+                    // ...if they exist.
+                    if (itemDic[key]) {
+                        
+                        id givenValue = infoDic[key];
+                        if ([givenValue isEqual:itemDic[key]]) {
+                            // Do nothing
+                        } else {
+                            itemFound = NO;
+                        }
+                    }
+                    
+                    // If not found, do nothing; if found, add it
+                    if (itemFound) {
+                        [itemsFound addObject:itemToAdd];
+                    } else {
+                        // Do nothing
+                    }
+                }
+            }
+        }
+        
+        return itemsFound;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromItemDataGetItemsWithType:andCredentialsUserDic:
+ @discussion This method returns YES if any item whose values are the same that in a given 'infoDic' dictionary is found; if is not found, NO is return; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (BOOL)fromItemDataIsItemWithInfoDic:(NSMutableDictionary*)infoDic
+                andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        NSMutableArray * itemsFound = [self fromItemDataGetItemWithInfoDic:infoDic andCredentialsUserDic:credentialsUserDic];
+        if (itemsFound.count > 0) {
+            return YES;
+        } else {
+            return NO;
+        }
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return nil;
@@ -1027,7 +1135,7 @@
 
 /*!
  @method fromMeasuresDataGetPositionDicsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all positions dictionaries; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all positions dictionaries; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMeasuresDataGetPositionDicsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
@@ -1045,7 +1153,7 @@
 
 /*!
  @method fromMeasuresDataGetPositionsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all positions 'RDPositions'; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all positions 'RDPositions'; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMeasuresDataGetPositionsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
@@ -1063,7 +1171,7 @@
 
 /*!
  @method fromMeasuresDataGetSourceUUIDDicsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all UUID dictionaries; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all UUID dictionaries; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMeasuresDataGetSourceUUIDDicsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
@@ -1100,7 +1208,7 @@
 
 /*!
  @method fromMeasuresDataGetSourceUUIDsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all UUID; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all UUID; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMeasuresDataGetSourceUUIDsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
@@ -1137,7 +1245,7 @@
 
 /*!
  @method fromMeasuresDataGetTargetUUIDDicsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all UUID dictionaries; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all UUID dictionaries; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 // Exists two different ways of name UUIDs just for semantic issues and to ease the developing.
 - (NSMutableArray *)fromMeasuresDataGetTargetUUIDDicsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
@@ -1147,7 +1255,7 @@
 
 /*!
  @method fromMeasuresDataGetTargetUUIDsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all UUID; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all UUID; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 // Exists two different ways of name UUIDs just for semantic issues and to ease the developing.
 - (NSMutableArray *)fromMeasuresDataGetTargetUUIDsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
@@ -1157,7 +1265,7 @@
 
 /*!
  @method fromMeasuresDataGetMeasureDicsTakenFromPosition:fromUUIDSource:ofSort:andWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all measure dictionaries taken from a 'RDPosition' from a given UUID and of a given sort; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all measure dictionaries taken from a 'RDPosition' from a given UUID and of a given sort; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMeasuresDataGetMeasureDicsTakenFromPosition:(RDPosition*)position
                                                      fromUUIDSource:(NSString *)uuid
@@ -1201,7 +1309,7 @@
 
 /*!
  @method fromMeasuresDataGetMeasuresTakenFromPosition:fromUUIDSource:ofSort:andWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all measures taken from a 'RDPosition' from a given UUID and of a given sort; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all measures taken from a 'RDPosition' from a given UUID and of a given sort; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position
                                                   fromUUIDSource:(NSString *)uuid
@@ -1245,7 +1353,7 @@
 
 /*!
  @method fromMeasuresDataGetMeasureDicsTakenFromPosition:ofUUIDTarget:ofSort:andWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all measures taken from a 'RDPosition' of a given UUID and of a given sort; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all measures taken from a 'RDPosition' of a given UUID and of a given sort; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMeasuresDataGetMeasureDicsTakenFromPosition:(RDPosition*)position
                                                        ofUUIDTarget:(NSString *)uuid
@@ -1260,7 +1368,7 @@
 
 /*!
  @method fromMeasuresDataGetMeasuresTakenFromPosition:ofUUIDTarget:ofSort:andWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all measures taken from a 'RDPosition' of a given UUID and of a given sort; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all measures taken from a 'RDPosition' of a given UUID and of a given sort; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position
                                                     ofUUIDTarget:(NSString *)uuid
@@ -1331,7 +1439,7 @@
 
 /*!
  @method fromLocationsDataGetPositionDicsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all located positions dictionaries stored; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all located positions dictionaries stored; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromLocationsDataGetPositionDicsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
@@ -1349,7 +1457,7 @@
 
 /*!
  @method fromLocationsDataGetPositionsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all located positions 'RDPosition' stored; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all located positions 'RDPosition' stored; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromLocationsDataGetPositionsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
@@ -1367,7 +1475,7 @@
 
 /*!
  @method fromLocationsDataGetPositionDicsOfUUID:withCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all located positions dictionaries stored given their UUID; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all located positions dictionaries stored given their UUID; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromLocationsDataGetPositionDicsOfUUID:(NSString*)uuid
                                     withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
@@ -1388,7 +1496,7 @@
 
 /*!
  @method fromLocationsDataGetPositionsOfUUID:withCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all located positions 'RDPosition' stored given their UUID; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all located positions 'RDPosition' stored given their UUID; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromLocationsDataGetPositionsOfUUID:(NSString*)uuid
                                  withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
@@ -1419,7 +1527,7 @@
 
 /*!
  @method fromMetamodelDataGetTypesWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all 'MDTypes' stored; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all 'MDTypes' stored; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMetamodelDataGetTypesWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
@@ -1465,7 +1573,7 @@
 
 /*!
  @method fromMetamodelDataGetModelDicsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all models dictionaries stored; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with all models dictionaries stored; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMetamodelDataGetModelDicsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
@@ -1483,7 +1591,7 @@
 
 /*!
  @method fromMetamodelDataGetModelDicWithName:withCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with the models whose name is the given one; if it does not exist anyone returns an empty array; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns the 'NSMutableArray' with the models whose name is the given one; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMetamodelDataGetModelDicWithName:(NSString*)name
                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
@@ -1818,7 +1926,7 @@
 //
 
 /*!
- @method inModelDataAddModelWithName:components:andWithCredentialsUserDic:
+ @method inItemDataAddItemOfSort:withIdentifier:withInfoDic:andWithCredentialsUserDic:
  @discussion This method saves in the items collection data an item with the provided information in the information dictionary, its sort and its identifier; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL) inItemDataAddItemOfSort:(NSString*)sort
@@ -1828,7 +1936,7 @@
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         
-        // If identifier exists, model is actualized; if identifier does not exist, the whole dictionary is created.
+        // If identifier exists, item is updated; if identifier does not exist, the whole dictionary is created.
         // For each item already saved...
         BOOL identifierFound = NO;
         for (itemDic in itemsData) {
@@ -1866,6 +1974,68 @@
                 itemDic[key] = infoDic[key];
             }
              
+            [itemsData addObject:itemDic];
+            
+        }
+        
+        // Everything OK
+        return YES;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
+    }
+}
+
+/*!
+ @method inItemDataAddItemOfSort: withUUID:withInfoDic:andWithCredentialsUserDic:
+ @discussion This method saves in the items collection data an item with the provided information in the information dictionary, its sort and its UUID; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL) inItemDataAddItemOfSort:(NSString*)sort
+                        withUUID:(NSString*)uuid
+                     withInfoDic:(NSMutableDictionary*)infoDic
+       andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        // If UUID exists, item is updated; if UUID does not exist, the whole dictionary is created.
+        // For each item already saved...
+        BOOL uuidFound = NO;
+        for (itemDic in itemsData) {
+            // ...check if the current uuid already exists comparing it with the saved ones.
+            
+            NSString * savedUUID = itemDic[@"uuid"];
+            if ([uuid isEqualToString:savedUUID]) { // Identifier already exists
+                uuidFound = YES;
+                
+                // Retrieve the information
+                NSArray * infoDicKeys = [infoDic allKeys];
+                for (id key in infoDicKeys) {
+                    itemDic[key] = infoDic[key];
+                }
+                
+            } else {
+                // Do nothing
+            }
+            
+        }
+        
+        // If identifier did not be found, create its dictionary
+        if (!uuidFound) {
+            
+            // Compose the dictionary from the innermost to the outermost
+            // Generate a new dictionary with the information od the provided one and add sort and UUID
+            
+            itemDic = [[NSMutableDictionary alloc] init];
+            itemDic[@"sort"] = sort;
+            itemDic[@"uuid"] = uuid;
+            
+            // Retrieve the information
+            NSArray * infoDicKeys = [infoDic allKeys];
+            for (id key in infoDicKeys) {
+                itemDic[key] = infoDic[key];
+            }
+            
             [itemsData addObject:itemDic];
             
         }
@@ -2273,7 +2443,7 @@
                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     // The info dictionary must describe the item enough to delete it; for that, sort and uuid keys are required
-    // Calidate the keys
+    // Validate the keys
     NSArray * infoDicKeys = [infoDic allKeys];
     BOOL sortFound = NO;
     BOOL uuidFound = NO;
