@@ -125,7 +125,7 @@
 - (BOOL)fromItemDataIsItemWithInfoDic:(NSMutableDictionary*)infoDic
                 andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
-// Specific measures data getters
+// Specific measures measure getters
 - (NSMutableArray *)fromMeasuresDataGetPositionDicsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (NSMutableArray *)fromMeasuresDataGetPositionsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (NSMutableArray *)fromMeasuresDataGetSourceUUIDDicsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
@@ -161,6 +161,8 @@
 
 // Specific metamodel data specific getters
 - (NSMutableArray *)fromMetamodelDataGetTypesWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL) fromMetamodelDataIsTypeWithName:(NSString *)givenName
+               andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific model data specific getters
 - (NSMutableArray *)fromMetamodelDataGetModelDicsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
@@ -262,6 +264,8 @@
 // Specific locations data specific removers
 
 // Specific metamodel data specific removers
+- (BOOL) inMetamodelDataRemoveItemWithName:(NSString*)givenName
+                     andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific model data specific removers
 

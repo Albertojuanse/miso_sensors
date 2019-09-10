@@ -154,7 +154,7 @@
                              self.textMinor.text = itemDic[@"minor"];
                              
                              if (itemDic[@"type"]){
-                                 self.textType.text = [NSString stringWithFormat:@"%@", itemDic[@"type"]];
+                                 self.textType.text = [NSString stringWithFormat:@"%@", [itemDic[@"type"] stringValue]];
                              }
                              
                              if (itemDic[@"position"]) {
@@ -228,7 +228,7 @@
                      if ([@"position" isEqualToString:itemDic[@"sort"]]) {
                          
                          if (itemDic[@"type"]){
-                             self.textType.text = [NSString stringWithFormat:@"%@", itemDic[@"type"]];
+                             self.textType.text = [NSString stringWithFormat:@"%@", [itemDic[@"type"] stringValue]];
                          }
                          
                          if (itemDic[@"position"]) {
@@ -397,11 +397,23 @@
             // This code is reached also when an type was set or uploaded, so check it
             if (![sharedData fromSessionDataGetSessionWithUserDic:credentialsUserDic
                                            andCredentialsUserDic:credentialsUserDic]) {
+                [self alertUserWithTitle:@"Warning."
+                                 message:@"As no coordinate values were introduced, the item's position is null."
+                              andHandler:^(UIAlertAction * action) {
+                                  // Do nothing
+                              }
+                 ];
                 self.labelPositionError.text = @"Warning. As no coordinate values were introduced, the item's position is null.";
                 infoDic[@"position"] = nil;
             }
         } else {
             // If ths code is reached means that there is only some coordinate values but not all of them
+            [self alertUserWithTitle:@"Some coordinate values missing."
+                             message:@"Please, submit three (x, y, z) values or push \"Back\"."
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelBeaconError.text = @"Error. Some coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
             return;
         }
@@ -431,28 +443,37 @@
  */
 - (IBAction)handleButtonAddType:(id)sender
 {
-    
     // The user tries to register the type called
     NSString * newTypeName = [self.textType text];
     
-    // Search for it
-    BOOL dicFound = NO;
-    for (NSMutableDictionary * typeDic in typesRegistered) {
+    // Search if the MDType with this name is not already registered and submit it; if it is so, alert the user.
+    if (![sharedData fromMetamodelDataIsTypeWithName:newTypeName andWithCredentialsUserDic:credentialsUserDic]) {
+        MDType * newType = [[MDType alloc] initWithName:newTypeName];
         
-        // If it exists, return
-        if ([typeDic[@"name"] isEqualToString:newTypeName]) {
-            dicFound = YES;
+        // If the remove transaction is succesful it returns YES
+        if (
+            [sharedData inMetamodelDataAddType:newType withCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            self.textType.text = @"";
             return;
-        } else {
-            // Nothing
+        } else { // Shared data not acessible
+            [self alertUserWithTitle:@"Type won't be registered."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while registering type.");
         }
-    }
-    
-    // If it did not exist, create it
-    if (!dicFound) {
-        NSMutableDictionary * typeDic = [[NSMutableDictionary alloc] init];
-        [typeDic setValue:newTypeName forKey:@"name"];
-        [typesRegistered addObject:typeDic];
+        
+    } else {
+        [self alertUserWithTitle:@"Invalid type name."
+                         message:[NSString stringWithFormat:@"The type <%@> already exists. Please, use a different one or reuse the type <%@>", newTypeName, newTypeName]
+                      andHandler:^(UIAlertAction * action) {
+                          self.textType.text = @"";
+                      }
+         ];
     }
     
     // Reload visualization
@@ -467,20 +488,37 @@
  */
 - (IBAction)handleButtonRemoveType:(id)sender
 {
+    // The user tries to remove a type; the user must select it in the table, not write it
+    MDType * typeToRemove = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:credentialsUserDic
+                                                                        andCredentialsUserDic:credentialsUserDic];
     
-    // The user tries to remove the type called
-    NSString * removeTypeName = [self.textType text];
-    
-    // Search for it
-    NSMutableDictionary * typeDicFound;
-    for (NSMutableDictionary * typeDic in typesRegistered) {
-        // If it exists, save its reference
-        if ([typeDic[@"name"] isEqualToString:removeTypeName]) {
-            typeDicFound = typeDic;
+    // Search iit and remove it.
+    NSString * typeToRemoveName = [typeToRemove getName];
+    if ([sharedData fromMetamodelDataIsTypeWithName:typeToRemoveName andWithCredentialsUserDic:credentialsUserDic]) {
+        
+        // If the remove transaction is succesful it returns YES
+        if (
+            [sharedData inMetamodelDataRemoveItemWithName:typeToRemoveName andCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            self.textType.text = @"";
+            return;
+        } else { // Type not found
+            [self alertUserWithTitle:@"Type won't be removed."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while removing type.");
         }
-    }
-    if (typeDicFound) {
-        [typesRegistered removeObject:typeDicFound];
+    } else {
+        [self alertUserWithTitle:@"Invalid type selected."
+                         message:[NSString stringWithFormat:@"The type <%@> does not exist. Please, try again", typeToRemoveName]
+                      andHandler:^(UIAlertAction * action) {
+                          
+                      }
+         ];
     }
     
     // Reload visualization
@@ -502,6 +540,12 @@
         if ([uuidTest evaluateWithObject:[self.textUUID text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"UUID not valid."
+                             message:@"Please, submit a valid UUID."
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelBeaconError.text = @"Error. UUID not valid. Please, submit a valid UUID.";
             return NO;
         }
@@ -511,12 +555,24 @@
         if ([majorAndMinorTest evaluateWithObject:[self.textMajor text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"Major value not valid."
+                             message:@"Please, submit a valid major value."
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelBeaconError.text = @"Error. Major value not valid. Please, submit a valid major value.";
             return NO;
         }
         if ([majorAndMinorTest evaluateWithObject:[self.textMinor text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"Minor value not valid."
+                             message:@"Please, submit a valid minor value."
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelBeaconError.text = @"Error. Minor value not valid. Please, submit a valid minor value.";
             return NO;
         }
@@ -526,18 +582,36 @@
         if ([floatTest evaluateWithObject:[self.textBeaconX text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"X value not valid."
+                             message:@"Please, use decimal dot: 0.01"
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelBeaconError.text = @"Error. X value not valid. Please, use decimal dot: 0.01";
             return NO;
         }
         if ([floatTest evaluateWithObject:[self.textBeaconY text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"Y value not valid."
+                             message:@"Please, use decimal dot: 0.01"
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelBeaconError.text = @"Error. Y value not valid. Please, use decimal dot: 0.01";
             return NO;
         }
         if ([floatTest evaluateWithObject:[self.textBeaconZ text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"X value not valid."
+                             message:@"Please, use decimal dot: 0.01"
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelBeaconError.text = @"Error. Z value not valid. Please, use decimal dot: 0.01";
             return NO;
         }
@@ -550,24 +624,66 @@
         if ([floatTest evaluateWithObject:[self.textPositionX text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"X value not valid."
+                             message:@"Please, use decimal dot: 0.01"
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelPositionError.text = @"Error. X value not valid. Please, use decimal dot: 0.01";
             return NO;
         }
         if ([floatTest evaluateWithObject:[self.textPositionY text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"Y value not valid."
+                             message:@"Please, use decimal dot: 0.01"
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelPositionError.text = @"Error. Y value not valid. Please, use decimal dot: 0.01";
             return NO;
         }
         if ([floatTest evaluateWithObject:[self.textPositionZ text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"Z value not valid."
+                             message:@"Please, use decimal dot: 0.01"
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelPositionError.text = @"Error. Z value not valid. Please, use decimal dot: 0.01";
             return NO;
         }
     }
     
     return YES;
+}
+
+/*!
+ @method alertUserWithTitle:andMessage:
+ @discussion This method alerts the user with a pop up window with a single "Ok" button given its message and title and lambda funcion handler.
+ */
+- (void) alertUserWithTitle:(NSString*)title
+                    message:(NSString*)message
+                 andHandler:(void (^)(UIAlertAction *action))handler;
+{
+    UIAlertController * alertUsersNotFound = [UIAlertController
+                                              alertControllerWithTitle:title
+                                              message:message
+                                              preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction * okButton = [UIAlertAction
+                                actionWithTitle:@"Ok"
+                                style:UIAlertActionStyleDefault
+                                handler:handler
+                                ];
+    
+    [alertUsersNotFound addAction:okButton];
+    [self presentViewController:alertUsersNotFound animated:YES completion:nil];
+    return;
 }
 
 /*!
@@ -587,8 +703,6 @@
         [viewControllerMainMenu setMotionManager:motion];
         [viewControllerMainMenu setLocationManager:location];
         
-        [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerMainMenu setTypesRegistered:typesRegistered];
         [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
         [viewControllerMainMenu setRegionPositionIdNumber:regionPositionIdNumber];
         
@@ -603,8 +717,6 @@
         [viewControllerMainMenu setMotionManager:motion];
         [viewControllerMainMenu setLocationManager:location];
         
-        [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerMainMenu setTypesRegistered:typesRegistered];
         [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
         [viewControllerMainMenu setRegionPositionIdNumber:regionPositionIdNumber];
         
@@ -622,7 +734,21 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableTypes) {
-        return [typesRegistered count];
+        // Get the number of metamodel elements; if acess the database is imposible, warn the user.
+        if (
+            [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            return [[sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic] count];
+        } else { // Type not found
+            [self alertUserWithTitle:@"Types won't be loaded."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while loading types.");
+        }
     }
     return 0;
 }
@@ -639,11 +765,32 @@
     
     // Configure individual cells
     if (tableView == self.tableTypes) {
-        NSMutableDictionary * typeDic = [typesRegistered objectAtIndex:indexPath.row];
-        cell.textLabel.numberOfLines = 0; // Means any number
         
-        cell.textLabel.text = [NSString stringWithFormat:@"%@", typeDic[@"name"]];
-        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+        // Database could not be acessed.
+        if (
+            [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            NSMutableDictionary * typeDic = [
+                                             [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                                             objectAtIndex:indexPath.row
+                                             ];
+            cell.textLabel.numberOfLines = 0; // Means any number
+            
+            cell.textLabel.text = [NSString stringWithFormat:@"%@", typeDic[@"name"]];
+            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+        } else { // Type not found
+            [self alertUserWithTitle:@"Types won't be loaded."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while loading cells' type.");
+        }
+        
+        
+        
     }
         
     return cell;
@@ -656,9 +803,59 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     if (tableView == self.tableTypes) {
         
         // Get the chosen type name
-        typeChosenByUser = [typesRegistered objectAtIndex:indexPath.row][@"name"];
-        self.textType.text = [typesRegistered objectAtIndex:indexPath.row][@"name"];
-        
+        // Database could not be acessed.
+        if (
+            [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            
+            MDType * typeChosenByUser = [
+                                         [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                                         objectAtIndex:indexPath.row
+                                         ];
+            
+            // If the already chosen type is the same, the user wants to deselect it; if not, could be that a type is already selected or not
+            
+            // If a type is already selected
+            MDType * typeChosenByUserStored = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:credentialsUserDic
+                                                                                          andCredentialsUserDic:credentialsUserDic];
+            if (typeChosenByUserStored) { // Already one type selected
+                if ([typeChosenByUser isEqualToMDType:typeChosenByUserStored]) { // Deselect
+                    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+                    [sharedData inSessionDataSetTypeChosenByUser:nil
+                                               toUserWithUserDic:credentialsUserDic
+                                           andCredentialsUserDic:credentialsUserDic];
+                } else { // Deselect the old one and select the new one
+                    
+                    NSInteger oldIndex = [
+                                          [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                                          indexOfObject:typeChosenByUserStored
+                                          ];
+                    // Deselect
+                    [tableView deselectRowAtIndexPath:[NSIndexPath indexPathForRow:oldIndex inSection:indexPath.section]
+                                             animated:NO
+                     ];
+                    // Select
+                    [sharedData inSessionDataSetTypeChosenByUser:typeChosenByUser
+                                               toUserWithUserDic:credentialsUserDic
+                                           andCredentialsUserDic:credentialsUserDic];
+                    
+                }
+            } else { // No type selected; select
+                [sharedData inSessionDataSetTypeChosenByUser:typeChosenByUser
+                                           toUserWithUserDic:credentialsUserDic
+                                       andCredentialsUserDic:credentialsUserDic];
+            }
+            
+        } else { // Type not found
+            [self alertUserWithTitle:@"Types won't be selected."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while selecting a cells' type.");
+        }
     }
     return;
 }

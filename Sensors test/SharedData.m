@@ -1543,6 +1543,31 @@
     }
 }
 
+/*!
+ @method fromMetamodelDataIsTypeWithName:andWithCredentialsUserDic:
+ @discussion This method returns YES if there is stored a type with the given name; if is not found, NO is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (BOOL) fromMetamodelDataIsTypeWithName:(NSString *)givenName
+               andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        // Search the type
+        for (MDType * eachType in metamodelData) {
+            NSString * name = [eachType getName];
+            if ([name isEqualToString:givenName]) {
+                return YES;
+            } else {
+                // Do nothing
+            }
+        }
+        // This code is reached if the type is not found
+        return NO;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
 #pragma mark - Model data specific getters
 //              // MODEL DATA //
 //
@@ -2442,64 +2467,70 @@
 - (BOOL) inItemDataRemoveItemWithInfoDic:(NSMutableDictionary*)infoDic
                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    // The info dictionary must describe the item enough to delete it; for that, sort and uuid keys are required
-    // Validate the keys
-    NSArray * infoDicKeys = [infoDic allKeys];
-    BOOL sortFound = NO;
-    BOOL uuidFound = NO;
-    for (NSString * key in infoDicKeys) {
-        if ([key isEqualToString:@"sort"]) {
-            sortFound = YES;
-        }
-        if ([key isEqualToString:@"uuid"]) {
-            uuidFound = YES;
-        }
-    }
-    if (sortFound && uuidFound) {
-        // Do nothing
-    } else {
-        NSLog(@"[ERROR][SD] Information provided for deleting an item had not \"sort\" or \"uuid\" keys.");
-        return NO;
-    }
-    
-    // Search for the item
-    BOOL itemFound = NO;
-    NSMutableDictionary * itemToRemove = nil;
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
 
-    // Search for it and delete it
-    for (NSMutableDictionary * itemDic in itemsData) {
+        // The info dictionary must describe the item enough to delete it; for that, sort and uuid keys are required
+        // Validate the keys
+        NSArray * infoDicKeys = [infoDic allKeys];
+        BOOL sortFound = NO;
+        BOOL uuidFound = NO;
+        for (NSString * key in infoDicKeys) {
+            if ([key isEqualToString:@"sort"]) {
+                sortFound = YES;
+            }
+            if ([key isEqualToString:@"uuid"]) {
+                uuidFound = YES;
+            }
+        }
+        if (sortFound && uuidFound) {
+            // Do nothing
+        } else {
+            NSLog(@"[ERROR][SD] Information provided for deleting an item had not \"sort\" or \"uuid\" keys.");
+            return NO;
+        }
         
-        NSString * givenSort = infoDic[@"sort"];
-        if ([givenSort isEqualToString:itemDic[@"sort"]]) {
+        // Search for the item
+        BOOL itemFound = NO;
+        NSMutableDictionary * itemToRemove = nil;
+        
+        // Search for it and delete it
+        for (NSMutableDictionary * itemDic in itemsData) {
             
-            NSString * givenUuid = infoDic[@"uuid"];
-            if ([givenUuid isEqualToString:itemDic[@"uuid"]]) {
+            NSString * givenSort = infoDic[@"sort"];
+            if ([givenSort isEqualToString:itemDic[@"sort"]]) {
                 
-                itemFound = YES;
-                itemToRemove = itemDic;
-                // Verify that searched values are not different to this one...
-                for (NSString * key in infoDicKeys) {
-                    // ...if they exist.
-                    if (itemDic[key]) {
-                        
-                        id givenValue = infoDic[key];
-                        if ([givenValue isEqual:itemDic[key]]) {
-                            // Do nothing
-                        } else {
-                            itemFound = NO;
+                NSString * givenUuid = infoDic[@"uuid"];
+                if ([givenUuid isEqualToString:itemDic[@"uuid"]]) {
+                    
+                    itemFound = YES;
+                    itemToRemove = itemDic;
+                    // Verify that searched values are not different to this one...
+                    for (NSString * key in infoDicKeys) {
+                        // ...if they exist.
+                        if (itemDic[key]) {
+                            
+                            id givenValue = infoDic[key];
+                            if ([givenValue isEqual:itemDic[key]]) {
+                                // Do nothing
+                            } else {
+                                itemFound = NO;
+                            }
                         }
                     }
                 }
             }
         }
-        
         // If not found, return; if found, remove it
         if (itemFound) {
             [itemsData removeObject:itemToRemove];
+            return YES;
         } else {
             return NO;
         }
-        return YES;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
     }
 }
 
@@ -2508,7 +2539,39 @@
 #pragma mark - Locations data specific removers
 
 #pragma mark - Metamodel data specific removers
-
+/*!
+ @method inMetamodelDataRemoveItemWithName:andCredentialsUserDic:
+ @discussion This method removes the MDType stored whose name is equals to the given one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL) inMetamodelDataRemoveItemWithName:(NSString*)givenName
+                     andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        // Search for the type called as the given name
+        MDType * typeToRemove;
+        BOOL typeToRemoveFound = NO;
+        for (MDType * eachType in metamodelData) {
+            NSString * eachTypeName = [eachType getName];
+            if ([eachTypeName isEqualToString:givenName]) {
+                typeToRemove = eachType;
+                typeToRemoveFound = YES;
+            }
+        }
+        
+        // If found, remove it; if not, return NO;
+        if (typeToRemoveFound) {
+            [metamodelData removeObject:typeToRemove];
+            return YES;
+        } else {
+            return NO;
+        }
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
+    }
+}
+    
 #pragma mark - Model data specific removers
 
 @end
