@@ -831,9 +831,6 @@
              ];
             NSLog(@"[ERROR][VCMM] Shared data could not be acessed while loading cells' type.");
         }
-        
-        
-        
     }
         
     return cell;

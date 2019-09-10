@@ -25,19 +25,6 @@
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
     
-    // For update canvas
-    NSMutableDictionary * measuresDic;
-    NSMutableDictionary * locatedDic;
-    
-    // State flags
-    BOOL idle;
-    BOOL measuring;
-    
-    // Variables
-    NSMutableArray * beaconsAndPositionsRegistered;
-    NSMutableArray * typesRegistered;
-    NSString * uuidChosenByUser;
-    
 }
 
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;

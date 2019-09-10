@@ -20,9 +20,17 @@
 {
     [super viewDidLoad];
     
-    // Variables
-    idle = YES;
-    measuring = NO;
+    // Register the current mode
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        [sharedData inSessionDataSetMode:@"RHO_THETA_MODELING"
+                       toUserWithUserDic:credentialsUserDic
+                   andCredentialsUserDic:credentialsUserDic];
+    } else {
+        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+    }
     
     // Ask canvas to initialize
     [self.canvas prepareCanvasWithMode:@"RHO_THETA_MODELING"];
@@ -92,24 +100,6 @@
     location = newLocation;
 }
 
-/*!
- @method setBeaconsAndPositionsRegistered:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered
-{
-    beaconsAndPositionsRegistered = newBeaconsAndPositionsRegistered;
-}
-
-/*!
- @method setTypesRegistered:
- @discussion This method sets the NSMutableArray variable 'typesRegistered'.
- */
-- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered
-{
-    typesRegistered = newTypesRegistered;
-}
-
 #pragma mark - Notification event handles
 
 /*!
@@ -122,15 +112,17 @@
     // unless you use this method for observation of other notifications
     // as well.
     
+    // TO DO: Acess data shared from canvas. Alberto J. 2019/09/10.
+    
     if ([[notification name] isEqualToString:@"refreshCanvas"]){
         NSLog(@"[NOTI][VC] Notification \"refreshCanvas\" recived");
         
-        // Save beacons
-        NSDictionary *data = notification.userInfo;
-        measuresDic = [data valueForKey:@"measuresDic"];
-        locatedDic = [data valueForKey:@"locatedDic"];
-        self.canvas.measuresDic = measuresDic;
-        self.canvas.locatedDic = locatedDic;
+        // // Save beacons
+        // NSDictionary *data = notification.userInfo;
+        // measuresDic = [data valueForKey:@"measuresDic"];
+        // locatedDic = [data valueForKey:@"locatedDic"];
+        // self.canvas.measuresDic = measuresDic;
+        // self.canvas.locatedDic = locatedDic;
     }
     
     [self.canvas setNeedsDisplay];
@@ -144,38 +136,48 @@
  */
 - (IBAction)handleButtonMeasure:(id)sender
 {
+    // First, validate the acess to the data shared collection
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        
+    } else {
+        [self alertUserWithTitle:@"Travel won't be started."
+                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCRRM] Shared data could not be acessed while starting travel.");
+        return;
+    }
     
     // In every state the button performs different behaviours
-    if (idle) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
-        if (uuidChosenByUser) {
+    NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:credentialsUserDic
+                                                        andCredentialsUserDic:credentialsUserDic];
+    
+    if ([state isEqualToString:@"IDLE"]) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
+        if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:credentialsUserDic
+                                                        andCredentialsUserDic:credentialsUserDic]) {
             [self.buttonMeasure setEnabled:YES];
-            idle = NO;
-            measuring = YES;
+            [sharedData inSessionDataSetMeasuringUserWithUserDic:credentialsUserDic
+                                       andWithCredentialsUserDic:credentialsUserDic];
             [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
         
-            NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-            // Create a copy of beacons for sending it; concurrence issues prevented
-            NSMutableArray * beaconsAndPositionsRegisteredToSend = [[NSMutableArray alloc] init];
-            for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-                [beaconsAndPositionsRegisteredToSend addObject:regionDic];
-            }
-            [data setObject:beaconsAndPositionsRegisteredToSend forKey:@"beaconsAndPositionsRegistered"];
-            [data setObject:uuidChosenByUser forKey:@"uuidChosenByUser"];
-            [data setObject:@"RHO_THETA_MODELING" forKey:@"mode"];
             // And send the notification
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
-                                                                object:nil
-                                                              userInfo:data];
+                                                                object:nil];
             NSLog(@"[NOTI][VCRTM] Notification \"startMeasuring\" posted.");
             return;
         } else {
             return;
         }
     }
-    if (measuring) { // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
+    if ([state isEqualToString:@"MEASURING"]) { // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
         [self.buttonMeasure setEnabled:YES];
-        idle = YES;
-        measuring = NO;
+        [sharedData inSessionDataSetIdleUserWithUserDic:credentialsUserDic
+                              andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, aim the iBEacon device and tap 'Measure' for starting. Tap back for finishing."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
                                                             object:nil];
@@ -191,6 +193,30 @@
 - (IBAction)handleBackButton:(id)sender
 {
     [self performSegueWithIdentifier:@"fromRHO_THETA_MODELINGToMain" sender:sender];
+}
+
+/*!
+ @method alertUserWithTitle:andMessage:
+ @discussion This method alerts the user with a pop up window with a single "Ok" button given its message and title and lambda funcion handler.
+ */
+- (void) alertUserWithTitle:(NSString*)title
+                    message:(NSString*)message
+                 andHandler:(void (^)(UIAlertAction *action))handler;
+{
+    UIAlertController * alertUsersNotFound = [UIAlertController
+                                              alertControllerWithTitle:title
+                                              message:message
+                                              preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction * okButton = [UIAlertAction
+                                actionWithTitle:@"Ok"
+                                style:UIAlertActionStyleDefault
+                                handler:handler
+                                ];
+    
+    [alertUsersNotFound addAction:okButton];
+    [self presentViewController:alertUsersNotFound animated:YES completion:nil];
+    return;
 }
 
 /*!
@@ -211,9 +237,6 @@
         [viewControllerMainMenu setSharedData:sharedData];
         [viewControllerMainMenu setMotionManager:motion];
         [viewControllerMainMenu setLocationManager:location];
-        
-        [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerMainMenu setTypesRegistered:typesRegistered];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
@@ -237,7 +260,21 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableBeaconsAndPositions) {
-        return [beaconsAndPositionsRegistered count];
+        // Get the number of metamodel elements; if acess the database is imposible, warn the user.
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            return [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+        } else { // Type not found
+            [self alertUserWithTitle:@"Items won't be loaded."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while loading items.");
+        }
     }
     return 0;
 }
@@ -254,94 +291,115 @@
     
     // Configure individual cells
     if (tableView == self.tableBeaconsAndPositions) {
-        NSMutableDictionary * regionDic = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row];
-        cell.textLabel.numberOfLines = 0; // Means any number
         
-        // If it is a beacon
-        if ([@"beacon" isEqualToString:regionDic[@"sort"]]) {
+        // Database could not be acessed.
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
+        {
             
-            // It representation depends on if exist its position or its type
-            if (regionDic[@"x"] && regionDic[@"y"] && regionDic[@"z"]) {
-                if (regionDic[@"sort"]) {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
-                                           regionDic[@"identifier"],
-                                           regionDic[@"sort"][@"name"],
-                                           regionDic[@"uuid"],
-                                           regionDic[@"major"],
-                                           regionDic[@"minor"],
-                                           regionDic[@"x"],
-                                           regionDic[@"y"],
-                                           regionDic[@"z"]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    
+            // Load the items
+            NSMutableDictionary * regionDic = [
+                                               [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                                               objectAtIndex:indexPath.row
+                                               ];
+            cell.textLabel.numberOfLines = 0; // Means any number
+            
+            // If it is a beacon
+            if ([@"beacon" isEqualToString:regionDic[@"sort"]]) {
+                
+                // It representation depends on if exist its position or its type
+                if (regionDic[@"x"] && regionDic[@"y"] && regionDic[@"z"]) {
+                    if (regionDic[@"sort"]) {
+                        
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                                               regionDic[@"identifier"],
+                                               regionDic[@"sort"][@"name"],
+                                               regionDic[@"uuid"],
+                                               regionDic[@"major"],
+                                               regionDic[@"minor"],
+                                               regionDic[@"x"],
+                                               regionDic[@"y"],
+                                               regionDic[@"z"]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                        
+                    } else {
+                        
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                                               regionDic[@"identifier"],
+                                               regionDic[@"uuid"],
+                                               regionDic[@"major"],
+                                               regionDic[@"minor"],
+                                               regionDic[@"x"],
+                                               regionDic[@"y"],
+                                               regionDic[@"z"]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                        
+                    }
                 } else {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                    if (regionDic[@"sort"]) {
+                        
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nmajor: %@ ; minor: %@",
+                                               regionDic[@"identifier"],
+                                               regionDic[@"sort"][@"name"],
+                                               regionDic[@"uuid"],
+                                               regionDic[@"major"],
+                                               regionDic[@"minor"]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                        
+                    } else  {
+                        
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
+                                               regionDic[@"identifier"],
+                                               regionDic[@"uuid"],
+                                               regionDic[@"major"],
+                                               regionDic[@"minor"]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                        
+                    }
+                }
+            }
+            
+            // And if it is a position
+            if ([@"position" isEqualToString:regionDic[@"sort"]]) {
+                // If its type is set
+                if (regionDic[@"sort"]) {
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> \n Position: (%@, %@, %@)",
                                            regionDic[@"identifier"],
-                                           regionDic[@"uuid"],
-                                           regionDic[@"major"],
-                                           regionDic[@"minor"],
+                                           regionDic[@"sort"][@"name"],
                                            regionDic[@"x"],
                                            regionDic[@"y"],
                                            regionDic[@"z"]
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    
-                }
-            } else {
-                if (regionDic[@"sort"]) {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nmajor: %@ ; minor: %@",
+                } else {
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%@, %@, %@)",
                                            regionDic[@"identifier"],
-                                           regionDic[@"sort"][@"name"],
-                                           regionDic[@"uuid"],
-                                           regionDic[@"major"],
-                                           regionDic[@"minor"]
+                                           regionDic[@"x"],
+                                           regionDic[@"y"],
+                                           regionDic[@"z"]
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    
-                } else  {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
-                                           regionDic[@"identifier"],
-                                           regionDic[@"uuid"],
-                                           regionDic[@"major"],
-                                           regionDic[@"minor"]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    
                 }
-            }
-        }
-        
-        // And if it is a position
-        if ([@"position" isEqualToString:regionDic[@"sort"]]) {
-            // If its type is set
-            if (regionDic[@"sort"]) {
-                cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> \n Position: (%@, %@, %@)",
-                                       regionDic[@"identifier"],
-                                       regionDic[@"sort"][@"name"],
-                                       regionDic[@"x"],
-                                       regionDic[@"y"],
-                                       regionDic[@"z"]
-                                       ];
-                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-            } else {
-                cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%@, %@, %@)",
-                                       regionDic[@"identifier"],
-                                       regionDic[@"x"],
-                                       regionDic[@"y"],
-                                       regionDic[@"z"]
-                                       ];
-                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                
+                // In this mode, only beacons can be aimed, and so, positions are marked
+                [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
+                [cell setTintColor:[UIColor redColor]];
+                
             }
             
-            // In this mode, only beacons can be aimed, and so, positions are marked
-            [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
-            [cell setTintColor:[UIColor redColor]];
-            
+        } else { // Type not found
+            [self alertUserWithTitle:@"Items won't be loaded."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while loading cells' item.");
         }
     }
     return cell;
@@ -350,17 +408,36 @@
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     if (tableView == self.tableBeaconsAndPositions) {
-    
-        // Only beacons can be aimed, positions were marked
-        if ([@"position" isEqualToString:
-              [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"sort"]
-              ])
+        
+        // Database could not be acessed.
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
         {
-            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+            NSMutableDictionary * itemSelected = [
+                                                  [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                                                  objectAtIndex:indexPath.row
+                                                  ];
+            
+            // Only beacons can be aimed, positions were marked
+            if ([@"position" isEqualToString:itemSelected[@"sort"]])
+            {
+                [tableView deselectRowAtIndexPath:indexPath animated:NO];
+            } else {
+                [sharedData inSessionDataSetItemChosenByUser:itemSelected
+                                           toUserWithUserDic:credentialsUserDic
+                                       andCredentialsUserDic:credentialsUserDic];
+            }
+            
         } else {
-            uuidChosenByUser = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"uuid"];
+            [self alertUserWithTitle:@"Items won't be loaded."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while loading cells' item.");
         }
     }
 }
