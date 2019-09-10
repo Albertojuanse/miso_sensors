@@ -333,10 +333,39 @@
     infoDic[@"major"] = [self.textMajor text];
     infoDic[@"minor"] = [self.textMinor text];
     
-    // Ask shared data to remove it.
-    [sharedData inItemDataRemoveItemWithInfoDic:infoDic withCredentialsUserDic:credentialsUserDic];
-    
-    [self performSegueWithIdentifier:@"backFromAddToMain" sender:sender];
+    // Ask shared data to remove it; database could not be acessed.
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        
+        // It can be not found
+        if (
+            [sharedData inItemDataRemoveItemWithInfoDic:infoDic withCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            [self performSegueWithIdentifier:@"backFromAddToMain" sender:sender];
+            return;
+        } else { // Not found
+            [self alertUserWithTitle:@"Type won't be removed."
+                             message:[NSString stringWithFormat:@"Type could not be found; please, try again or check for multiuser interferences."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCMM] Type could not be removed.");
+        }
+        
+    } else { // Type not found
+        [self alertUserWithTitle:@"Type won't be removed."
+                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCMM] Shared data could not be acessed while removing a type.");
+    }
+    return;
 }
 
 /*!
@@ -489,8 +518,22 @@
 - (IBAction)handleButtonRemoveType:(id)sender
 {
     // The user tries to remove a type; the user must select it in the table, not write it
-    MDType * typeToRemove = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:credentialsUserDic
-                                                                        andCredentialsUserDic:credentialsUserDic];
+    if (
+        MDType * typeToRemove = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:credentialsUserDic
+                                                                            andCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        self.textType.text = @"";
+        return;
+    } else { // Type not found
+        [self alertUserWithTitle:@"Type won't be removed."
+                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCMM] Shared data could not be acessed while removing type.");
+    }
     
     // Search iit and remove it.
     NSString * typeToRemoveName = [typeToRemove getName];
@@ -736,7 +779,7 @@
     if (tableView == self.tableTypes) {
         // Get the number of metamodel elements; if acess the database is imposible, warn the user.
         if (
-            [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
             return [[sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic] count];
@@ -768,7 +811,7 @@
         
         // Database could not be acessed.
         if (
-            [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
             NSMutableDictionary * typeDic = [
@@ -805,7 +848,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         // Get the chosen type name
         // Database could not be acessed.
         if (
-            [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
             
