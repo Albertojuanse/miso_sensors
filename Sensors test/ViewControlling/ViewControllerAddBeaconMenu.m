@@ -345,7 +345,6 @@
             )
         {
             [self performSegueWithIdentifier:@"backFromAddToMain" sender:sender];
-            return;
         } else { // Not found
             [self alertUserWithTitle:@"Type won't be removed."
                              message:[NSString stringWithFormat:@"Type could not be found; please, try again or check for multiuser interferences."]
@@ -518,13 +517,14 @@
 - (IBAction)handleButtonRemoveType:(id)sender
 {
     // The user tries to remove a type; the user must select it in the table, not write it
+    MDType * typeToRemove;
     if (
-        MDType * typeToRemove = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:credentialsUserDic
-                                                                            andCredentialsUserDic:credentialsUserDic]
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
+        typeToRemove = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:credentialsUserDic
+                                                                            andCredentialsUserDic:credentialsUserDic];
         self.textType.text = @"";
-        return;
     } else { // Type not found
         [self alertUserWithTitle:@"Type won't be removed."
                          message:[NSString stringWithFormat:@"Database could not be acessed; please, try again."]
@@ -533,9 +533,10 @@
                       }
          ];
         NSLog(@"[ERROR][VCMM] Shared data could not be acessed while removing type.");
+        return;
     }
     
-    // Search iit and remove it.
+    // Search it and remove it.
     NSString * typeToRemoveName = [typeToRemove getName];
     if ([sharedData fromMetamodelDataIsTypeWithName:typeToRemoveName andWithCredentialsUserDic:credentialsUserDic]) {
         
@@ -545,7 +546,6 @@
             )
         {
             self.textType.text = @"";
-            return;
         } else { // Type not found
             [self alertUserWithTitle:@"Type won't be removed."
                              message:[NSString stringWithFormat:@"Database could not be acessed; please, try again."]
