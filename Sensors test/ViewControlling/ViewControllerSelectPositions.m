@@ -81,33 +81,6 @@
     location = newLocation;
 }
 
-/*!
- @method setBeaconsAndPositionsRegistered:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered
-{
-    beaconsAndPositionsRegistered = newBeaconsAndPositionsRegistered;
-}
-
-/*!
- @method setChosenMode:
- @discussion This method sets the NSString variable 'chosenMode'.
- */
-- (void) setChosenMode:(NSString *)newChosenMode
-{
-    chosenMode = newChosenMode;
-}
-
-/*!
- @method setTypesRegistered:
- @discussion This method sets the NSMutableArray variable 'typesRegistered'.
- */
-- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered
-{
-    typesRegistered = newTypesRegistered;
-}
-
 #pragma mark - Buttons event handles
 
 /*!

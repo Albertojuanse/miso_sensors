@@ -26,11 +26,7 @@
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
     
-    NSString * chosenMode;
-    
     // Beacons' region identifiers
-    NSMutableArray * beaconsAndPositionsRegistered;
-    NSMutableArray * typesRegistered;
     NSMutableArray * beaconsAndPositionsChosen;
     NSMutableArray * beaconsAndPositionsChosenIndexes;
     

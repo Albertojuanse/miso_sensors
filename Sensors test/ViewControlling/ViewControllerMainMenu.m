@@ -50,6 +50,7 @@
     //     "mode": (NSString *)mode1;
     //     "state": (NSString *)state1;
     //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
+    //     "itemsChosenByUser": (NSMutableArray *)items1;
     //     "typeChosenByUser": (MDType*)type1
     //   },
     //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
@@ -73,7 +74,6 @@
     //     "position": (RDPosition *)position1;
     //
     //     "type": (MDType*)type1
-    //
     //   },
     //   { "sort": @"beacon" | @"position";
     //     "identifier": (NSString *)identifier2;

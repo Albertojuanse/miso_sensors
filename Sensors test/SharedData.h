@@ -223,6 +223,18 @@
                         withUUID:(NSString*)uuid
                      withInfoDic:(NSMutableDictionary*)infoDic
        andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL) inItemDataSetAsChosenItem:(NSMutableDictionary*)givenItemDic
+                 toUserWithUserDic:(NSMutableDictionary*)userDic
+            withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL) inItemDataSetAsChosenItem:(NSMutableDictionary*)givenItemDic
+                toUserWithUserName:(NSString*)userName
+            withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL) inItemDataSetAsNotChosenItem:(NSMutableDictionary*)givenItemDic
+                    toUserWithUserDic:(NSMutableDictionary*)userDic
+               withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL) inItemDataSetAsNotChosenItem:(NSMutableDictionary*)givenItemDic
+                   toUserWithUserName:(NSString*)userName
+               withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific measures data setters
 - (BOOL) inMeasuresDataSetMeasure:(NSNumber*)measure

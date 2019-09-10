@@ -34,8 +34,6 @@
     BOOL measuring;
     
     // Variables
-    NSMutableArray * beaconsAndPositionsRegistered;
-    NSMutableArray * typesRegistered;
     NSMutableArray * beaconsAndPositionsChosen;
     NSMutableArray * beaconsAndPositionsChosenIndexes;
     NSString * locatedPositionUUID;
