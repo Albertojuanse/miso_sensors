@@ -43,7 +43,7 @@
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *tableModes;
-@property (weak, nonatomic) IBOutlet UITableView *tableBeaconsAndPositions;
+@property (weak, nonatomic) IBOutlet UITableView *tableItems;
 
 
 - (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic;

@@ -28,7 +28,7 @@
 }
 
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;
-@property (weak, nonatomic) IBOutlet UITableView *tableBeaconsAndPositions;
+@property (weak, nonatomic) IBOutlet UITableView *tableItems;
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 
@@ -36,8 +36,5 @@
 - (void) setSharedData:(SharedData *)newSharedData;
 - (void) setMotionManager:(MotionManager *)newMotion;
 - (void) setLocationManager:(LocationManagerDelegate *)newLocation;
-
-- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
-- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered;
 
 @end

@@ -25,12 +25,12 @@
     beaconsAndPositionsChosenIndexes = [[NSMutableArray alloc] init];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
-    self.tableBeaconsAndPositions.delegate = self;
-    self.tableBeaconsAndPositions.dataSource = self;
+    self.tableItems.delegate = self;
+    self.tableItems.dataSource = self;
     // Allow multiple selection
-    self.tableBeaconsAndPositions.allowsMultipleSelection = true;
+    self.tableItems.allowsMultipleSelection = true;
     
-    [self.tableBeaconsAndPositions reloadData];
+    [self.tableItems reloadData];
 }
 
 /*!
@@ -233,7 +233,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.tableBeaconsAndPositions) {
+    if (tableView == self.tableItems) {
         return [beaconsAndPositionsRegistered count];
     }
     return 0;
@@ -250,7 +250,7 @@
     }
     
     // Configure individual cells
-    if (tableView == self.tableBeaconsAndPositions) {
+    if (tableView == self.tableItems) {
         NSMutableDictionary * regionDic = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row];
         cell.textLabel.numberOfLines = 0; // Means any number
         
@@ -349,7 +349,7 @@
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if (tableView == self.tableBeaconsAndPositions) {
+    if (tableView == self.tableItems) {
         
         // The table was set in 'viewDidLoad' as multiple-selecting
         // Manage multi-selection

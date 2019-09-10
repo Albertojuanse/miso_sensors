@@ -46,10 +46,10 @@
     [self.labelStatus setText:@"IDLE; please, aim the iBEacon device and tap 'Measure' for starting. Tap back for finishing."];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
-    self.tableBeaconsAndPositions.delegate = self;
-    self.tableBeaconsAndPositions.dataSource = self;
+    self.tableItems.delegate = self;
+    self.tableItems.dataSource = self;
     
-    [self.tableBeaconsAndPositions reloadData];
+    [self.tableItems reloadData];
 }
 
 /*!
@@ -259,7 +259,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.tableBeaconsAndPositions) {
+    if (tableView == self.tableItems) {
         // Get the number of metamodel elements; if acess the database is imposible, warn the user.
         if (
             [sharedData validateCredentialsUserDic:credentialsUserDic]
@@ -290,7 +290,7 @@
     }
     
     // Configure individual cells
-    if (tableView == self.tableBeaconsAndPositions) {
+    if (tableView == self.tableItems) {
         
         // Database could not be acessed.
         if (
@@ -408,7 +408,7 @@
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (tableView == self.tableBeaconsAndPositions) {
+    if (tableView == self.tableItems) {
         
         // Database could not be acessed.
         if (

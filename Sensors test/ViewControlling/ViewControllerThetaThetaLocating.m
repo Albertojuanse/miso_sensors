@@ -20,6 +20,18 @@
 {
     [super viewDidLoad];
     
+    // Register the current mode
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        [sharedData inSessionDataSetMode:@"THETA_THETA_LOCATING"
+                       toUserWithUserDic:credentialsUserDic
+                   andCredentialsUserDic:credentialsUserDic];
+    } else {
+        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+    }
+    
     // Variables
     idle = YES;
     measuring = NO;
@@ -39,12 +51,12 @@
     [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
-    self.tableBeaconsAndPositionsChosen.delegate = self;
+    self.tableItemsChosen.delegate = self;
     self.tableTypes.delegate = self;
-    self.tableBeaconsAndPositionsChosen.dataSource = self;
+    self.tableItemsChosen.dataSource = self;
     self.tableTypes.dataSource = self;
     
-    [self.tableBeaconsAndPositionsChosen reloadData];
+    [self.tableItemsChosen reloadData];
     [self.tableTypes reloadData];
 }
 
@@ -272,7 +284,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.tableBeaconsAndPositionsChosen) {
+    if (tableView == self.tableItemsChosen) {
         return [beaconsAndPositionsChosen count];
     }
     if (tableView == self.tableTypes) {
@@ -292,7 +304,7 @@
     }
     
     // Configure individual cells
-    if (tableView == self.tableBeaconsAndPositionsChosen) {
+    if (tableView == self.tableItemsChosen) {
         NSMutableDictionary * regionDic = [beaconsAndPositionsChosen objectAtIndex:indexPath.row];
         cell.textLabel.numberOfLines = 0; // Means any number
         
@@ -399,7 +411,7 @@
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if (tableView == self.tableBeaconsAndPositionsChosen) {
+    if (tableView == self.tableItemsChosen) {
         
         // Only positions can be aimed, positions were marked
         if ([@"position" isEqualToString:

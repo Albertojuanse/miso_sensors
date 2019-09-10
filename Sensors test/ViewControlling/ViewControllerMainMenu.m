@@ -311,11 +311,11 @@
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableModes.delegate = self;
     self.tableModes.dataSource = self;
-    self.tableBeaconsAndPositions.delegate = self;
-    self.tableBeaconsAndPositions.dataSource = self;
+    self.tableItems.delegate = self;
+    self.tableItems.dataSource = self;
     
     [self.tableModes reloadData];
-    [self.tableBeaconsAndPositions reloadData];
+    [self.tableItems reloadData];
 }
 
 /*!
@@ -398,34 +398,51 @@
 
 - (IBAction)handleButonStart:(id)sender
 {
-    // If user did select a row in the table
-    if (chosenMode) {
-        
-        if ([chosenMode isEqualToString:[modes objectAtIndex:0]]) { // RHO_RHO_MODELING
-            [self performSegueWithIdentifier:@"fromMainToRHO_RHO_MODELING" sender:sender];
-        }
-        if ([chosenMode isEqualToString:[modes objectAtIndex:1]]) { // RHO_THETA_MODELING
-            [self performSegueWithIdentifier:@"fromMainToRHO_THETA_MODELING" sender:sender];
-        }
-        if ([chosenMode isEqualToString:[modes objectAtIndex:2]]) { // RHO_THETA_MODELING
+    // Register the current mode
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // If user did select a row in the table
+        if (chosenMode) {
+            
+            if ([chosenMode isEqualToString:[modes objectAtIndex:0]]) { // RHO_RHO_MODELING
+                [sharedData inSessionDataSetMode:@"RHO_RHO_MODELING"
+                               toUserWithUserDic:credentialsUserDic
+                           andCredentialsUserDic:credentialsUserDic];
+                [self performSegueWithIdentifier:@"fromMainToRHO_RHO_MODELING" sender:sender];
+            }
+            if ([chosenMode isEqualToString:[modes objectAtIndex:1]]) { // RHO_THETA_MODELING
+                [sharedData inSessionDataSetMode:@"RHO_THETA_MODELING"
+                               toUserWithUserDic:credentialsUserDic
+                           andCredentialsUserDic:credentialsUserDic];
+                [self performSegueWithIdentifier:@"fromMainToRHO_THETA_MODELING" sender:sender];
+            }
+            if ([chosenMode isEqualToString:[modes objectAtIndex:2]]) { // RHO_THETA_MODELING
+                return;
+                // [self performSegueWithIdentifier:@"fromMainToTHETA_THETA_MODELING" sender:sender];
+            }
+            if ([chosenMode isEqualToString:[modes objectAtIndex:3]]) { // RHO_RHO_LOCATING
+                return;
+                // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+            }
+            if ([chosenMode isEqualToString:[modes objectAtIndex:4]]) { // RHO_THETA_LOCATING
+                return;
+                // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+            }
+            if ([chosenMode isEqualToString:[modes objectAtIndex:5]]) { // THETA_THETA_LOCATING
+                [sharedData inSessionDataSetMode:@"THETA_THETA_LOCATING"
+                               toUserWithUserDic:credentialsUserDic
+                           andCredentialsUserDic:credentialsUserDic];
+                [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+            }
+            
             return;
-            // [self performSegueWithIdentifier:@"fromMainToTHETA_THETA_MODELING" sender:sender];
-        }
-        if ([chosenMode isEqualToString:[modes objectAtIndex:3]]) { // RHO_RHO_LOCATING
+        } else {
             return;
-            // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
         }
-        if ([chosenMode isEqualToString:[modes objectAtIndex:4]]) { // RHO_THETA_LOCATING
-            return;
-            // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
-        }
-        if ([chosenMode isEqualToString:[modes objectAtIndex:5]]) { // THETA_THETA_LOCATING
-            [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
-        }
-        
-        return;
     } else {
-        return;
+        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
     }
 }
 
@@ -510,7 +527,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.tableBeaconsAndPositions) {
+    if (tableView == self.tableItems) {
         return [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
     }
     if (tableView == self.tableModes) {
@@ -530,7 +547,7 @@
     }
     
     // Configure individual cells
-    if (tableView == self.tableBeaconsAndPositions) {
+    if (tableView == self.tableItems) {
         NSMutableDictionary * itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] objectAtIndex:indexPath.row];
         
         // The itemDic variable can be null or NO if access is not granted or there are not items stored.
@@ -643,7 +660,7 @@
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if (tableView == self.tableBeaconsAndPositions) {
+    if (tableView == self.tableItems) {
         
         // Reset
         // CredentialsUserDic is the current device's user.
