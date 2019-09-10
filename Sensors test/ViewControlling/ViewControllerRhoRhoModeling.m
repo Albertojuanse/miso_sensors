@@ -20,10 +20,17 @@
 {
     [super viewDidLoad];
     
-    // Variables
-    idle = YES;
-    measuring = NO;
-    traveling = NO;
+    // Register the current mode
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        [sharedData inSessionDataSetMode:@"RHO_RHO_MODELING"
+                       toUserWithUserDic:credentialsUserDic
+                   andCredentialsUserDic:credentialsUserDic];        
+    } else {
+        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+    }
     
     // Ask canvas to initialize
     [self.canvas prepareCanvasWithMode:@"RHO_RHO_MODELING"];
@@ -88,24 +95,6 @@
     location = newLocation;
 }
 
-/*!
- @method setBeaconsAndPositionsRegistered:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered
-{
-    beaconsAndPositionsRegistered = newBeaconsAndPositionsRegistered;
-}
-
-/*!
- @method setTypesRegistered:
- @discussion This method sets the NSMutableArray variable 'typesRegistered'.
- */
-- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered
-{
-    typesRegistered = newTypesRegistered;
-}
-
 #pragma mark - Notification event handles
 
 /*!
@@ -118,15 +107,17 @@
     // unless you use this method for observation of other notifications
     // as well.
     
+    // TO DO: Acess data shared from canvas. Alberto J. 2019/09/10.
+    
     if ([[notification name] isEqualToString:@"refreshCanvas"]){
         NSLog(@"[NOTI][VC] Notification \"refreshCanvas\" recived");
         
-        // Save beacons
-        NSDictionary *data = notification.userInfo;
-        measuresDic = [data valueForKey:@"measuresDic"];
-        locatedDic = [data valueForKey:@"locatedDic"];
-        self.canvas.measuresDic = measuresDic;
-        self.canvas.locatedDic = locatedDic;
+        // // Save beacons
+        // NSDictionary *data = notification.userInfo;
+        // measuresDic = [data valueForKey:@"measuresDic"];
+        // locatedDic = [data valueForKey:@"locatedDic"];
+        // self.canvas.measuresDic = measuresDic;
+        // self.canvas.locatedDic = locatedDic;
         
     }
     [self.canvas setNeedsDisplay];
@@ -140,14 +131,32 @@
  */
 - (IBAction)handleButtonTravel:(id)sender
 {
+    // First, validate the acess to the data shared collection
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        
+    } else {
+        [self alertUserWithTitle:@"Travel won't be started."
+                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCRRM] Shared data could not be acessed while starting travel.");
+        return;
+    }
     
     // In every state the button performs different behaviours
-    if (idle) { // If idle, user can travel or measuring; if 'Travel' is tapped, ask start traveling.
+    NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:credentialsUserDic
+                                                        andCredentialsUserDic:credentialsUserDic];
+    
+    if ([state isEqualToString:@"IDLE"]) { // If idle, user can travel or measuring; if 'Travel' is tapped, ask start traveling.
         [self.buttonTravel setEnabled:YES];
         [self.buttonMeasure setEnabled:NO];
-        idle = NO;
-        measuring = NO;
-        traveling = YES;
+        [sharedData inSessionDataSetTravelingUserWithUserDic:credentialsUserDic
+                                   andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"TRAVELING; please, tap 'Travel' again for finishing travel."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"startTraveling"
                                                             object:nil];
@@ -155,22 +164,20 @@
         return;
         
     }
-    if (measuring) { // If measuring, user can travel or measuring; if 'Travel' is tapped while measure an error ocurred and nothing must happen.
+    if ([state isEqualToString:@"MEASURING"]) { // If measuring, user can travel or measuring; if 'Travel' is tapped while measure an error ocurred and nothing must happen.
         NSLog(@"[ERROR][VCRRM] Measuring button were tapped while in TRAVELING state.");
         [self.buttonTravel setEnabled:YES];
         [self.buttonMeasure setEnabled:NO];
-        idle = NO;
-        measuring = NO;
-        traveling = YES;
+        [sharedData inSessionDataSetTravelingUserWithUserDic:credentialsUserDic
+                                   andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"TRAVELING; please, tap 'Travel' again for finishing travel."];
         return;
     }
-    if (traveling) { // If traveling, user can finish the travel; if 'Travel' is tapped, ask stop traveling.
+    if ([state isEqualToString:@"TRAVELING"]) { // If traveling, user can finish the travel; if 'Travel' is tapped, ask stop traveling.
         [self.buttonTravel setEnabled:YES];
         [self.buttonMeasure setEnabled:YES];
-        idle = YES;
-        measuring = NO;
-        traveling = NO;
+        [sharedData inSessionDataSetIdleUserWithUserDic:credentialsUserDic
+                              andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, tap 'Measure' ot 'Travel' for starting. Tap back for finishing."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopTraveling"
                                                             object:nil];
@@ -185,38 +192,46 @@
  */
 - (IBAction)handleButtonMeasure:(id)sender
 {
+    // First, validate the acess to the data shared collection
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        
+    } else {
+        [self alertUserWithTitle:@"Travel won't be started."
+                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCRRM] Shared data could not be acessed while starting travel.");
+        return;
+    }
     
     // In every state the button performs different behaviours
-    if (idle) { // If idle, user can travel or measuring; if 'Measuring' is tapped, ask start measuring.
+    NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:credentialsUserDic
+                                                        andCredentialsUserDic:credentialsUserDic];
+    
+    if ([state isEqualToString:@"IDLE"]) { // If idle, user can travel or measuring; if 'Measuring' is tapped, ask start measuring.
         [self.buttonTravel setEnabled:NO];
         [self.buttonMeasure setEnabled:YES];
-        idle = NO;
-        measuring = YES;
-        traveling = NO;
+        [sharedData inSessionDataSetMeasuringUserWithUserDic:credentialsUserDic
+                                   andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"MEASURING; please, tap 'Measure' again for finishing measure."];
         
-        NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-        // Create a copy of beacons for sending it; concurrence issues prevented
-        NSMutableArray * beaconsAndPositionsRegisteredToSend = [[NSMutableArray alloc] init];
-        for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-            [beaconsAndPositionsRegisteredToSend addObject:regionDic];
-        }
-        [data setObject:beaconsAndPositionsRegisteredToSend forKey:@"beaconsAndPositionsRegistered"];
-        [data setObject:@"RHO_RHO_MODELING" forKey:@"mode"];
         // And send the notification
         [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
-                                                            object:nil
-                                                          userInfo:data];
+                                                            object:nil];
         NSLog(@"[NOTI][VCRRM] Notification \"startMeasuring\" posted.");
         return;
         
     }
-    if (measuring) { // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
+    if ([state isEqualToString:@"MEASURING"]) { // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
         [self.buttonTravel setEnabled:YES];
         [self.buttonMeasure setEnabled:YES];
-        idle = YES;
-        measuring = NO;
-        traveling = NO;
+        [sharedData inSessionDataSetIdleUserWithUserDic:credentialsUserDic
+                              andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, tap 'Measure' or 'Travel' for starting. Tap back for finishing."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
                                                             object:nil];
@@ -224,13 +239,12 @@
         return;
         
     }
-    if (traveling) { // If traveling, user can finish the travel; if 'Measuring' is tapped while measure an error ocurred and nothing must happen.
+    if ([state isEqualToString:@"TRAVELING"]) { // If traveling, user can finish the travel; if 'Measuring' is tapped while measure an error ocurred and nothing must happen.
         NSLog(@"[ERROR][VCRRM] Measuring button were tapped while in TRAVELING state.");
         [self.buttonTravel setEnabled:NO];
         [self.buttonMeasure setEnabled:YES];
-        idle = NO;
-        measuring = YES;
-        traveling = NO;
+        [sharedData inSessionDataSetMeasuringUserWithUserDic:credentialsUserDic
+                                   andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"MEASURING; please, tap 'Measure' again for finishing measure."];
         return;
     }
@@ -243,6 +257,30 @@
 - (IBAction)handleBackButton:(id)sender
 {
     [self performSegueWithIdentifier:@"fromRHO_RHO_MODELINGToMain" sender:sender];
+}
+
+/*!
+ @method alertUserWithTitle:andMessage:
+ @discussion This method alerts the user with a pop up window with a single "Ok" button given its message and title and lambda funcion handler.
+ */
+- (void) alertUserWithTitle:(NSString*)title
+                    message:(NSString*)message
+                 andHandler:(void (^)(UIAlertAction *action))handler;
+{
+    UIAlertController * alertUsersNotFound = [UIAlertController
+                                              alertControllerWithTitle:title
+                                              message:message
+                                              preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction * okButton = [UIAlertAction
+                                actionWithTitle:@"Ok"
+                                style:UIAlertActionStyleDefault
+                                handler:handler
+                                ];
+    
+    [alertUsersNotFound addAction:okButton];
+    [self presentViewController:alertUsersNotFound animated:YES completion:nil];
+    return;
 }
 
 /*!
@@ -264,9 +302,6 @@
         [viewControllerMainMenu setSharedData:sharedData];
         [viewControllerMainMenu setMotionManager:motion];
         [viewControllerMainMenu setLocationManager:location];
-        
-        [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerMainMenu setTypesRegistered:typesRegistered];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
