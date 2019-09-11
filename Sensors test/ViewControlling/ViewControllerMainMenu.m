@@ -182,6 +182,23 @@
         [modes addObject:@"THETA_THETA_LOCATING"];
     }
     
+    // Verify that credentials grant user to sared data
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        NSLog(@"[INFO][VCMM] User credentials have been validated.");
+    } else {
+        [self alertUserWithTitle:@"User not allowed."
+                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCMM] Shared data could not be acessed after view loading.");
+        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+    }
+    
     // Register something in the shared data collection if it is empty for exampling and showing porpuses
     BOOL registerCorrect = YES;
     // Register some types
@@ -444,6 +461,30 @@
     } else {
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
     }
+}
+
+/*!
+ @method alertUserWithTitle:andMessage:
+ @discussion This method alerts the user with a pop up window with a single "Ok" button given its message and title and lambda funcion handler.
+ */
+- (void) alertUserWithTitle:(NSString*)title
+                    message:(NSString*)message
+                 andHandler:(void (^)(UIAlertAction *action))handler;
+{
+    UIAlertController * alertUsersNotFound = [UIAlertController
+                                              alertControllerWithTitle:title
+                                              message:message
+                                              preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction * okButton = [UIAlertAction
+                                actionWithTitle:@"Ok"
+                                style:UIAlertActionStyleDefault
+                                handler:handler
+                                ];
+    
+    [alertUsersNotFound addAction:okButton];
+    [self presentViewController:alertUsersNotFound animated:YES completion:nil];
+    return;
 }
 
 /*!

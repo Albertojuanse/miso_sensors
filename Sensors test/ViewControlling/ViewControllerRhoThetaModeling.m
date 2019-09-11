@@ -273,7 +273,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while loading items.");
+            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while loading items.");
         }
     }
     return 0;
@@ -399,7 +399,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while loading cells' item.");
+            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while loading cells' item.");
         }
     }
     return cell;
@@ -437,7 +437,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while loading cells' item.");
+            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while loading cells' item.");
         }
     }
 }

@@ -352,7 +352,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCMM] Type could not be removed.");
+            NSLog(@"[ERROR][VCAB] Type could not be removed.");
         }
         
     } else { // Type not found
@@ -362,7 +362,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCMM] Shared data could not be acessed while removing a type.");
+        NSLog(@"[ERROR][VCAB] Shared data could not be acessed while removing a type.");
     }
     return;
 }
@@ -492,7 +492,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while registering type.");
+            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while registering type.");
         }
         
     } else {
@@ -532,7 +532,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCMM] Shared data could not be acessed while removing type.");
+        NSLog(@"[ERROR][VCAB] Shared data could not be acessed while removing type.");
         return;
     }
     
@@ -553,7 +553,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while removing type.");
+            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while removing type.");
         }
     } else {
         [self alertUserWithTitle:@"Invalid type selected."
@@ -790,7 +790,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while loading types.");
+            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while loading types.");
         }
     }
     return 0;
@@ -829,7 +829,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while loading cells' type.");
+            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while loading cells' type.");
         }
     }
         
@@ -894,7 +894,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCMM] Shared data could not be acessed while selecting a cells' type.");
+            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while selecting a cells' type.");
         }
     }
     return;
