@@ -86,20 +86,21 @@
     //
     // The schema of the measuresData collection is:
     //
-    //  [{ "position": (RDPosition *)position1;                  //  positionDic
-    //     "positionMeasures": [                                 //  uuidArray
-    //         { "uuid" : (NSString *)uuid1;                     //  uuidDic
-    //           "uuidMeasures": [                               //  measuresArray
-    //             { "sort" : (NSString *)type1;                 //  measuresDic
-    //               "measure": (NSNumber *)measure1;
-    //             },
-    //             (···)
-    //           ]
-    //         },
-    //         (···)
-    //     ]
+    //  [{ "user": { "name": (NSString *)name1;                  // measureDic; userDic
+    //               "pass": (NSString *)pass1;
+    //               "role": (NSString *)role1;
+    //             }
+    //     "position": (RDPosition *)position1;
+    //     "sourceUUID": (NSString *)uuid1;
+    //     "targetUUID": (NSString *)uuid1;
+    //     "sort" : (NSString *)type1;
+    //     "measure": (NSNumber *)measure1
     //   },
-    //   { "position": (RDPosition *)position2;                  // positionDic
+    //   { "user": { "name": (NSString *)name2;                  // measureDic; userDic
+    //               "pass": (NSString *)pass2;
+    //               "role": (NSString *)role2;
+    //             }
+    //     "position": (RDPosition *)position2;
     //     (···)
     //   },
     //   (···)
