@@ -74,8 +74,8 @@
 //               "role": (NSString *)role1;
 //             }
 //     "position": (RDPosition *)position1;
-//     "sourceUUID": (NSString *)uuid1;
-//     "targetUUID": (NSString *)uuid1;
+//     "sourceUUID": (NSString *)sourceUUID1;
+//     "targetUUID": (NSString *)targetUUID1;
 //     "sort" : (NSString *)type1;
 //     "measure": (NSNumber *)measure1
 //   },
@@ -233,11 +233,7 @@
     sessionDic = nil;
     userDic = nil;
     itemDic = nil;
-    positionDic = nil;
-    uuidDic = nil;
-    uuidArray = nil;
     measureDic = nil;
-    measuresArray = nil;
     locationDic = nil;
     modelDic = nil;
 }
@@ -1240,20 +1236,21 @@
 //
 // The schema of the measuresData collection is:
 //
-//  [{ "position": (RDPosition *)position1;                  //  positionDic
-//     "positionMeasures": [                                 //  uuidArray
-//         { "uuid" : (NSString *)uuid1;                     //  uuidDic
-//           "uuidMeasures": [                               //  measuresArray
-//             { "sort" : (NSString *)type1;                 //  measuresDic
-//               "measure": (NSNumber *)measure1;
-//             },
-//             (···)
-//           ]
-//         },
-//         (···)
-//     ]
+//  [{ "user": { "name": (NSString *)name1;                  // measureDic; userDic
+//               "pass": (NSString *)pass1;
+//               "role": (NSString *)role1;
+//             }
+//     "position": (RDPosition *)position1;
+//     "sourceUUID": (NSString *)sourceUUID1;
+//     "targetUUID": (NSString *)targetUUID1;
+//     "sort" : (NSString *)type1;
+//     "measure": (NSNumber *)measure1
 //   },
-//   { "position": (RDPosition *)position2;                  // positionDic
+//   { "user": { "name": (NSString *)name2;                  // measureDic; userDic
+//               "pass": (NSString *)pass2;
+//               "role": (NSString *)role2;
+//             }
+//     "position": (RDPosition *)position2;
 //     (···)
 //   },
 //   (···)
@@ -1261,40 +1258,27 @@
 //
 
 /*!
- @method fromMeasuresDataGetPositionDicsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all positions dictionaries; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
- */
-- (NSMutableArray *)fromMeasuresDataGetPositionDicsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
-{
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        NSMutableArray * positions = [[NSMutableArray alloc] init];
-        for (positionDic in measuresData) {
-            [positions addObject:positionDic];
-        }
-        return positions;
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return nil;
-    }
-}
-
-/*!
  @method fromMeasuresDataGetPositionsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all positions 'RDPositions'; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns a 'NSMutableArray' with every position taken; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMeasuresDataGetPositionsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
         NSMutableArray * positions = [[NSMutableArray alloc] init];
-        for (positionDic in measuresData) {
+        
+        // Get every dictionary with measures and copy and save the position
+        for (measureDic in measuresData) {
             RDPosition * newPosition = [[RDPosition alloc] init];
-            RDPosition * storedPosition = positionDic[@"position"];
-            newPosition.x = storedPosition.x;
-            newPosition.y = storedPosition.y;
-            newPosition.z = storedPosition.z;
+            RDPosition * storedPosition = measureDic[@"position"];
+            storedPosition.x = newPosition.x;
+            storedPosition.y = newPosition.y;
+            storedPosition.z = newPosition.z;
             [positions addObject:newPosition];
         }
+        
         return positions;
+        
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return nil;
@@ -1302,36 +1286,66 @@
 }
 
 /*!
- @method fromMeasuresDataGetSourceUUIDDicsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all UUID dictionaries; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromMeasuresDataGetPositionsOfUserDic:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every position taken from a given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (NSMutableArray *)fromMeasuresDataGetSourceUUIDDicsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+- (NSMutableArray *)fromMeasuresDataGetPositionsOfUserDic:(NSMutableDictionary*)givenUserDic
+                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
-        // Allocate and init an array for saving the different found UUIDs
-        NSMutableArray * uuids = [[NSMutableArray alloc] init];
         
-        // Inspect every position dictionary...
-        for (positionDic in measuresData) {
-            
-            // ...and get its UUIDs...
-            uuidArray = positionDic[@"positionMeasures"];
-            for (uuidDic in uuidArray) {
-                NSString * uuid = uuidDic[@"uuid"];
-                
-                // ...but before save it check if it is already saved.
-                BOOL uuidFound = NO;
-                for (NSMutableDictionary * savedUuidDic in uuids) {
-                    if ([uuid isEqualToString:savedUuidDic[@"uuid"]]) {
-                        uuidFound = YES;
-                    }
-                }
-                if (!uuidFound) {
-                    [uuids addObject:uuidDic];
+        NSMutableArray * positions = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and copy and save the position if it's from the user
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
+                RDPosition * newPosition = [[RDPosition alloc] init];
+                RDPosition * storedPosition = measureDic[@"position"];
+                storedPosition.x = newPosition.x;
+                storedPosition.y = newPosition.y;
+                storedPosition.z = newPosition.z;
+                [positions addObject:newPosition];
+            }
+        }
+        
+        return positions;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetPositionsWithMeasuresOfUserDic:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure from the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+
+- (NSMutableArray *)fromMeasuresDataGetPositionsWithMeasuresOfUserDic:(NSMutableDictionary*)givenUserDic
+                                               withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * positions = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and copy and save the position if it's from the user and measure is saved
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
+                if (measureDic[@"measure"]) {
+                    RDPosition * newPosition = [[RDPosition alloc] init];
+                    RDPosition * storedPosition = measureDic[@"position"];
+                    storedPosition.x = newPosition.x;
+                    storedPosition.y = newPosition.y;
+                    storedPosition.z = newPosition.z;
+                    [positions addObject:newPosition];
                 }
             }
         }
-        return uuids;
+        
+        return positions;
+        
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return nil;
@@ -1339,36 +1353,29 @@
 }
 
 /*!
- @method fromMeasuresDataGetSourceUUIDsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all UUID; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromMeasuresDataGetSourceUUIDsOfUserDic:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every source UUID measured; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (NSMutableArray *)fromMeasuresDataGetSourceUUIDsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+
+- (NSMutableArray *)fromMeasuresDataGetSourceUUIDsOfUserDic:(NSMutableDictionary*)givenUserDic
+                                     withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
-        // Allocate and init an array for saving the different found UUIDs
-        NSMutableArray * uuids = [[NSMutableArray alloc] init];
         
-        // Inspect every position dictionary...
-        for (positionDic in measuresData) {
-            
-            // ...and get its UUIDs...
-            uuidArray = positionDic[@"positionMeasures"];
-            for (uuidDic in uuidArray) {
-                NSString * uuid = uuidDic[@"uuid"];
-                
-                // ...but before save it check if it is already saved.
-                BOOL uuidFound = NO;
-                for (NSMutableDictionary * savedUuidDic in uuids) {
-                    if ([uuid isEqualToString:savedUuidDic[@"uuid"]]) {
-                        uuidFound = YES;
-                    }
-                }
-                if (!uuidFound) {
-                    [uuids addObject:uuidDic[@"uuid"]];
+        NSMutableArray * uuid = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and copy and save the UUID if it's from the user
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
+                if (measureDic[@"sourceUUID"]) {
+                    [uuid addObject:measureDic[@"sourceUUID"]];
                 }
             }
         }
-        return uuids;
+        
+        return uuid;
+        
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return nil;
@@ -1376,63 +1383,135 @@
 }
 
 /*!
- @method fromMeasuresDataGetTargetUUIDDicsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all UUID dictionaries; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromMeasuresDataGetTargetUUIDsOfUserDic:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every target UUID measured; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-// Exists two different ways of name UUIDs just for semantic issues and to ease the developing.
-- (NSMutableArray *)fromMeasuresDataGetTargetUUIDDicsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
-{
-    return [self fromMeasuresDataGetSourceUUIDDicsWithCredentialsUserDic:credentialsUserDic];
-}
-
-/*!
- @method fromMeasuresDataGetTargetUUIDsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all UUID; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
- */
-// Exists two different ways of name UUIDs just for semantic issues and to ease the developing.
-- (NSMutableArray *)fromMeasuresDataGetTargetUUIDsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
-{
-    return [self fromMeasuresDataGetSourceUUIDsWithCredentialsUserDic:credentialsUserDic];
-}
-
-/*!
- @method fromMeasuresDataGetMeasureDicsTakenFromPosition:fromUUIDSource:ofSort:andWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all measure dictionaries taken from a 'RDPosition' from a given UUID and of a given sort; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
- */
-- (NSMutableArray *)fromMeasuresDataGetMeasureDicsTakenFromPosition:(RDPosition*)position
-                                                     fromUUIDSource:(NSString *)uuid
-                                                             ofSort:(NSString*)sort
-                                          andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+- (NSMutableArray *)fromMeasuresDataGetTargetUUIDsOfUserDic:(NSMutableDictionary*)givenUserDic
+                                     withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
-        // Allocate and init an array for saving the different found measures
+        
+        NSMutableArray * uuid = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and copy and save the UUID if it's from the user
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
+                if (measureDic[@"targetUUID"]) {
+                    [uuid addObject:measureDic[@"targetUUID"]];
+                }
+            }
+        }
+        
+        return uuid;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetSourceUUIDOfUserDic:takenFromPosition:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every source UUID measured from the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+
+- (NSMutableArray *)fromMeasuresDataGetSourceUUIDOfUserDic:(NSMutableDictionary*)givenUserDic
+                                         takenFromPosition:(RDPosition *)givenPosition
+                                    withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * uuid = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and save the measures if it's from the user and from given position.
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
+                RDPosition * storedPosition = measureDic[@"position"];
+                if ([storedPosition isEqualToRDPosition:givenPosition]) {
+                    if (measureDic[@"sourceUUID"]) {
+                        [uuid addObject:measureDic[@"sourceUUID"]];
+                    }
+                }
+            }
+        }
+        
+        return uuid;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetTargetUUIDOfUserDic:takenFromPosition:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every target UUID measured from the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromMeasuresDataGetTargetUUIDOfUserDic:(NSMutableDictionary*)givenUserDic
+                                         takenFromPosition:(RDPosition *)givenPosition
+                                    withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * uuid = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and save the measures if it's from the user and from given position.
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
+                RDPosition * storedPosition = measureDic[@"position"];
+                if ([storedPosition isEqualToRDPosition:givenPosition]) {
+                    if (measureDic[@"targetUUID"]) {
+                        [uuid addObject:measureDic[@"targetUUID"]];
+                    }
+                }
+            }
+        }
+        
+        return uuid;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:fromSourceUUID:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken from a given source UUID, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary*)givenUserDic
+                                       takenFromPosition:(RDPosition *)givenPosition
+                                          fromSourceUUID:(NSString *)sourceUUID
+                                  withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
         NSMutableArray * measures = [[NSMutableArray alloc] init];
         
-        // Inspect every position dictionary...
-        for (positionDic in measuresData) {
-            
-            // ..and find the searched one...
-            if ([position isEqualToRDPosition:positionDic[@"position"]]) {
+        // Get every dictionary with measures and save the measures.
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
                 
-                // ...if found, get its UUIDs...
-                uuidArray = positionDic[@"positionMeasures"];
-                for (uuidDic in uuidArray) {
+                RDPosition * storedPosition = measureDic[@"position"];
+                if ([storedPosition isEqualToRDPosition:givenPosition]) {
                     
-                    // ...and find the seacheUUID;...
-                    if ([uuid isEqualToString:uuidDic[@"uuid"]]) {
+                    NSString * storedSourceUUID = measureDic[@"sourceUUID"];
+                    if ([storedSourceUUID isEqualToString:sourceUUID]) {
                         
-                        // ...if found, for every measure, check the sort, and save it.
-                        measuresArray = uuidDic[@"uuidMeasures"];
-                        for (measureDic in measuresArray) {
-                            if ([sort isEqualToString:measureDic[@"sort"]]) {
-                                [measures addObject:measureDic];
-                            }
+                        if (measureDic[@"measure"]) {
+                            [measures addObject:measureDic[@"measure"]];
                         }
                     }
                 }
             }
         }
+        
         return measures;
+        
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return nil;
@@ -1440,35 +1519,73 @@
 }
 
 /*!
- @method fromMeasuresDataGetMeasuresTakenFromPosition:fromUUIDSource:ofSort:andWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all measures taken from a 'RDPosition' from a given UUID and of a given sort; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:fromSourceUUID:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken of a given target UUID, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position
-                                                  fromUUIDSource:(NSString *)uuid
-                                                          ofSort:(NSString*)sort
-                                       andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary*)givenUserDic
+                                       takenFromPosition:(RDPosition *)givenPosition
+                                            ofTargetUUID:(NSString *)targetUUID
+                                  withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
-        // Allocate and init an array for saving the different found measures
+        
         NSMutableArray * measures = [[NSMutableArray alloc] init];
         
-        // Inspect every position dictionary...
-        for (positionDic in measuresData) {
-            
-            // ..and find the searched one...
-            if ([position isEqualToRDPosition:positionDic[@"position"]]) {
+        // Get every dictionary with measures and save the measures.
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
                 
-                // ...if found, get its UUIDs...
-                uuidArray = positionDic[@"positionMeasures"];
-                for (uuidDic in uuidArray) {
+                RDPosition * storedPosition = measureDic[@"position"];
+                if ([storedPosition isEqualToRDPosition:givenPosition]) {
                     
-                    // ...and find the seacheUUID;...
-                    if ([uuid isEqualToString:uuidDic[@"uuid"]]) {
+                    NSString * storedTargetUUID = measureDic[@"targetUUID"];
+                    if ([storedTargetUUID isEqualToString:targetUUID]) {
                         
-                        // ...if found, for every measure, check the sort, and save it.
-                        measuresArray = uuidDic[@"uuidMeasures"];
-                        for (measureDic in measuresArray) {
-                            if ([sort isEqualToString:measureDic[@"sort"]]) {
+                        if (measureDic[@"measure"]) {
+                            [measures addObject:measureDic[@"measure"]];
+                        }
+                    }
+                }
+            }
+        }
+        
+        return measures;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:fromSourceUUID:ofSort:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken from a given source UUID, the given sort, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary*)givenUserDic
+                                       takenFromPosition:(RDPosition *)givenPosition
+                                          fromSourceUUID:(NSString *)sourceUUID
+                                                  ofSort:(NSString *)sort
+                                  withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * measures = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and save the measures.
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
+                
+                RDPosition * storedPosition = measureDic[@"position"];
+                if ([storedPosition isEqualToRDPosition:givenPosition]) {
+                    
+                    NSString * storedSourceUUID = measureDic[@"sourceUUID"];
+                    if ([storedSourceUUID isEqualToString:sourceUUID]) {
+                        
+                        NSString * storedSort = measureDic[@"sort"];
+                        if ([storedSort isEqualToString:sort]) {
+                            if (measureDic[@"measure"]) {
                                 [measures addObject:measureDic[@"measure"]];
                             }
                         }
@@ -1476,7 +1593,9 @@
                 }
             }
         }
+        
         return measures;
+        
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return nil;
@@ -1484,72 +1603,67 @@
 }
 
 /*!
- @method fromMeasuresDataGetMeasureDicsTakenFromPosition:ofUUIDTarget:ofSort:andWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all measures taken from a 'RDPosition' of a given UUID and of a given sort; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:fromSourceUUID:ofSort:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken of a given target UUID, the given sort, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (NSMutableArray *)fromMeasuresDataGetMeasureDicsTakenFromPosition:(RDPosition*)position
-                                                       ofUUIDTarget:(NSString *)uuid
-                                                             ofSort:(NSString*)sort
-                                          andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
-{
-    return [self fromMeasuresDataGetMeasureDicsTakenFromPosition:position
-                                                  fromUUIDSource:uuid
-                                                          ofSort:sort
-                                       andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic];
-}
-
-/*!
- @method fromMeasuresDataGetMeasuresTakenFromPosition:ofUUIDTarget:ofSort:andWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all measures taken from a 'RDPosition' of a given UUID and of a given sort; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
- */
-- (NSMutableArray *)fromMeasuresDataGetMeasuresTakenFromPosition:(RDPosition*)position
-                                                    ofUUIDTarget:(NSString *)uuid
-                                                          ofSort:(NSString*)sort
-                                       andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
-{
-    return [self fromMeasuresDataGetMeasuresTakenFromPosition:position
-                                               fromUUIDSource:uuid
-                                                       ofSort:sort
-                                    andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic];
-}
-
-/*!
- @method fromMeasuresDataGetMaxMeasureOfSort:withCredentialsUserDic:
- @discussion This method returns a 'NSNumber' that contains the maximum of the measures taken; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
- */
-- (NSNumber *) fromMeasuresDataGetMaxMeasureOfSort:(NSString *)sort
-                            withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary*)givenUserDic
+                                       takenFromPosition:(RDPosition *)givenPosition
+                                            ofTargetUUID:(NSString *)targetUUID
+                                                  ofSort:(NSString *)sort
+                                  withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
-        NSNumber * maxMeasure = [NSNumber numberWithFloat:0.0];
-        if (measuresData.count == 0) {
-            // Do nothing
-        } else {
-            // For every position where measures were taken...
-            for (positionDic in measuresData) {
+        
+        NSMutableArray * measures = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and save the measures.
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
                 
-                // ...get the UUID's dictionaries...
-                uuidArray = positionDic[@"positionMeasures"];
-                // ...and for every UUID...
-                for (uuidDic in uuidArray) {
+                RDPosition * storedPosition = measureDic[@"position"];
+                if ([storedPosition isEqualToRDPosition:givenPosition]) {
                     
-                    // get the the measures dictionaries...
-                    measuresArray = uuidDic[@"uuidMeasures"];
-                    // ...and for every measure...
-                    for (measureDic in measuresArray) {
+                    NSString * storedTargetUUID = measureDic[@"targetUUID"];
+                    if ([storedTargetUUID isEqualToString:targetUUID]) {
                         
-                        // ...check it.
-                        NSNumber * measure = [NSNumber numberWithFloat:[measureDic[@"measure"] floatValue]];
-                        if ([sort isEqualToString:measureDic[@"sort"]]) {
-                            if ([measure floatValue] > [maxMeasure floatValue]) {
-                                maxMeasure = measure;
+                        NSString * storedSort = measureDic[@"sort"];
+                        if ([storedSort isEqualToString:sort]) {
+                            if (measureDic[@"measure"]) {
+                                [measures addObject:measureDic[@"measure"]];
                             }
                         }
                     }
                 }
             }
         }
-        return maxMeasure;
+        
+        return measures;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetPositionDicsWithCredentialsUserDic:
+ @discussion This method returns the maximum 'NSNumber' value of the measures taken; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+
+- (NSNumber *) fromMeasuresDataGetMaxMeasureOfSort:(NSString *)sort
+                            withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        NSMutableArray * measuresTaken = [self getMeasuresDataWithCredentialsUserDic:credentialsUserDic];
+        NSNumber * max = [NSNumber numberWithFloat:FLT_MIN];
+        for (NSNumber * measure in measuresTaken) {
+            if ([measure floatValue] > [max floatValue]) {
+                max = nil;
+                max = [NSNumber numberWithFloat:[measure floatValue]];
+            }
+        }
+        return max;        
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return nil;
@@ -2459,143 +2573,32 @@
 //
 
 /*!
- @method inMeasuresDataSetMeasure:ofSort:withUUID:atPosition:withUserDic:andWithCredentialsUserDic:
- @discussion This method saves in the measures data collection a new one; if the state MEASURING is not true for the given user credentials 'userDic', is saved only the position but no measure; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ @method inMeasuresDataSetMeasure:ofSort:withSourceUUID:withTargetUUID:atPosition:takenByUserDic:andWithCredentialsUserDic:
+ @discussion This method saves in the measures data collection a new one from a given source UUID and target UUID; if the state MEASURING is not true for the given user credentials 'userDic', is saved only the position but no measure; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL) inMeasuresDataSetMeasure:(NSNumber*)measure
                            ofSort:(NSString*)sort
-                         withUUID:(NSString*)uuid
+                   withSourceUUID:(NSString*)sourceUUID
+                   withTargetUUID:(NSString*)targetUUID
                        atPosition:(RDPosition*)position
-                      withUserDic:(NSMutableDictionary*)givenUserDic
+                   takenByUserDic:(NSMutableDictionary*)givenUserDic
         andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
-    
     // TO DO: Get measuring state directly from this database. Alberto J. 2019/07/31.
     
     if([self validateCredentialsUserDic:credentialsUserDic]) {
-
+        
         // The 'measureDic', the innermost one, is always new.
         measureDic = [[NSMutableDictionary alloc] init];
-        measureDic[@"sort"] = sort;
-        measureDic[@"measure"] = measure;
-        
-        if (measuresData.count == 0) {
-            // First initialization
-            
-            // Compose the dictionary from the innermost to the outermost
-            // Wrap measureDic with an array
-            measuresArray = [[NSMutableArray alloc] init];
-            if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic]) {
-                [measuresArray addObject:measureDic];
-            } else {
-                // saves nothing
-            }
-            
-            // Create the 'uuidDic' dictionary
-            uuidDic = [[NSMutableDictionary alloc] init];
-            uuidDic[@"uuid"] = uuid;
-            uuidDic[@"uuidMeasures"] = measuresArray;
-            
-            // Wrap uuidDic with an array
-            uuidArray = [[NSMutableArray alloc] init];
-            [uuidArray addObject:uuidDic];
-            
-            // Create the 'positionDic' dictionary
-            positionDic = [[NSMutableDictionary alloc] init];
-            positionDic[@"position"] = position;
-            positionDic[@"positionMeasures"] = uuidArray;
-            
-            // Add the position to the main collection
-            [measuresData addObject:positionDic];
-            
-        } else {
-            // Find if already exists position and uuid and create it if not.
-            // If a 'parent' dictionary exists, there will exist at least one 'child' dictionary, since they are created that way; there not will be [ if(dic.count == 0) ] checks
-            
-            // If position and UUID already exists, the measure is allocated there; if not, they will be created later.
-            BOOL positionFound = NO;
-            BOOL uuidFound = NO;
-            // For each position already saved...
-            for (positionDic in measuresData) {
-                
-                // ...check if the current position 'measurePosition' already exists comparing it with the saved ones.
-                if ([position isEqualToRDPosition:positionDic[@"position"]]) {
-                    positionFound = YES;
-                    
-                    // For each uuid already saved...
-                    uuidArray = positionDic[@"positionMeasures"];
-                    for (uuidDic in uuidArray) {
-                        // ... checks if the uuid already exists.
-                        if ([uuid isEqualToString:uuidDic[@"uuid"]]) {
-                            uuidFound = YES;
-                            
-                            // If both position and uuid are found, set the 'measureDic' into 'measuresArray' with an unique measure's identifier key.
-                            measuresArray = uuidDic[@"uuidMeasures"];
-                            if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic]) { // Only save if in state measuring
-                                [measuresArray addObject:measureDic];
-                            } else {
-                                // saves nothing
-                            }
-                        }
-                    }
-                    
-                    // If only the UUID was not found, but te positions was found, create all the inner dictionaries.
-                    if (!uuidFound) {
-                        // Compose the dictionary from the innermost to the outermost
-                        
-                        
-                        // Wrap measureDic with an array
-                        measuresArray = [[NSMutableArray alloc] init];
-                        if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic]) {
-                            [measuresArray addObject:measureDic];
-                        } else {
-                            // saves nothing
-                        }
-                        
-                        // Create the 'uuidDic' dictionary
-                        uuidDic = [[NSMutableDictionary alloc] init];
-                        uuidDic[@"uuid"] = uuid;
-                        uuidDic[@"uuidMeasures"] = measuresArray;
-                        
-                        // Get the collection of UUID and add the new one
-                        uuidArray = positionDic[@"positionMeasures"];
-                        [uuidArray addObject:uuidDic];
-                    }
-                }
-            }
-            
-            // If both position and UUID was not found create all the inner dictionaries.
-            if (!positionFound) {
-                // Compose the dictionary from the innermost to the outermost
-                
-                
-                // Compose the dictionary from the innermost to the outermost
-                // Wrap measureDic with an array
-                measuresArray = [[NSMutableArray alloc] init];
-                if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic]) {
-                    [measuresArray addObject:measureDic];
-                } else {
-                    // saves nothing
-                }
-                
-                // Create the 'uuidDic' dictionary
-                uuidDic = [[NSMutableDictionary alloc] init];
-                uuidDic[@"uuid"] = uuid;
-                uuidDic[@"uuidMeasures"] = measuresArray;
-                
-                // Wrap uuidDic with an array
-                uuidArray = [[NSMutableArray alloc] init];
-                [uuidArray addObject:uuidDic];
-                
-                // Create the 'positionDic' dictionary
-                positionDic = [[NSMutableDictionary alloc] init];
-                positionDic[@"position"] = position;
-                positionDic[@"positionMeasures"] = uuidArray;
-                
-                // Add the position to the main collection
-                [measuresData addObject:positionDic];
-            }
+        measureDic[@"user"] = givenUserDic;
+        measureDic[@"position"] = position;
+        if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic]) {
+            measureDic[@"sourceUUID"] = sourceUUID;
+            measureDic[@"targetUUID"] = targetUUID;
+            measureDic[@"measure"] = measure;
         }
+        
+        [measuresData addObject:measureDic];
         
         // Everything OK
         return YES;
