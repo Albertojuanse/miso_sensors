@@ -108,42 +108,22 @@
 }
 
 /*!
- @method setBeaconsAndPositionsRegistered:
+ @method setRegionBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered
+- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionBeaconIdNumber
 {
-    beaconsAndPositionsRegistered = newBeaconsAndPositionsRegistered;
+    regionBeaconIdNumber = newRegionBeaconIdNumber;
 }
 
 /*!
- @method setBeaconsAndPositionsChosen:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsChosen', the positions and beacons selected by user in the previus view.
+ @method setRegionPositionIdNumber:
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setBeaconsAndPositionsChosen:(NSMutableArray *)newBeaconsAndPositionsChosen
+- (void) setRegionPositionIdNumber:(NSNumber *)newRegionPositionIdNumber
 {
-    beaconsAndPositionsChosen = newBeaconsAndPositionsChosen;
+    regionPositionIdNumber = newRegionPositionIdNumber;
 }
-
-
-/*!
- @method setBeaconsAndPositionsChosenIndexes:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsChosenIndexes', the indexes the positions and beacons selected by user in the previus view.
- */
-- (void) setBeaconsAndPositionsChosenIndexes:(NSMutableArray *)newBeaconsAndPositionsChosenIndexes
-{
-    beaconsAndPositionsChosenIndexes = newBeaconsAndPositionsChosenIndexes;
-}
-
-/*!
- @method setTypesRegistered:
- @discussion This method sets the NSMutableArray variable 'typesRegistered'.
- */
-- (void) setTypesRegistered:(NSMutableArray *)newTypesRegistered
-{
-    typesRegistered = newTypesRegistered;
-}
-
 
 #pragma mark - Notification event handles
 

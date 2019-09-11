@@ -383,7 +383,6 @@
     location = newLocation;
 }
 
-
 /*!
  @method setRegionBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.

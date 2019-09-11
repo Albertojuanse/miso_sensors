@@ -95,6 +95,24 @@
     location = newLocation;
 }
 
+/*!
+ @method setRegionBeaconIdNumber:
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ */
+- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionBeaconIdNumber
+{
+    regionBeaconIdNumber = newRegionBeaconIdNumber;
+}
+
+/*!
+ @method setRegionPositionIdNumber:
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ */
+- (void) setRegionPositionIdNumber:(NSNumber *)newRegionPositionIdNumber
+{
+    regionPositionIdNumber = newRegionPositionIdNumber;
+}
+
 #pragma mark - Notification event handles
 
 /*!

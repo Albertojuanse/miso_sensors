@@ -25,6 +25,10 @@
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
     
+    // Beacons' region identifiers
+    NSNumber * regionBeaconIdNumber;
+    NSNumber * regionPositionIdNumber;
+    
 }
 
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;
@@ -36,5 +40,8 @@
 - (void) setSharedData:(SharedData *)newSharedData;
 - (void) setMotionManager:(MotionManager *)newMotion;
 - (void) setLocationManager:(LocationManagerDelegate *)newLocation;
+
+- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;
+- (void) setRegionPositionIdNumber:(NSNumber *)newRegionIdNumber;
 
 @end

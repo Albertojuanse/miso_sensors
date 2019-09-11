@@ -25,21 +25,13 @@
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
     
+    // Beacons' region identifiers
+    NSNumber * regionBeaconIdNumber;
+    NSNumber * regionPositionIdNumber;
+    
     // For update canvas
     NSMutableDictionary * measuresDic;
     NSMutableDictionary * locatedDic;
-    
-    // State flags
-    BOOL idle;
-    BOOL measuring;
-    
-    // Variables
-    NSMutableArray * beaconsAndPositionsChosen;
-    NSMutableArray * beaconsAndPositionsChosenIndexes;
-    NSString * locatedPositionUUID;
-    NSString * typeChosenByUser;
-    NSString * uuidChosenByUser;
-    RDPosition * positionChosenByUser;
     
 }
 
@@ -53,5 +45,8 @@
 - (void) setSharedData:(SharedData *)newSharedData;
 - (void) setMotionManager:(MotionManager *)newMotion;
 - (void) setLocationManager:(LocationManagerDelegate *)newLocation;
+
+- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;
+- (void) setRegionPositionIdNumber:(NSNumber *)newRegionIdNumber;
 
 @end

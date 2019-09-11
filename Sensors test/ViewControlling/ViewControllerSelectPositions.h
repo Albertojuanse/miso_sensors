@@ -27,8 +27,8 @@
     NSMutableDictionary * credentialsUserDic;
     
     // Beacons' region identifiers
-    NSMutableArray * beaconsAndPositionsChosen;
-    NSMutableArray * beaconsAndPositionsChosenIndexes;
+    NSNumber * regionBeaconIdNumber;
+    NSNumber * regionPositionIdNumber;
     
 }
 
@@ -38,5 +38,8 @@
 - (void) setSharedData:(SharedData *)newSharedData;
 - (void) setMotionManager:(MotionManager *)newMotion;
 - (void) setLocationManager:(LocationManagerDelegate *)newLocation;
+
+- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;
+- (void) setRegionPositionIdNumber:(NSNumber *)newRegionIdNumber;
 
 @end
