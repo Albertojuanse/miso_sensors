@@ -1108,6 +1108,73 @@
     }
 }
 
+/*!
+ @method fromItemDataGetItemsChosenByUserDic:andCredentialsUserDic:
+ @discussion This method returns the 'NSMutableArray' collection with the items chosen by the user given its user dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromItemDataGetItemsChosenByUserDic:(NSMutableDictionary*)givenUserDic
+                                  andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * itemsChosenByUser;
+        
+        // Search for the user in session data...
+        for (sessionDic in sessionDic) {
+            userDic = sessionDic[@"user"];
+            if ([userDic isEqualToDictionary:givenUserDic]) {
+             
+                // ...and get the items array.
+                itemsChosenByUser = userDic[@"itemsChosenByUser"];
+            }
+        }
+        
+        if (itemsChosenByUser) {
+            return itemsChosenByUser;
+        } else {
+            return nil;
+        }
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromItemDataGetItemsChosenByUser:andCredentialsUserName:
+ @discussion This method returns the 'NSMutableArray' collection with the items chosen by the user given its user name; if is not found, NO is return; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromItemDataGetItemsChosenByUserName:(NSString*)givenUserName
+                                   andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * itemsChosenByUser;
+        
+        // Search for the user in session data...
+        for (sessionDic in sessionDic) {
+            userDic = sessionDic[@"user"];
+            NSString * userName = userDic[@"name"];
+            if ([userName isEqualToString:givenUserName]) {
+                
+                // ...and get the items array.
+                itemsChosenByUser = userDic[@"itemsChosenByUser"];
+            }
+        }
+        
+        if (itemsChosenByUser) {
+            return itemsChosenByUser;
+        } else {
+            return nil;
+        }
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
 #pragma mark - Measures data specific getters
 //            // MEASURES DATA //
 //
@@ -1924,6 +1991,233 @@
     return [self inSessionDataSetObject:typeChosenByUser forKey:@"typeChosenByUser" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
 }
 
+/*!
+ @method inSessionDataSetAsChosenItem:toUserWithUserDic:withCredentialsUserDic:
+ @discussion This method set an item as a chosen one for use it in the modeling process by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL) inSessionDataSetAsChosenItem:(NSMutableDictionary*)givenItemDic
+                    toUserWithUserDic:(NSMutableDictionary*)givenUserDic
+               withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        // Search for the item...
+        BOOL isItemDicFound = NO;
+        NSMutableDictionary * itemDicFound;
+        for (itemDic in itemsData) {
+            if ([itemDic isEqualToDictionary:givenItemDic]) {
+                itemDicFound = itemDic;
+                isItemDicFound = YES;
+            }
+        }
+        
+        // ...and for the user in session...
+        BOOL isUserDicFound = NO;
+        NSMutableDictionary * userDicFound;
+        for (sessionDic in sessionData) {
+            NSMutableDictionary * userDic = sessionDic[@"user"];
+            if ([userDic isEqualToDictionary:givenUserDic]) {
+                userDicFound = userDic;
+                isUserDicFound = YES;
+            }
+        }
+        if (!isUserDicFound) {
+            NSLog(@"[ERROR][SD] User did not found when triying to set an item as chosen to it.");
+            return NO;
+        }
+        
+        // Initializate the collection in the user if it does not exist
+        if (!userDicFound[@"itemsChosenByUser"]) {
+            userDicFound[@"itemsChosenByUser"] = [[NSMutableArray alloc] init];
+        }
+        
+        // ...and update it
+        if (isItemDicFound) {
+            NSMutableArray * itemsChosenByUser = userDicFound[@"itemsChosenByUser"];
+            [itemsChosenByUser addObject:itemDicFound];
+        } else {
+            NSLog(@"[ERROR][SD] Item did not found when triying to set it item as chosen by user.");
+            return NO;
+        }
+        
+        // Everything OK
+        return YES;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
+    }
+}
+
+/*!
+ @method inSessionDataSetAsChosenItem:toUserWithUserName:withCredentialsUserDic:
+ @discussion This method set an item as a chosen one for use it in the modeling process by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL) inSessionDataSetAsChosenItem:(NSMutableDictionary*)givenItemDic
+                   toUserWithUserName:(NSString*)givenUserName
+               withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        // Search for the item...
+        BOOL isItemDicFound = NO;
+        NSMutableDictionary * itemDicFound;
+        for (itemDic in itemsData) {
+            if ([itemDic isEqualToDictionary:givenItemDic]) {
+                itemDicFound = itemDic;
+                isItemDicFound = YES;
+            }
+        }
+        
+        // ...and for the user in session...
+        BOOL isUserDicFound = NO;
+        NSMutableDictionary * userDicFound;
+        for (sessionDic in sessionData) {
+            NSString * userName = sessionDic[@"user"][@"name"];
+            if ([userName isEqualToString:givenUserName]) {
+                userDicFound = sessionDic[@"user"];
+                isUserDicFound = YES;
+            }
+        }
+        if (!isUserDicFound) {
+            NSLog(@"[ERROR][SD] User did not found when triying to set an item as chosen to it.");
+            return NO;
+        }
+        
+        // Initializate the collection in the user if it does not exist
+        if (!userDicFound[@"itemsChosenByUser"]) {
+            userDicFound[@"itemsChosenByUser"] = [[NSMutableArray alloc] init];
+        }
+        
+        // ...and update it
+        if (isItemDicFound) {
+            NSMutableArray * itemsChosenByUser = userDicFound[@"itemsChosenByUser"];
+            [itemsChosenByUser addObject:itemDicFound];
+        } else {
+            NSLog(@"[ERROR][SD] Item did not found when triying to set it item as chosen by user.");
+            return NO;
+        }
+        
+        // Everything OK
+        return YES;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
+    }
+}
+
+/*!
+ @method inSessionDataSetAsNotChosenItem:toUserWithUserDic:withCredentialsUserDic:
+ @discussion This method set an item as a non chosen one for use it in the modeling process by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL) inSessionDataSetAsNotChosenItem:(NSMutableDictionary*)givenItemDic
+                       toUserWithUserDic:(NSMutableDictionary*)givenUserDic
+                  withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        // Search for the user in session data...
+        BOOL isUserDicFound = NO;
+        NSMutableDictionary * userDicFound;
+        for (sessionDic in sessionData) {
+            NSMutableDictionary * userDic = sessionDic[@"user"];
+            
+            if ([userDic isEqualToDictionary:givenUserDic]) {
+                userDicFound = userDic;
+                isUserDicFound = YES;
+            }
+        }
+        if (!isUserDicFound) {
+            NSLog(@"[ERROR][SD] User did not found when triying to set an item as not chosen by user.");
+            return NO;
+        }
+        
+        // ...and search for the item in the user's array of chosen items by it...
+        BOOL isItemDicFound = NO;
+        NSMutableDictionary * itemDicFound;
+        for (itemDic in userDicFound[@"itemsChosenByUser"]) {
+            
+            if ([itemDic isEqualToDictionary:givenItemDic]) {
+                itemDicFound = itemDic;
+                isItemDicFound = YES;
+            }
+        }
+        
+        // ...and delete it if found
+        if (isItemDicFound) {
+            NSMutableArray * itemsChosenByUser = userDicFound[@"itemsChosenByUser"];
+            [itemsChosenByUser removeObject:itemDicFound];
+        } else {
+            NSLog(@"[ERROR][SD] Item did not found when triying to set it item as not chosen by user.");
+            return NO;
+        }
+        
+        // Everything OK
+        return YES;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
+    }
+}
+
+/*!
+ @method inSessionDataSetAsNotChosenItem:toUserWithUserName:withCredentialsUserDic:
+ @discussion This method set an item as a non chosen one for use it in the modeling process by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL) inSessionDataSetAsNotChosenItem:(NSMutableDictionary*)givenItemDic
+                      toUserWithUserName:(NSString*)givenUserName
+                  withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        // Search for the user in session data...
+        BOOL isUserDicFound = NO;
+        NSMutableDictionary * userDicFound;
+        for (sessionDic in sessionData) {
+            NSString * userName = sessionDic[@"user"][@"name"];
+            
+            if ([userName isEqualToString:givenUserName]) {
+                userDicFound = sessionDic[@"user"];
+                isUserDicFound = YES;
+            }
+        }
+        if (!isUserDicFound) {
+            NSLog(@"[ERROR][SD] User did not found when triying to set an item as not chosen by user.");
+            return NO;
+        }
+        
+        // ...and search for the item in the user's array of chosen items by it...
+        BOOL isItemDicFound = NO;
+        NSMutableDictionary * itemDicFound;
+        for (itemDic in userDicFound[@"itemsChosenByUser"]) {
+            
+            if ([itemDic isEqualToDictionary:givenItemDic]) {
+                itemDicFound = itemDic;
+                isItemDicFound = YES;
+            }
+        }
+        
+        // ...and delete it if found
+        if (isItemDicFound) {
+            NSMutableArray * itemsChosenByUser = userDicFound[@"itemsChosenByUser"];
+            [itemsChosenByUser removeObject:itemDicFound];
+        } else {
+            NSLog(@"[ERROR][SD] Item did not found when triying to set it item as not chosen by user.");
+            return NO;
+        }
+        
+        // Everything OK
+        return YES;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return NO;
+    }
+}
+
 #pragma mark - Item data specific setters
 //             // ITEMS DATA //
 //
@@ -2063,233 +2357,6 @@
             
             [itemsData addObject:itemDic];
             
-        }
-        
-        // Everything OK
-        return YES;
-        
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return NO;
-    }
-}
-
-/*!
- @method inItemDataSetAsChosenItem:toUserWithUserDic:withCredentialsUserDic:
- @discussion This method set an item as a chosen one for use it in the modeling process by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
- */
-- (BOOL) inItemDataSetAsChosenItem:(NSMutableDictionary*)givenItemDic
-                 toUserWithUserDic:(NSMutableDictionary*)givenUserDic
-            withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
-
-{
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        
-        // Search for the item...
-        BOOL isItemDicFound = NO;
-        NSMutableDictionary * itemDicFound;
-        for (itemDic in itemsData) {
-            if ([itemDic isEqualToDictionary:givenItemDic]) {
-                itemDicFound = itemDic;
-                isItemDicFound = YES;
-            }
-        }
-        
-        // ...and for the user in session...
-        BOOL isUserDicFound = NO;
-        NSMutableDictionary * userDicFound;
-        for (sessionDic in sessionData) {
-            NSMutableDictionary * userDic = sessionDic[@"user"];
-            if ([userDic isEqualToDictionary:givenUserDic]) {
-                userDicFound = userDic;
-                isUserDicFound = YES;
-            }
-        }
-        if (!isUserDicFound) {
-            NSLog(@"[ERROR][SD] User did not found when triying to set an item as chosen to it.");
-            return NO;
-        }
-        
-        // Initializate the collection in the user if it does not exist
-        if (!userDicFound[@"itemsChosenByUser"]) {
-            userDicFound[@"itemsChosenByUser"] = [[NSMutableArray alloc] init];
-        }
-        
-        // ...and update it
-        if (isItemDicFound) {
-            NSMutableArray * itemsChosenByUser = userDicFound[@"itemsChosenByUser"];
-            [itemsChosenByUser addObject:itemDicFound];
-        } else {
-            NSLog(@"[ERROR][SD] Item did not found when triying to set it item as chosen by user.");
-            return NO;
-        }
-        
-        // Everything OK
-        return YES;
-        
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return NO;
-    }
-}
-
-/*!
- @method inItemDataSetAsChosenItem:toUserWithUserName:withCredentialsUserDic:
- @discussion This method set an item as a chosen one for use it in the modeling process by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
- */
-- (BOOL) inItemDataSetAsChosenItem:(NSMutableDictionary*)givenItemDic
-                toUserWithUserName:(NSString*)givenUserName
-            withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
-{
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        
-        // Search for the item...
-        BOOL isItemDicFound = NO;
-        NSMutableDictionary * itemDicFound;
-        for (itemDic in itemsData) {
-            if ([itemDic isEqualToDictionary:givenItemDic]) {
-                itemDicFound = itemDic;
-                isItemDicFound = YES;
-            }
-        }
-        
-        // ...and for the user in session...
-        BOOL isUserDicFound = NO;
-        NSMutableDictionary * userDicFound;
-        for (sessionDic in sessionData) {
-            NSString * userName = sessionDic[@"user"][@"name"];
-            if ([userName isEqualToString:givenUserName]) {
-                userDicFound = sessionDic[@"user"];
-                isUserDicFound = YES;
-            }
-        }
-        if (!isUserDicFound) {
-            NSLog(@"[ERROR][SD] User did not found when triying to set an item as chosen to it.");
-            return NO;
-        }
-        
-        // Initializate the collection in the user if it does not exist
-        if (!userDicFound[@"itemsChosenByUser"]) {
-            userDicFound[@"itemsChosenByUser"] = [[NSMutableArray alloc] init];
-        }
-        
-        // ...and update it
-        if (isItemDicFound) {
-            NSMutableArray * itemsChosenByUser = userDicFound[@"itemsChosenByUser"];
-            [itemsChosenByUser addObject:itemDicFound];
-        } else {
-            NSLog(@"[ERROR][SD] Item did not found when triying to set it item as chosen by user.");
-            return NO;
-        }
-        
-        // Everything OK
-        return YES;
-        
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return NO;
-    }
-}
-
-/*!
- @method inItemDataSetAsNotChosenItem:toUserWithUserDic:withCredentialsUserDic:
- @discussion This method set an item as a non chosen one for use it in the modeling process by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
- */
-- (BOOL) inItemDataSetAsNotChosenItem:(NSMutableDictionary*)givenItemDic
-                    toUserWithUserDic:(NSMutableDictionary*)givenUserDic
-               withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
-{
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        
-        // Search for the user in session data...
-        BOOL isUserDicFound = NO;
-        NSMutableDictionary * userDicFound;
-        for (sessionDic in sessionData) {
-            NSMutableDictionary * userDic = sessionDic[@"user"];
-            
-            if ([userDic isEqualToDictionary:givenUserDic]) {
-                userDicFound = userDic;
-                isUserDicFound = YES;
-            }
-        }
-        if (!isUserDicFound) {
-            NSLog(@"[ERROR][SD] User did not found when triying to set an item as not chosen by user.");
-            return NO;
-        }
-        
-        // ...and search for the item in the user's array of chosen items by it...
-        BOOL isItemDicFound = NO;
-        NSMutableDictionary * itemDicFound;
-        for (itemDic in userDicFound[@"itemsChosenByUser"]) {
-            
-            if ([itemDic isEqualToDictionary:givenItemDic]) {
-                itemDicFound = itemDic;
-                isItemDicFound = YES;
-            }
-        }
-        
-        // ...and delete it if found
-        if (isItemDicFound) {
-            NSMutableArray * itemsChosenByUser = userDicFound[@"itemsChosenByUser"];
-            [itemsChosenByUser removeObject:itemDicFound];
-        } else {
-            NSLog(@"[ERROR][SD] Item did not found when triying to set it item as not chosen by user.");
-            return NO;
-        }
-        
-        // Everything OK
-        return YES;
-        
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return NO;
-    }
-}
-
-/*!
- @method inItemDataSetAsNotChosenItem:toUserWithUserName:withCredentialsUserDic:
- @discussion This method set an item as a non chosen one for use it in the modeling process by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
- */
-- (BOOL) inItemDataSetAsNotChosenItem:(NSMutableDictionary*)givenItemDic
-                   toUserWithUserName:(NSString*)givenUserName
-               withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
-{
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        
-        // Search for the user in session data...
-        BOOL isUserDicFound = NO;
-        NSMutableDictionary * userDicFound;
-        for (sessionDic in sessionData) {
-            NSString * userName = sessionDic[@"user"][@"name"];
-            
-            if ([userName isEqualToString:givenUserName]) {
-                userDicFound = sessionDic[@"user"];
-                isUserDicFound = YES;
-            }
-        }
-        if (!isUserDicFound) {
-            NSLog(@"[ERROR][SD] User did not found when triying to set an item as not chosen by user.");
-            return NO;
-        }
-        
-        // ...and search for the item in the user's array of chosen items by it...
-        BOOL isItemDicFound = NO;
-        NSMutableDictionary * itemDicFound;
-        for (itemDic in userDicFound[@"itemsChosenByUser"]) {
-            
-            if ([itemDic isEqualToDictionary:givenItemDic]) {
-                itemDicFound = itemDic;
-                isItemDicFound = YES;
-            }
-        }
-        
-        // ...and delete it if found
-        if (isItemDicFound) {
-            NSMutableArray * itemsChosenByUser = userDicFound[@"itemsChosenByUser"];
-            [itemsChosenByUser removeObject:itemDicFound];
-        } else {
-            NSLog(@"[ERROR][SD] Item did not found when triying to set it item as not chosen by user.");
-            return NO;
         }
         
         // Everything OK

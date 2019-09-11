@@ -124,6 +124,10 @@
                              andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (BOOL)fromItemDataIsItemWithInfoDic:(NSMutableDictionary*)infoDic
                 andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (NSMutableArray *)fromItemDataGetItemsChosenByUserDic:(NSMutableDictionary*)givenUserDic
+                                  andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (NSMutableArray *)fromItemDataGetItemsChosenByUserName:(NSString*)givenUserName
+                                   andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific measures measure getters
 - (NSMutableArray *)fromMeasuresDataGetPositionDicsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
@@ -213,6 +217,18 @@
 - (BOOL)inSessionDataSetTypeChosenByUser:(MDType*)typeChosenByUser
                       toUserWithUserName:(NSString*)userName
                    andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL) inSessionDataSetAsChosenItem:(NSMutableDictionary*)givenItemDic
+                    toUserWithUserDic:(NSMutableDictionary*)userDic
+               withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL) inSessionDataSetAsChosenItem:(NSMutableDictionary*)givenItemDic
+                   toUserWithUserName:(NSString*)userName
+               withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL) inSessionDataSetAsNotChosenItem:(NSMutableDictionary*)givenItemDic
+                       toUserWithUserDic:(NSMutableDictionary*)userDic
+                  withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (BOOL) inSessionDataSetAsNotChosenItem:(NSMutableDictionary*)givenItemDic
+                      toUserWithUserName:(NSString*)userName
+                  withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific items data setters
 - (BOOL) inItemDataAddItemOfSort:(NSString*)sort
@@ -223,18 +239,6 @@
                         withUUID:(NSString*)uuid
                      withInfoDic:(NSMutableDictionary*)infoDic
        andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
-- (BOOL) inItemDataSetAsChosenItem:(NSMutableDictionary*)givenItemDic
-                 toUserWithUserDic:(NSMutableDictionary*)userDic
-            withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
-- (BOOL) inItemDataSetAsChosenItem:(NSMutableDictionary*)givenItemDic
-                toUserWithUserName:(NSString*)userName
-            withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
-- (BOOL) inItemDataSetAsNotChosenItem:(NSMutableDictionary*)givenItemDic
-                    toUserWithUserDic:(NSMutableDictionary*)userDic
-               withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
-- (BOOL) inItemDataSetAsNotChosenItem:(NSMutableDictionary*)givenItemDic
-                   toUserWithUserName:(NSString*)userName
-               withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific measures data setters
 - (BOOL) inMeasuresDataSetMeasure:(NSNumber*)measure
