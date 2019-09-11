@@ -104,6 +104,18 @@
                                             andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (MDType *)fromSessionDataGetTypeChosenByUserFromUserWithUserName:(NSString*)userName
                                              andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (NSMutableArray *)fromItemDataGetPositionsOfItemsChosenByUserDic:(NSMutableDictionary*)givenUserDic
+                                           withCredentialsUserName:(NSMutableDictionary*)credentialsUserDic;
+- (NSMutableArray *)fromItemDataGetPositionsOfItemsChosenByUserName:(NSString*)givenUserName
+                                            withCredentialsUserName:(NSMutableDictionary*)credentialsUserDic;
+- (NSMutableArray *)fromSessionDataGetItemsChosenByUserDic:(NSMutableDictionary*)givenUserDic
+                                     andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (NSMutableArray *)fromSessionDataGetItemsChosenByUserName:(NSString*)givenUserName
+                                      andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (NSMutableArray *)fromSessionDataGetPositionsOfItemsChosenByUserDic:(NSMutableDictionary*)givenUserDic
+                                              withCredentialsUserName:(NSMutableDictionary*)credentialsUserDic;
+- (NSMutableArray *)fromSessionDataGetPositionsOfItemsChosenByUserName:(NSString*)givenUserName
+                                               withCredentialsUserName:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific items data getters
 - (NSMutableArray *)fromItemDataGetItemsWithSort:(NSString *)sort
@@ -124,10 +136,6 @@
                              andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (BOOL)fromItemDataIsItemWithInfoDic:(NSMutableDictionary*)infoDic
                 andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
-- (NSMutableArray *)fromItemDataGetItemsChosenByUserDic:(NSMutableDictionary*)givenUserDic
-                                  andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
-- (NSMutableArray *)fromItemDataGetItemsChosenByUserName:(NSString*)givenUserName
-                                   andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific measures measure getters
 - (NSMutableArray *)fromMeasuresDataGetPositionDicsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;

@@ -862,6 +862,134 @@
     return [self fromSessionDataGetKey:@"typeChosenByUser" fromUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
 }
 
+/*!
+ @method fromSessionDataGetItemsChosenByUserDic:andCredentialsUserDic:
+ @discussion This method returns the 'NSMutableArray' collection with the items chosen by the user given its user dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromSessionDataGetItemsChosenByUserDic:(NSMutableDictionary*)givenUserDic
+                                     andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * itemsChosenByUser;
+        
+        // Search for the user in session data...
+        for (sessionDic in sessionDic) {
+            userDic = sessionDic[@"user"];
+            if ([userDic isEqualToDictionary:givenUserDic]) {
+                
+                // ...and get the items array.
+                itemsChosenByUser = userDic[@"itemsChosenByUser"];
+            }
+        }
+        
+        if (itemsChosenByUser) {
+            return itemsChosenByUser;
+        } else {
+            return nil;
+        }
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromSessionDataGetItemsChosenByUser:andCredentialsUserName:
+ @discussion This method returns the 'NSMutableArray' collection with the items chosen by the user given its user name; if is not found, NO is return; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromSessionDataGetItemsChosenByUserName:(NSString*)givenUserName
+                                      andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * itemsChosenByUser;
+        
+        // Search for the user in session data...
+        for (sessionDic in sessionDic) {
+            userDic = sessionDic[@"user"];
+            NSString * userName = userDic[@"name"];
+            if ([userName isEqualToString:givenUserName]) {
+                
+                // ...and get the items array.
+                itemsChosenByUser = userDic[@"itemsChosenByUser"];
+            }
+        }
+        
+        if (itemsChosenByUser) {
+            return itemsChosenByUser;
+        } else {
+            return nil;
+        }
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromSessionDataGetPositionsOfItemsChosenByUserDic:withCredentialsUserName:
+ @discussion This method returns the 'NSMutableArray' collection with the positions of items chosen by the user given its user dictionary; if is not found, NO is return; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromSessionDataGetPositionsOfItemsChosenByUserDic:(NSMutableDictionary*)givenUserDic
+                                              withCredentialsUserName:(NSMutableDictionary*)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        // Get the chosen items by the given user...
+        NSMutableArray * itemsChosenByUser = [self fromSessionDataGetItemsChosenByUserDic:givenUserDic
+                                                                    andCredentialsUserDic:credentialsUserDic];
+        
+        // ...and get its positions
+        NSMutableArray * positions = [[NSMutableArray alloc] init];
+        for (itemDic in itemsChosenByUser) {
+            RDPosition * itemPosition = itemDic[@"position"];
+            if (itemDic) {
+                RDPosition * newPosition = [[RDPosition alloc] init];
+                newPosition.x = itemPosition.x;
+                newPosition.y = itemPosition.y;
+                newPosition.z = itemPosition.z;
+                [positions addObject:newPosition];
+            }
+        }
+        
+        return positions;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromSessionDataGetPositionsOfItemsChosenByUserName:withCredentialsUserName:
+ @discussion This method returns the 'NSMutableArray' collection with the positions of items chosen by the user given its user name; if is not found, NO is return; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromSessionDataGetPositionsOfItemsChosenByUserName:(NSString*)givenUserName
+                                            withCredentialsUserName:(NSMutableDictionary*)credentialsUserDic
+{
+    // Get the chosen items by the given user...
+    NSMutableArray * itemsChosenByUser = [self fromSessionDataGetItemsChosenByUserName:givenUserName
+                                                                 andCredentialsUserDic:credentialsUserDic];
+    
+    // ...and get its positions
+    NSMutableArray * positions = [[NSMutableArray alloc] init];
+    for (itemDic in itemsChosenByUser) {
+        RDPosition * itemPosition = itemDic[@"position"];
+        if (itemDic) {
+            RDPosition * newPosition = [[RDPosition alloc] init];
+            newPosition.x = itemPosition.x;
+            newPosition.y = itemPosition.y;
+            newPosition.z = itemPosition.z;
+            [positions addObject:newPosition];
+        }
+    }
+    
+    return positions;
+}
+
 #pragma mark - Item data specific getters
 //             // ITEMS DATA //
 //
@@ -1102,73 +1230,6 @@
         } else {
             return NO;
         }
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return nil;
-    }
-}
-
-/*!
- @method fromItemDataGetItemsChosenByUserDic:andCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' collection with the items chosen by the user given its user dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
- */
-- (NSMutableArray *)fromItemDataGetItemsChosenByUserDic:(NSMutableDictionary*)givenUserDic
-                                  andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
-{
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        
-        NSMutableArray * itemsChosenByUser;
-        
-        // Search for the user in session data...
-        for (sessionDic in sessionDic) {
-            userDic = sessionDic[@"user"];
-            if ([userDic isEqualToDictionary:givenUserDic]) {
-             
-                // ...and get the items array.
-                itemsChosenByUser = userDic[@"itemsChosenByUser"];
-            }
-        }
-        
-        if (itemsChosenByUser) {
-            return itemsChosenByUser;
-        } else {
-            return nil;
-        }
-        
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return nil;
-    }
-}
-
-/*!
- @method fromItemDataGetItemsChosenByUser:andCredentialsUserName:
- @discussion This method returns the 'NSMutableArray' collection with the items chosen by the user given its user name; if is not found, NO is return; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
- */
-- (NSMutableArray *)fromItemDataGetItemsChosenByUserName:(NSString*)givenUserName
-                                   andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
-{
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        
-        NSMutableArray * itemsChosenByUser;
-        
-        // Search for the user in session data...
-        for (sessionDic in sessionDic) {
-            userDic = sessionDic[@"user"];
-            NSString * userName = userDic[@"name"];
-            if ([userName isEqualToString:givenUserName]) {
-                
-                // ...and get the items array.
-                itemsChosenByUser = userDic[@"itemsChosenByUser"];
-            }
-        }
-        
-        if (itemsChosenByUser) {
-            return itemsChosenByUser;
-        } else {
-            return nil;
-        }
-        
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return nil;

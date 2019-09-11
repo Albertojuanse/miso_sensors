@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import "RDPosition.h"
+#import "SharedData.h"
 #import <float.h>
 
 /*!
@@ -18,8 +19,11 @@
  */
 @interface Canvas: UIView {
     
-    // Variables
-    NSString * mode;
+    // Components
+    SharedData * sharedData;
+    
+    // Session and user context
+    NSMutableDictionary * credentialsUserDic;
     
     // For canvas relation of aspect
     CGPoint center;
@@ -30,9 +34,7 @@
 
 typedef CGPoint NSPoint;
 
-@property NSMutableDictionary * measuresDic;
-@property NSMutableDictionary * locatedDic;
-
--(void)prepareCanvasWithMode:(NSString *) mode;
+- (void)prepareCanvasWithSharedData:(SharedData*)givenSharedData
+                            andUser:(NSMutableDictionary*)givenCredentialsUserDic;
 
 @end

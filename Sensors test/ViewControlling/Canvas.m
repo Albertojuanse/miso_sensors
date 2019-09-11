@@ -41,17 +41,18 @@
  @method prepareCanvasWithMode:
  @discussion This method initializes some properties of the canvas; is called when the main view is loaded by its controller.
  */
--(void)prepareCanvasWithMode:(NSString *) setMode{
-    // Initialize variables
-    mode = setMode;
-    self.measuresDic = [[NSMutableDictionary alloc] init];
+- (void)prepareCanvasWithSharedData:(SharedData*)givenSharedData
+                            andUser:(NSMutableDictionary*)givenCredentialsUserDic
+{
+    // Initialize components and variables
+    sharedData = givenSharedData;
+    credentialsUserDic = givenCredentialsUserDic;
     rHeight = 1.0;
     rWidth = 1.0;
     barycenter = [[RDPosition alloc] init];
     barycenter.x = [NSNumber numberWithFloat:0.0];
     barycenter.y = [NSNumber numberWithFloat:0.0];
     barycenter.z = [NSNumber numberWithFloat:0.0];
-    mode = nil; // If it is not initialized, the information won't be displayed until initialized
     
     // Canvas configurations
     [self setUserInteractionEnabled:NO];
@@ -69,7 +70,8 @@
  @method testCanvas
  @discussion This method displays a pattern of 8 points in canvas to test its adjustment.
  */
-- (void)testCanvas {
+- (void)testCanvas
+{
     NSMutableArray * realPoints = [[NSMutableArray alloc] init];
 
     RDPosition * point1 = [[RDPosition alloc] init];
@@ -143,7 +145,7 @@
     // Display the center point
     [self displayCenter];
     
-    // Inspect dictionary from location manager for data retrieving
+    // Inspect shared data for data retrieving
     [self inspectDataDicsAndDrawTheInfoInRect:rect];
     
     [self setNeedsDisplay];
@@ -192,67 +194,161 @@
 
 /*!
  @method inspectDataDicsAndDrawTheInfoInRect:
- @discussion This method inspects dictionaries from location manager for data retrieving and ask to display the information.
+ @discussion This method inspects collections in shared data for retrieving and ask to display the information.
  */
 - (void) inspectDataDicsAndDrawTheInfoInRect:(CGRect)rect {
     
-    // Inspect dictionary from location manager for data retrieving
+    //                // USER DATA //
     //
-    // { "measurePosition1":                              //  self.measuresDic
-    //     { "measurePosition": measurePosition;          //  positionDic
-    //       "positionMeasures":
-    //         { "measureUuid1":                          //  uuidDicDic
-    //             { "uuid": uuid1;                       //  uuidDic
-    //               "uuidMeasures":
-    //                 { "measure1":                      //  measureDicDic
-    //                     { "sort": "rssi"/"heading";    //  measureDic
-    //                       "measure": rssi/heading
-    //                     };
-    //                   "measure2":  { (···) }
-    //                 }
-    //             };
-    //           "measureUuid2": { (···) }
-    //         }
-    //     };
-    //   "measurePosition2": { (···) }
-    // }
+    // The schema of the userData collection is:
+    //
+    //  [{ "name": (NSString *)name1;                  // userDic
+    //     "pass": (NSString *)pass1;
+    //     "role": (NSString *)role1;
+    //   },
+    //   { "name": (NSString *)name2;                  // userDic
+    //     (···)
+    //   },
+    //   (···)
+    //  ]
+    //
+    //              // SESSION DATA //
+    //
+    // The schema of the sessionData collection is:
+    //
+    //  [{ "user": { "name": (NSString *)name1;                  // sessionDic; userDic
+    //               "pass": (NSString *)pass1;
+    //               "role": (NSString *)role1;
+    //             }
+    //     "mode": (NSString *)mode1;
+    //     "state": (NSString *)state1;
+    //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
+    //     "itemsChosenByUser": (NSMutableArray *)items1;
+    //     "typeChosenByUser": (MDType*)type1
+    //   },
+    //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
+    //     (···)
+    //   },
+    //   (···)
+    //  ]
+    //
+    //             // ITEMS DATA //
+    //
+    // The schema of the itemsData collection is:
+    //
+    //  [{ "sort": @"beacon" | @"position";                      //  itemDic
+    //     "identifier": (NSString *)identifier1;
+    //
+    //     "uuid": (NSString *)uuid1;
+    //
+    //     "major": (NSString *)major1;
+    //     "minor": (NSString *)minor1;
+    //
+    //     "position": (RDPosition *)position1;
+    //
+    //     "type": (MDType*)type1
+    //   },
+    //   { "sort": @"beacon" | @"position";
+    //     "identifier": (NSString *)identifier2;
+    //     (···)
+    //   },
+    //   (···)
+    //  ]
+    //
+    //            // MEASURES DATA //
+    //
+    // The schema of the measuresData collection is:
+    //
+    //  [{ "position": (RDPosition *)position1;                  //  positionDic
+    //     "positionMeasures": [                                 //  uuidArray
+    //         { "uuid" : (NSString *)uuid1;                     //  uuidDic
+    //           "uuidMeasures": [                               //  measuresArray
+    //             { "sort" : (NSString *)type1;                 //  measuresDic
+    //               "measure": (NSNumber *)measure1;
+    //             },
+    //             (···)
+    //           ]
+    //         },
+    //         (···)
+    //     ]
+    //   },
+    //   { "position": (RDPosition *)position2;                  // positionDic
+    //     (···)
+    //   },
+    //   (···)
+    //  ]
+    //
+    //            // LOCATIONS DATA //
+    //
+    //
+    // The schema of the locationsData collection is:
+    //
+    //  [{ "locatedUUID": (NSString *)locatedUUID1;              //  locationDic
+    //     "locatedPosition": (RDPosition *)locatedPosition1;
+    //   },
+    //   (···)
+    //  ]
+    //
+    //            // METAMODEL DATA //
+    //
+    // The schema of typesData collection is
+    //
+    //  [ (MDType*)type1,
+    //    (···)
+    //  ]
+    //
+    //              // MODEL DATA //
+    //
+    // The schema of modelData collection is is
+    //
+    //  [{ "name": name1;                                        //  modelDic
+    //     "components": [
+    //         { "position": (RDPosition *)position1;            //  componentDic
+    //           "type": (MDType *)type1;
+    //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
+    //           "references": [
+    //               { "position": (RDPosition *)positionA;      //  componentDic
+    //                 "type": (MDType *)typeA;
+    //                 "sourceItem": (NSMutableDictionary *)itemDicA;
+    //               },
+    //           ];
+    //         { "position": (RDPosition *)positionB;
+    //           (···)
+    //         },
+    //         (···)
+    //     ];
+    //   },
+    //   { "name": name2;                                        //  modelDic
+    //     (···)
+    //   },
+    //  ]
     //
     
-    // Declare the inner dictionaries.
-    NSMutableDictionary * measureDic;
-    NSMutableDictionary * measureDicDic;
-    NSMutableDictionary * uuidDic;
-    NSMutableDictionary * uuidDicDic;
+    // Declare the inner dictionaries; they will be created or gotten if they already exists each use
+    NSMutableDictionary * sessionDic;
+    NSMutableDictionary * userDic;
+    NSMutableDictionary * itemDic;
     NSMutableDictionary * positionDic;
+    NSMutableDictionary * uuidDic;
+    NSMutableArray * uuidArray;
+    NSMutableDictionary * measureDic;
+    NSMutableArray * measuresArray;
+    NSMutableDictionary * locationDic;
+    NSMutableDictionary * modelDic;
     
     // The positions must be scaled before its displaying
-    // Get the measures positions and the located positions
+    // Get both items' and locations' positions and merge them into a single array
+    NSMutableArray * itemsPositions = [sharedData fromItemDataGetPositionsOfItemsChosenByUserDic:credentialsUserDic
+                                                                         withCredentialsUserName:credentialsUserDic];
+    NSMutableArray * locatedPositions = [sharedData fromLocationsDataGetPositionsWithCredentialsUserDic:credentialsUserDic];
     NSMutableArray * realPositions = [[NSMutableArray alloc] init];
-    NSArray * positionKeys = [self.measuresDic allKeys];
-    for (id positionKey in positionKeys) {
-        // ...get the dictionary for this position...
-        positionDic = [self.measuresDic objectForKey:positionKey];
-        // ...and the position.
-        RDPosition * dicPosition = positionDic[@"measurePosition"];
-        RDPosition * position = [[RDPosition alloc] init];
-        position.x = dicPosition.x;
-        position.y = dicPosition.y;
-        position.z = dicPosition.z;
-        NSLog(@"[INFO][CA] Added real position %@", position);
+    for (RDPosition * position in itemsPositions) {
         [realPositions addObject:position];
+        NSLog(@"[INFO][CA] Added real position %@", position);
     }
-    NSArray * locatedKeys = [self.locatedDic allKeys];
-    for (id locatedKey in locatedKeys) {
-        // ...get the dictionary for this position...
-        positionDic = [self.locatedDic objectForKey:locatedKey];
-        // ...and the position.
-        RDPosition * dicPosition = positionDic[@"locatedPosition"];
-        RDPosition * position = [[RDPosition alloc] init];
-        position.x = dicPosition.x;
-        position.y = dicPosition.y;
-        position.z = dicPosition.z;
-        NSLog(@"[INFO][CA] Added real position %@", position);
+    for (RDPosition * position in locatedPositions) {
         [realPositions addObject:position];
+        NSLog(@"[INFO][CA] Added real position %@", position);
     }
     
     // Transform the real positions to an apropiate canvas ones, with the barycenter of the set of points in the center of the canvas
