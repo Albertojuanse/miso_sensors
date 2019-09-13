@@ -157,6 +157,7 @@
                                                    userDic:credentialsUserDic
                                      andCredentialsUserDic:credentialsUserDic];
         
+        // TO DO: make this configurable or properties. Alberto J. 2019/09/13.
         motion.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
         motion.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
         motion.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
@@ -182,9 +183,10 @@
         [modes addObject:@"RHO_RHO_LOCATING"];
         [modes addObject:@"RHO_THETA_LOCATING"];
         [modes addObject:@"THETA_THETA_LOCATING"];
+        // TO DO: BASIC, ROUTING AND TRACKING modes. Alberto J. 2019/09/13.
     }
     
-    // Verify that credentials grant user to sared data
+    // Verify that credentials grant user to shared data
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
