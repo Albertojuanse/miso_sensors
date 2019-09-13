@@ -26,7 +26,7 @@
         )
     {
         [sharedData inSessionDataSetMode:@"RHO_THETA_MODELING"
-                       toUserWithUserDic:credentialsUserDic
+                       toUserWithUserDic:userDic
                    andCredentialsUserDic:credentialsUserDic];
     } else {
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
@@ -181,14 +181,14 @@
     }
     
     // In every state the button performs different behaviours
-    NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:credentialsUserDic
+    NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic];
     
     if ([state isEqualToString:@"IDLE"]) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
-        if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:credentialsUserDic
+        if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic]) {
             [self.buttonMeasure setEnabled:YES];
-            [sharedData inSessionDataSetMeasuringUserWithUserDic:credentialsUserDic
+            [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                        andWithCredentialsUserDic:credentialsUserDic];
             [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
         
@@ -203,7 +203,7 @@
     }
     if ([state isEqualToString:@"MEASURING"]) { // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
         [self.buttonMeasure setEnabled:YES];
-        [sharedData inSessionDataSetIdleUserWithUserDic:credentialsUserDic
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, aim the iBEacon device and tap 'Measure' for starting. Tap back for finishing."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
@@ -454,7 +454,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                 [tableView deselectRowAtIndexPath:indexPath animated:NO];
             } else {
                 [sharedData inSessionDataSetItemChosenByUser:itemSelected
-                                           toUserWithUserDic:credentialsUserDic
+                                           toUserWithUserDic:userDic
                                        andCredentialsUserDic:credentialsUserDic];
             }
             
