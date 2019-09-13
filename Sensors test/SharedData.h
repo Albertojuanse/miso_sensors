@@ -100,10 +100,6 @@
                                             andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (MDType *)fromSessionDataGetTypeChosenByUserFromUserWithUserName:(NSString*)userName
                                              andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
-- (NSMutableArray *)fromItemDataGetPositionsOfItemsChosenByUserDic:(NSMutableDictionary*)givenUserDic
-                                           withCredentialsUserName:(NSMutableDictionary*)credentialsUserDic;
-- (NSMutableArray *)fromItemDataGetPositionsOfItemsChosenByUserName:(NSString*)givenUserName
-                                            withCredentialsUserName:(NSMutableDictionary*)credentialsUserDic;
 - (NSMutableArray *)fromSessionDataGetItemsChosenByUserDic:(NSMutableDictionary*)givenUserDic
                                      andCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (NSMutableArray *)fromSessionDataGetItemsChosenByUserName:(NSString*)givenUserName
@@ -141,43 +137,40 @@
 - (NSMutableArray *)fromMeasuresDataGetPositionsWithMeasuresOfUserDic:(NSMutableDictionary*)givenUserDic
                                                withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
-- (NSMutableArray *)fromMeasuresDataGetSourceUUIDsOfUserDic:(NSMutableDictionary*)givenUserDic
-                                     withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
-- (NSMutableArray *)fromMeasuresDataGetTargetUUIDsOfUserDic:(NSMutableDictionary*)givenUserDic
+- (NSMutableArray *)fromMeasuresDataGetItemUUIDsOfUserDic:(NSMutableDictionary*)givenUserDic
+                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (NSMutableArray *)fromMeasuresDataGetDeviceUUIDsOfUserDic:(NSMutableDictionary*)givenUserDic
                                      withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
-- (NSMutableArray *)fromMeasuresDataGetSourceUUIDOfUserDic:(NSMutableDictionary*)givenUserDic
-                                         takenFromPosition:(RDPosition *)givenPosition
-                                    withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
-- (NSMutableArray *)fromMeasuresDataGetTargetUUIDOfUserDic:(NSMutableDictionary*)givenUserDic
-                                         takenFromPosition:(RDPosition *)givenPosition
-                                    withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (NSMutableArray *)fromMeasuresDataGetItemUUIDsOfUserDic:(NSMutableDictionary*)givenUserDic
+                                        takenFromPosition:(RDPosition *)givenPosition
+                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
+- (NSMutableArray *)fromMeasuresDataGetDeviceUUIDsOfUserDic:(NSMutableDictionary*)givenUserDic
+                                          takenFromPosition:(RDPosition *)givenPosition
+                                     withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 - (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary*)givenUserDic
                                        takenFromPosition:(RDPosition *)givenPosition
-                                          fromSourceUUID:(NSString *)sourceUUID
+                                            fromItemUUID:(NSString *)itemUUID
                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary*)givenUserDic
                                        takenFromPosition:(RDPosition *)givenPosition
-                                            ofTargetUUID:(NSString *)targetUUID
+                                            ofDeviceUUID:(NSString *)deviceUUID
                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 - (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary*)givenUserDic
                                        takenFromPosition:(RDPosition *)givenPosition
-                                          fromSourceUUID:(NSString *)sourceUUID
+                                            fromItemUUID:(NSString *)itemUUID
                                                   ofSort:(NSString *)sort
                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary*)givenUserDic
                                        takenFromPosition:(RDPosition *)givenPosition
-                                            ofTargetUUID:(NSString *)targetUUID
+                                            ofDeviceUUID:(NSString *)deviceUUID
                                                   ofSort:(NSString *)sort
                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 - (NSNumber *) fromMeasuresDataGetMaxMeasureOfSort:(NSString *)sort
                             withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
-
-
-
 
 // Specific locations data specific getters
 - (NSMutableArray *)fromLocationsDataGetPositionDicsWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
@@ -267,19 +260,19 @@
 // Specific measures data setters
 - (BOOL) inMeasuresDataSetMeasure:(NSNumber*)measure
                            ofSort:(NSString*)sort
-                   withSourceUUID:(NSString*)sourceUUID
-                   withTargetUUID:(NSString*)targetUUID
+                     withItemUUID:(NSString*)itemUUID
+                   withDeviceUUID:(NSString*)deviceUUID
                        atPosition:(RDPosition*)position
                    takenByUserDic:(NSMutableDictionary*)givenUserDic
         andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 
 // Specific locations data specific setters
 - (BOOL) inLocationsDataSetPosition:(RDPosition*)locatedPosition
-                     fromUUIDSource:(NSString *)uuid
+                       fromItemUUID:(NSString *)uuid
                         withUserDic:(NSMutableDictionary*)givenUserDic
           andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 - (BOOL) inLocationsDataSetPosition:(RDPosition*)locatedPosition
-                       ofUUIDTarget:(NSString *)uuid
+                       ofDeviceUUID:(NSString *)uuid
                         withUserDic:(NSMutableDictionary*)givenUserDic
           andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic;
 

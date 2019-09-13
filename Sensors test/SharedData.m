@@ -74,8 +74,8 @@
 //               "role": (NSString *)role1;
 //             }
 //     "position": (RDPosition *)position1;
-//     "sourceUUID": (NSString *)sourceUUID1;
-//     "targetUUID": (NSString *)targetUUID1;
+//     "itemUUID": (NSString *)itemUUID1;
+//     "deviceUUID": (NSString *)deviceUUID1;
 //     "sort" : (NSString *)type1;
 //     "measure": (NSNumber *)measure1
 //   },
@@ -1241,8 +1241,8 @@
 //               "role": (NSString *)role1;
 //             }
 //     "position": (RDPosition *)position1;
-//     "sourceUUID": (NSString *)sourceUUID1;
-//     "targetUUID": (NSString *)targetUUID1;
+//     "itemUUID": (NSString *)itemUUID1;
+//     "deviceUUID": (NSString *)deviceUUID1;
 //     "sort" : (NSString *)type1;
 //     "measure": (NSNumber *)measure1
 //   },
@@ -1353,12 +1353,12 @@
 }
 
 /*!
- @method fromMeasuresDataGetSourceUUIDsOfUserDic:withCredentialsUserDic:
- @discussion This method returns a 'NSMutableArray' with every source UUID measured; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromMeasuresDataGetItemUUIDsOfUserDic:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every item UUID measured; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 
-- (NSMutableArray *)fromMeasuresDataGetSourceUUIDsOfUserDic:(NSMutableDictionary*)givenUserDic
-                                     withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+- (NSMutableArray *)fromMeasuresDataGetItemUUIDsOfUserDic:(NSMutableDictionary*)givenUserDic
+                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         
@@ -1368,8 +1368,8 @@
         for (measureDic in measuresData) {
             NSMutableDictionary * storedUserDic = measureDic[@"user"];
             if ([storedUserDic isEqualToDictionary:givenUserDic]) {
-                if (measureDic[@"sourceUUID"]) {
-                    [uuid addObject:measureDic[@"sourceUUID"]];
+                if (measureDic[@"itemUUID"]) {
+                    [uuid addObject:measureDic[@"itemUUID"]];
                 }
             }
         }
@@ -1383,10 +1383,10 @@
 }
 
 /*!
- @method fromMeasuresDataGetTargetUUIDsOfUserDic:withCredentialsUserDic:
- @discussion This method returns a 'NSMutableArray' with every target UUID measured; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromMeasuresDataGetDeviceUUIDsOfUserDic:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every device UUID; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (NSMutableArray *)fromMeasuresDataGetTargetUUIDsOfUserDic:(NSMutableDictionary*)givenUserDic
+- (NSMutableArray *)fromMeasuresDataGetDeviceUUIDsOfUserDic:(NSMutableDictionary*)givenUserDic
                                      withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
@@ -1397,8 +1397,8 @@
         for (measureDic in measuresData) {
             NSMutableDictionary * storedUserDic = measureDic[@"user"];
             if ([storedUserDic isEqualToDictionary:givenUserDic]) {
-                if (measureDic[@"targetUUID"]) {
-                    [uuid addObject:measureDic[@"targetUUID"]];
+                if (measureDic[@"deviceUUID"]) {
+                    [uuid addObject:measureDic[@"deviceUUID"]];
                 }
             }
         }
@@ -1412,13 +1412,13 @@
 }
 
 /*!
- @method fromMeasuresDataGetSourceUUIDOfUserDic:takenFromPosition:withCredentialsUserDic:
- @discussion This method returns a 'NSMutableArray' with every source UUID measured from the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromMeasuresDataGetItemUUIDsOfUserDic:takenFromPosition:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every item UUID measured from the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 
-- (NSMutableArray *)fromMeasuresDataGetSourceUUIDOfUserDic:(NSMutableDictionary*)givenUserDic
-                                         takenFromPosition:(RDPosition *)givenPosition
-                                    withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+- (NSMutableArray *)fromMeasuresDataGetItemUUIDsOfUserDic:(NSMutableDictionary*)givenUserDic
+                                        takenFromPosition:(RDPosition *)givenPosition
+                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         
@@ -1430,8 +1430,8 @@
             if ([storedUserDic isEqualToDictionary:givenUserDic]) {
                 RDPosition * storedPosition = measureDic[@"position"];
                 if ([storedPosition isEqualToRDPosition:givenPosition]) {
-                    if (measureDic[@"sourceUUID"]) {
-                        [uuid addObject:measureDic[@"sourceUUID"]];
+                    if (measureDic[@"itemUUID"]) {
+                        [uuid addObject:measureDic[@"itemUUID"]];
                     }
                 }
             }
@@ -1446,12 +1446,12 @@
 }
 
 /*!
- @method fromMeasuresDataGetTargetUUIDOfUserDic:takenFromPosition:withCredentialsUserDic:
- @discussion This method returns a 'NSMutableArray' with every target UUID measured from the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromMeasuresDataGetDeviceUUIDsOfUserDic:takenFromPosition:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every device UUID measured from the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (NSMutableArray *)fromMeasuresDataGetTargetUUIDOfUserDic:(NSMutableDictionary*)givenUserDic
-                                         takenFromPosition:(RDPosition *)givenPosition
-                                    withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
+- (NSMutableArray *)fromMeasuresDataGetDeviceUUIDsOfUserDic:(NSMutableDictionary*)givenUserDic
+                                          takenFromPosition:(RDPosition *)givenPosition
+                                     withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         
@@ -1463,8 +1463,8 @@
             if ([storedUserDic isEqualToDictionary:givenUserDic]) {
                 RDPosition * storedPosition = measureDic[@"position"];
                 if ([storedPosition isEqualToRDPosition:givenPosition]) {
-                    if (measureDic[@"targetUUID"]) {
-                        [uuid addObject:measureDic[@"targetUUID"]];
+                    if (measureDic[@"deviceUUID"]) {
+                        [uuid addObject:measureDic[@"deviceUUID"]];
                     }
                 }
             }
@@ -1479,12 +1479,12 @@
 }
 
 /*!
- @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:fromSourceUUID:withCredentialsUserDic:
- @discussion This method returns a 'NSMutableArray' with every measure taken from a given source UUID, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:fromItemUUID:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken from a given item UUID, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary*)givenUserDic
                                        takenFromPosition:(RDPosition *)givenPosition
-                                          fromSourceUUID:(NSString *)sourceUUID
+                                            fromItemUUID:(NSString *)itemUUID
                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
@@ -1499,8 +1499,8 @@
                 RDPosition * storedPosition = measureDic[@"position"];
                 if ([storedPosition isEqualToRDPosition:givenPosition]) {
                     
-                    NSString * storedSourceUUID = measureDic[@"sourceUUID"];
-                    if ([storedSourceUUID isEqualToString:sourceUUID]) {
+                    NSString * storedItemUUID = measureDic[@"itemUUID"];
+                    if ([storedItemUUID isEqualToString:itemUUID]) {
                         
                         if (measureDic[@"measure"]) {
                             [measures addObject:measureDic[@"measure"]];
@@ -1519,12 +1519,12 @@
 }
 
 /*!
- @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:fromSourceUUID:withCredentialsUserDic:
- @discussion This method returns a 'NSMutableArray' with every measure taken of a given target UUID, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:fromDeviceUUID:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken of a given device UUID, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary*)givenUserDic
                                        takenFromPosition:(RDPosition *)givenPosition
-                                            ofTargetUUID:(NSString *)targetUUID
+                                            ofDeviceUUID:(NSString *)deviceUUID
                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
@@ -1539,8 +1539,8 @@
                 RDPosition * storedPosition = measureDic[@"position"];
                 if ([storedPosition isEqualToRDPosition:givenPosition]) {
                     
-                    NSString * storedTargetUUID = measureDic[@"targetUUID"];
-                    if ([storedTargetUUID isEqualToString:targetUUID]) {
+                    NSString * storedDeviceUUID = measureDic[@"deviceUUID"];
+                    if ([storedDeviceUUID isEqualToString:deviceUUID]) {
                         
                         if (measureDic[@"measure"]) {
                             [measures addObject:measureDic[@"measure"]];
@@ -1559,12 +1559,12 @@
 }
 
 /*!
- @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:fromSourceUUID:ofSort:withCredentialsUserDic:
- @discussion This method returns a 'NSMutableArray' with every measure taken from a given source UUID, the given sort, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:fromItemUUID:ofSort:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken from a given item UUID, the given sort, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary*)givenUserDic
                                        takenFromPosition:(RDPosition *)givenPosition
-                                          fromSourceUUID:(NSString *)sourceUUID
+                                            fromItemUUID:(NSString *)itemUUID
                                                   ofSort:(NSString *)sort
                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
@@ -1580,8 +1580,8 @@
                 RDPosition * storedPosition = measureDic[@"position"];
                 if ([storedPosition isEqualToRDPosition:givenPosition]) {
                     
-                    NSString * storedSourceUUID = measureDic[@"sourceUUID"];
-                    if ([storedSourceUUID isEqualToString:sourceUUID]) {
+                    NSString * storedItemUUID = measureDic[@"itemUUID"];
+                    if ([storedItemUUID isEqualToString:itemUUID]) {
                         
                         NSString * storedSort = measureDic[@"sort"];
                         if ([storedSort isEqualToString:sort]) {
@@ -1603,12 +1603,12 @@
 }
 
 /*!
- @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:fromSourceUUID:ofSort:withCredentialsUserDic:
- @discussion This method returns a 'NSMutableArray' with every measure taken of a given target UUID, the given sort, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:fromDeviceUUID:ofSort:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken of a given device UUID, the given sort, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary*)givenUserDic
                                        takenFromPosition:(RDPosition *)givenPosition
-                                            ofTargetUUID:(NSString *)targetUUID
+                                            ofDeviceUUID:(NSString *)deviceUUID
                                                   ofSort:(NSString *)sort
                                   withCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
@@ -1624,8 +1624,8 @@
                 RDPosition * storedPosition = measureDic[@"position"];
                 if ([storedPosition isEqualToRDPosition:givenPosition]) {
                     
-                    NSString * storedTargetUUID = measureDic[@"targetUUID"];
-                    if ([storedTargetUUID isEqualToString:targetUUID]) {
+                    NSString * storedDeviceUUID = measureDic[@"deviceUUID"];
+                    if ([storedDeviceUUID isEqualToString:deviceUUID]) {
                         
                         NSString * storedSort = measureDic[@"sort"];
                         if ([storedSort isEqualToString:sort]) {
@@ -2552,20 +2552,21 @@
 //
 // The schema of the measuresData collection is:
 //
-//  [{ "position": (RDPosition *)position1;                  //  positionDic
-//     "positionMeasures": [                                 //  uuidArray
-//         { "uuid" : (NSString *)uuid1;                     //  uuidDic
-//           "uuidMeasures": [                               //  measuresArray
-//             { "sort" : (NSString *)type1;                 //  measuresDic
-//               "measure": (NSNumber *)measure1;
-//             },
-//             (···)
-//           ]
-//         },
-//         (···)
-//     ]
+//  [{ "user": { "name": (NSString *)name1;                  // measureDic; userDic
+//               "pass": (NSString *)pass1;
+//               "role": (NSString *)role1;
+//             }
+//     "position": (RDPosition *)position1;
+//     "itemUUID": (NSString *)itemUUID1;
+//     "deviceUUID": (NSString *)deviceUUID1;
+//     "sort" : (NSString *)type1;
+//     "measure": (NSNumber *)measure1
 //   },
-//   { "position": (RDPosition *)position2;                  // positionDic
+//   { "user": { "name": (NSString *)name2;                  // measureDic; userDic
+//               "pass": (NSString *)pass2;
+//               "role": (NSString *)role2;
+//             }
+//     "position": (RDPosition *)position2;
 //     (···)
 //   },
 //   (···)
@@ -2573,13 +2574,13 @@
 //
 
 /*!
- @method inMeasuresDataSetMeasure:ofSort:withSourceUUID:withTargetUUID:atPosition:takenByUserDic:andWithCredentialsUserDic:
- @discussion This method saves in the measures data collection a new one from a given source UUID and target UUID; if the state MEASURING is not true for the given user credentials 'userDic', is saved only the position but no measure; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ @method inMeasuresDataSetMeasure:ofSort:withItemUUID:withDeviceUUID:atPosition:takenByUserDic:andWithCredentialsUserDic:
+ @discussion This method saves in the measures data collection a new one from a given item UUID and device UUID; if the state MEASURING is not true for the given user credentials 'userDic', is saved only the position but no measure; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL) inMeasuresDataSetMeasure:(NSNumber*)measure
                            ofSort:(NSString*)sort
-                   withSourceUUID:(NSString*)sourceUUID
-                   withTargetUUID:(NSString*)targetUUID
+                     withItemUUID:(NSString*)itemUUID
+                   withDeviceUUID:(NSString*)deviceUUID
                        atPosition:(RDPosition*)position
                    takenByUserDic:(NSMutableDictionary*)givenUserDic
         andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
@@ -2593,8 +2594,8 @@
         measureDic[@"user"] = givenUserDic;
         measureDic[@"position"] = position;
         if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic]) {
-            measureDic[@"sourceUUID"] = sourceUUID;
-            measureDic[@"targetUUID"] = targetUUID;
+            measureDic[@"itemUUID"] = itemUUID;
+            measureDic[@"deviceUUID"] = deviceUUID;
             measureDic[@"measure"] = measure;
         }
         
@@ -2622,11 +2623,11 @@
 //
 
 /*!
- @method inLocationsDataSetPosition:fromUUIDSource:withUserDic:andWithCredentialsUserDic:
+ @method inLocationsDataSetPosition:fromItemUUID:withUserDic:andWithCredentialsUserDic:
  @discussion This method saves in the NSDictionary with the located positions information a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL) inLocationsDataSetPosition:(RDPosition*)locatedPosition
-                     fromUUIDSource:(NSString *)uuid
+                       fromItemUUID:(NSString *)uuid
                         withUserDic:(NSMutableDictionary*)givenUserDic
           andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
@@ -2652,9 +2653,9 @@
             for (locationDic in locationsData) {
                 // ...check if the current UUID's locatedUUID already exists comparing it with the saved ones.
                 
-                NSString * savedUUID = positionDic[@"locatedUUID"];
+                NSString * savedUUID = locationDic[@"locatedUUID"];
                 if ([uuid isEqualToString:savedUUID]) { // UUID already exists
-                    positionDic[@"locatedPosition"] = locatedPosition;
+                    locationDic[@"locatedPosition"] = locatedPosition;
                     UUIDfound = YES;
                 } else {
                     // Do not upload the position
@@ -2685,16 +2686,16 @@
 }
 
 /*!
- @method inLocationsDataSetPosition:fromUUIDSource:withUserDic:andWithCredentialsUserDic:
+ @method inLocationsDataSetPosition:fofDeviceUUID:withUserDic:andWithCredentialsUserDic:
  @discussion This method saves in the NSDictionary with the located positions information a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL) inLocationsDataSetPosition:(RDPosition*)locatedPosition
-                       ofUUIDTarget:(NSString *)uuid
+                       ofDeviceUUID:(NSString *)uuid
                         withUserDic:(NSMutableDictionary*)givenUserDic
           andWithCredentialsUserDic:(NSMutableDictionary*)credentialsUserDic
 {
     return [self inLocationsDataSetPosition:locatedPosition
-                             fromUUIDSource:uuid
+                               fromItemUUID:uuid
                                 withUserDic:givenUserDic
                   andWithCredentialsUserDic:credentialsUserDic];
 }
