@@ -154,8 +154,8 @@
 }
 
 /*!
- @method initWithSharedData:userDic:deviceUUID:andCredentialsUserDic:
- @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
+ @method initWithSharedData:userDic:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved and the credentials of the user for access it.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic

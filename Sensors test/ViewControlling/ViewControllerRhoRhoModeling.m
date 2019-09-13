@@ -60,12 +60,21 @@
 #pragma mark - Instance methods
 
 /*!
- @method setCredentialsUserDic
- @discussion This method sets the credentials of the user for accessing data shared.
+ @method setCredentialsUserDic:
+ @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
  */
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic
 {
     credentialsUserDic = givenCredentialsUserDic;
+}
+
+/*!
+ @method setUserDic:
+ @discussion This method sets the NSMutableDictionary with the identifying purposes user credentials.
+ */
+- (void) setUserDic:(NSMutableDictionary *)givenUserDic
+{
+    userDic = givenUserDic;
 }
 
 /*!
@@ -317,6 +326,7 @@
         
         // Set the variables
         [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerMainMenu setUserDic:userDic];
         [viewControllerMainMenu setSharedData:sharedData];
         [viewControllerMainMenu setMotionManager:motion];
         [viewControllerMainMenu setLocationManager:location];

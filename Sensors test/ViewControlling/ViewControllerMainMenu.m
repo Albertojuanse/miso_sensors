@@ -350,12 +350,21 @@
 #pragma mark - Instance methods
 
 /*!
- @method setCredentialsUserDic
- @discussion This method sets the credentials of the user for accessing data shared.
+ @method setCredentialsUserDic:
+ @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
  */
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic
 {
     credentialsUserDic = givenCredentialsUserDic;
+}
+
+/*!
+ @method setUserDic:
+ @discussion This method sets the NSMutableDictionary with the identifying purposes user credentials.
+ */
+- (void) setUserDic:(NSMutableDictionary *)givenUserDic
+{
+    userDic = givenUserDic;
 }
 
 /*!
@@ -503,6 +512,7 @@
         ViewControllerAddBeaconMenu *viewControllerAddBeaconMenu = [segue destinationViewController];
         // Set the variables and components
         [viewControllerAddBeaconMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerAddBeaconMenu setUserDic:userDic];
         [viewControllerAddBeaconMenu setSharedData:sharedData];
         [viewControllerAddBeaconMenu setMotionManager:motion];
         [viewControllerAddBeaconMenu setLocationManager:location];
@@ -519,6 +529,7 @@
         ViewControllerRhoRhoModeling *viewControllerRhoRhoModeling = [segue destinationViewController];
         // Set the variables and components
         [viewControllerRhoRhoModeling setCredentialsUserDic:credentialsUserDic];
+        [viewControllerRhoRhoModeling setUserDic:userDic];
         [viewControllerRhoRhoModeling setSharedData:sharedData];
         [viewControllerRhoRhoModeling setMotionManager:motion];
         [viewControllerRhoRhoModeling setLocationManager:location];
@@ -532,6 +543,7 @@
         ViewControllerRhoThetaModeling *viewControllerRhoThetaModeling = [segue destinationViewController];
         // Set the variables
         [viewControllerRhoThetaModeling setCredentialsUserDic:credentialsUserDic];
+        [viewControllerRhoThetaModeling setUserDic:userDic];
         [viewControllerRhoThetaModeling setSharedData:sharedData];
         [viewControllerRhoThetaModeling setMotionManager:motion];
         [viewControllerRhoThetaModeling setLocationManager:location];
@@ -552,6 +564,7 @@
         ViewControllerSelectPositions * viewControllerSelectPositions = [segue destinationViewController];
         // Set the variables
         [viewControllerSelectPositions setCredentialsUserDic:credentialsUserDic];
+        [viewControllerSelectPositions setUserDic:userDic];
         [viewControllerSelectPositions setSharedData:sharedData];
         [viewControllerSelectPositions setMotionManager:motion];
         [viewControllerSelectPositions setLocationManager:location];

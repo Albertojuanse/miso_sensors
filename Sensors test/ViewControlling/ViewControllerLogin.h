@@ -16,7 +16,7 @@
  */
 @interface ViewControllerLogin : UIViewController {
     
-    // The first credentials dictionary is for security issues and its proprietary is the one who logs-in in the device; the second one is used for identifying purposes; in multiuser context, the first one is used in the device for accessing data, etc. while the second one is shared to the rest of users when a measure is taken or something is changed to indicate who did it.
+    // The first credentials dictionary is for security purposes and its proprietary is the one who logs-in in the device; the second one is used for identifying purposes; in multiuser context, the first one is used in the device for accessing data, etc. while the second one is shared to the rest of users when a measure is taken or something is changed to indicate who did it.
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
     
@@ -31,7 +31,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;
 
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
-- (void) setUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
+- (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 
 @end
 

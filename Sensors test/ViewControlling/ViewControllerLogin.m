@@ -56,12 +56,21 @@
 #pragma mark - Instance methods
 
 /*!
- @method setCredentialsUserDic
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ @method setCredentialsUserDic:
+ @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
  */
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic
 {
     credentialsUserDic = givenCredentialsUserDic;
+}
+
+/*!
+ @method setUserDic:
+ @discussion This method sets the NSMutableDictionary with the identifying purposes user credentials.
+ */
+- (void) setUserDic:(NSMutableDictionary *)givenUserDic
+{
+    userDic = givenUserDic;
 }
 
 #pragma mark - Button events handlers
@@ -143,11 +152,18 @@
     //    "pass": (NSString *)pass1;
     //    "role": (NSString *)role1;
     //  }
+    // The first credentials dictionary is for security purposes and its proprietary is the one who logs-in in the device; the second one is used for identifying purposes; in multiuser context, the first one is used in the device for accessing data, etc. while the second one is shared to the rest of users when a measure is taken or something is changed to indicate who did it.
     if(!credentialsUserDic) {
         credentialsUserDic = [[NSMutableDictionary alloc] init];
     }
     credentialsUserDic[@"name"] = [self.userText text];
     credentialsUserDic[@"pass"] = [self.passText text];
+    
+    if(!userDic) {
+        userDic = [[NSMutableDictionary alloc] init];
+    }
+    userDic[@"name"] = [self.userText text];
+    userDic[@"pass"] = [self.passText text];
     
     // Validate if the user have access granted.
     if ([self validateNewCredentialsUserDic:credentialsUserDic]) {
@@ -210,6 +226,7 @@
         ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
         // Set the variable
         [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerMainMenu setUserDic:userDic];
     }
 }
 

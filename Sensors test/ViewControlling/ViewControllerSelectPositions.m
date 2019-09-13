@@ -65,12 +65,21 @@
 #pragma mark - Instance methods
 
 /*!
- @method setCredentialsUserDic
- @discussion This method sets the credentials of the user for accessing data shared.
+ @method setCredentialsUserDic:
+ @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
  */
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic
 {
     credentialsUserDic = givenCredentialsUserDic;
+}
+
+/*!
+ @method setUserDic:
+ @discussion This method sets the NSMutableDictionary with the identifying purposes user credentials.
+ */
+- (void) setUserDic:(NSMutableDictionary *)givenUserDic
+{
+    userDic = givenUserDic;
 }
 
 /*!
@@ -215,10 +224,11 @@
         // Get destination view
         ViewControllerRhoRhoLocating * viewControllerRhoRhoLocating = [segue destinationViewController];
          // Set the variables
-         [ViewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
-         [ViewControllerMainMenu setSharedData:sharedData];
-         [ViewControllerMainMenu setMotionManager:motion];
-         [ViewControllerMainMenu setLocationManager:location];
+         [viewControllerRhoRhoLocating setCredentialsUserDic:credentialsUserDic];
+         [viewControllerRhoRhoLocating setUserDic:userDic];
+         [viewControllerRhoRhoLocating setSharedData:sharedData];
+         [viewControllerRhoRhoLocating setMotionManager:motion];
+         [viewControllerRhoRhoLocating setLocationManager:location];
      
         [viewControllerRhoRhoLocating setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
      
@@ -232,12 +242,12 @@
         // Get destination view
         ViewControllerRhoThetaLocating * viewControllerRhoThetaLocating = [segue destinationViewController];
          // Set the variables
-         [ViewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
-         [ViewControllerMainMenu setSharedData:sharedData];
-         [ViewControllerMainMenu setMotionManager:motion];
-         [ViewControllerMainMenu setLocationManager:location];
+         [viewControllerRhoThetaLocating setCredentialsUserDic:credentialsUserDic];
+         [viewControllerRhoThetaLocating setSharedData:sharedData];
+         [viewControllerRhoThetaLocating setMotionManager:motion];
+         [viewControllerRhoThetaLocating setLocationManager:location];
      
-        [viewControllerRhoThetaLocating setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
+         [viewControllerRhoThetaLocating setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
      
     }
      return;
@@ -249,6 +259,7 @@
         ViewControllerThetaThetaLocating * viewControllerThetaThetaLocating = [segue destinationViewController];
         // Set the variables
         [viewControllerThetaThetaLocating setCredentialsUserDic:credentialsUserDic];
+        [viewControllerThetaThetaLocating setUserDic:userDic];
         [viewControllerThetaThetaLocating setSharedData:sharedData];
         [viewControllerThetaThetaLocating setMotionManager:motion];
         [viewControllerThetaThetaLocating setLocationManager:location];
@@ -260,6 +271,7 @@
         ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
         // Set the variables
         [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerMainMenu setUserDic:userDic];
         [viewControllerMainMenu setSharedData:sharedData];
         [viewControllerMainMenu setMotionManager:motion];
         [viewControllerMainMenu setLocationManager:location];

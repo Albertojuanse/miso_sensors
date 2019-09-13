@@ -38,14 +38,35 @@
 #pragma mark - Instance methods
 
 /*!
- @method prepareCanvasWithMode:
+ @method setCredentialsUserDic:
+ @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
+ */
+- (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic
+{
+    credentialsUserDic = givenCredentialsUserDic;
+}
+
+/*!
+ @method setUserDic:
+ @discussion This method sets the NSMutableDictionary with the identifying purposes user credentials.
+ */
+- (void) setUserDic:(NSMutableDictionary *)givenUserDic
+{
+    userDic = givenUserDic;
+}
+
+/*!
+ @method prepareCanvasWithSharedData:userDic:andCredentialsUserDic:
  @discussion This method initializes some properties of the canvas; is called when the main view is loaded by its controller.
  */
 - (void)prepareCanvasWithSharedData:(SharedData *)givenSharedData
-                            andUser:(NSMutableDictionary *)givenCredentialsUserDic
+                            userDic:(NSMutableDictionary *)givenUserDic
+              andCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic
 {
     // Initialize components and variables
     sharedData = givenSharedData;
+    credentialsUserDic = givenCredentialsUserDic;
+    userDic = givenUserDic;
     credentialsUserDic = givenCredentialsUserDic;
     rHeight = 1.0;
     rWidth = 1.0;
