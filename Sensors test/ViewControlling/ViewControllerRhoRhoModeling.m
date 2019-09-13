@@ -26,14 +26,14 @@
         )
     {
         [sharedData inSessionDataSetMode:@"RHO_RHO_MODELING"
-                       toUserWithUserDic:credentialsUserDic
+                       toUserWithUserDic:userDic
                    andCredentialsUserDic:credentialsUserDic];        
     } else {
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
     }
     
     // Ask canvas to initialize
-    [self.canvas prepareCanvasWithMode:@"RHO_RHO_MODELING"];
+    [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic andCredentialsUserDic:credentialsUserDic];
     
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -176,13 +176,13 @@
     }
     
     // In every state the button performs different behaviours
-    NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:credentialsUserDic
+    NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic];
     
     if ([state isEqualToString:@"IDLE"]) { // If idle, user can travel or measuring; if 'Travel' is tapped, ask start traveling.
         [self.buttonTravel setEnabled:YES];
         [self.buttonMeasure setEnabled:NO];
-        [sharedData inSessionDataSetTravelingUserWithUserDic:credentialsUserDic
+        [sharedData inSessionDataSetTravelingUserWithUserDic:userDic
                                    andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"TRAVELING; please, tap 'Travel' again for finishing travel."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"startTraveling"
@@ -195,7 +195,7 @@
         NSLog(@"[ERROR][VCRRM] Measuring button were tapped while in TRAVELING state.");
         [self.buttonTravel setEnabled:YES];
         [self.buttonMeasure setEnabled:NO];
-        [sharedData inSessionDataSetTravelingUserWithUserDic:credentialsUserDic
+        [sharedData inSessionDataSetTravelingUserWithUserDic:userDic
                                    andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"TRAVELING; please, tap 'Travel' again for finishing travel."];
         return;
@@ -203,7 +203,7 @@
     if ([state isEqualToString:@"TRAVELING"]) { // If traveling, user can finish the travel; if 'Travel' is tapped, ask stop traveling.
         [self.buttonTravel setEnabled:YES];
         [self.buttonMeasure setEnabled:YES];
-        [sharedData inSessionDataSetIdleUserWithUserDic:credentialsUserDic
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, tap 'Measure' ot 'Travel' for starting. Tap back for finishing."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopTraveling"
@@ -237,13 +237,13 @@
     }
     
     // In every state the button performs different behaviours
-    NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:credentialsUserDic
+    NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic];
     
     if ([state isEqualToString:@"IDLE"]) { // If idle, user can travel or measuring; if 'Measuring' is tapped, ask start measuring.
         [self.buttonTravel setEnabled:NO];
         [self.buttonMeasure setEnabled:YES];
-        [sharedData inSessionDataSetMeasuringUserWithUserDic:credentialsUserDic
+        [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                    andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"MEASURING; please, tap 'Measure' again for finishing measure."];
         
@@ -257,7 +257,7 @@
     if ([state isEqualToString:@"MEASURING"]) { // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
         [self.buttonTravel setEnabled:YES];
         [self.buttonMeasure setEnabled:YES];
-        [sharedData inSessionDataSetIdleUserWithUserDic:credentialsUserDic
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, tap 'Measure' or 'Travel' for starting. Tap back for finishing."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
@@ -270,7 +270,7 @@
         NSLog(@"[ERROR][VCRRM] Measuring button were tapped while in TRAVELING state.");
         [self.buttonTravel setEnabled:NO];
         [self.buttonMeasure setEnabled:YES];
-        [sharedData inSessionDataSetMeasuringUserWithUserDic:credentialsUserDic
+        [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                    andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"MEASURING; please, tap 'Measure' again for finishing measure."];
         return;

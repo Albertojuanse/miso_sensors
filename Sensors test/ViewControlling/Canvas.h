@@ -37,7 +37,8 @@
 typedef CGPoint NSPoint;
 
 - (void)prepareCanvasWithSharedData:(SharedData *)givenSharedData
-                            andUser:(NSMutableDictionary *)givenCredentialsUserDic;
+                            userDic:(NSMutableDictionary *)givenUserDic
+              andCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 @end
