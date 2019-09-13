@@ -151,9 +151,10 @@
     //
     
     
-    // Init the motion manager, given the shared data component and the credentials of the device user.
+    // Init the motion manager, given the shared data component and the credentials of the device user; if it is the first time the view loads this components won't exist but if not these had been created and set as others views' atributes.
     if(!motion) {
         motion = [[MotionManager alloc] initWithSharedData:sharedData
+                                                   userDic:credentialsUserDic
                                      andCredentialsUserDic:credentialsUserDic];
         
         motion.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
@@ -167,7 +168,9 @@
     // Init the location manager, given the shared data component and the credentials of the device user.
     if (!location) {
         location = [[LocationManagerDelegate alloc] initWithSharedData:sharedData
-                                             andCredentialsUserDic:credentialsUserDic];
+                                                               userDic:credentialsUserDic
+                                                            deviceUUID:[[NSUUID UUID] UUIDString]
+                                                 andCredentialsUserDic:credentialsUserDic];
     }
     
     // Variables; only inizialated if they didn't be so.

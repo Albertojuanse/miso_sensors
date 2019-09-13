@@ -154,15 +154,61 @@
 }
 
 /*!
- @method init
- @discussion Constructor given the shared data collection and the credentials of the user for access it.
+ @method initWithSharedData:userDic:deviceUUID:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
  */
-- (instancetype) initWithSharedData:(SharedData *)initSharedData
-              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
+                           userDic:(NSMutableDictionary *)initUserDic
+             andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self initWithSharedData:initSharedData];
     credentialsUserDic = initCredentialsUserDic;
+    userDic = initUserDic;
     return self;
+}
+
+#pragma mark - Instance methods
+/*!
+ @method setCredentialUserDic:
+ @discussion This method sets the dictionary with the user's credentials for acess the collections in shared data database.
+ */
+- (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic
+{
+    credentialsUserDic = givenCredentialsUserDic;
+    return;
+}
+
+/*!
+ @method setUserDic:
+ @discussion This method sets the dictionary of the user in whose name the measures are saved.
+ */
+- (void)setUserDic:(NSMutableDictionary *)givenUserDic
+{
+    userDic = givenUserDic;
+    return;
+}
+
+/*!
+ @method getPosition
+ @discussion This method gets the device's position.
+ */
+- (RDPosition *) getPosition {
+    RDPosition * newPosition = [[RDPosition alloc] init];
+    newPosition.x = [NSNumber numberWithFloat:[position.x floatValue]];
+    newPosition.y = [NSNumber numberWithFloat:[position.y floatValue]];
+    newPosition.z = [NSNumber numberWithFloat:[position.z floatValue]];
+    return newPosition;
+}
+
+/*!
+ @method setPosition:
+ @discussion This method sets the device's position.
+ */
+- (void) setPosition:(RDPosition *)givenPosition{
+    position = [[RDPosition alloc] init];
+    position.x = [NSNumber numberWithFloat:[givenPosition.x floatValue]];
+    position.y = [NSNumber numberWithFloat:[givenPosition.y floatValue]];
+    position.z = [NSNumber numberWithFloat:[givenPosition.z floatValue]];
 }
 
 #pragma mark - Location manager methods
@@ -198,7 +244,7 @@
 
 /*!
  @method stopAccelerometers
- @discussion This method manages how the accelerometer status acquisition stops and its error's control.
+ @discussion This method manages how the accelerometer status acquisition stops.
  */
 - (void) stopAccelerometers {
     [self.tr invalidate];
@@ -238,7 +284,7 @@
 
 /*!
  @method stopGyroscopes
- @discussion This method manages how the gyroscope status acquisition stops and its error's control.
+ @discussion This method manages how the gyroscope status acquisition stops.
  */
 - (void) stopGyroscopes {
     [self.tr invalidate];
@@ -715,16 +761,6 @@
     NSLog(@"attitude_y: %.2f", [attitude_y floatValue]);
     NSLog(@"attitude_z: %.2f", [attitude_z floatValue]);
     */
-}
-
-#pragma mark - Instance methods
-
-/*!
- @method setSharedData:
- @discussion Setter of shared data collection.
- */
-- (void) setSharedData:(SharedData *)newSharedData {
-    sharedData = newSharedData;
 }
 
 #pragma mark - Notification event handles
