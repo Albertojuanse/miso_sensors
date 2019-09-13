@@ -51,13 +51,13 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 @property (weak, nonatomic) IBOutlet UIButton *buttonTravel;
 
-- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic;
-- (void) setSharedData:(SharedData *)newSharedData;
-- (void) setMotionManager:(MotionManager *)newMotion;
-- (void) setLocationManager:(LocationManagerDelegate *)newLocation;
+- (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
+- (void) setSharedData:(SharedData *)givenSharedData;
+- (void) setMotionManager:(MotionManager *)givenMotion;
+- (void) setLocationManager:(LocationManagerDelegate *)givenLocation;
 
-- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;
-- (void) setRegionPositionIdNumber:(NSNumber *)newRegionIdNumber;
+- (void) setRegionBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
+- (void) setRegionPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 
 @end
 

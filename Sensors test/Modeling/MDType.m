@@ -28,12 +28,12 @@
  @method initWithName:
  @discussion Constructor
  */
-- (instancetype)initWithName:(NSString *)newName
+- (instancetype)initWithName:(NSString *)givenName
 {
     self = [self init];
     if (self) {
         name = nil;
-        name = newName;
+        name = givenName;
     }
     return self;
 }
@@ -42,13 +42,13 @@
  @method initWithName:andAttributes:
  @discussion Constructor
  */
-- (instancetype)initWithName:(NSString *)newName
-               andAttributes:(NSMutableArray *)newAttributes
+- (instancetype)initWithName:(NSString *)givenName
+               andAttributes:(NSMutableArray *)givenAttributes
 {
-    self = [self initWithName:newName];
+    self = [self initWithName:givenName];
     if (self) {
         attributes = nil;
-        attributes = newAttributes;
+        attributes = givenAttributes;
     }
     return self;
 }
@@ -65,8 +65,8 @@
  @method setName
  @discussion Setter of the 'name' attribute.
  */
-- (void)setName:(NSString *)newName {
-    name = newName;
+- (void)setName:(NSString *)givenName {
+    name = givenName;
 }
 
 /*!
@@ -81,8 +81,8 @@
  @method setAttributes
  @discussion Setter of the 'attributes' NSMutableArray object.
  */
-- (void)setAttributes:(NSMutableArray *)newAttributes {
-    attributes = newAttributes;
+- (void)setAttributes:(NSMutableArray *)givenAttributes {
+    attributes = givenAttributes;
 }
 
 /*!

@@ -256,54 +256,54 @@
  @method setCredentialsUserDic
  @discussion This method sets the credentials of the user for accessing data shared.
  */
-- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic
+- (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic
 {
-    credentialsUserDic = newCredentialsUserDic;
+    credentialsUserDic = givenCredentialsUserDic;
 }
 
 /*!
  @method setSharedData:
  @discussion This method sets the shared data collection.
  */
-- (void) setSharedData:(SharedData *)newSharedData
+- (void) setSharedData:(SharedData *)givenSharedData
 {
-    sharedData = newSharedData;
+    sharedData = givenSharedData;
 }
 
 /*!
  @method setMotionManager:
  @discussion This method sets the motion manager.
  */
-- (void) setMotionManager:(MotionManager *)newMotion
+- (void) setMotionManager:(MotionManager *)givenMotion
 {
-    motion = newMotion;
+    motion = givenMotion;
 }
 
 /*!
  @method setLocationManager:
  @discussion This method sets the location manager.
  */
-- (void) setLocationManager:(LocationManagerDelegate *)newLocation
+- (void) setLocationManager:(LocationManagerDelegate *)givenLocation
 {
-    location = newLocation;
+    location = givenLocation;
 }
 
 /*!
  @method setRegionBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionBeaconIdNumber
+- (void) setRegionBeaconIdNumber:(NSNumber *)givenRegionBeaconIdNumber
 {
-    regionBeaconIdNumber = newRegionBeaconIdNumber;
+    regionBeaconIdNumber = givenRegionBeaconIdNumber;
 }
 
 /*!
  @method setRegionPositionIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionPositionIdNumber:(NSNumber *)newRegionPositionIdNumber
+- (void) setRegionPositionIdNumber:(NSNumber *)givenRegionPositionIdNumber
 {
-    regionPositionIdNumber = newRegionPositionIdNumber;
+    regionPositionIdNumber = givenRegionPositionIdNumber;
 }
 
 #pragma mark - Buttons event handles
