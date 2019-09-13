@@ -27,7 +27,7 @@
         )
     {
         
-        NSMutableDictionary * sessionDic = [sharedData fromSessionDataGetSessionWithUserDic:credentialsUserDic
+        NSMutableDictionary * sessionDic = [sharedData fromSessionDataGetSessionWithUserDic:userDic
                                                                       andCredentialsUserDic:credentialsUserDic];
         if (sessionDic[@"itemsChosenByUser"]) {
             sessionDic[@"itemsChosenByUser"] = nil;
@@ -153,7 +153,7 @@
         )
     {
         // Get the current mode
-        NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:credentialsUserDic
+        NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                           andCredentialsUserDic:credentialsUserDic];
         
         // This button can segue with different views depending on the mode chosen by the user in the main menu
@@ -230,8 +230,6 @@
          [viewControllerRhoRhoLocating setMotionManager:motion];
          [viewControllerRhoRhoLocating setLocationManager:location];
      
-        [viewControllerRhoRhoLocating setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-     
     }
      return;
      */
@@ -246,8 +244,6 @@
          [viewControllerRhoThetaLocating setSharedData:sharedData];
          [viewControllerRhoThetaLocating setMotionManager:motion];
          [viewControllerRhoThetaLocating setLocationManager:location];
-     
-         [viewControllerRhoThetaLocating setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
      
     }
      return;
@@ -436,7 +432,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             if (itemDic[@"position"]) {
                 [selectedCell setAccessoryType:UITableViewCellAccessoryCheckmark];
                 [sharedData  inSessionDataSetAsChosenItem:itemDic
-                                        toUserWithUserDic:credentialsUserDic
+                                        toUserWithUserDic:userDic
                                    withCredentialsUserDic:credentialsUserDic];
             } else {
                 [selectedCell setAccessoryType:UITableViewCellAccessoryDetailButton];
@@ -450,7 +446,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             if (itemDic[@"position"]) {
                 [selectedCell setAccessoryType:UITableViewCellAccessoryNone];
                 [sharedData  inSessionDataSetAsNotChosenItem:itemDic
-                                           toUserWithUserDic:credentialsUserDic
+                                           toUserWithUserDic:userDic
                                       withCredentialsUserDic:credentialsUserDic];
             } else {
                 [selectedCell setAccessoryType:UITableViewCellAccessoryDetailButton];
