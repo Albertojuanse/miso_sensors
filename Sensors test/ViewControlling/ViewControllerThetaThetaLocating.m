@@ -177,7 +177,7 @@
             }
             [data setObject:beaconsAndPositionsChosenToSend forKey:@"beaconsAndPositions"];
             [data setObject:positionChosenByUser forKey:@"positionChosenByUser"];
-            [data setObject:uuidChosenByUser forKey:@"uuidChosenByUser"];
+            -> [data setObject:uuidChosenByUser forKey:@"uuidChosenByUser"];
             [data setObject:locatedPositionUUID forKey:@"locatedPositionUUID"];
             [data setObject:@"THETA_THETA_LOCATING" forKey:@"mode"];
             // And send the notification
@@ -399,7 +399,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
              ])
         {
             positionChosenByUser = [beaconsAndPositionsChosen objectAtIndex:indexPath.row][@"position"];
-            uuidChosenByUser = [beaconsAndPositionsChosen objectAtIndex:indexPath.row][@"uuid"];
+            -> uuidChosenByUser = [beaconsAndPositionsChosen objectAtIndex:indexPath.row][@"uuid"];
         } else {
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
         }

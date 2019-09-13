@@ -28,7 +28,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonSignin;
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;
 
-- (void) setCredentialsUserDic:(NSMutableDictionary*)newCredentialsUserDic;
+- (void) setCredentialsUserDic:(NSMutableDictionary *)newCredentialsUserDic;
 
 @end
 

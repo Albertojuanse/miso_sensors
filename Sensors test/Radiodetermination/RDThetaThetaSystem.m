@@ -43,7 +43,8 @@
 - (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithMeasures:(SharedData *)sharedData
                                                                 andPrecisions:(NSDictionary *)precisions
 {
-    NSLog(@"[INFO][TT] Start Radiolocating beacons");
+    en LOCATING se tiene que localizar deviceUUID, en MODELING se tiene que localizar itemUUID; ambos tienen que ser las claves en el diccionario que se devuelva clave->posición.
+    -> NSLog(@"[INFO][TT] Start Radiolocating beacons");
     NSMutableDictionary * locatedPositions = [[NSMutableDictionary alloc] init];
     NSMutableDictionary * measuresDic = [sharedData getMeasuresDic];
     
