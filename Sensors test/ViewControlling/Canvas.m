@@ -79,9 +79,29 @@
     [self setUserInteractionEnabled:NO];
     self.backgroundColor = [UIColor colorWithRed:218/255.0 green:224/255.0 blue:235/255.0 alpha:0.6];
     
+    // This object must listen to this events
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshCanvas:)
+                                                 name:@"refreshCanvas"
+                                               object:nil];
+    
     // Center point
     [self displayCenter];
 
+    [self setNeedsDisplay];
+}
+
+#pragma mark - Notifications events handlers
+/*!
+ @method refreshCanvas:
+ @discussion This method gets the beacons that must be represented in canvas and ask it to upload; this method is called when someone submits the 'refreshCanvas' notification.
+ */
+- (void) refreshCanvas:(NSNotification *) notification
+{
+    if ([[notification name] isEqualToString:@"refreshCanvas"]){
+        NSLog(@"[NOTI][VC] Notification \"refreshCanvas\" recived");
+        // TO DO. Logic. Alberto J. 2019/09/13.
+    }
     [self setNeedsDisplay];
 }
 

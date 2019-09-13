@@ -26,7 +26,7 @@
         )
     {
         [sharedData inSessionDataSetMode:@"THETA_THETA_LOCATING"
-                       toUserWithUserDic:credentialsUserDic
+                       toUserWithUserDic:userDic
                    andCredentialsUserDic:credentialsUserDic];
     } else {
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
@@ -39,12 +39,6 @@
     
     // Ask canvas to initialize
     [self.canvas prepareCanvasWithMode:@"THETA_THETA_LOCATING"];
-    
-    // This object must listen to this events
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(refreshCanvas:)
-                                                 name:@"refreshCanvas"
-                                               object:nil];
     
     // Visualization
     [self.buttonMeasure setEnabled:YES];
@@ -133,32 +127,6 @@
 - (void) setRegionPositionIdNumber:(NSNumber *)givenRegionPositionIdNumber
 {
     regionPositionIdNumber = givenRegionPositionIdNumber;
-}
-
-#pragma mark - Notification event handles
-
-/*!
- @method refreshCanvas:
- @discussion This method gets the beacons that must be represented in canvas and ask it to upload; this method is called when someone submits the 'refreshCanvas' notification.
- */
-- (void) refreshCanvas:(NSNotification *) notification
-{
-    // [notification name] should always be @"refreshCanvas"
-    // unless you use this method for observation of other notifications
-    // as well.
-    
-    if ([[notification name] isEqualToString:@"refreshCanvas"]){
-        NSLog(@"[NOTI][VC] Notification \"refreshCanvas\" recived");
-        
-        // Save beacons
-        NSDictionary *data = notification.userInfo;
-        measuresDic = [data valueForKey:@"measuresDic"];
-        locatedDic = [data valueForKey:@"locatedDic"];
-        self.canvas.measuresDic = measuresDic;
-        self.canvas.locatedDic = locatedDic;
-    }
-    
-    [self.canvas setNeedsDisplay];
 }
 
 #pragma mark - Buttons event handles
