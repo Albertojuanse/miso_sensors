@@ -51,7 +51,7 @@
     //     "state": (NSString *)state1;
     //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
     //     "itemsChosenByUser": (NSMutableArray *)items1;
-    //     "typeChosenByUser": (MDType*)type1
+    //     "typeChosenByUser": (MDType *)type1
     //   },
     //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
     //     (···)
@@ -73,7 +73,7 @@
     //
     //     "position": (RDPosition *)position1;
     //
-    //     "type": (MDType*)type1
+    //     "type": (MDType *)type1
     //   },
     //   { "sort": @"beacon" | @"position";
     //     "identifier": (NSString *)identifier2;
@@ -84,15 +84,13 @@
     //
     //            // MEASURES DATA //
     //
-    // The schema of the measuresData collection is:
-    //
     //  [{ "user": { "name": (NSString *)name1;                  // measureDic; userDic
     //               "pass": (NSString *)pass1;
     //               "role": (NSString *)role1;
     //             }
     //     "position": (RDPosition *)position1;
-    //     "sourceUUID": (NSString *)uuid1;
-    //     "targetUUID": (NSString *)uuid1;
+    //     "itemUUID": (NSString *)itemUUID1;
+    //     "deviceUUID": (NSString *)deviceUUID1;
     //     "sort" : (NSString *)type1;
     //     "measure": (NSNumber *)measure1
     //   },
@@ -115,13 +113,13 @@
     //     "locatedPosition": (RDPosition *)locatedPosition1;
     //   },
     //   (···)
-    // }
+    //  ]
     //
     //            // METAMODEL DATA //
     //
     // The schema of typesData collection is
     //
-    //  [ (MDType*)type1,
+    //  [ (MDType *)type1,
     //    (···)
     //  ]
     //
@@ -467,8 +465,8 @@
  @method alertUserWithTitle:andMessage:
  @discussion This method alerts the user with a pop up window with a single "Ok" button given its message and title and lambda funcion handler.
  */
-- (void) alertUserWithTitle:(NSString*)title
-                    message:(NSString*)message
+- (void) alertUserWithTitle:(NSString *)title
+                    message:(NSString *)message
                  andHandler:(void (^)(UIAlertAction *action))handler;
 {
     UIAlertController * alertUsersNotFound = [UIAlertController

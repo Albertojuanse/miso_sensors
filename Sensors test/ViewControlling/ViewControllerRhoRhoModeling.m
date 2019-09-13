@@ -281,8 +281,8 @@
  @method alertUserWithTitle:andMessage:
  @discussion This method alerts the user with a pop up window with a single "Ok" button given its message and title and lambda funcion handler.
  */
-- (void) alertUserWithTitle:(NSString*)title
-                    message:(NSString*)message
+- (void) alertUserWithTitle:(NSString *)title
+                    message:(NSString *)message
                  andHandler:(void (^)(UIAlertAction *action))handler;
 {
     UIAlertController * alertUsersNotFound = [UIAlertController

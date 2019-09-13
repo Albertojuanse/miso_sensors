@@ -16,10 +16,10 @@
 
 @required
 - (instancetype)init;
-- (void)setName:(NSString*)newName;
-- (NSString*)getName;
-- (void)setAttributes:(NSMutableArray*)newAttributes;
-- (NSMutableArray*)getAttributes;
+- (void)setName:(NSString *)newName;
+- (NSString *)getName;
+- (void)setAttributes:(NSMutableArray *)newAttributes;
+- (NSMutableArray *)getAttributes;
 
 @optional
 - (BOOL)isEqual:(id)object;
@@ -42,10 +42,10 @@
 - (instancetype)initWithName:(NSString *)newName;
 - (instancetype)initWithName:(NSString *)newName
                andAttributes:(NSMutableArray *)newAttributes;
-- (void)setName:(NSString*)newName;
-- (NSString*)getName;
-- (void)setAttributes:(NSMutableArray*)newAttributes;
-- (NSMutableArray*)getAttributes;
+- (void)setName:(NSString *)newName;
+- (NSString *)getName;
+- (void)setAttributes:(NSMutableArray *)newAttributes;
+- (NSMutableArray *)getAttributes;
 - (BOOL)isEqual:(id)object;
 - (BOOL)isEqualToMDType:(MDType *)type;
 - (NSString *)description;

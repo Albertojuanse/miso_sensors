@@ -40,8 +40,8 @@
  @method getLocationsUsingBarycenterAproximationWithMeasures:andPrecisions:
  @discussion This method ocates a point given the heading measures from different points aiming it and calculates the barycenter of the solutions.
  */
-- (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithMeasures:(SharedData*)sharedData
-                                                                andPrecisions:(NSDictionary*)precisions
+- (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithMeasures:(SharedData *)sharedData
+                                                                andPrecisions:(NSDictionary *)precisions
 {
     NSLog(@"[INFO][TT] Start Radiolocating beacons");
     NSMutableDictionary * locatedPositions = [[NSMutableDictionary alloc] init];

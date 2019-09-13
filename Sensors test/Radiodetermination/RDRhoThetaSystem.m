@@ -16,8 +16,8 @@
     return self;
 }
 
-- (NSMutableDictionary *) getLocationsWithMeasures:(SharedData*)sharedData
-                                     andPrecisions:(NSDictionary*)precisions
+- (NSMutableDictionary *) getLocationsWithMeasures:(SharedData *)sharedData
+                                     andPrecisions:(NSDictionary *)precisions
 {
  NSLog(@"[INFO][RT] Start Radiolocating beacons");
     NSMutableDictionary * locatedPositions = [[NSMutableDictionary alloc] init];

@@ -171,7 +171,7 @@
  @method validateCredentialsUserDic:
  @discussion This method verifies the name and password of the user.
  */
-- (BOOL)validateCredentialsUserDic:(NSMutableDictionary*)userDic
+- (BOOL)validateCredentialsUserDic:(NSMutableDictionary *)userDic
 {
     // TO DO: Validation. Alberto J. 2019/09/05.
     return YES;
@@ -181,7 +181,7 @@
  @method validateCredentialsUserDic:
  @discussion This method verifies if the name and password of the user already exist or are not valid.
  */
-- (BOOL)validateNewCredentialsUserDic:(NSMutableDictionary*)userDic
+- (BOOL)validateNewCredentialsUserDic:(NSMutableDictionary *)userDic
 {
     // TO DO: Validation. Alberto J. 2019/09/05.
     return YES;
@@ -191,7 +191,7 @@
  @method registerNewUserWithCredentialsUserDic:
  @discussion This method verifies the name and password of the user.
  */
-- (BOOL)registerNewUserWithCredentialsUserDic:(NSMutableDictionary*)userDic
+- (BOOL)registerNewUserWithCredentialsUserDic:(NSMutableDictionary *)userDic
 {
     // TO DO: Registration. Alberto J. 2019/09/05.
     return YES;

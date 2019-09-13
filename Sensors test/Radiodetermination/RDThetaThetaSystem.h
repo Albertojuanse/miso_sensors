@@ -20,8 +20,8 @@
     
 }
 
-- (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithMeasures:(SharedData*)sharedData
-                                                                andPrecisions:(NSDictionary*)precisions;
+- (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithMeasures:(SharedData *)sharedData
+                                                                andPrecisions:(NSDictionary *)precisions;
 + (NSNumber *) calculateDistanceWithRssi:(NSInteger) rssi;
 
 @end

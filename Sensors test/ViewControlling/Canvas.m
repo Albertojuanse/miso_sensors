@@ -41,8 +41,8 @@
  @method prepareCanvasWithMode:
  @discussion This method initializes some properties of the canvas; is called when the main view is loaded by its controller.
  */
-- (void)prepareCanvasWithSharedData:(SharedData*)givenSharedData
-                            andUser:(NSMutableDictionary*)givenCredentialsUserDic
+- (void)prepareCanvasWithSharedData:(SharedData *)givenSharedData
+                            andUser:(NSMutableDictionary *)givenCredentialsUserDic
 {
     // Initialize components and variables
     sharedData = givenSharedData;
@@ -224,7 +224,7 @@
     //     "state": (NSString *)state1;
     //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
     //     "itemsChosenByUser": (NSMutableArray *)items1;
-    //     "typeChosenByUser": (MDType*)type1
+    //     "typeChosenByUser": (MDType *)type1
     //   },
     //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
     //     (···)
@@ -246,7 +246,7 @@
     //
     //     "position": (RDPosition *)position1;
     //
-    //     "type": (MDType*)type1
+    //     "type": (MDType *)type1
     //   },
     //   { "sort": @"beacon" | @"position";
     //     "identifier": (NSString *)identifier2;
@@ -257,22 +257,21 @@
     //
     //            // MEASURES DATA //
     //
-    // The schema of the measuresData collection is:
-    //
-    //  [{ "position": (RDPosition *)position1;                  //  positionDic
-    //     "positionMeasures": [                                 //  uuidArray
-    //         { "uuid" : (NSString *)uuid1;                     //  uuidDic
-    //           "uuidMeasures": [                               //  measuresArray
-    //             { "sort" : (NSString *)type1;                 //  measuresDic
-    //               "measure": (NSNumber *)measure1;
-    //             },
-    //             (···)
-    //           ]
-    //         },
-    //         (···)
-    //     ]
+    //  [{ "user": { "name": (NSString *)name1;                  // measureDic; userDic
+    //               "pass": (NSString *)pass1;
+    //               "role": (NSString *)role1;
+    //             }
+    //     "position": (RDPosition *)position1;
+    //     "itemUUID": (NSString *)itemUUID1;
+    //     "deviceUUID": (NSString *)deviceUUID1;
+    //     "sort" : (NSString *)type1;
+    //     "measure": (NSNumber *)measure1
     //   },
-    //   { "position": (RDPosition *)position2;                  // positionDic
+    //   { "user": { "name": (NSString *)name2;                  // measureDic; userDic
+    //               "pass": (NSString *)pass2;
+    //               "role": (NSString *)role2;
+    //             }
+    //     "position": (RDPosition *)position2;
     //     (···)
     //   },
     //   (···)
@@ -293,7 +292,7 @@
     //
     // The schema of typesData collection is
     //
-    //  [ (MDType*)type1,
+    //  [ (MDType *)type1,
     //    (···)
     //  ]
     //
@@ -337,28 +336,58 @@
     NSMutableDictionary * modelDic;
     
     // The positions must be scaled before its displaying
-    // Get both items' and locations' positions and merge them into a single array
-    NSMutableArray * itemsPositions = [sharedData fromItemDataGetPositionsOfItemsChosenByUserDic:credentialsUserDic
-                                                                         withCredentialsUserName:credentialsUserDic];
+    // Get measured, items' and locations' positions and merge them into a single array
+    NSMutableArray * itemsPositions = [sharedData fromSessionDataGetPositionsOfItemsChosenByUserDic:credentialsUserDic
+                                                                            withCredentialsUserName:credentialsUserDic];
     NSMutableArray * locatedPositions = [sharedData fromLocationsDataGetPositionsWithCredentialsUserDic:credentialsUserDic];
     NSMutableArray * realPositions = [[NSMutableArray alloc] init];
+    NSMutableArray * measurePositions = [sharedData fromMeasuresDataGetPositionsWithCredentialsUserDic:credentialsUserDic];
     for (RDPosition * position in itemsPositions) {
         [realPositions addObject:position];
-        NSLog(@"[INFO][CA] Added real position %@", position);
+        // NSLog(@"[INFO][CA] Got real located position %@", position);
     }
     for (RDPosition * position in locatedPositions) {
         [realPositions addObject:position];
-        NSLog(@"[INFO][CA] Added real position %@", position);
+        // NSLog(@"[INFO][CA] Got real item position %@", position);
+    }
+    for (RDPosition * position in measurePositions) {
+        [realPositions addObject:position];
+        // NSLog(@"[INFO][CA] Got real measured position %@", position);
     }
     
     // Transform the real positions to an apropiate canvas ones, with the barycenter of the set of points in the center of the canvas
     // This method also sets the ratios in the class variables 'rWidth' and 'rHeight'; then, they will be used for transform every single point
     [self calculateRatiosOfTransformationFromRealPointsToCanvasPoints:realPositions
                                                     withSafeAreaRatio:[NSNumber numberWithFloat:0.35]];
+    NSLog(@"[INFO][CA] Calculated trasformation ratio rWith: %.2f", rWidth);
+    NSLog(@"[INFO][CA] Calculated trasformation ratio rHeight: %.2f", rHeight);
     
     // Now, inspect the dictionary and get the information to display
     
-    // For every (canvas) position where measures were taken
+    // For every (canvas) position where measures were taken...
+    for (RDPosition * realMeasurePosition in measurePositions) {
+        
+        // ...get the transformed position...
+        RDPosition * canvasMeasurePosition = [self transformSingleRealPointToCanvasPoint:realMeasurePosition];
+        // ...and draw it.
+        [self drawPosition:realMeasurePosition inCanvasPosition:canvasMeasurePosition];
+        
+        //NSLog(@"[INFO][CA] Real position to show: %@", realMeasurePosition);
+        //NSLog(@"[INFO][CA] Canvas position to show: %@",  canvasMeasurePosition);
+        //NSLog(@"[INFO][CA] rWith: %.2f", rWidth);
+        //NSLog(@"[INFO][CA] rHeight: %.2f", rHeight);
+        
+        // Get the collection of UUID measured from that position...
+        NSMutableArray * measuredUUID = [sharedData fromMeasuresDataGetSourceUUIDsOfUserDic:<#(NSMutableDictionary *)#> withCredentialsUserDic:<#(NSMutableDictionary *)#>];
+        // ...and for every UUID...
+        NSArray * uuidKeys = [uuidDicDic allKeys];
+        // Color for every UUID
+        NSInteger UUIDindex = 0;
+        for (id uuidKey in uuidKeys) {
+            
+        }
+    }
+    
     for (id positionKey in positionKeys) {
         // ...get the dictionary for this position...
         positionDic = [self.measuresDic objectForKey:positionKey];
@@ -423,8 +452,8 @@
     }
 }
 
-- (void) drawLocatedPositionIfItSharesUUIDWith:(NSString*)uuid
-                                     withColor:(UIColor*)color
+- (void) drawLocatedPositionIfItSharesUUIDWith:(NSString *)uuid
+                                     withColor:(UIColor *)color
 {
     
     // The schema of the locatedDic object is:
@@ -529,7 +558,7 @@
  @method getColorForIndex:
  @discussion This method returns a 'UIColor' object given the index in which certain object is found while dictionaries inspection; it provides a feed of different colors.
  */
-- (UIColor*) getColorForIndex:(NSInteger)index {
+- (UIColor *) getColorForIndex:(NSInteger)index {
     // Choose a color for each UUID
     UIColor *color;
     switch (index % 8) {
@@ -568,9 +597,9 @@
  @method drawMeasureUUID
  @discussion This method displays a certain measure source UUID given its color.
  */
-- (void) drawMeasureUUID:(NSString*)uuid
+- (void) drawMeasureUUID:(NSString *)uuid
                  atIndex:(NSInteger)index
-               andWithColor:(UIColor*)color
+               andWithColor:(UIColor *)color
 {
     UIBezierPath * uuidBezierPath = [UIBezierPath bezierPath];
     
@@ -796,7 +825,7 @@
  @discussion This method calculate the ratios needed for showing a set of real points in the canvas; the 'safeAreaRatio' defines a safe area near the canvas' boundaries in wich the points won't be allocated, and it is tipically 0.4, and only the centered 20% of the canvas will allocate the points.
  */
 - (void) calculateRatiosOfTransformationFromRealPointsToCanvasPoints:(NSMutableArray *)realPoints
-                                                               withSafeAreaRatio:(NSNumber*)safeAreaRatio
+                                                               withSafeAreaRatio:(NSNumber *)safeAreaRatio
 {
     // Get the canvas dimensions and its center
     float canvasWidth = self.frame.size.width;

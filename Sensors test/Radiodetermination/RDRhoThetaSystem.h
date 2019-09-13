@@ -21,8 +21,8 @@
     NSMutableArray * headingMeasures;
 }
 
-- (NSMutableDictionary *) getLocationsWithMeasures:(SharedData*)sharedData
-                                     andPrecisions:(NSDictionary*)precisions;
+- (NSMutableDictionary *) getLocationsWithMeasures:(SharedData *)sharedData
+                                     andPrecisions:(NSDictionary *)precisions;
 + (NSNumber *) calculateDistanceWithRssi:(NSInteger) rssi;
 
 @end

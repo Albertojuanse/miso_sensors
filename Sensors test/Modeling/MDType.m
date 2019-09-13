@@ -57,7 +57,7 @@
  @method getName
  @discussion Getter of the 'name' attribute.
  */
-- (NSString*)getName {
+- (NSString *)getName {
     return name;
 }
 
@@ -65,7 +65,7 @@
  @method setName
  @discussion Setter of the 'name' attribute.
  */
-- (void)setName:(NSString*)newName {
+- (void)setName:(NSString *)newName {
     name = newName;
 }
 
@@ -73,7 +73,7 @@
  @method getAttributes
  @discussion Getter of the 'attributes' NSMutableArray object.
  */
-- (NSMutableArray*)getAttributes {
+- (NSMutableArray *)getAttributes {
     return attributes;
 }
 
@@ -81,7 +81,7 @@
  @method setAttributes
  @discussion Setter of the 'attributes' NSMutableArray object.
  */
-- (void)setAttributes:(NSMutableArray*)newAttributes {
+- (void)setAttributes:(NSMutableArray *)newAttributes {
     attributes = newAttributes;
 }
 
