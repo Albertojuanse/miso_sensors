@@ -33,12 +33,10 @@
     }
     
     // Variables
-    idle = YES;
-    measuring = NO;
     locatedPositionUUID = [[NSUUID UUID] UUIDString];
     
     // Ask canvas to initialize
-    [self.canvas prepareCanvasWithMode:@"THETA_THETA_LOCATING"];
+    [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic andCredentialsUserDic:credentialsUserDic];
     
     // Visualization
     [self.buttonMeasure setEnabled:YES];
@@ -137,41 +135,49 @@
  */
 - (IBAction)handleButtonMeasure:(id)sender
 {
+    // First, validate the acess to the data shared collection
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        
+    } else {
+        [self alertUserWithTitle:@"Travel won't be started."
+                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCRRM] Shared data could not be acessed while starting travel.");
+        return;
+    }
     
     // In every state the button performs different behaviours
-    if (idle) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
+    NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
+                                                        andCredentialsUserDic:credentialsUserDic];
+    
+    if ([state isEqualToString:@"IDLE"]) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
         // If user did chose a position to aim
-        if (positionChosenByUser) {
+        if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                        andCredentialsUserDic:credentialsUserDic]) {
             [self.buttonMeasure setEnabled:YES];
-            idle = NO;
-            measuring = YES;
+            [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
+                                       andWithCredentialsUserDic:credentialsUserDic];
             [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
             
-            NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-            // Create a copy of beacons and positions for sending it; concurrence issues prevented
-            NSMutableArray * beaconsAndPositionsChosenToSend = [[NSMutableArray alloc] init];
-            for (NSMutableDictionary * regionDic in beaconsAndPositionsChosen) {
-                [beaconsAndPositionsChosenToSend addObject:regionDic];
-            }
-            [data setObject:beaconsAndPositionsChosenToSend forKey:@"beaconsAndPositions"];
-            [data setObject:positionChosenByUser forKey:@"positionChosenByUser"];
-            -> [data setObject:uuidChosenByUser forKey:@"uuidChosenByUser"];
-            [data setObject:locatedPositionUUID forKey:@"locatedPositionUUID"];
-            [data setObject:@"THETA_THETA_LOCATING" forKey:@"mode"];
             // And send the notification
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
-                                                                object:nil
-                                                              userInfo:data];
+                                                                object:nil];
             NSLog(@"[NOTI][VCRTM] Notification \"startMeasuring\" posted.");
             return;
         } else {
             return;
         }
     }
-    if (measuring) { // If 'Measuring' is tapped, ask stop measuring.
+    if ([state isEqualToString:@"MEASURING"]) { // If 'Measuring' is tapped, ask stop measuring.
         [self.buttonMeasure setEnabled:YES];
-        idle = YES;
-        measuring = NO;
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                              andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
                                                             object:nil];
@@ -200,6 +206,30 @@
 }
 
 /*!
+ @method alertUserWithTitle:andMessage:
+ @discussion This method alerts the user with a pop up window with a single "Ok" button given its message and title and lambda funcion handler.
+ */
+- (void) alertUserWithTitle:(NSString *)title
+                    message:(NSString *)message
+                 andHandler:(void (^)(UIAlertAction *action))handler;
+{
+    UIAlertController * alertUsersNotFound = [UIAlertController
+                                              alertControllerWithTitle:title
+                                              message:message
+                                              preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction * okButton = [UIAlertAction
+                                actionWithTitle:@"Ok"
+                                style:UIAlertActionStyleDefault
+                                handler:handler
+                                ];
+    
+    [alertUsersNotFound addAction:okButton];
+    [self presentViewController:alertUsersNotFound animated:YES completion:nil];
+    return;
+}
+
+/*!
  @method prepareForSegue:sender:
  @discussion This method is called before any segue and it is used for pass other views variables.
  */
@@ -218,9 +248,6 @@
         [viewControllerMainMenu setSharedData:sharedData];
         [viewControllerMainMenu setMotionManager:motion];
         [viewControllerMainMenu setLocationManager:location];
-        
-        [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerMainMenu setTypesRegistered:typesRegistered];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"

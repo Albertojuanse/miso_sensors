@@ -30,10 +30,7 @@
     // Beacons' region identifiers
     NSNumber * regionBeaconIdNumber;
     NSNumber * regionPositionIdNumber;
-    
-    // For update canvas
-    NSMutableDictionary * measuresDic;
-    NSMutableDictionary * locatedDic;
+    NSString * locatedPositionUUID; // This one changes when the user measures and generates a new position for the device.
     
 }
 

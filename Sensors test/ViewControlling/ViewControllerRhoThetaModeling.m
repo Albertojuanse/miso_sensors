@@ -33,7 +33,7 @@
     }
     
     // Ask canvas to initialize
-    [self.canvas prepareCanvasWithMode:@"RHO_THETA_MODELING"];
+    [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic andCredentialsUserDic:credentialsUserDic];
     
     // Visualization
     [self.buttonMeasure setEnabled:YES];
