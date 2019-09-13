@@ -22,7 +22,7 @@
     
     // Visualization
     // Sets if the user wants to modify a beacon device or a position, or nothing
-    NSDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:credentialsUserDic
+    NSDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
                                                                                   andCredentialsUserDic:credentialsUserDic];
     if (
         ![@"beacon" isEqualToString:itemChosenByUser[@"sort"]] &&
@@ -60,6 +60,16 @@
     self.tableTypes.dataSource = self;
     
     [self.tableTypes reloadData];
+}
+
+/*!
+ @method didReceiveMemoryWarning
+ @discussion This method dispose of any resources that can be recreated id a memory warning is recived.
+ */
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 
 /*!
@@ -142,7 +152,7 @@
              self.textPositionZ.placeholder = @"";
              
              // If user did select an object to modify, search for it and display it on texts.
-             NSMutableDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:credentialsUserDic
+             NSMutableDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
                                                                                                   andCredentialsUserDic:credentialsUserDic];
              NSMutableArray * itemsData = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
              if ([@"beacon" isEqualToString:itemChosenByUser[@"sort"]]) {
@@ -219,7 +229,7 @@
              self.textPositionZ.placeholder = @"0.0";
              
              // If user did select an object to modify, search for it and display it on texts.
-             NSMutableDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:credentialsUserDic
+             NSMutableDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
                                                                                                   andCredentialsUserDic:credentialsUserDic];
              NSMutableArray * itemsData = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
              if ([@"position" isEqualToString:itemChosenByUser[@"sort"]]) {
@@ -402,9 +412,9 @@
     infoDic[@"uuid"] = [self.textUUID text];
     infoDic[@"major"] = [self.textMajor text];
     infoDic[@"minor"] = [self.textMinor text];
-    if ([sharedData fromSessionDataGetSessionWithUserDic:credentialsUserDic
+    if ([sharedData fromSessionDataGetSessionWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic]) {
-        MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:credentialsUserDic
+        MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
                                                                     andCredentialsUserDic:credentialsUserDic];
         infoDic[@"type"] = type;
         
@@ -432,7 +442,7 @@
             )
         {
             // This code is reached also when an type was set or uploaded, so check it
-            if (![sharedData fromSessionDataGetSessionWithUserDic:credentialsUserDic
+            if (![sharedData fromSessionDataGetSessionWithUserDic:userDic
                                            andCredentialsUserDic:credentialsUserDic]) {
                 [self alertUserWithTitle:@"Warning."
                                  message:@"As no coordinate values were introduced, the item's position is null."
@@ -531,7 +541,7 @@
             [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        typeToRemove = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:credentialsUserDic
+        typeToRemove = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
                                                                             andCredentialsUserDic:credentialsUserDic];
         self.textType.text = @"";
     } else { // Type not found
@@ -868,13 +878,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             // If the already chosen type is the same, the user wants to deselect it; if not, could be that a type is already selected or not
             
             // If a type is already selected
-            MDType * typeChosenByUserStored = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:credentialsUserDic
+            MDType * typeChosenByUserStored = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
                                                                                           andCredentialsUserDic:credentialsUserDic];
             if (typeChosenByUserStored) { // Already one type selected
                 if ([typeChosenByUser isEqualToMDType:typeChosenByUserStored]) { // Deselect
                     [tableView deselectRowAtIndexPath:indexPath animated:NO];
                     [sharedData inSessionDataSetTypeChosenByUser:nil
-                                               toUserWithUserDic:credentialsUserDic
+                                               toUserWithUserDic:userDic
                                            andCredentialsUserDic:credentialsUserDic];
                 } else { // Deselect the old one and select the new one
                     
@@ -888,13 +898,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                      ];
                     // Select
                     [sharedData inSessionDataSetTypeChosenByUser:typeChosenByUser
-                                               toUserWithUserDic:credentialsUserDic
+                                               toUserWithUserDic:userDic
                                            andCredentialsUserDic:credentialsUserDic];
                     
                 }
             } else { // No type selected; select
                 [sharedData inSessionDataSetTypeChosenByUser:typeChosenByUser
-                                           toUserWithUserDic:credentialsUserDic
+                                           toUserWithUserDic:userDic
                                        andCredentialsUserDic:credentialsUserDic];
             }
             
