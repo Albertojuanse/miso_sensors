@@ -437,13 +437,13 @@
             
             if ([chosenMode isEqualToString:[modes objectAtIndex:0]]) { // RHO_RHO_MODELING
                 [sharedData inSessionDataSetMode:@"RHO_RHO_MODELING"
-                               toUserWithUserDic:credentialsUserDic
-                           andCredentialsUserDic:credentialsUserDic];
+                               toUserWithUserDic:userDic
+                           andCredentialsUserDic:userDic];
                 [self performSegueWithIdentifier:@"fromMainToRHO_RHO_MODELING" sender:sender];
             }
             if ([chosenMode isEqualToString:[modes objectAtIndex:1]]) { // RHO_THETA_MODELING
                 [sharedData inSessionDataSetMode:@"RHO_THETA_MODELING"
-                               toUserWithUserDic:credentialsUserDic
+                               toUserWithUserDic:userDic
                            andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToRHO_THETA_MODELING" sender:sender];
             }
@@ -461,7 +461,7 @@
             }
             if ([chosenMode isEqualToString:[modes objectAtIndex:5]]) { // THETA_THETA_LOCATING
                 [sharedData inSessionDataSetMode:@"THETA_THETA_LOCATING"
-                               toUserWithUserDic:credentialsUserDic
+                               toUserWithUserDic:userDic
                            andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
@@ -722,7 +722,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         // Reset
         // CredentialsUserDic is the current device's user.
         [sharedData inSessionDataSetItemChosenByUser:nil
-                                   toUserWithUserDic:credentialsUserDic
+                                   toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
         // Update
         NSMutableArray * itemsData = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
@@ -733,7 +733,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             // Can be null if it did not exist
             if(itemChosenByUser) {
                 [sharedData inSessionDataSetItemChosenByUser:itemChosenByUser
-                                       toUserWithUserDic:credentialsUserDic
+                                       toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
             } else {
                 NSLog(@"[VCMM][ERROR] User did choose an inexisting item.");
