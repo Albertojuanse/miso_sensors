@@ -106,17 +106,6 @@
     //   (···)
     //  ]
     //
-    //            // LOCATIONS DATA //
-    //
-    //
-    // The schema of the locationsData collection is:
-    //
-    //  [{ "locatedUUID": (NSString *)locatedUUID1;              //  locationDic
-    //     "locatedPosition": (RDPosition *)locatedPosition1;
-    //   },
-    //   (···)
-    //  ]
-    //
     //            // METAMODEL DATA //
     //
     // The schema of typesData collection is

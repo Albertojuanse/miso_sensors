@@ -421,13 +421,22 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                         // ...and save it in dictionary 'locatedDic'.
                         NSArray *positionKeys = [locatedPositions allKeys];
                         for (id positionKey in positionKeys) {
-                            [sharedData inLocationsDataSetPosition:[locatedPositions objectForKey:positionKey]
-                                                      fromItemUUID:positionKey
-                                                       withUserDic:userDic
-                                         andWithCredentialsUserDic:credentialsUserDic];
+                            NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
+                            infoDic[@"located"] = @"YES";
+                            infoDic[@"identifier"] = [NSString
+                                                      stringWithFormat:@"location%@@miso.uam.es",
+                                                      [positionKey substringFromIndex:
+                                                       [positionKey length] - 4]
+                                                      ];
+                            infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
+                            [sharedData inItemDataAddItemOfSort:@"position"
+                                                       withUUID:positionKey
+                                                    withInfoDic:infoDic
+                                      andWithCredentialsUserDic:credentialsUserDic];
                         }
                         NSLog(@"[INFO][LM] Generated locations:");
-                        NSLog(@"[INFO][LM]  -> %@", [sharedData getLocationsDataWithCredentialsUserDic:credentialsUserDic]);
+                        NSLog(@"[INFO][LM]  -> %@",  [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                                             andCredentialsUserDic:credentialsUserDic]);
                         
                     }
                     NSLog(@"[INFO][LM] Generated measures:");
@@ -606,14 +615,23 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             // ...and save it in dictionary 'locatedDic'.
             NSArray *positionKeys = [locatedPositions allKeys];
             for (id positionKey in positionKeys) {
-                [sharedData inLocationsDataSetPosition:[locatedPositions objectForKey:positionKey]
-                                          fromItemUUID:positionKey
-                                           withUserDic:userDic
-                             andWithCredentialsUserDic:credentialsUserDic];
+                NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
+                infoDic[@"located"] = @"YES";
+                infoDic[@"identifier"] = [NSString
+                                          stringWithFormat:@"location%@@miso.uam.es",
+                                          [positionKey substringFromIndex:
+                                           [positionKey length] - 4]
+                                          ];
+                infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
+                [sharedData inItemDataAddItemOfSort:@"position"
+                                           withUUID:positionKey
+                                        withInfoDic:infoDic
+                          andWithCredentialsUserDic:credentialsUserDic];
             }
             
             NSLog(@"[INFO][LM] Generated locations:");
-            NSLog(@"[INFO][LM]  -> %@", [sharedData getLocationsDataWithCredentialsUserDic:credentialsUserDic]);
+            NSLog(@"[INFO][LM]  -> %@", [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                                andCredentialsUserDic:credentialsUserDic]);
             NSLog(@"[INFO][LM] Generated measures:");
             NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
             
