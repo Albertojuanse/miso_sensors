@@ -58,6 +58,8 @@
 //
 //     "position": (RDPosition *)position1;
 //
+//     "located": @"YES" | @"NO";
+//
 //     "type": (MDType *)type1
 //   },
 //   { "sort": @"beacon" | @"position";
@@ -85,17 +87,6 @@
 //             }
 //     "position": (RDPosition *)position2;
 //     (···)
-//   },
-//   (···)
-//  ]
-//
-//            // LOCATIONS DATA //
-//
-//
-// The schema of the locationsData collection is:
-//
-//  [{ "locatedUUID": (NSString *)locatedUUID1;              //  locationDic
-//     "locatedPosition": (RDPosition *)locatedPosition1;
 //   },
 //   (···)
 //  ]
@@ -1000,10 +991,11 @@
 //
 //     "position": (RDPosition *)position1;
 //
-//     "type": (MDType *)type1
+//     "located": @"YES" | @"NO";
 //
+//     "type": (MDType *)type1
 //   },
-//   { "type": @"beacon" | @"position";
+//   { "sort": @"beacon" | @"position";
 //     "identifier": (NSString *)identifier2;
 //     (···)
 //   },
@@ -1670,97 +1662,6 @@
     }
 }
 
-#pragma mark - Locations data specific getters
-//            // LOCATIONS DATA //
-//
-//
-// The schema of the locationsData collection is:
-//
-//  [{ "locatedUUID": (NSString *)locatedUUID1;              //  locationDic
-//     "locatedPosition": (RDPosition *)locatedPosition1;
-//   },
-//   (···)
-// }
-//
-
-/*!
- @method fromLocationsDataGetPositionDicsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all located positions dictionaries stored; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
- */
-- (NSMutableArray *)fromLocationsDataGetPositionDicsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        NSMutableArray * positions = [[NSMutableArray alloc] init];
-        for (locationDic in locationsData) {
-            [positions addObject:locationDic];
-        }
-        return positions;
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return nil;
-    }
-}
-
-/*!
- @method fromLocationsDataGetPositionsWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all located positions 'RDPosition' stored; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
- */
-- (NSMutableArray *)fromLocationsDataGetPositionsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        NSMutableArray * positions = [[NSMutableArray alloc] init];
-        for (locationDic in locationsData) {
-            [positions addObject:locationDic[@"locatedPosition"]];
-        }
-        return positions;
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return nil;
-    }
-}
-
-/*!
- @method fromLocationsDataGetPositionDicsOfUUID:withCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all located positions dictionaries stored given their UUID; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
- */
-- (NSMutableArray *)fromLocationsDataGetPositionDicsOfUUID:(NSString *)uuid
-                                    withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        NSMutableArray * positions = [[NSMutableArray alloc] init];
-        for (locationDic in locationsData) {
-            if ([uuid isEqualToString:locationDic[@"locatedUUID"]]){
-                [positions addObject:locationDic];
-            }
-        }
-        return positions;
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return nil;
-    }
-}
-
-/*!
- @method fromLocationsDataGetPositionsOfUUID:withCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' with all located positions 'RDPosition' stored given their UUID; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
- */
-- (NSMutableArray *)fromLocationsDataGetPositionsOfUUID:(NSString *)uuid
-                                 withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        NSMutableArray * positions = [[NSMutableArray alloc] init];
-        for (locationDic in locationsData) {
-            if ([uuid isEqualToString:locationDic[@"locatedUUID"]]){
-                [positions addObject:locationDic[@"locatedPosition"]];
-            }
-        }
-        return positions;
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return nil;
-    }
-}
-
 #pragma mark - Metamodel data specific getters
 //            // METAMODEL DATA //
 //
@@ -2412,10 +2313,11 @@
 //
 //     "position": (RDPosition *)position1;
 //
-//     "type": (MDType *)type1
+//     "located": @"YES" | @"NO";
 //
+//     "type": (MDType *)type1
 //   },
-//   { "type": @"beacon" | @"position";
+//   { "sort": @"beacon" | @"position";
 //     "identifier": (NSString *)identifier2;
 //     (···)
 //   },
@@ -2608,96 +2510,6 @@
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return NO;
     }
-}
-
-#pragma mark - Locations data specific setters
-//            // LOCATIONS DATA //
-//
-// The schema of the locationsData collection is:
-//
-//  [{ "locatedUUID": (NSString *)locatedUUID1;              //  locationDic
-//     "locatedPosition": (RDPosition *)locatedPosition1;
-//   },
-//   (···)
-// }
-//
-
-/*!
- @method inLocationsDataSetPosition:fromItemUUID:withUserDic:andWithCredentialsUserDic:
- @discussion This method saves in the NSDictionary with the located positions information a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
- */
-- (BOOL) inLocationsDataSetPosition:(RDPosition *)locatedPosition
-                       fromItemUUID:(NSString *)uuid
-                        withUserDic:(NSMutableDictionary *)givenUserDic
-          andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        if (locationsData.count == 0) {
-            // First initialization
-            
-            // Compose the dictionary from the innermost to the outermost
-            // Wrap locatedPosition in a dictionary with its UUID
-            locationDic = [[NSMutableDictionary alloc] init];
-            locationDic[@"locatedPosition"] = locatedPosition;
-            locationDic[@"locatedUUID"] = uuid;
-            
-            // Set it into locatedDic
-            [locationsData addObject:locationDic];
-            
-        } else {
-            // A beacon only can exists in a position, hence no mobility solutions are considered
-            
-            // If UUID exists, position is actualized; if UUID does not exist, it will be created.
-            // For each position already saved...
-            BOOL UUIDfound = NO;
-            for (locationDic in locationsData) {
-                // ...check if the current UUID's locatedUUID already exists comparing it with the saved ones.
-                
-                NSString * savedUUID = locationDic[@"locatedUUID"];
-                if ([uuid isEqualToString:savedUUID]) { // UUID already exists
-                    locationDic[@"locatedPosition"] = locatedPosition;
-                    UUIDfound = YES;
-                } else {
-                    // Do not upload the position
-                }
-                
-            }
-            
-            // If UUID did not be found, create its dictionary
-            if (!UUIDfound) {
-                
-                // Compose the dictionary from the innermost to the outermost
-                // Wrap locatedPosition in a dictionary with its UUID
-                locationDic = [[NSMutableDictionary alloc] init];
-                locationDic[@"locatedPosition"] = locatedPosition;
-                locationDic[@"locatedUUID"] = uuid;
-                
-                // Set it into locatedDic
-                [locationsData addObject:locationDic];
-            }
-        }
-        // Everythong OK
-        return YES;
-        
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return NO;
-    }
-}
-
-/*!
- @method inLocationsDataSetPosition:fofDeviceUUID:withUserDic:andWithCredentialsUserDic:
- @discussion This method saves in the NSDictionary with the located positions information a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
- */
-- (BOOL) inLocationsDataSetPosition:(RDPosition *)locatedPosition
-                       ofDeviceUUID:(NSString *)uuid
-                        withUserDic:(NSMutableDictionary *)givenUserDic
-          andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    return [self inLocationsDataSetPosition:locatedPosition
-                               fromItemUUID:uuid
-                                withUserDic:givenUserDic
-                  andWithCredentialsUserDic:credentialsUserDic];
 }
 
 #pragma mark - Metamodel data specific setters
