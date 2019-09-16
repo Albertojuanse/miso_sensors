@@ -12,7 +12,7 @@
 
 /*!
  @class SharedData
- @discussion This class works as a monitor for all the aplication shared data such as locations or measures.
+ @discussion This class works as a monitor for all the aplication shared data such as items or measures.
  */
 @interface SharedData: NSObject {
     
@@ -124,6 +124,8 @@
                              andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)fromItemDataIsItemWithInfoDic:(NSMutableDictionary *)infoDic
                 andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray* )fromItemDataGetLocatedItemsByUser:(NSMutableDictionary *)userDic
+                                andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific measures measure getters
 - (NSMutableArray *)fromMeasuresDataGetPositionsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
@@ -272,8 +274,6 @@
                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific measures data specific removers
-
-// Specific locations data specific removers
 
 // Specific metamodel data specific removers
 - (BOOL) inMetamodelDataRemoveItemWithName:(NSString *)givenName

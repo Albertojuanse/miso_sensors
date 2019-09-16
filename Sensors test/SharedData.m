@@ -140,7 +140,6 @@
         sessionData = [[NSMutableArray alloc] init];
         itemsData = [[NSMutableArray alloc] init];
         measuresData = [[NSMutableArray alloc] init];
-        locationsData = [[NSMutableArray alloc] init];
         metamodelData = [[NSMutableArray alloc] init];
         modelData = [[NSMutableArray alloc] init];
         
@@ -198,7 +197,6 @@
         sessionData = nil;
         itemsData = nil;
         measuresData = nil;
-        locationsData = nil;
         metamodelData = nil;
         modelData = nil;
         
@@ -207,7 +205,6 @@
         sessionData = [[NSMutableArray alloc] init];
         itemsData = [[NSMutableArray alloc] init];
         measuresData = [[NSMutableArray alloc] init];
-        locationsData = [[NSMutableArray alloc] init];
         metamodelData = [[NSMutableArray alloc] init];
         modelData = [[NSMutableArray alloc] init];
     } else {
@@ -281,20 +278,6 @@
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         return measuresData;
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return nil;
-    }
-}
-
-/*!
- @method getLocationsDataWithCredentialsUserDic:
- @discussion This method returns the 'NSMutableArray' object with the positions locted in space using location methods; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
- */
-- (NSMutableArray *)getLocationsDataWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        return locationsData;
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return nil;
@@ -1217,6 +1200,31 @@
         } else {
             return NO;
         }
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+
+/*!
+ @method fromItemDataGetLocatedItemsByUser:andCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' collection with all the items that had been located and flaged as so in its dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray* )fromItemDataGetLocatedItemsByUser:(NSMutableDictionary *)userDic
+                                andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        NSMutableArray * itemsFound = [[NSMutableArray alloc] init];
+        
+        for (NSMutableDictionary * itemDic in itemsData) {
+            
+            if ([@"yes" isEqualToString:itemDic[@"located"]]) {
+                [itemsFound addObject:itemDic];
+            }
+        }
+        
+        return itemsFound;
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return nil;
@@ -2388,7 +2396,7 @@
 }
 
 /*!
- @method inItemDataAddItemOfSort: withUUID:withInfoDic:andWithCredentialsUserDic:
+ @method inItemDataAddItemOfSort:withUUID:withInfoDic:andWithCredentialsUserDic:
  @discussion This method saves in the items collection data an item with the provided information in the information dictionary, its sort and its UUID; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL) inItemDataAddItemOfSort:(NSString *)sort
