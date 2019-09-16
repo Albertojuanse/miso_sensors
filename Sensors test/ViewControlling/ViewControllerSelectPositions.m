@@ -40,7 +40,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCAB] Shared data could not be acessed while loading cells' item.");
+        NSLog(@"[ERROR][VCSP] Shared data could not be acessed while loading cells' item.");
     }
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
@@ -180,7 +180,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCAB] Shared data could not be acessed while loading cells' item.");
+        NSLog(@"[ERROR][VCSP] Shared data could not be acessed while loading cells' item.");
     }
 }
 

@@ -271,10 +271,11 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableItemsChosen) {
-        return [beaconsAndPositionsChosen count];
+        return [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                             andCredentialsUserDic:credentialsUserDic] count];
     }
     if (tableView == self.tableTypes) {
-        return [typesRegistered count];
+        return [[sharedData fromMetamodelDataGetTypesWithCredentialsUserDic:credentialsUserDic] count];
     }
     return 0;
 }
@@ -291,102 +292,127 @@
     
     // Configure individual cells
     if (tableView == self.tableItemsChosen) {
-        NSMutableDictionary * regionDic = [beaconsAndPositionsChosen objectAtIndex:indexPath.row];
-        cell.textLabel.numberOfLines = 0; // Means any number
         
-        // If it is a beacon
-        if ([@"beacon" isEqualToString:regionDic[@"sort"]]) {
+        // Database could not be acessed.
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
+        {
             
-            // It representation depends on if exist its position or its type
-            if (regionDic[@"x"] && regionDic[@"y"] && regionDic[@"z"]) {
-                if (regionDic[@"sort"]) {
+            // Load the item
+            NSMutableDictionary * itemDic = [
+                                             [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                                             objectAtIndex:indexPath.row
+                                             ];
+            cell.textLabel.numberOfLines = 0; // Means any number
+            
+            // If it is a beacon
+            if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
+                
+                // It representation depends on if exist its position or its type
+                if (itemDic[@"position"]) {
+                    if (itemDic[@"type"]) {
+                        
+                        RDPosition * position = itemDic[@"position"];
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                                               itemDic[@"identifier"],
+                                               itemDic[@"type"],
+                                               itemDic[@"uuid"],
+                                               itemDic[@"major"],
+                                               itemDic[@"minor"],
+                                               [position.x stringValue],
+                                               [position.y stringValue],
+                                               [position.z stringValue]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                        
+                    } else {
+                        
+                        RDPosition * position = itemDic[@"position"];
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                                               itemDic[@"identifier"],
+                                               itemDic[@"uuid"],
+                                               itemDic[@"major"],
+                                               itemDic[@"minor"],
+                                               [position.x stringValue],
+                                               [position.y stringValue],
+                                               [position.z stringValue]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                        
+                    }
+                } else {
+                    if (itemDic[@"type"]) {
+                        
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nmajor: %@ ; minor: %@",
+                                               itemDic[@"identifier"],
+                                               itemDic[@"type"],
+                                               itemDic[@"uuid"],
+                                               itemDic[@"major"],
+                                               itemDic[@"minor"]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                        
+                    } else  {
+                        
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
+                                               itemDic[@"identifier"],
+                                               itemDic[@"uuid"],
+                                               itemDic[@"major"],
+                                               itemDic[@"minor"]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                        
+                    }
+                }
+            }
+            
+            // And if it is a position
+            if ([@"position" isEqualToString:itemDic[@"sort"]]) {
+                // If its type is set
+                RDPosition * position = itemDic[@"position"];
+                if (itemDic[@"type"]) {
                     
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
-                                           regionDic[@"identifier"],
-                                           regionDic[@"sort"][@"name"],
-                                           regionDic[@"uuid"],
-                                           regionDic[@"major"],
-                                           regionDic[@"minor"],
-                                           regionDic[@"x"],
-                                           regionDic[@"y"],
-                                           regionDic[@"z"]
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%@, %@, %@)",
+                                           itemDic[@"identifier"],
+                                           itemDic[@"type"],
+                                           [position.x stringValue],
+                                           [position.y stringValue],
+                                           [position.z stringValue]
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    
                 } else {
                     
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
-                                           regionDic[@"identifier"],
-                                           regionDic[@"uuid"],
-                                           regionDic[@"major"],
-                                           regionDic[@"minor"],
-                                           regionDic[@"x"],
-                                           regionDic[@"y"],
-                                           regionDic[@"z"]
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%@, %@, %@)",
+                                           itemDic[@"identifier"],
+                                           [position.x stringValue],
+                                           [position.y stringValue],
+                                           [position.z stringValue]
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    
                 }
-            } else {
-                if (regionDic[@"sort"]) {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nmajor: %@ ; minor: %@",
-                                           regionDic[@"identifier"],
-                                           regionDic[@"sort"][@"name"],
-                                           regionDic[@"uuid"],
-                                           regionDic[@"major"],
-                                           regionDic[@"minor"]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    
-                } else  {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
-                                           regionDic[@"identifier"],
-                                           regionDic[@"uuid"],
-                                           regionDic[@"major"],
-                                           regionDic[@"minor"]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    
-                }
+                
             }
-            
-            // In this mode, only positions can be aimed, and so, beacons are marked
-            [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
-            [cell setTintColor:[UIColor redColor]];
         }
-        
-        // And if it is a position
-        if ([@"position" isEqualToString:regionDic[@"sort"]]) {
-            // If its type is set
-            if (regionDic[@"sort"]) {
-                cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> \n Position: (%@, %@, %@)",
-                                       regionDic[@"identifier"],
-                                       regionDic[@"sort"][@"name"],
-                                       regionDic[@"x"],
-                                       regionDic[@"y"],
-                                       regionDic[@"z"]
-                                       ];
-                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-            } else {
-                cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%@, %@, %@)",
-                                       regionDic[@"identifier"],
-                                       regionDic[@"x"],
-                                       regionDic[@"y"],
-                                       regionDic[@"z"]
-                                       ];
-                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-            }
-            
-        }
+    } else { // Type not found
+        [self alertUserWithTitle:@"Items won't be loaded."
+                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCTTL] Shared data could not be acessed while loading cells' item.");
     }
+    
     // Configure individual cells
     if (tableView == self.tableTypes) {
-        NSMutableDictionary * typeDic = [typesRegistered objectAtIndex:indexPath.row];
+        MDType * type = [
+                         [sharedData fromMetamodelDataGetTypesWithCredentialsUserDic:credentialsUserDic]
+                         objectAtIndex:indexPath.row
+                         ];
         cell.textLabel.numberOfLines = 0; // Means any number
         
-        cell.textLabel.text = [NSString stringWithFormat:@"%@", typeDic[@"name"]];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@", [type getName]];
         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
     }
     
@@ -398,21 +424,44 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     if (tableView == self.tableItemsChosen) {
-        
-        // Only positions can be aimed, positions were marked
-        if ([@"position" isEqualToString:
-             [beaconsAndPositionsChosen objectAtIndex:indexPath.row][@"sort"]
-             ])
+        // Database could not be acessed.
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
         {
-            positionChosenByUser = [beaconsAndPositionsChosen objectAtIndex:indexPath.row][@"position"];
-            -> uuidChosenByUser = [beaconsAndPositionsChosen objectAtIndex:indexPath.row][@"uuid"];
+            NSMutableDictionary * itemSelected = [
+                                                  [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                                                  objectAtIndex:indexPath.row
+                                                  ];
+            
+            // Only positions can be aimed, positions were marked
+            if ([@"position" isEqualToString:itemSelected[@"sort"]])
+            {
+                [sharedData inSessionDataSetItemChosenByUser:itemSelected
+                                           toUserWithUserDic:userDic
+                                       andCredentialsUserDic:credentialsUserDic];
+            } else {
+                
+                [tableView deselectRowAtIndexPath:indexPath animated:NO];
+            }
         } else {
-            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+            [self alertUserWithTitle:@"Items won't be loaded."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCTTL] Shared data could not be acessed while loading cells' item.");
         }
     }
     if (tableView == self.tableTypes) {
-        // Get the chosen type name
-        typeChosenByUser = [typesRegistered objectAtIndex:indexPath.row][@"name"];
+        MDType * typeSelected = [
+                                 [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                                 objectAtIndex:indexPath.row
+                                 ];
+        [sharedData inSessionDataSetTypeChosenByUser:typeSelected
+                                   toUserWithUserDic:userDic
+                               andCredentialsUserDic:credentialsUserDic];
     }
 }
 

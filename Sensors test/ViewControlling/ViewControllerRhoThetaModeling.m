@@ -267,7 +267,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while loading items.");
+            NSLog(@"[ERROR][VCRTM] Shared data could not be acessed while loading items.");
         }
     }
     return 0;
@@ -292,65 +292,67 @@
             )
         {
             
-            // Load the items
-            NSMutableDictionary * regionDic = [
+            // Load the item
+            NSMutableDictionary * itemDic = [
                                                [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
                                                objectAtIndex:indexPath.row
                                                ];
             cell.textLabel.numberOfLines = 0; // Means any number
             
             // If it is a beacon
-            if ([@"beacon" isEqualToString:regionDic[@"sort"]]) {
+            if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
                 
                 // It representation depends on if exist its position or its type
-                if (regionDic[@"x"] && regionDic[@"y"] && regionDic[@"z"]) {
-                    if (regionDic[@"sort"]) {
+                if (itemDic[@"position"]) {
+                    if (itemDic[@"type"]) {
                         
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
-                                               regionDic[@"identifier"],
-                                               regionDic[@"sort"][@"name"],
-                                               regionDic[@"uuid"],
-                                               regionDic[@"major"],
-                                               regionDic[@"minor"],
-                                               regionDic[@"x"],
-                                               regionDic[@"y"],
-                                               regionDic[@"z"]
+                        RDPosition * position = itemDic[@"position"];
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                                               itemDic[@"identifier"],
+                                               itemDic[@"type"],
+                                               itemDic[@"uuid"],
+                                               itemDic[@"major"],
+                                               itemDic[@"minor"],
+                                               [position.x stringValue],
+                                               [position.y stringValue],
+                                               [position.z stringValue]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                         
                     } else {
                         
+                        RDPosition * position = itemDic[@"position"];
                         cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
-                                               regionDic[@"identifier"],
-                                               regionDic[@"uuid"],
-                                               regionDic[@"major"],
-                                               regionDic[@"minor"],
-                                               regionDic[@"x"],
-                                               regionDic[@"y"],
-                                               regionDic[@"z"]
+                                               itemDic[@"identifier"],
+                                               itemDic[@"uuid"],
+                                               itemDic[@"major"],
+                                               itemDic[@"minor"],
+                                               [position.x stringValue],
+                                               [position.y stringValue],
+                                               [position.z stringValue]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                         
                     }
                 } else {
-                    if (regionDic[@"sort"]) {
+                    if (itemDic[@"type"]) {
                         
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nmajor: %@ ; minor: %@",
-                                               regionDic[@"identifier"],
-                                               regionDic[@"sort"][@"name"],
-                                               regionDic[@"uuid"],
-                                               regionDic[@"major"],
-                                               regionDic[@"minor"]
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nmajor: %@ ; minor: %@",
+                                               itemDic[@"identifier"],
+                                               itemDic[@"type"],
+                                               itemDic[@"uuid"],
+                                               itemDic[@"major"],
+                                               itemDic[@"minor"]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                         
                     } else  {
                         
                         cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
-                                               regionDic[@"identifier"],
-                                               regionDic[@"uuid"],
-                                               regionDic[@"major"],
-                                               regionDic[@"minor"]
+                                               itemDic[@"identifier"],
+                                               itemDic[@"uuid"],
+                                               itemDic[@"major"],
+                                               itemDic[@"minor"]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                         
@@ -359,23 +361,26 @@
             }
             
             // And if it is a position
-            if ([@"position" isEqualToString:regionDic[@"sort"]]) {
+            if ([@"position" isEqualToString:itemDic[@"sort"]]) {
                 // If its type is set
-                if (regionDic[@"sort"]) {
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> \n Position: (%@, %@, %@)",
-                                           regionDic[@"identifier"],
-                                           regionDic[@"sort"][@"name"],
-                                           regionDic[@"x"],
-                                           regionDic[@"y"],
-                                           regionDic[@"z"]
+                RDPosition * position = itemDic[@"position"];
+                if (itemDic[@"type"]) {
+                    
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%@, %@, %@)",
+                                           itemDic[@"identifier"],
+                                           itemDic[@"type"],
+                                           [position.x stringValue],
+                                           [position.y stringValue],
+                                           [position.z stringValue]
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                 } else {
+                    
                     cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%@, %@, %@)",
-                                           regionDic[@"identifier"],
-                                           regionDic[@"x"],
-                                           regionDic[@"y"],
-                                           regionDic[@"z"]
+                                           itemDic[@"identifier"],
+                                           [position.x stringValue],
+                                           [position.y stringValue],
+                                           [position.z stringValue]
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                 }
@@ -393,7 +398,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while loading cells' item.");
+            NSLog(@"[ERROR][VCRTM] Shared data could not be acessed while loading cells' item.");
         }
     }
     return cell;
@@ -431,7 +436,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while loading cells' item.");
+            NSLog(@"[ERROR][VCRTM] Shared data could not be acessed while loading cells' item.");
         }
     }
 }

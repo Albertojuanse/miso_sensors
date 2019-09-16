@@ -605,104 +605,112 @@
     
     // Configure individual cells
     if (tableView == self.tableItems) {
-        NSMutableDictionary * itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] objectAtIndex:indexPath.row];
         
-        // The itemDic variable can be null or NO if access is not granted or there are not items stored.
-        if (itemDic) {
-            cell.textLabel.numberOfLines = 0; // Means any number
+        // Database could not be acessed.
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
+        {
+        
+            NSMutableDictionary * itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] objectAtIndex:indexPath.row];
             
-            // If it is a beacon
-            if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
+            // The itemDic variable can be null or NO if access is not granted or there are not items stored.
+            if (itemDic) {
+                cell.textLabel.numberOfLines = 0; // Means any number
                 
-                // It representation depends on if exist its position or its type
-                if (itemDic[@"position"]) {
+                // If it is a beacon
+                if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
+                    
+                    // It representation depends on if exist its position or its type
+                    if (itemDic[@"position"]) {
+                        if (itemDic[@"type"]) {
+                            
+                            RDPosition * position = itemDic[@"position"];
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                                                   itemDic[@"identifier"],
+                                                   itemDic[@"type"],
+                                                   itemDic[@"uuid"],
+                                                   itemDic[@"major"],
+                                                   itemDic[@"minor"],
+                                                   [position.x stringValue],
+                                                   [position.y stringValue],
+                                                   [position.z stringValue]
+                                                   ];
+                            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                            
+                        } else {
+                            
+                            RDPosition * position = itemDic[@"position"];
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                                                   itemDic[@"identifier"],
+                                                   itemDic[@"uuid"],
+                                                   itemDic[@"major"],
+                                                   itemDic[@"minor"],
+                                                   [position.x stringValue],
+                                                   [position.y stringValue],
+                                                   [position.z stringValue]
+                                                   ];
+                            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                            
+                        }
+                    } else {
+                        if (itemDic[@"type"]) {
+                        
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nmajor: %@ ; minor: %@",
+                                                   itemDic[@"identifier"],
+                                                   itemDic[@"type"],
+                                                   itemDic[@"uuid"],
+                                                   itemDic[@"major"],
+                                                   itemDic[@"minor"]
+                                                   ];
+                            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                            
+                        } else  {
+                            
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
+                                                   itemDic[@"identifier"],
+                                                   itemDic[@"uuid"],
+                                                   itemDic[@"major"],
+                                                   itemDic[@"minor"]
+                                                   ];
+                            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                            
+                        }
+                    }
+                }
+            
+                // And if it is a position
+                if ([@"position" isEqualToString:itemDic[@"sort"]]) {
+                    // If its type is set
+                    RDPosition * position = itemDic[@"position"];
                     if (itemDic[@"type"]) {
                         
-                        RDPosition * position = itemDic[@"position"];
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%@, %@, %@)",
                                                itemDic[@"identifier"],
                                                itemDic[@"type"],
-                                               itemDic[@"uuid"],
-                                               itemDic[@"major"],
-                                               itemDic[@"minor"],
                                                [position.x stringValue],
                                                [position.y stringValue],
                                                [position.z stringValue]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                        
                     } else {
                         
-                        RDPosition * position = itemDic[@"position"];
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%@, %@, %@)",
                                                itemDic[@"identifier"],
-                                               itemDic[@"uuid"],
-                                               itemDic[@"major"],
-                                               itemDic[@"minor"],
                                                [position.x stringValue],
                                                [position.y stringValue],
                                                [position.z stringValue]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                        
-                    }
-                } else {
-                    if (itemDic[@"type"]) {
-                    
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nmajor: %@ ; minor: %@",
-                                               itemDic[@"identifier"],
-                                               itemDic[@"type"],
-                                               itemDic[@"uuid"],
-                                               itemDic[@"major"],
-                                               itemDic[@"minor"]
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                        
-                    } else  {
-                        
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
-                                               itemDic[@"identifier"],
-                                               itemDic[@"uuid"],
-                                               itemDic[@"major"],
-                                               itemDic[@"minor"]
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                        
                     }
                 }
-            }
-        
-            // And if it is a position
-            if ([@"position" isEqualToString:itemDic[@"sort"]]) {
-                // If its type is set
-                RDPosition * position = itemDic[@"position"];
-                if (itemDic[@"type"]) {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%@, %@, %@)",
-                                           itemDic[@"identifier"],
-                                           itemDic[@"type"],
-                                           [position.x stringValue],
-                                           [position.y stringValue],
-                                           [position.z stringValue]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                } else {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%@, %@, %@)",
-                                           itemDic[@"identifier"],
-                                           [position.x stringValue],
-                                           [position.y stringValue],
-                                           [position.z stringValue]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            } else {
+                // The itemDic variable is null or NO
+                NSLog(@"[VCMM][ERROR] No items found for showing");
+                if (indexPath.row == 0) {
+                    cell.textLabel.text = @"No items found.";
+                    cell.textLabel.textColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:0.2];
                 }
-            }
-        } else {
-            // The itemDic variable is null or NO
-            NSLog(@"[VCMM][ERROR] No items found for showing");
-            if (indexPath.row == 0) {
-                cell.textLabel.text = @"No items found.";
-                cell.textLabel.textColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:0.2];
             }
         }
     }
