@@ -287,6 +287,8 @@
     //
     //     "position": (RDPosition *)position1;
     //
+    //     "located": @"YES" | @"NO";
+    //
     //     "type": (MDType *)type1
     //   },
     //   { "sort": @"beacon" | @"position";
@@ -314,17 +316,6 @@
     //             }
     //     "position": (RDPosition *)position2;
     //     (···)
-    //   },
-    //   (···)
-    //  ]
-    //
-    //            // LOCATIONS DATA //
-    //
-    //
-    // The schema of the locationsData collection is:
-    //
-    //  [{ "locatedUUID": (NSString *)locatedUUID1;              //  locationDic
-    //     "locatedPosition": (RDPosition *)locatedPosition1;
     //   },
     //   (···)
     //  ]
@@ -368,11 +359,7 @@
     NSMutableDictionary * sessionDic;
     NSMutableDictionary * userDic;
     NSMutableDictionary * itemDic;
-    NSMutableDictionary * positionDic;
-    NSMutableDictionary * uuidDic;
-    NSMutableArray * uuidArray;
     NSMutableDictionary * measureDic;
-    NSMutableArray * measuresArray;
     NSMutableDictionary * locationDic;
     NSMutableDictionary * modelDic;
     
@@ -380,7 +367,6 @@
     // Get measured, items' and locations' positions and merge them into a single array
     NSMutableArray * itemsPositions = [sharedData fromSessionDataGetPositionsOfItemsChosenByUserDic:credentialsUserDic
                                                                             withCredentialsUserName:credentialsUserDic];
-    NSMutableArray * locatedPositions = [sharedData fromLocationsDataGetPositionsWithCredentialsUserDic:credentialsUserDic];
     NSMutableArray * realPositions = [[NSMutableArray alloc] init];
     NSMutableArray * measurePositions = [sharedData fromMeasuresDataGetPositionsWithCredentialsUserDic:credentialsUserDic];
     for (RDPosition * position in itemsPositions) {
@@ -398,12 +384,29 @@
     
     // Transform the real positions to an apropiate canvas ones, with the barycenter of the set of points in the center of the canvas
     // This method also sets the ratios in the class variables 'rWidth' and 'rHeight'; then, they will be used for transform every single point
+    // TO DO: make the SafeAreaRatio configurable (zoom). Alberto J. 2019/09/16.
     [self calculateRatiosOfTransformationFromRealPointsToCanvasPoints:realPositions
                                                     withSafeAreaRatio:[NSNumber numberWithFloat:0.35]];
     NSLog(@"[INFO][CA] Calculated trasformation ratio rWith: %.2f", rWidth);
     NSLog(@"[INFO][CA] Calculated trasformation ratio rHeight: %.2f", rHeight);
     
     // Now, inspect the dictionary and get the information to display
+    
+    
+    
+    // Representar las posiciones de los items
+        // Representar los tipos de los items
+        // Representar los UUID de los items
+    
+    // Representar las posiciones localizadas
+        // Representar los tipos de los items
+        // Representar los UUID de los items
+    
+    // Representar las posiciones de medida
+        // Representar los UUID
+    
+    
+    
     
     // For every (canvas) position where measures were taken...
     for (RDPosition * realMeasurePosition in measurePositions) {
@@ -419,14 +422,9 @@
         //NSLog(@"[INFO][CA] rHeight: %.2f", rHeight);
         
         // Get the collection of UUID measured from that position...
-        NSMutableArray * measuredUUID = [sharedData fromMeasuresDataGetSourceUUIDsOfUserDic:<#(NSMutableDictionary *)#> withCredentialsUserDic:<#(NSMutableDictionary *)#>];
-        // ...and for every UUID...
-        NSArray * uuidKeys = [uuidDicDic allKeys];
-        // Color for every UUID
-        NSInteger UUIDindex = 0;
-        for (id uuidKey in uuidKeys) {
-            
-        }
+        NSMutableArray * measuredUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
+                                                                   withCredentialsUserDic:credentialsUserDic];
+        
     }
     
     for (id positionKey in positionKeys) {
