@@ -73,6 +73,8 @@
     //
     //     "position": (RDPosition *)position1;
     //
+    //     "located": @"YES" | @"NO";
+    //
     //     "type": (MDType *)type1
     //   },
     //   { "sort": @"beacon" | @"position";
