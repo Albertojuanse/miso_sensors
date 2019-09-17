@@ -126,6 +126,8 @@
                 andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray* )fromItemDataGetLocatedItemsByUser:(NSMutableDictionary *)userDic
                                 andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray* )fromItemDataGetPositionsOfLocatedItemsByUser:(NSMutableDictionary *)userDic
+                                           andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific measures measure getters
 - (NSMutableArray *)fromMeasuresDataGetPositionsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;

@@ -222,7 +222,6 @@
     userDic = nil;
     itemDic = nil;
     measureDic = nil;
-    locationDic = nil;
     modelDic = nil;
 }
 
@@ -1225,6 +1224,34 @@
         }
         
         return itemsFound;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromItemDataGetPositionsOfLocatedItemsByUser:andCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' collection with all the positions of items that had been located and flaged as so in its dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray* )fromItemDataGetPositionsOfLocatedItemsByUser:(NSMutableDictionary *)userDic
+                                           andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        NSMutableArray * positionsFound = [[NSMutableArray alloc] init];
+        
+        NSMutableArray * locatedItems = [self fromItemDataGetLocatedItemsByUser:userDic
+                                                          andCredentialsUserDic:credentialsUserDic];
+        
+        for (NSMutableDictionary * itemDic in locatedItems) {
+            
+            RDPosition * position = itemDic[@"position"];
+            if (position) {
+                [positionsFound addObject:position];
+            }
+        }
+        
+        return positionsFound;
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return nil;

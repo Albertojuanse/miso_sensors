@@ -27,7 +27,8 @@
  @method initWithFrame:
  @discussion Constructor with a given specific frame in which be embedded.
  */
--(instancetype)initWithFrame:(CGRect)frame{
+-(instancetype)initWithFrame:(CGRect)frame
+{
     self = [super initWithFrame:frame];
     if (self) {
         
@@ -364,11 +365,13 @@
     NSMutableDictionary * modelDic;
     
     // The positions must be scaled before its displaying
-    // Get measured, items' and locations' positions and merge them into a single array
+    // Get measured, chosen items' and locations' positions and merge them into a single array
     NSMutableArray * itemsPositions = [sharedData fromSessionDataGetPositionsOfItemsChosenByUserDic:credentialsUserDic
                                                                             withCredentialsUserName:credentialsUserDic];
-    NSMutableArray * realPositions = [[NSMutableArray alloc] init];
+    NSMutableArray * locatedPositions = [sharedData fromItemDataGetPositionsOfLocatedItemsByUser:userDic
+                                                                andCredentialsUserDic:credentialsUserDic];
     NSMutableArray * measurePositions = [sharedData fromMeasuresDataGetPositionsWithCredentialsUserDic:credentialsUserDic];
+    NSMutableArray * realPositions = [[NSMutableArray alloc] init];
     for (RDPosition * position in itemsPositions) {
         [realPositions addObject:position];
         // NSLog(@"[INFO][CA] Got real located position %@", position);
@@ -393,19 +396,31 @@
     // Now, inspect the dictionary and get the information to display
     
     
+    // Registro de lo que se representa
     
-    // Representar las posiciones de los items
+    // Representar las posiciones de los chosen items
         // Representar los tipos de los items
         // Representar los UUID de los items
     
     // Representar las posiciones localizadas
-        // Representar los tipos de los items
-        // Representar los UUID de los items
+        // ¿Ya esta representada?
+            // Si sí, completar
+            // Si no
+                // Representar los tipos de las posiciones
+                // Representar los UUID de las posiciones
     
     // Representar las posiciones de medida
-        // Representar los UUID
+        // ¿Ya esta representada?
+            // Si sí, completar
+            // Si no
+                // Representar los UUID de las medidas
     
-    
+    // Hay que representar por tanto
+        // Posiciones
+        // Tipos centrados en ellas
+        // UUID en interfaz
+        // UUID centrados en ellas
+        // Medidas centrados en ellas
     
     
     // For every (canvas) position where measures were taken...
@@ -667,11 +682,11 @@
 }
 
 /*!
- @method drawMeasure:ofType:withColor:atPosition:inRect:
- @discussion This method displays a measure given its color, position, type and the object 'CGRect' in which the canvas is being drawn.
+ @method drawMeasure:ofSort:withColor:atPosition:inRect:
+ @discussion This method displays a measure given its color, position, sort and the object 'CGRect' in which the canvas is being drawn.
  */
 - (void) drawMeasure:(NSNumber *)measure
-              ofType:(NSString *)type
+              ofSort:(NSString *)type
            withColor:(UIColor *)color
           atPosition:(RDPosition *)realPosition
               inRect:(CGRect)rect
@@ -719,7 +734,6 @@
 }
 
 #pragma mark - Drawing methods helpers
-
 /*!
  @method getBarycenterOf:
  @discussion This method calculated the barycenter of a given set of RDPosition objects.
