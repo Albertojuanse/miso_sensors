@@ -1381,7 +1381,7 @@
 
 /*!
  @method fromMeasuresDataGetItemUUIDsOfUserDic:withCredentialsUserDic:
- @discussion This method returns a 'NSMutableArray' with every item UUID measured; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns a 'NSMutableArray' with every different item UUID measured; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 
 - (NSMutableArray *)fromMeasuresDataGetItemUUIDsOfUserDic:(NSMutableDictionary *)givenUserDic
@@ -1396,7 +1396,23 @@
             NSMutableDictionary * storedUserDic = measureDic[@"user"];
             if ([storedUserDic isEqualToDictionary:givenUserDic]) {
                 if (measureDic[@"itemUUID"]) {
-                    [uuid addObject:measureDic[@"itemUUID"]];
+                    
+                    // Search for different UUID
+                    if(uuid.count == 0) {
+                        [uuid addObject:measureDic[@"itemUUID"]];
+                    } else {
+                        BOOL foundUUID = NO;
+                        for (NSString * existingUUID in uuid) {
+                            if ([existingUUID isEqualToString:measureDic[@"itemUUID"]]) {
+                                foundUUID = YES;
+                            } else {
+                                
+                            }
+                        }
+                        if (!foundUUID) {
+                            [uuid addObject:measureDic[@"itemUUID"]];
+                        }
+                    }
                 }
             }
         }
@@ -1411,7 +1427,7 @@
 
 /*!
  @method fromMeasuresDataGetDeviceUUIDsOfUserDic:withCredentialsUserDic:
- @discussion This method returns a 'NSMutableArray' with every device UUID; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns a 'NSMutableArray' with every different device UUID; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromMeasuresDataGetDeviceUUIDsOfUserDic:(NSMutableDictionary *)givenUserDic
                                      withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
@@ -1425,7 +1441,23 @@
             NSMutableDictionary * storedUserDic = measureDic[@"user"];
             if ([storedUserDic isEqualToDictionary:givenUserDic]) {
                 if (measureDic[@"deviceUUID"]) {
-                    [uuid addObject:measureDic[@"deviceUUID"]];
+                    
+                    // Search for different UUID
+                    if(uuid.count == 0) {
+                        [uuid addObject:measureDic[@"deviceUUID"]];
+                    } else {
+                        BOOL foundUUID = NO;
+                        for (NSString * existingUUID in uuid) {
+                            if ([existingUUID isEqualToString:measureDic[@"deviceUUID"]]) {
+                                foundUUID = YES;
+                            } else {
+                                
+                            }
+                        }
+                        if (!foundUUID) {
+                            [uuid addObject:measureDic[@"deviceUUID"]];
+                        }
+                    }
                 }
             }
         }
