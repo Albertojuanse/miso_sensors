@@ -362,6 +362,139 @@
     }
     if ([mode isEqualToString:@"RHO_RHO_LOCATING"]) {
         
+        // In a locating mode the device must be located using the measures from items. That implies that, each UUID groups the measures taken from a certain beacon and the device position must be calculed using all of them.
+        
+        // It is needed the whole of positions where measures were generated and its maximun value to caluculate a grid in which locate every item; save also its UUID in the same order. Retrieve that data using selected items by user.
+        NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                                          andCredentialsUserDic:credentialsUserDic];
+        NSMutableArray * itemsPositions = [[NSMutableArray alloc] init];
+        NSMutableArray * itemsUUID = [[NSMutableArray alloc] init];
+        for (NSMutableDictionary * itemDic in itemsChosenByUser) {
+            
+            // For every item selected by user, only get the positions of beacons
+            NSString * itemUUID = itemDic[@"uuid"];
+            NSString * sort = itemDic[@"sort"];
+            if ([sort isEqualToString:@"beacon"]) {
+                if (itemDic[@"position"]) {
+                    RDPosition * itemPosition = [[RDPosition alloc] init];
+                    RDPosition * newPosition = [[RDPosition alloc] init];
+                    itemPosition = itemDic[@"sort"];
+                    newPosition.x = itemPosition.x;
+                    newPosition.y = itemPosition.y;
+                    newPosition.z = itemPosition.z;
+                    [itemsPositions addObject:newPosition];
+                    [itemsUUID addObject:itemUUID];
+                }
+            }
+        }
+        NSNumber * maxMeasure = [sharedData fromMeasuresDataGetMaxMeasureOfSort:@"rssi" withCredentialsUserDic:credentialsUserDic];
+        NSMutableArray * grid = [self generateGridUsingPositions:itemsPositions
+                                                   andMaxMeasure:maxMeasure
+                                                   andPrecisions:precisions];
+        
+        // It is also needed the info about the UUID that must be located; in this case the device's UUID.
+        NSMutableArray * everyUUID = [[NSMutableArray alloc] initWithObjects:deviceUUID, nil];
+        
+        // And thus, for every device that must be located with its unique UUID, get from every position where measures were generated its measures and use them.
+        for (NSString * UUIDtoLocate in everyUUID) {
+            
+            // Optimization search over the grid
+            NSNumber * minarg = [NSNumber numberWithFloat:FLT_MAX];
+            RDPosition * minargPosition;
+            NSString * minargUUID = UUIDtoLocate; // In this this is known.
+            
+            // For every position in the grid,...
+            for (RDPosition * gridPosition in grid) {
+                
+                NSNumber * sum = [NSNumber numberWithFloat:0.0];
+                
+                // Measures are only feasible if measures were take from at least 3 positions with measures.
+                NSInteger positionsWithMeasures = 0;
+                
+                // ...and for every position where measures come from...
+                for (RDPosition * itemPosition in itemsPositions) {
+                    
+                    // ...calculate the euclidean distance between them;...
+                    NSNumber * positionsDistance = [itemPosition euclideanDistance3Dto:gridPosition];
+                    // ...this will be used for comparing with each beacon's measures and minimization.
+                    
+                    // To get the measures taken from the item in that position its UUID can be used
+                    NSString * itemUUID = [itemsUUID objectAtIndex:
+                                           [itemsPositions indexOfObject:itemPosition]
+                                           ];
+                   
+                    
+                            
+                    // Now, get only the measures taken from that item and its UUID...
+                    NSMutableArray * measures = [[sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
+                                                                                     fromItemUUID:itemsUUID
+                                                                           withCredentialsUserDic:credentialsUserDic];
+                            // ...and for every measure calculate its mean average.
+                            // TO DO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
+                            
+                            
+                            if (measures.count == 0) {
+                                // Not evaluate
+                            } else {
+                                NSNumber * measuresAcumulation = [NSNumber numberWithFloat:0.0];
+                                NSInteger measureIndex = 0;
+                                for (NSNumber * measure in measures) {
+                                    // Only evaluate if it is a RSSI measure
+                                    measuresAcumulation = [NSNumber numberWithFloat:
+                                                           [measuresAcumulation floatValue] +
+                                                           [measure floatValue]
+                                                           ];
+                                    measureIndex++;
+                                }
+                                NSNumber * measureIndexFloat = [NSNumber numberWithInteger:measureIndex];
+                                NSNumber * measuresAverage = [NSNumber numberWithFloat:0.0];
+                                if (measureIndex != 0) { // Division by zero preventing
+                                    measuresAverage = [NSNumber numberWithFloat:
+                                                       [measuresAcumulation floatValue] / [measureIndexFloat floatValue]
+                                                       ];
+                                }
+                                // Count as valid position with measures
+                                if (measureIndex > 0) {
+                                    positionsWithMeasures++;
+                                }
+                                
+                                // And perform the calculus to minimizate; is squared difference.
+                                sum = [NSNumber numberWithFloat:
+                                       (
+                                        [sum floatValue] +
+                                        [positionsDistance floatValue] -
+                                        [measuresAverage floatValue]) *
+                                       (
+                                        [sum floatValue] +
+                                        [positionsDistance floatValue] -
+                                        [measuresAverage floatValue]
+                                        )
+                                       ];
+                            }
+                        }
+                    }
+                }
+                // Evaluate feasibility
+                if (positionsWithMeasures > 2) {
+                    // Minimization
+                    
+                    if ([sum floatValue] < [minarg floatValue]) {
+                        minarg = [NSNumber numberWithFloat:[sum floatValue]];
+                        minargPosition = [[RDPosition alloc] init];
+                        minargPosition.x = gridPosition.x;
+                        minargPosition.y = gridPosition.y;
+                        minargPosition.z = gridPosition.z;
+                    }
+                    
+                } else {
+                    minargPosition = nil;
+                }
+            }
+            // Add the minimum position for this UUID
+            if (minargPosition) {
+                [locatedPositions setObject:minargPosition forKey:minargUUID];
+            }
+        }
     }
     // If not a rho rho type system
     if (
