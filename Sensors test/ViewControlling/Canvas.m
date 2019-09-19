@@ -182,7 +182,7 @@
 - (void)drawRect:(CGRect)rect {
     
     // Remove the old layers
-    [self removeLayers];
+    // [self removeLayers];
     
     // Display the center point
     [self displayCenter];
@@ -429,7 +429,15 @@
         // ...get the transformed position...
         RDPosition * canvasMeasurePosition = [self transformSingleRealPointToCanvasPoint:realMeasurePosition];
         // ...and draw it.
-        [self drawPosition:realMeasurePosition inCanvasPosition:canvasMeasurePosition];
+        // [self drawPosition:realMeasurePosition inCanvasPosition:canvasMeasurePosition];
+        VCPosition * positionView = [[VCPosition alloc] initWithFrame:
+                                     CGRectMake([canvasMeasurePosition.x floatValue],
+                                                [canvasMeasurePosition.y floatValue],
+                                                3.0,
+                                                3.0)];
+        [self addSubview:positionView];
+        
+        
         
         //NSLog(@"[INFO][CA] Real position to show: %@", realMeasurePosition);
         //NSLog(@"[INFO][CA] Canvas position to show: %@",  canvasMeasurePosition);
@@ -437,11 +445,11 @@
         //NSLog(@"[INFO][CA] rHeight: %.2f", rHeight);
         
         // Get the collection of UUID measured from that position...
-        NSMutableArray * measuredUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
-                                                                   withCredentialsUserDic:credentialsUserDic];
+        // NSMutableArray * measuredUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic withCredentialsUserDic:credentialsUserDic];
         
     }
     
+    /*
     for (id positionKey in positionKeys) {
         // ...get the dictionary for this position...
         positionDic = [self.measuresDic objectForKey:positionKey];
@@ -504,7 +512,10 @@
             UUIDindex++;
         }
     }
+     */
 }
+
+/*
 
 - (void) drawLocatedPositionIfItSharesUUIDWith:(NSString *)uuid
                                      withColor:(UIColor *)color
@@ -574,6 +585,7 @@
         }
     }
 }
+ */
 
 /*!
  @method drawPosition:inCanvasPosition:
