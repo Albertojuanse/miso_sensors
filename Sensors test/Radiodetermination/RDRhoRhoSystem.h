@@ -33,8 +33,7 @@
                            userDic:(NSMutableDictionary *)initUserDic
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
-- (NSMutableDictionary *) getLocationsUsingGridAproximationWithMeasures:(SharedData *)sharedData
-                                                          andPrecisions:(NSDictionary *)precisions;
+- (NSMutableDictionary *) getLocationsUsingGridAproximationWithPrecisions:(NSDictionary *)precisions;
 
 + (NSNumber *) calculateDistanceWithRssi:(NSInteger) rssi;
 

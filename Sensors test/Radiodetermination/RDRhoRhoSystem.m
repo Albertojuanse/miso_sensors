@@ -37,7 +37,6 @@
 }
 
 #pragma mark - Instance methods
-
 /*!
  @method setCredentialUserDic:
  @discussion This method sets the dictionary with the user's credentials for acess the collections in shared data database.
@@ -69,7 +68,6 @@
 }
 
 #pragma mark - Localization methods
-
 /*!
  @method divideSegmentStartingAt:finishingAt:andWithPrecision:
  @discussion This method saves in the parameter 'NSMutableArray' type 'values' the middle value between two given values; if the divisions are greater than the precision, the method is recursively called until reached. The maximum or minimum value given as parameter is not included in final 'values' array. This method is used for composing the grid.
@@ -204,12 +202,11 @@
 }
 
 /*!
- @method getLocationsUsingGridAproximationWithMeasures:andPrecisions:
+ @method getLocationsUsingGridAproximationWithPrecisions:
  precision:
  @discussion This method calculates any posible location with the measures taken from each beacon at different positions; it uses a simple grid search of the minimum of the least square of distances from positions were the measures were taken to the grid and the measures and the same point in the grid. In the '('NSDictionary' object 'precisions' must be defined the minimum requirement of precision for each axe, with floats in objects 'NSNumbers' set in the keys "xPrecision", "yPrecision" and "zPrecision".
  */
-- (NSMutableDictionary *) getLocationsUsingGridAproximationWithMeasures:(SharedData *)sharedData
-                                                          andPrecisions:(NSDictionary *)precisions
+- (NSMutableDictionary *) getLocationsUsingGridAproximationWithPrecisions:(NSDictionary *)precisions
 {
     NSLog(@"[INFO][RR] Start radiolocating items");
     
@@ -261,7 +258,7 @@
                 // ...for every position where measures were taken
                 NSMutableArray * measurePositions = [sharedData fromMeasuresDataGetPositionsWithMeasuresOfUserDic:userDic
                                                                                            withCredentialsUserDic:credentialsUserDic];
-                for (id measurePosition in measurePositions) {
+                for (RDPosition * measurePosition in measurePositions) {
                     
                     // ...and thus calculate the euclidean distance between them;...
                     NSNumber * positionsDistance = [measurePosition euclideanDistance3Dto:gridPosition];
@@ -289,7 +286,6 @@
                                                                                   withCredentialsUserDic:credentialsUserDic];
                             // ...and for every measure calculate its mean average.
                             // TO DO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
-                            
                             
                             if (measures.count == 0) {
                                 // Not evaluate
