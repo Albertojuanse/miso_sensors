@@ -211,7 +211,6 @@
 - (NSMutableDictionary *) getLocationsUsingGridAproximationWithMeasures:(SharedData *)sharedData
                                                           andPrecisions:(NSDictionary *)precisions
 {
-    //    en LOCATING se tiene que localizar deviceUUID, en MODELING se tiene que localizar itemUUID; ambos tienen que ser las claves en el diccionario que se devuelva clave->posición.
     NSLog(@"[INFO][RR] Start radiolocating items");
     
     // Check the acess to data shared collections
@@ -219,12 +218,7 @@
         ![sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        [self alertUserWithTitle:@"Locations won't be determined."
-                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
-                      andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-                      }
-         ];
+        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
         NSLog(@"[ERROR][RR] Shared data could not be acessed while loading cells' item.");
     }
     
@@ -401,7 +395,7 @@
             // Optimization search over the grid
             NSNumber * minarg = [NSNumber numberWithFloat:FLT_MAX];
             RDPosition * minargPosition;
-            NSString * minargUUID = UUIDtoLocate; // In this this is known.
+            NSString * minargUUID = UUIDtoLocate; // In this mode it is known.
             
             // For every position in the grid,...
             for (RDPosition * gridPosition in grid) {
@@ -409,7 +403,7 @@
                 NSNumber * sum = [NSNumber numberWithFloat:0.0];
                 
                 // Measures are only feasible if measures were take from at least 3 positions with measures.
-                NSInteger positionsWithMeasures = 0;
+                NSInteger itemsWithMeasures = 0;
                 
                 // ...and for every position where measures come from...
                 for (RDPosition * itemPosition in itemsPositions) {
@@ -426,56 +420,55 @@
                     
                             
                     // Now, get only the measures taken from that item and its UUID...
-                    NSMutableArray * measures = [[sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
-                                                                                     fromItemUUID:itemsUUID
-                                                                           withCredentialsUserDic:credentialsUserDic];
-                            // ...and for every measure calculate its mean average.
-                            // TO DO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
-                            
-                            
-                            if (measures.count == 0) {
-                                // Not evaluate
-                            } else {
-                                NSNumber * measuresAcumulation = [NSNumber numberWithFloat:0.0];
-                                NSInteger measureIndex = 0;
-                                for (NSNumber * measure in measures) {
-                                    // Only evaluate if it is a RSSI measure
-                                    measuresAcumulation = [NSNumber numberWithFloat:
-                                                           [measuresAcumulation floatValue] +
-                                                           [measure floatValue]
-                                                           ];
-                                    measureIndex++;
-                                }
-                                NSNumber * measureIndexFloat = [NSNumber numberWithInteger:measureIndex];
-                                NSNumber * measuresAverage = [NSNumber numberWithFloat:0.0];
-                                if (measureIndex != 0) { // Division by zero preventing
-                                    measuresAverage = [NSNumber numberWithFloat:
-                                                       [measuresAcumulation floatValue] / [measureIndexFloat floatValue]
-                                                       ];
-                                }
-                                // Count as valid position with measures
-                                if (measureIndex > 0) {
-                                    positionsWithMeasures++;
-                                }
-                                
-                                // And perform the calculus to minimizate; is squared difference.
-                                sum = [NSNumber numberWithFloat:
-                                       (
-                                        [sum floatValue] +
-                                        [positionsDistance floatValue] -
-                                        [measuresAverage floatValue]) *
-                                       (
-                                        [sum floatValue] +
-                                        [positionsDistance floatValue] -
-                                        [measuresAverage floatValue]
-                                        )
-                                       ];
-                            }
+                    NSMutableArray * measures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
+                                                                            takenFromItemUUID:itemUUID
+                                                                                        ofSort:@"rssi"
+                                                                        withCredentialsUserDic:credentialsUserDic];
+                    // ...and for every measure calculate its mean average.
+                    // TO DO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
+                    
+                    
+                    if (measures.count == 0) {
+                        // Not evaluate
+                    } else {
+                        NSNumber * measuresAcumulation = [NSNumber numberWithFloat:0.0];
+                        NSInteger measureIndex = 0;
+                        for (NSNumber * measure in measures) {
+                            // Only evaluate if it is a RSSI measure
+                            measuresAcumulation = [NSNumber numberWithFloat:
+                                                   [measuresAcumulation floatValue] +
+                                                   [measure floatValue]
+                                                   ];
+                            measureIndex++;
                         }
+                        NSNumber * measureIndexFloat = [NSNumber numberWithInteger:measureIndex];
+                        NSNumber * measuresAverage = [NSNumber numberWithFloat:0.0];
+                        if (measureIndex != 0) { // Division by zero preventing
+                            measuresAverage = [NSNumber numberWithFloat:
+                                               [measuresAcumulation floatValue] / [measureIndexFloat floatValue]
+                                               ];
+                        }
+                        // Count as valid position with measures
+                        if (measureIndex > 0) {
+                            itemsWithMeasures++;
+                        }
+                        
+                        // And perform the calculus to minimizate; is squared difference.
+                        sum = [NSNumber numberWithFloat:
+                               (
+                                [sum floatValue] +
+                                [positionsDistance floatValue] -
+                                [measuresAverage floatValue]) *
+                               (
+                                [sum floatValue] +
+                                [positionsDistance floatValue] -
+                                [measuresAverage floatValue]
+                                )
+                               ];
                     }
                 }
                 // Evaluate feasibility
-                if (positionsWithMeasures > 2) {
+                if (itemsWithMeasures > 2) {
                     // Minimization
                     
                     if ([sum floatValue] < [minarg floatValue]) {
@@ -496,6 +489,7 @@
             }
         }
     }
+
     // If not a rho rho type system
     if (
         [mode isEqualToString:@"THETA_THETA_MODELING"] ||
@@ -508,30 +502,6 @@
    
     NSLog(@"[INFO][RR] Finish Radiolocating beacons");
     return locatedPositions;
-}
-
-/*!
- @method alertUserWithTitle:andMessage:
- @discussion This method alerts the user with a pop up window with a single "Ok" button given its message and title and lambda funcion handler.
- */
-- (void) alertUserWithTitle:(NSString *)title
-                    message:(NSString *)message
-                 andHandler:(void (^)(UIAlertAction *action))handler;
-{
-    UIAlertController * alertUsersNotFound = [UIAlertController
-                                              alertControllerWithTitle:title
-                                              message:message
-                                              preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction * okButton = [UIAlertAction
-                                actionWithTitle:@"Ok"
-                                style:UIAlertActionStyleDefault
-                                handler:handler
-                                ];
-    
-    [alertUsersNotFound addAction:okButton];
-    [self presentViewController:alertUsersNotFound animated:YES completion:nil];
-    return;
 }
 
 #pragma mark - Class methods

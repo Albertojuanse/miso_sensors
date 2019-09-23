@@ -150,6 +150,14 @@
                                      withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 - (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
+                                       takenFromItemUUID:(NSString *)itemUUID
+                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
+                                       takenFromItemUUID:(NSString *)itemUUID
+                                                  ofSort:(NSString *)sort
+                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
                                        takenFromPosition:(RDPosition *)givenPosition
                                             fromItemUUID:(NSString *)itemUUID
                                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
