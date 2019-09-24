@@ -156,7 +156,7 @@
     self = [self init];
     
     // Add first user
-    [userData addObject:userDic];
+    [userData addObject:credentialsUserDic];
     
     return self;
 }
@@ -479,17 +479,12 @@
  */
 - (BOOL) validateCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
-    if([self validateCredentialsUserDic:credentialsUserDic]) {
-        for (userDic in userData) {
-            if ([credentialsUserDic isEqualToDictionary:userDic]) {
-                return YES;
-            } else {
-                return NO;
-            }
+    for (userDic in userData) {
+        if ([credentialsUserDic isEqualToDictionary:userDic]) {
+            return YES;
+        } else {
+            return NO;
         }
-    } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
-        return nil;
     }
     return nil;
 }
