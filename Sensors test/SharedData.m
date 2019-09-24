@@ -173,7 +173,7 @@
     // Add first user
     // Compose the dictionary from the innermost to the outermost
     // Wrap components collection in a dictionary with its name
-    userDic = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary * userDic = [[NSMutableDictionary alloc] init];
     userDic[@"name"] = name;
     userDic[@"role"] = role;
     
@@ -219,7 +219,6 @@
  */
 - (void) resetInnerDictionaries {
     sessionDic = nil;
-    userDic = nil;
     itemDic = nil;
     measureDic = nil;
     modelDic = nil;
@@ -461,7 +460,7 @@
                                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]){
-        for (userDic in userData) {
+        for (NSMutableDictionary * userDic in userData) {
             if ([name isEqualToString:userDic[@"name"]]) {
                 return userDic;
             }
@@ -479,7 +478,7 @@
  */
 - (BOOL) validateCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
-    for (userDic in userData) {
+    for (NSMutableDictionary * userDic in userData) {
         if ([credentialsUserDic isEqualToDictionary:userDic]) {
             return YES;
         } else {
@@ -837,8 +836,8 @@
         NSMutableArray * itemsChosenByUser;
         
         // Search for the user in session data...
-        for (sessionDic in sessionDic) {
-            userDic = sessionDic[@"user"];
+        for (sessionDic in sessionData) {
+            NSMutableDictionary * userDic = sessionDic[@"user"];
             if ([userDic isEqualToDictionary:givenUserDic]) {
                 
                 // ...and get the items array.
@@ -870,8 +869,8 @@
         NSMutableArray * itemsChosenByUser;
         
         // Search for the user in session data...
-        for (sessionDic in sessionDic) {
-            userDic = sessionDic[@"user"];
+        for (sessionDic in sessionData) {
+            NSMutableDictionary * userDic = sessionDic[@"user"];
             NSString * userName = userDic[@"name"];
             if ([userName isEqualToString:givenUserName]) {
                 
@@ -1957,7 +1956,7 @@
         // If name exists, user is actualized; if name does not exist, the whole dictionary is created.
         // For each user already saved...
         BOOL userFound = NO;
-        for (userDic in userData) {
+        for (NSMutableDictionary * userDic in userData) {
             
             // ...check if the current name already exists comparing it with the saved ones.
             NSString * savedName = userDic[@"name"];
@@ -1974,7 +1973,7 @@
             
             // Compose the dictionary from the innermost to the outermost
             // Wrap components collection in a dictionary with its name
-            userDic = [[NSMutableDictionary alloc] init];
+            NSMutableDictionary * userDic = [[NSMutableDictionary alloc] init];
             userDic[@"name"] = name;
             userDic[@"role"] = role;
             
@@ -2172,6 +2171,8 @@
                        toUserWithUserDic:(NSMutableDictionary *)userDic
                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
+    NSLog(@"[HOLA][VCMM] %@", itemChosenByUser);
+    NSLog(@"[HOLA][VCMM] %@", userDic);
     return [self inSessionDataSetObject:itemChosenByUser forKey:@"itemChosenByUser" toUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
 }
 

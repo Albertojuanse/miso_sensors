@@ -728,6 +728,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         // Can be null if credentials are not allowed.
         if (itemsData) {
             NSMutableDictionary * itemChosenByUser = [itemsData objectAtIndex:indexPath.row];
+            NSLog(@"[HOLA][VCMM] %@", itemChosenByUser);
+            NSLog(@"[HOLA][VCMM] %@", userDic);
             
             // Can be null if it did not exist
             if(itemChosenByUser) {

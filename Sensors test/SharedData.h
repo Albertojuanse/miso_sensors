@@ -26,7 +26,6 @@
     
     // Declare the inner dictionaries; they will be created or gotten if they already exists each use
     NSMutableDictionary * sessionDic;
-    NSMutableDictionary * userDic;
     NSMutableDictionary * itemDic;
     NSMutableDictionary * measureDic;
     NSMutableDictionary * modelDic;

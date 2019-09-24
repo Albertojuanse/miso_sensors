@@ -24,6 +24,7 @@
     // Sets if the user wants to modify a beacon device or a position, or nothing
     NSDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
                                                                                   andCredentialsUserDic:credentialsUserDic];
+    NSLog(@"[HOLA][VCAB] %@", itemChosenByUser);
     if (
         ![@"beacon" isEqualToString:itemChosenByUser[@"sort"]] &&
         ![@"position" isEqualToString:itemChosenByUser[@"sort"]]
@@ -243,9 +244,9 @@
                          
                          if (itemDic[@"position"]) {
                              RDPosition * position = itemDic[@"position"];
-                             self.textBeaconX.text = [position.x stringValue];
-                             self.textBeaconY.text = [position.y stringValue];
-                             self.textBeaconZ.text = [position.z stringValue];
+                             self.textPositionX.text = [position.x stringValue];
+                             self.textPositionY.text = [position.y stringValue];
+                             self.textPositionZ.text = [position.z stringValue];
                          }
                      }
                  }
@@ -392,6 +393,7 @@
  */
 - (IBAction)handleButtonAdd:(id)sender
 {
+    
     // The beacons cannot be registered twice with different ID because Location Manager will fail their initialization; because of coherence, two equals positions cannot be registered. Thus, the data of every item must be searched and not only its identifier.
     
     // Different behaviour if position or beacon
@@ -419,52 +421,105 @@
         infoDic[@"type"] = type;
         
     }
-    // If the three coordinate values had been submitted
-    if (
-        ![[self.textBeaconX text] isEqualToString:@""] &&
-        ![[self.textBeaconY text] isEqualToString:@""] &&
-        ![[self.textBeaconZ text] isEqualToString:@""]
-        )
-    {
-
-        RDPosition * positionToAdd = [[RDPosition alloc] init];
-        positionToAdd.x = [NSNumber numberWithFloat:[[self.textBeaconX text] floatValue]];
-        positionToAdd.y = [NSNumber numberWithFloat:[[self.textBeaconY text] floatValue]];
-        positionToAdd.z = [NSNumber numberWithFloat:[[self.textBeaconZ text] floatValue]];
-        infoDic[@"position"] = positionToAdd;
-    } else {
-        
-        // If all coordinate values missing the user tries to re-register a beacon, unless the user wanted to set its type
+    
+    // Position
+    if (selectedSegmentIndex == 0) { // iBeacon mode
+        // If the three coordinate values had been submitted
         if (
-            [[self.textBeaconX text] isEqualToString:@""] &&
-            [[self.textBeaconY text] isEqualToString:@""] &&
-            [[self.textBeaconZ text] isEqualToString:@""]
+            ![[self.textBeaconX text] isEqualToString:@""] &&
+            ![[self.textBeaconY text] isEqualToString:@""] &&
+            ![[self.textBeaconZ text] isEqualToString:@""]
             )
         {
-            // This code is reached also when an type was set or uploaded, so check it
-            if (![sharedData fromSessionDataGetSessionWithUserDic:userDic
-                                           andCredentialsUserDic:credentialsUserDic]) {
-                [self alertUserWithTitle:@"Warning."
-                                 message:@"As no coordinate values were introduced, the item's position is null."
+            
+            RDPosition * positionToAdd = [[RDPosition alloc] init];
+            positionToAdd.x = [NSNumber numberWithFloat:[[self.textBeaconX text] floatValue]];
+            positionToAdd.y = [NSNumber numberWithFloat:[[self.textBeaconY text] floatValue]];
+            positionToAdd.z = [NSNumber numberWithFloat:[[self.textBeaconZ text] floatValue]];
+            infoDic[@"position"] = positionToAdd;
+        } else {
+            
+            // If all coordinate values missing the user tries to re-register a beacon, unless the user wanted to set its type
+            if (
+                [[self.textBeaconX text] isEqualToString:@""] &&
+                [[self.textBeaconY text] isEqualToString:@""] &&
+                [[self.textBeaconZ text] isEqualToString:@""]
+                )
+            {
+                // This code is reached also when an type was set or uploaded, so check it
+                if (![sharedData fromSessionDataGetSessionWithUserDic:userDic
+                                                andCredentialsUserDic:credentialsUserDic]) {
+                    [self alertUserWithTitle:@"Warning."
+                                     message:@"As no coordinate values were introduced, the item's position is null."
+                                  andHandler:^(UIAlertAction * action) {
+                                      // Do nothing
+                                  }
+                     ];
+                    self.labelPositionError.text = @"Warning. As no coordinate values were introduced, the item's position is null.";
+                    infoDic[@"position"] = nil;
+                }
+            } else {
+                // If ths code is reached means that there is only some coordinate values but not all of them
+                [self alertUserWithTitle:@"Some coordinate values missing."
+                                 message:@"Please, submit three (x, y, z) values or push \"Back\"."
                               andHandler:^(UIAlertAction * action) {
                                   // Do nothing
                               }
                  ];
-                self.labelPositionError.text = @"Warning. As no coordinate values were introduced, the item's position is null.";
-                infoDic[@"position"] = nil;
+                self.labelBeaconError.text = @"Error. Some coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+                return;
             }
-        } else {
-            // If ths code is reached means that there is only some coordinate values but not all of them
-            [self alertUserWithTitle:@"Some coordinate values missing."
-                             message:@"Please, submit three (x, y, z) values or push \"Back\"."
-                          andHandler:^(UIAlertAction * action) {
-                              // Do nothing
-                          }
-             ];
-            self.labelBeaconError.text = @"Error. Some coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
-            return;
         }
     }
+    if (selectedSegmentIndex == 1) { // position mode
+        // If the three coordinate values had been submitted
+        if (
+            ![[self.textPositionX text] isEqualToString:@""] &&
+            ![[self.textPositionY text] isEqualToString:@""] &&
+            ![[self.textPositionZ text] isEqualToString:@""]
+            )
+        {
+            
+            RDPosition * positionToAdd = [[RDPosition alloc] init];
+            positionToAdd.x = [NSNumber numberWithFloat:[[self.textPositionX text] floatValue]];
+            positionToAdd.y = [NSNumber numberWithFloat:[[self.textPositionY text] floatValue]];
+            positionToAdd.z = [NSNumber numberWithFloat:[[self.textPositionZ text] floatValue]];
+            infoDic[@"position"] = positionToAdd;
+        } else {
+            
+            // If all coordinate values missing the user tries to re-register a beacon, unless the user wanted to set its type
+            if (
+                [[self.textPositionX text] isEqualToString:@""] &&
+                [[self.textPositionY text] isEqualToString:@""] &&
+                [[self.textPositionZ text] isEqualToString:@""]
+                )
+            {
+                // This code is reached also when an type was set or uploaded, so check it
+                if (![sharedData fromSessionDataGetSessionWithUserDic:userDic
+                                                andCredentialsUserDic:credentialsUserDic]) {
+                    [self alertUserWithTitle:@"Warning."
+                                     message:@"As no coordinate values were introduced, the item's position is null."
+                                  andHandler:^(UIAlertAction * action) {
+                                      // Do nothing
+                                  }
+                     ];
+                    self.labelPositionError.text = @"Warning. As no coordinate values were introduced, the item's position is null.";
+                    infoDic[@"position"] = nil;
+                }
+            } else {
+                // If ths code is reached means that there is only some coordinate values but not all of them
+                [self alertUserWithTitle:@"Some coordinate values missing."
+                                 message:@"Please, submit three (x, y, z) values or push \"Back\"."
+                              andHandler:^(UIAlertAction * action) {
+                                  // Do nothing
+                              }
+                 ];
+                self.labelBeaconError.text = @"Error. Some coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+                return;
+            }
+        }
+    }
+
     
     // Add the item
     [sharedData inItemDataAddItemOfSort:infoDic[@"sort"]
@@ -835,13 +890,13 @@
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
-            NSMutableDictionary * typeDic = [
-                                             [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
-                                             objectAtIndex:indexPath.row
-                                             ];
+            MDType * type = [
+                             [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                             objectAtIndex:indexPath.row
+                             ];
             cell.textLabel.numberOfLines = 0; // Means any number
             
-            cell.textLabel.text = [NSString stringWithFormat:@"%@", typeDic[@"name"]];
+            cell.textLabel.text = [NSString stringWithFormat:@"%@", [type getName]];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         } else { // Type not found
             [self alertUserWithTitle:@"Types won't be loaded."
