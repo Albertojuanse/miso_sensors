@@ -236,6 +236,7 @@
                                                    andPrecisions:precisions];
         
         // It is also needed the info about the UUID that must be located; in this case the beacons.
+        // TO DO: Multiuser measures. Alberto J. 2019/09/24.
         NSMutableArray * everyUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
                                                                 withCredentialsUserDic:credentialsUserDic];
         
@@ -383,6 +384,7 @@
                                                    andPrecisions:precisions];
         
         // It is also needed the info about the UUID that must be located; in this case the device's UUID.
+        // TO DO: Multiuser measures. Alberto J. 2019/09/24.
         NSMutableArray * everyUUID = [[NSMutableArray alloc] initWithObjects:deviceUUID, nil];
         
         // And thus, for every device that must be located with its unique UUID, get from every item where measures were generated its measures and use them.

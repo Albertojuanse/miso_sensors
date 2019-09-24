@@ -70,11 +70,31 @@
 
 #pragma mark - Localization methods
 /*!
- @method getLocationsWithPrecisions:
+ @method getBarycenterOf:
+ @discussion This method calculated the barycenter of a given set of RDPosition objects.
+ */
+- (RDPosition *) getBarycenterOf:(NSMutableArray *)points {
+    RDPosition * barycenter = [[RDPosition alloc] init];
+    float sumx = 0.0;
+    float sumy = 0.0;
+    float sumz = 0.0;
+    for (RDPosition * point in points) {
+        sumx = sumx + [point.x floatValue];
+        sumy = sumy + [point.y floatValue];
+        sumz = sumz + [point.z floatValue];
+    }
+    barycenter.x = [[NSNumber alloc] initWithFloat: sumx / points.count];
+    barycenter.y = [[NSNumber alloc] initWithFloat: sumy / points.count];
+    barycenter.z = [[NSNumber alloc] initWithFloat: sumz / points.count];
+    return barycenter;
+}
+
+/*!
+ @method getLocationsUsingBarycenterAproximationWithPrecisions:
  precision:
  @discussion This method calculates any posible location with the measures taken from each beacon at different positions; it uses a simple grid search of the minimum of the least square of distances from positions were the measures were taken to the grid and the measures and the same point in the grid. In the '('NSDictionary' object 'precisions' must be defined the minimum requirement of precision for each axe, with floats in objects 'NSNumbers' set in the keys "xPrecision", "yPrecision" and "zPrecision".
  */
-- (NSMutableDictionary *) getLocationsWithPrecisions:(NSDictionary *)precisions
+- (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithPrecisions:(NSDictionary *)precisions
 {
     NSLog(@"[INFO][RT] Start Radiolocating beacons");
     
@@ -98,6 +118,7 @@
         // In a modeling mode the items must be located using the measures taken by the device or devices from items and the headings aginst them. That implies that, each UUID groups the measures taken from a certain beacon and so, for every one of them a RDPosition would be found.
         
         // It is also needed the info about the UUID that must be located; in this case the beacons.
+        // TO DO: Multiuser measures. Alberto J. 2019/09/24.
         NSMutableArray * everyUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
                                                                 withCredentialsUserDic:credentialsUserDic];
         
@@ -214,13 +235,17 @@
         // In a locating mode the device must be located using the measures from items and the headings aginst them. That implies that, each UUID groups the measures taken from a certain beacon and the device position must be calculed using all of them.
         
         // It is also needed the info about the UUID that must be located; in this case the beacons.
+        // TO DO: Multiuser measures. Alberto J. 2019/09/24.
         NSMutableArray * everyUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
                                                                 withCredentialsUserDic:credentialsUserDic];
         
-        // And thus, for every beacon that must be located with its unique UUID, get the measures that come from every item or that aim it; the measure position is unknown, but the items positions are so.
+        // And thus, for every beacon that is used to location with its unique UUID, get the measures that come from every item or that aim it; the measure position is unknown, but the items positions are so. The located item is the device.
+        // TO DO: Multiuser measures. Alberto J. 2019/09/24.
+        NSString * uuid = deviceUUID; // In this mode it is known.
+        
+        // And thus, for every item used for locating with it unique UUID.
         for (NSString * UUIDusedToLocate in everyUUID) {
             
-            NSString * uuid = deviceUUID; // In this mode it is known.
             
             // Measures are only feasible if measures have both heading and rssi types.
             BOOL isHeadingMeasure = NO;
@@ -297,7 +322,11 @@
                 // Get the item position using its UUID
                 NSMutableArray * itemsMeasured = [sharedData fromItemDataGetItemsWithUUID:UUIDusedToLocate
                                                                     andCredentialsUserDic:credentialsUserDic];
-                if (!(itemsMeasured.count == 1)) {
+                if (itemsMeasured.count == 0) {
+                    NSLog(@"[ERROR][RT] No items found with the UUID in measures.");
+                    break;
+                }
+                if (itemsMeasured.count > 1) {
                     NSLog(@"[ERROR][RT] More than one items stored with the same UUID. Using first one.");
                 }
                 NSMutableDictionary * itemMeasured = [itemsMeasured objectAtIndex:0];

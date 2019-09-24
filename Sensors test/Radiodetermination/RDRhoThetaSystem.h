@@ -33,7 +33,7 @@
                            userDic:(NSMutableDictionary *)initUserDic
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
-- (NSMutableDictionary *) getLocationsWithPrecisions:(NSDictionary *)precisions;
+- (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithPrecisions:(NSDictionary *)precisions;
 + (NSNumber *) calculateDistanceWithRssi:(NSInteger) rssi;
 
 @end
