@@ -493,7 +493,7 @@
         [mode isEqualToString:@"THETA_THETA_LOCATING"] ||
         [mode isEqualToString:@"RHO_THETA_LOCATING"]
         ) {
-        NSLog(@"[ERROR][RR] Rho rho type system called when in a theta mode.");
+        NSLog(@"[ERROR][RR] Theta type system called when in a rho rho mode.");
     }
    
     NSLog(@"[INFO][RR] Finish Radiolocating beacons");
