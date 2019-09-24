@@ -393,8 +393,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                                andWithCredentialsUserDic:credentialsUserDic];
                                     
                                     // Ask radiolocation of beacons if posible...
-                                    locatedPositions = [rhoThetaSystem getLocationsWithMeasures:sharedData
-                                                                                  andPrecisions:precisions];
+                                    locatedPositions = [rhoThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
                                 }
                             }
                         }
@@ -414,8 +413,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                        andWithCredentialsUserDic:credentialsUserDic];
                             
                             // Ask radiolocation of beacons if posible...
-                            locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithMeasures:sharedData
-                                                                                             andPrecisions:precisions];
+                            locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithPrecisions:precisions];
                         }
                         
                         // ...and save it in dictionary 'locatedDic'.
@@ -610,8 +608,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                          nil];
             
             // Ask radiolocation of beacons if posible...
-            locatedPositions = [thetaThetaSystem getLocationsUsingBarycenterAproximationWithMeasures:sharedData
-                                                                                       andPrecisions:precisions];
+            locatedPositions = [thetaThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
             // ...and save it in dictionary 'locatedDic'.
             NSArray *positionKeys = [locatedPositions allKeys];
             for (id positionKey in positionKeys) {

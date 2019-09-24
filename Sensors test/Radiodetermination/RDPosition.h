@@ -21,7 +21,6 @@
 @property NSNumber * y;
 @property NSNumber * z;
 
-typedef double CGFloat;
 typedef CGPoint NSPoint;
 
 - (NSPoint) toNSPoint;
