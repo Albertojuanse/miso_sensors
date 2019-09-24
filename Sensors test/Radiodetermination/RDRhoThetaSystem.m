@@ -101,7 +101,7 @@
         NSMutableArray * everyUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
                                                                 withCredentialsUserDic:credentialsUserDic];
         
-        // And thus, for every beacon that must be located with its unique UUID, the measures that come from this UUID or that aim it.
+        // And thus, for every beacon that must be located with its unique UUID, get the measures that come from this UUID or that aim it.
         for (NSString * UUIDtoLocate in everyUUID) {
             
             NSString * uuid;
@@ -188,7 +188,7 @@
                         }
                             
                         // Final calculus is only performed if there are both RSSI and heading measures
-                        // (x, y) = (x0, y0) + (RSSI * cos(heading), RSSI * sen(heading)) in radians and meters
+                        // (x_item, y_item) = (x_device, y_device) + (RSSI * cos(heading), RSSI * sen(heading)) in radians and meters
                         // NSLog(isRSSIMeasure ? @"[INFO][RT] isRSSIMeasure = YES" : @"[INFO][RT] isRSSIMeasure = NO");
                         // NSLog(isHeadingMeasure ? @"[INFO][RT] isHeadingMeasure = YES" : @"[INFO][RT] isHeadingMeasure = NO");
                         if (isRSSIMeasure && isHeadingMeasure) {
@@ -219,8 +219,138 @@
         
         // In a locating mode the device must be located using the measures from items and the headings aginst them. That implies that, each UUID groups the measures taken from a certain beacon and the device position must be calculed using all of them.
         
+        // It is also needed the info about the UUID that must be located; in this case the beacons.
+        NSMutableArray * everyUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
+                                                                withCredentialsUserDic:credentialsUserDic];
         
-        
+        // And thus, for every beacon that must be located with its unique UUID, get the measures that come from every item or that aim it.
+        for (NSString * UUIDtoLocate in everyUUID) {
+            
+            NSString * uuid = UUIDtoLocate; // In this mode it is known.
+            
+            // Measures are only feasible if measures have both heading and rssi types.
+            BOOL isHeadingMeasure = NO;
+            BOOL isRSSIMeasure = NO;
+            
+            // For every position where measures were taken, which is usually only one,...
+            // TO DO: Device can move slightly without being in a new position. Alberto J. 2019/09/234.
+            NSMutableArray * measurePositions = [sharedData fromMeasuresDataGetPositionsWithMeasuresOfUserDic:userDic
+                                                                                       withCredentialsUserDic:credentialsUserDic];
+            for (RDPosition * measurePosition in measurePositions) {
+                
+                // ...get the UUID of the items measured from this position and search in them the current searched UUID...
+                NSMutableArray * allMeasuredUUIDs = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
+                                                                                    takenFromPosition:measurePosition
+                                                                               withCredentialsUserDic:credentialsUserDic];
+                for (NSString * measuredUUID in allMeasuredUUIDs) {
+                    
+                    // ...but only perform the calculus if is the current searched UUID.
+                    if ([UUIDtoLocate isEqualToString:uuid]) {
+                        
+                        // Now, get only the measures taken from that position and from that UUID (or that aims it)...
+                        NSMutableArray * rssiMeasures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
+                                                                                       takenFromPosition:measurePosition
+                                                                                            fromItemUUID:measuredUUID
+                                                                                                  ofSort:@"rssi"
+                                                                                  withCredentialsUserDic:credentialsUserDic];
+                        NSMutableArray * headingMeasures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
+                                                                                          takenFromPosition:measurePosition
+                                                                                               fromItemUUID:measuredUUID
+                                                                                                     ofSort:@"heading"
+                                                                                     withCredentialsUserDic:credentialsUserDic];
+                        // ...and for every measure calculate its mean average.
+                        // TO DO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
+                        
+                        NSNumber * measuresRSSIAcumulation = [NSNumber numberWithFloat:0.0];
+                        NSInteger measureRSSIIndex = 0;
+                        if (rssiMeasures.count == 0) {
+                            // Not evaluate
+                        } else {
+                            isRSSIMeasure = YES;
+                            for (NSNumber * measure in rssiMeasures) {
+                                measuresRSSIAcumulation = [NSNumber numberWithFloat:
+                                                           [measuresRSSIAcumulation floatValue] +
+                                                           [measure floatValue]
+                                                           ];
+                                measureRSSIIndex++;
+                            }
+                        }
+                        
+                        NSNumber * measuresHeadingAcumulation = [NSNumber numberWithFloat:0.0];
+                        NSInteger measureHeadingIndex = 0;
+                        if (headingMeasures.count == 0) {
+                            // Not evaluate
+                        } else {
+                            isHeadingMeasure = YES;
+                            for (NSNumber * measure in headingMeasures) {
+                                measuresHeadingAcumulation = [NSNumber numberWithFloat:
+                                                              [measuresHeadingAcumulation floatValue] +
+                                                              [measure floatValue]
+                                                              ];
+                                measureHeadingIndex++;
+                            }
+                        }
+                        
+                        // Calculate the mean averages
+                        NSNumber * measureRSSIIndexFloat = [NSNumber numberWithInteger:measureRSSIIndex];
+                        NSNumber * measuresRSSIAverage = [NSNumber numberWithFloat:0.0];
+                        if (measureRSSIIndex != 0) { // Division by zero preventing
+                            measuresRSSIAverage = [NSNumber numberWithFloat:
+                                                   [measuresRSSIAcumulation floatValue] /
+                                                   [measureRSSIIndexFloat floatValue]
+                                                   ];
+                        }
+                        
+                        NSNumber * measureHeadingIndexFloat = [NSNumber numberWithInteger:measureHeadingIndex];
+                        NSNumber * measuresHeadingAverage = [NSNumber numberWithFloat:0.0];
+                        if (measureHeadingIndex != 0) { // Division by zero preventing
+                            measuresHeadingAverage = [NSNumber numberWithFloat:
+                                                      [measuresHeadingAcumulation floatValue] /
+                                                      [measureHeadingIndexFloat floatValue]
+                                                      ];
+                        }
+                        
+                        // Final calculus is only performed if there are both RSSI and heading measures
+                        // (x_device, y_device) = (x_item, y_item) - (RSSI * cos(heading), RSSI * sen(heading)) in radians and meters
+                        // NSLog(isRSSIMeasure ? @"[INFO][RT] isRSSIMeasure = YES" : @"[INFO][RT] isRSSIMeasure = NO");
+                        // NSLog(isHeadingMeasure ? @"[INFO][RT] isHeadingMeasure = YES" : @"[INFO][RT] isHeadingMeasure = NO");
+                        if (isRSSIMeasure && isHeadingMeasure) {
+                            // Get the item position using its UUID
+                            NSMutableArray * itemsMeasured = [sharedData fromItemDataGetItemsWithUUID:measuredUUID
+                                                                                andCredentialsUserDic:credentialsUserDic];
+                            if (!(itemsMeasured.count == 1)) {
+                                NSLog(@"[ERROR][RT] More than one items stored with the same UUID. Using first one.");
+                            }
+                            NSMutableDictionary * itemMeasured = [itemsMeasured objectAtIndex:0];
+                            RDPosition * itemPosition = itemMeasured[@"position"];
+                            
+                            if (itemPosition) {
+                                // Perform the calculus
+                                // TO DO: Z coordinate. Alberto J. 2019/09/24.
+                                RDPosition * locatedPosition = [[RDPosition alloc] init];
+                                locatedPosition.x = [NSNumber numberWithFloat:[itemPosition.x floatValue] -
+                                                     [measuresRSSIAverage floatValue] *
+                                                     cos([measuresHeadingAverage doubleValue])
+                                                     ];
+                                locatedPosition.y = [NSNumber numberWithFloat:[itemPosition.y floatValue] -
+                                                     [measuresRSSIAverage floatValue] *
+                                                     sin([measuresHeadingAverage doubleValue])
+                                                     ];
+                                locatedPosition.z = measurePosition.z;
+                            
+                                // NSLog(@"[INFO][RT] locatedPosition.x: %.2f", [locatedPosition.x floatValue]);
+                                // NSLog(@"[INFO][RT] locatedPosition.y: %.2f", [locatedPosition.y floatValue]);
+                                // NSLog(@"[INFO][RT] locatedPosition.z: %.2f", [locatedPosition.z floatValue]);
+                            
+                                [locatedPositions setObject:locatedPosition forKey:uuid];
+                            } else {
+                                NSLog(@"[ERROR][RT] The item measured has not got position estored.");
+                            }
+                        }
+                    }
+                }
+            }
+        }
         
     }
     

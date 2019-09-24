@@ -1594,7 +1594,7 @@
                 if ([storedItemUUID isEqualToString:itemUUID]) {
                     
                     NSString * storedMeasureSort = measureDic[@"sort"];
-                    [storedMeasureSort isEqualToString:sort] {
+                    if ([storedMeasureSort isEqualToString:sort]) {
                         
                         if (measureDic[@"measure"]) {
                             [measures addObject:measureDic[@"measure"]];

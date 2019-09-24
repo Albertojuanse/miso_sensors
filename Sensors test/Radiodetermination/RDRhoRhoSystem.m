@@ -385,7 +385,7 @@
         // It is also needed the info about the UUID that must be located; in this case the device's UUID.
         NSMutableArray * everyUUID = [[NSMutableArray alloc] initWithObjects:deviceUUID, nil];
         
-        // And thus, for every device that must be located with its unique UUID, get from every position where measures were generated its measures and use them.
+        // And thus, for every device that must be located with its unique UUID, get from every item where measures were generated its measures and use them.
         for (NSString * UUIDtoLocate in everyUUID) {
             
             // Optimization search over the grid
