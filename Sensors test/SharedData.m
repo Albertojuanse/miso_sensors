@@ -2238,10 +2238,12 @@
         // ...and for the user in session...
         BOOL isUserDicFound = NO;
         NSMutableDictionary * userDicFound;
+        NSMutableDictionary * sessionDicFound;
         for (sessionDic in sessionData) {
             NSMutableDictionary * userDic = sessionDic[@"user"];
             if ([userDic isEqualToDictionary:givenUserDic]) {
                 userDicFound = userDic;
+                sessionDicFound = sessionDic;
                 isUserDicFound = YES;
             }
         }
@@ -2251,13 +2253,13 @@
         }
         
         // Initializate the collection in the user if it does not exist
-        if (!userDicFound[@"itemsChosenByUser"]) {
-            userDicFound[@"itemsChosenByUser"] = [[NSMutableArray alloc] init];
+        if (!sessionDicFound[@"itemsChosenByUser"]) {
+            sessionDicFound[@"itemsChosenByUser"] = [[NSMutableArray alloc] init];
         }
         
         // ...and update it
         if (isItemDicFound) {
-            NSMutableArray * itemsChosenByUser = userDicFound[@"itemsChosenByUser"];
+            NSMutableArray * itemsChosenByUser = sessionDicFound[@"itemsChosenByUser"];
             [itemsChosenByUser addObject:itemDicFound];
         } else {
             NSLog(@"[ERROR][SD] Item did not found when triying to set it item as chosen by user.");
@@ -2296,10 +2298,13 @@
         // ...and for the user in session...
         BOOL isUserDicFound = NO;
         NSMutableDictionary * userDicFound;
+        NSMutableDictionary * sessionDicFound;
+        sessionDicFound = sessionDic;
         for (sessionDic in sessionData) {
             NSString * userName = sessionDic[@"user"][@"name"];
             if ([userName isEqualToString:givenUserName]) {
                 userDicFound = sessionDic[@"user"];
+                sessionDicFound = sessionDic;
                 isUserDicFound = YES;
             }
         }
@@ -2309,13 +2314,13 @@
         }
         
         // Initializate the collection in the user if it does not exist
-        if (!userDicFound[@"itemsChosenByUser"]) {
-            userDicFound[@"itemsChosenByUser"] = [[NSMutableArray alloc] init];
+        if (!sessionDicFound[@"itemsChosenByUser"]) {
+            sessionDicFound[@"itemsChosenByUser"] = [[NSMutableArray alloc] init];
         }
         
         // ...and update it
         if (isItemDicFound) {
-            NSMutableArray * itemsChosenByUser = userDicFound[@"itemsChosenByUser"];
+            NSMutableArray * itemsChosenByUser = sessionDicFound[@"itemsChosenByUser"];
             [itemsChosenByUser addObject:itemDicFound];
         } else {
             NSLog(@"[ERROR][SD] Item did not found when triying to set it item as chosen by user.");
@@ -2344,11 +2349,13 @@
         // Search for the user in session data...
         BOOL isUserDicFound = NO;
         NSMutableDictionary * userDicFound;
+        NSMutableDictionary * sessionDicFound;
         for (sessionDic in sessionData) {
             NSMutableDictionary * userDic = sessionDic[@"user"];
             
             if ([userDic isEqualToDictionary:givenUserDic]) {
                 userDicFound = userDic;
+                sessionDicFound = sessionDic;
                 isUserDicFound = YES;
             }
         }
@@ -2360,7 +2367,7 @@
         // ...and search for the item in the user's array of chosen items by it...
         BOOL isItemDicFound = NO;
         NSMutableDictionary * itemDicFound;
-        for (itemDic in userDicFound[@"itemsChosenByUser"]) {
+        for (itemDic in sessionDicFound[@"itemsChosenByUser"]) {
             
             if ([itemDic isEqualToDictionary:givenItemDic]) {
                 itemDicFound = itemDic;
@@ -2370,7 +2377,7 @@
         
         // ...and delete it if found
         if (isItemDicFound) {
-            NSMutableArray * itemsChosenByUser = userDicFound[@"itemsChosenByUser"];
+            NSMutableArray * itemsChosenByUser = sessionDicFound[@"itemsChosenByUser"];
             [itemsChosenByUser removeObject:itemDicFound];
         } else {
             NSLog(@"[ERROR][SD] Item did not found when triying to set it item as not chosen by user.");
@@ -2399,11 +2406,13 @@
         // Search for the user in session data...
         BOOL isUserDicFound = NO;
         NSMutableDictionary * userDicFound;
+        NSMutableDictionary * sessionDicFound;
         for (sessionDic in sessionData) {
             NSString * userName = sessionDic[@"user"][@"name"];
             
             if ([userName isEqualToString:givenUserName]) {
                 userDicFound = sessionDic[@"user"];
+                sessionDicFound = sessionDic;
                 isUserDicFound = YES;
             }
         }
@@ -2415,7 +2424,7 @@
         // ...and search for the item in the user's array of chosen items by it...
         BOOL isItemDicFound = NO;
         NSMutableDictionary * itemDicFound;
-        for (itemDic in userDicFound[@"itemsChosenByUser"]) {
+        for (itemDic in sessionDicFound[@"itemsChosenByUser"]) {
             
             if ([itemDic isEqualToDictionary:givenItemDic]) {
                 itemDicFound = itemDic;
@@ -2425,7 +2434,7 @@
         
         // ...and delete it if found
         if (isItemDicFound) {
-            NSMutableArray * itemsChosenByUser = userDicFound[@"itemsChosenByUser"];
+            NSMutableArray * itemsChosenByUser = sessionDicFound[@"itemsChosenByUser"];
             [itemsChosenByUser removeObject:itemDicFound];
         } else {
             NSLog(@"[ERROR][SD] Item did not found when triying to set it item as not chosen by user.");

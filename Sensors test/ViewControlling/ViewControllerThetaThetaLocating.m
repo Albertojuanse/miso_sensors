@@ -393,15 +393,15 @@
                 }
                 
             }
+        } else { // Database not acessible
+            [self alertUserWithTitle:@"Items won't be loaded."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCTTL] Shared data could not be acessed while loading cells' item.");
         }
-    } else { // Type not found
-        [self alertUserWithTitle:@"Items won't be loaded."
-                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
-                      andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-                      }
-         ];
-        NSLog(@"[ERROR][VCTTL] Shared data could not be acessed while loading cells' item.");
     }
     
     // Configure individual cells
