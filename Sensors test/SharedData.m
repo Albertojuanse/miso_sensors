@@ -516,14 +516,16 @@
 - (NSMutableDictionary *)fromSessionDataGetSessionWithUserDic:(NSMutableDictionary *)givenUserDic
                                         andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
-    
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         for (sessionDic in sessionData) {
             NSMutableDictionary * storedUserDic = sessionDic[@"user"];
+            NSLog(@"[HOLA][SD][K][G] %@", sessionDic[@"user"]);
             if ([storedUserDic isEqualToDictionary:givenUserDic]) {
+                NSLog(@"[HOLA][SD][K][G] %@", sessionDic);
                 return sessionDic;
             }
         }
+        NSLog(@"[HOLA][SD][K][G] Session search finished");
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return nil;
@@ -560,7 +562,6 @@
         fromUserWithUserDic:(NSMutableDictionary *)givenUserDic
       andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
-
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         NSMutableDictionary * sessionDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
         // Can be null
@@ -2022,7 +2023,12 @@
         NSMutableDictionary * sessionDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
         // Can be null
         if (sessionDic) {
-            [sessionDic setObject:object forKey:key];
+            // Nil is ot an object
+            if (object == nil) {
+                [sessionDic setValue:nil forKey:key];
+            } else {
+                [sessionDic setObject:object forKey:key];
+            }
             return YES;
         } else {
             return NO;
@@ -2047,7 +2053,11 @@
         NSMutableDictionary * sessionDic = [self fromSessionDataGetSessionWithUserName:userName andCredentialsUserDic:credentialsUserDic];
         // Can be null
         if (sessionDic) {
-            [sessionDic setObject:object forKey:key];
+            if (object == nil) {
+                [sessionDic setValue:nil forKey:key];
+            } else {
+                [sessionDic setObject:object forKey:key];
+            }
             return YES;
         } else {
             return NO;
@@ -2171,8 +2181,6 @@
                        toUserWithUserDic:(NSMutableDictionary *)userDic
                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
-    NSLog(@"[HOLA][VCMM] %@", itemChosenByUser);
-    NSLog(@"[HOLA][VCMM] %@", userDic);
     return [self inSessionDataSetObject:itemChosenByUser forKey:@"itemChosenByUser" toUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
 }
 

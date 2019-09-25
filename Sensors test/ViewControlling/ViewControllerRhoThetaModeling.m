@@ -224,7 +224,7 @@
     if ([[segue identifier] isEqualToString:@"fromRHO_THETA_MODELINGToMain"]) {
         
         // Get destination view
-        ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
+        ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
         // Set the variables
         [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
         [viewControllerMainMenu setUserDic:userDic];
@@ -244,7 +244,6 @@
 }
 
 #pragma mark - UItableView delegate methods
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.

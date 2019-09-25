@@ -39,9 +39,6 @@
     // Beacons' region identifiers
     NSNumber * regionBeaconIdNumber;
     NSNumber * regionPositionIdNumber;
-    
-
-    
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *tableModes;
@@ -59,5 +56,3 @@
 - (void) setRegionPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 
 @end
-
-

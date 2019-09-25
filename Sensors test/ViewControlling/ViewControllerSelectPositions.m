@@ -264,7 +264,7 @@
     if ([[segue identifier] isEqualToString:@"fromSelectPositionsToMain"]) {
         
         // Get destination view
-        ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
+        ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
         // Set the variables
         [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
         [viewControllerMainMenu setUserDic:userDic];

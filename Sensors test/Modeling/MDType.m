@@ -124,4 +124,13 @@
     return [NSString stringWithFormat: @"<%@>", name];
 }
 
+/*!
+ @method stringValue
+ @discussion This method creates an NSString object for showing and loggin purposes; equivalent to 'toString()'.
+ */
+- (NSString *)stringValue {
+    return [self description];
+}
+
+
 @end

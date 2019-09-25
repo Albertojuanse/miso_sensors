@@ -141,6 +141,15 @@
     //  ]
     //
     
+    // Create a session for the current user; if it joins another one later, this will be remplaced or deleted.
+    // Check if a session with this user is created before
+    if ([sharedData fromSessionDataGetSessionWithUserDic:userDic andCredentialsUserDic:credentialsUserDic]) {
+        // Do nothing
+    } else {
+        NSMutableDictionary * sessionDic = [[NSMutableDictionary alloc] init];
+        sessionDic [@"user"] = userDic;
+        [[sharedData getSessionDataWithCredentialsUserDic:credentialsUserDic] addObject:sessionDic];
+    }
     
     // Init the motion manager, given the shared data component and the credentials of the device user; if it is the first time the view loads this components won't exist but if not these had been created and set as others views' atributes.
     if(!motion) {
@@ -502,7 +511,7 @@
     if ([[segue identifier] isEqualToString:@"fromMainToAdd"]) {
         
         // Get destination view
-        ViewControllerAddBeaconMenu *viewControllerAddBeaconMenu = [segue destinationViewController];
+        ViewControllerAddBeaconMenu * viewControllerAddBeaconMenu = [segue destinationViewController];
         // Set the variables and components
         [viewControllerAddBeaconMenu setCredentialsUserDic:credentialsUserDic];
         [viewControllerAddBeaconMenu setUserDic:userDic];
@@ -519,7 +528,7 @@
     if ([[segue identifier] isEqualToString:@"fromMainToRHO_RHO_MODELING"]) {
         
         // Get destination view
-        ViewControllerRhoRhoModeling *viewControllerRhoRhoModeling = [segue destinationViewController];
+        ViewControllerRhoRhoModeling * viewControllerRhoRhoModeling = [segue destinationViewController];
         // Set the variables and components
         [viewControllerRhoRhoModeling setCredentialsUserDic:credentialsUserDic];
         [viewControllerRhoRhoModeling setUserDic:userDic];
@@ -533,7 +542,7 @@
     if ([[segue identifier] isEqualToString:@"fromMainToRHO_THETA_MODELING"]) {
         
         // Get destination view
-        ViewControllerRhoThetaModeling *viewControllerRhoThetaModeling = [segue destinationViewController];
+        ViewControllerRhoThetaModeling * viewControllerRhoThetaModeling = [segue destinationViewController];
         // Set the variables
         [viewControllerRhoThetaModeling setCredentialsUserDic:credentialsUserDic];
         [viewControllerRhoThetaModeling setUserDic:userDic];
