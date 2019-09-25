@@ -145,7 +145,7 @@
 - (IBAction)handleButtonGo:(id)sender
 {
     
-    NSLog(@"[INFO][VCSP]: Button GO tapped.");
+    NSLog(@"[INFO][VCSP] Button GO tapped.");
     
     // Database could not be acessed.
     if (
@@ -158,18 +158,18 @@
         
         // This button can segue with different views depending on the mode chosen by the user in the main menu
         if ([mode isEqualToString:@"RHO_RHO_LOCATING"]) {
-            // NSLog(@"[INFO][VCSP]: Chosen mode is RHO_RHO_LOCATING.");
+            // NSLog(@"[INFO][VCSP] Chosen mode is RHO_RHO_LOCATING.");
             // [self performSegueWithIdentifier:@"fromAddPositionsToRHO_RHO_LOCATING" sender:sender];
             return;
         }
         if ([mode isEqualToString:@"RHO_THETA_LOCATING"]) {
-            // NSLog(@"[INFO][VCSP]: Chosen mode is RHO_THETA_LOCATING.");
+            // NSLog(@"[INFO][VCSP] Chosen mode is RHO_THETA_LOCATING.");
             // [self performSegueWithIdentifier:@"fromAddPositionsToRHO_THETA_LOCATING" sender:sender];
             return;
         }
         if ([mode isEqualToString:@"THETA_THETA_LOCATING"]) {
             // Go is only allowed if the user did choose at least one position in the table
-            NSLog(@"[INFO][VCSP]: Chosen mode is THETA_THETA_LOCATING.");
+            NSLog(@"[INFO][VCSP] Chosen mode is THETA_THETA_LOCATING.");
             [self performSegueWithIdentifier:@"fromSelectPositionsToTHETA_THETA_LOCATING" sender:sender];
         }
         

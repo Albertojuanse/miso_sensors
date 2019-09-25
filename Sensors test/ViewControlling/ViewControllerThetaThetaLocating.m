@@ -32,6 +32,10 @@
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
     }
     
+    // Initial state
+    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                          andWithCredentialsUserDic:credentialsUserDic];
+    
     // Variables
     locatedPositionUUID = [[NSUUID UUID] UUIDString];
     
@@ -50,6 +54,7 @@
     
     [self.tableItemsChosen reloadData];
     [self.tableTypes reloadData];
+    NSLog(@"[HOLA][VCTTL] View did load");
 }
 
 /*!
@@ -301,7 +306,8 @@
             
             // Load the item
             NSMutableDictionary * itemDic = [
-                                             [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                                             [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                                          andCredentialsUserDic:credentialsUserDic]
                                              objectAtIndex:indexPath.row
                                              ];
             cell.textLabel.numberOfLines = 0; // Means any number
@@ -430,7 +436,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             )
         {
             NSMutableDictionary * itemSelected = [
-                                                  [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                                                  [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                                               andCredentialsUserDic:credentialsUserDic]
                                                   objectAtIndex:indexPath.row
                                                   ];
             

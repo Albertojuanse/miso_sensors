@@ -839,7 +839,7 @@
             if ([userDic isEqualToDictionary:givenUserDic]) {
                 
                 // ...and get the items array.
-                itemsChosenByUser = userDic[@"itemsChosenByUser"];
+                itemsChosenByUser = sessionDic[@"itemsChosenByUser"];
             }
         }
         
@@ -873,7 +873,7 @@
             if ([userName isEqualToString:givenUserName]) {
                 
                 // ...and get the items array.
-                itemsChosenByUser = userDic[@"itemsChosenByUser"];
+                itemsChosenByUser = sessionDic[@"itemsChosenByUser"];
             }
         }
         

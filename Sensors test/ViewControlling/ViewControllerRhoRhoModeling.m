@@ -32,6 +32,10 @@
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
     }
     
+    // Initial state
+    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                          andWithCredentialsUserDic:credentialsUserDic];
+    
     // Ask canvas to initialize
     [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic andCredentialsUserDic:credentialsUserDic];
     
