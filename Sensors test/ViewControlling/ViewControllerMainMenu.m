@@ -186,23 +186,6 @@
         // TO DO: BASIC, ROUTING AND TRACKING modes. Alberto J. 2019/09/13.
     }
     
-    // Verify that credentials grant user to shared data
-    if (
-        [sharedData validateCredentialsUserDic:credentialsUserDic]
-        )
-    {
-        NSLog(@"[INFO][VCMM] User credentials have been validated.");
-    } else {
-        [self alertUserWithTitle:@"User not allowed."
-                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
-                      andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-                      }
-         ];
-        NSLog(@"[ERROR][VCMM] Shared data could not be acessed after view loading.");
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-    }
-    
     // Register something in the shared data collection if it is empty for exampling and showing porpuses
     BOOL registerCorrect = YES;
     // Register some types
@@ -337,6 +320,29 @@
     
     [self.tableModes reloadData];
     [self.tableItems reloadData];
+}
+
+/*!
+ @method viewDidAppear
+ @discussion This method notifies the view controller that its view was added to a view hierarchy.
+ */
+- (void)viewDidAppear:(BOOL)animated {
+    // Verify that credentials grant user to shared data
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        NSLog(@"[INFO][VCMM] User credentials have been validated.");
+    } else {
+        [self alertUserWithTitle:@"User not allowed."
+                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCMM] Shared data could not be acessed after view loading.");
+        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+    }
 }
 
 /*!
@@ -626,29 +632,29 @@
                         if (itemDic[@"type"]) {
                             
                             RDPosition * position = itemDic[@"position"];
-                            cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
                                                    itemDic[@"identifier"],
                                                    itemDic[@"type"],
                                                    itemDic[@"uuid"],
                                                    itemDic[@"major"],
                                                    itemDic[@"minor"],
-                                                   [position.x stringValue],
-                                                   [position.y stringValue],
-                                                   [position.z stringValue]
+                                                   [position.x floatValue],
+                                                   [position.y floatValue],
+                                                   [position.z floatValue]
                                                    ];
                             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                             
                         } else {
                             
                             RDPosition * position = itemDic[@"position"];
-                            cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
                                                    itemDic[@"identifier"],
                                                    itemDic[@"uuid"],
                                                    itemDic[@"major"],
                                                    itemDic[@"minor"],
-                                                   [position.x stringValue],
-                                                   [position.y stringValue],
-                                                   [position.z stringValue]
+                                                   [position.x floatValue],
+                                                   [position.y floatValue],
+                                                   [position.z floatValue]
                                                    ];
                             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                             
@@ -684,22 +690,20 @@
                     // If its type is set
                     RDPosition * position = itemDic[@"position"];
                     if (itemDic[@"type"]) {
-                        
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%@, %@, %@)",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%.2f, %.2f, %.2f)",
                                                itemDic[@"identifier"],
                                                itemDic[@"type"],
-                                               [position.x stringValue],
-                                               [position.y stringValue],
-                                               [position.z stringValue]
+                                               [position.x floatValue],
+                                               [position.y floatValue],
+                                               [position.z floatValue]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                     } else {
-                        
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%@, %@, %@)",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%.2f, %.2f, %.2f)",
                                                itemDic[@"identifier"],
-                                               [position.x stringValue],
-                                               [position.y stringValue],
-                                               [position.z stringValue]
+                                               [position.x floatValue],
+                                               [position.y floatValue],
+                                               [position.z floatValue]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                     }
@@ -737,8 +741,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         // Can be null if credentials are not allowed.
         if (itemsData) {
             NSMutableDictionary * itemChosenByUser = [itemsData objectAtIndex:indexPath.row];
-            NSLog(@"[HOLA][VCMM] %@", itemChosenByUser);
-            NSLog(@"[HOLA][VCMM] %@", userDic);
             
             // Can be null if it did not exist
             if(itemChosenByUser) {

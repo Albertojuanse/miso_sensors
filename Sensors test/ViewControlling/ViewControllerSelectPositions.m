@@ -323,29 +323,29 @@
                     if (itemDic[@"type"]) {
                         
                         RDPosition * position = itemDic[@"position"];
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
                                                itemDic[@"identifier"],
                                                itemDic[@"type"],
                                                itemDic[@"uuid"],
                                                itemDic[@"major"],
                                                itemDic[@"minor"],
-                                               [position.x stringValue],
-                                               [position.y stringValue],
-                                               [position.z stringValue]
+                                               [position.x floatValue],
+                                               [position.y floatValue],
+                                               [position.z floatValue]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                         
                     } else {
                         
                         RDPosition * position = itemDic[@"position"];
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
                                                itemDic[@"identifier"],
                                                itemDic[@"uuid"],
                                                itemDic[@"major"],
                                                itemDic[@"minor"],
-                                               [position.x stringValue],
-                                               [position.y stringValue],
-                                               [position.z stringValue]
+                                               [position.x floatValue],
+                                               [position.y floatValue],
+                                               [position.z floatValue]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                         
@@ -382,21 +382,21 @@
                 RDPosition * position = itemDic[@"position"];
                 if (itemDic[@"type"]) {
                     
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%@, %@, %@)",
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%.2f, %.2f, %.2f)",
                                            itemDic[@"identifier"],
                                            itemDic[@"type"],
-                                           [position.x stringValue],
-                                           [position.y stringValue],
-                                           [position.z stringValue]
+                                           [position.x floatValue],
+                                           [position.y floatValue],
+                                           [position.z floatValue]
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                 } else {
                     
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%@, %@, %@)",
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%.2f, %.2f, %.2f)",
                                            itemDic[@"identifier"],
-                                           [position.x stringValue],
-                                           [position.y stringValue],
-                                           [position.z stringValue]
+                                           [position.x floatValue],
+                                           [position.y floatValue],
+                                           [position.z floatValue]
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                 }

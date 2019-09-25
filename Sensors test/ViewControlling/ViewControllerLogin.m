@@ -21,6 +21,13 @@
     
     credentialsUserDicArray = [[NSMutableArray alloc] init];
     
+}
+
+/*!
+ @method viewDidAppear:
+ @discussion This method notifies the view controller that its view was added to a view hierarchy.
+ */
+- (void)viewDidAppear:(BOOL)animated {
     // TO DO: Check for stored user data. Alberto J. 2019/09/05.
     
     // Alert the user that must create an user if no other is found
@@ -31,16 +38,15 @@
                                                   preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction * okButton = [UIAlertAction
-                                   actionWithTitle:@"Ok"
-                                   style:UIAlertActionStyleDefault
-                                   handler:^(UIAlertAction * action) {
-                                       [self.buttonLogin setEnabled:NO];
-                                   }];
+                                    actionWithTitle:@"Ok"
+                                    style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * action) {
+                                        [self.buttonLogin setEnabled:NO];
+                                    }];
         
         [alertUsersNotFound addAction:okButton];
         [self presentViewController:alertUsersNotFound animated:YES completion:nil];
     }
-    
 }
 
 /*!

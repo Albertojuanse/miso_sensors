@@ -519,13 +519,10 @@
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         for (sessionDic in sessionData) {
             NSMutableDictionary * storedUserDic = sessionDic[@"user"];
-            NSLog(@"[HOLA][SD][K][G] %@", sessionDic[@"user"]);
             if ([storedUserDic isEqualToDictionary:givenUserDic]) {
-                NSLog(@"[HOLA][SD][K][G] %@", sessionDic);
                 return sessionDic;
             }
         }
-        NSLog(@"[HOLA][SD][K][G] Session search finished");
     } else {
         NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
         return nil;

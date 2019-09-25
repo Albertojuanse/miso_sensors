@@ -24,7 +24,6 @@
     // Sets if the user wants to modify a beacon device or a position, or nothing
     NSDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
                                                                                   andCredentialsUserDic:credentialsUserDic];
-    NSLog(@"[HOLA][VCAB] %@", itemChosenByUser);
     if (
         ![@"beacon" isEqualToString:itemChosenByUser[@"sort"]] &&
         ![@"position" isEqualToString:itemChosenByUser[@"sort"]]
@@ -170,9 +169,9 @@
                              
                              if (itemDic[@"position"]) {
                                  RDPosition * position = itemDic[@"position"];
-                                 self.textBeaconX.text = [position.x stringValue];
-                                 self.textBeaconY.text = [position.y stringValue];
-                                 self.textBeaconZ.text = [position.z stringValue];
+                                 self.textBeaconX.text = [NSString stringWithFormat:@"%.2f", [position.x floatValue]];
+                                 self.textBeaconY.text = [NSString stringWithFormat:@"%.2f", [position.y floatValue]];
+                                 self.textBeaconZ.text = [NSString stringWithFormat:@"%.2f", [position.z floatValue]];
                              }
                          }
                      }
@@ -244,9 +243,9 @@
                          
                          if (itemDic[@"position"]) {
                              RDPosition * position = itemDic[@"position"];
-                             self.textPositionX.text = [position.x stringValue];
-                             self.textPositionY.text = [position.y stringValue];
-                             self.textPositionZ.text = [position.z stringValue];
+                             self.textPositionX.text = [NSString stringWithFormat:@"%.2f", [position.x floatValue]];
+                             self.textPositionY.text = [NSString stringWithFormat:@"%.2f", [position.y floatValue]];
+                             self.textPositionZ.text = [NSString stringWithFormat:@"%.2f", [position.z floatValue]];
                          }
                      }
                  }
