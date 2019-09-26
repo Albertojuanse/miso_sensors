@@ -221,7 +221,7 @@
         position2.x = [NSNumber numberWithFloat:3.5];
         position2.y = [NSNumber numberWithFloat:0.0];
         position2.z = [NSNumber numberWithFloat:0.0];
-        [infoDic2 setValue:position1 forKey:@"position"];
+        [infoDic2 setValue:position2 forKey:@"position"];
         [infoDic2 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
         [infoDic2 setValue:cornerType forKey:@"type"];
         
@@ -268,34 +268,34 @@
                                                                      withInfoDic:infoRegionRaspiDic
                                                        andWithCredentialsUserDic:credentialsUserDic];
         
-        NSMutableDictionary * infoRegionBeacon1Dic = [[NSMutableDictionary alloc] init];
-        [infoRegionBeacon1Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825" forKey:@"uuid"];
-        [infoRegionBeacon1Dic setValue:@"1" forKey:@"major"];
-        [infoRegionBeacon1Dic setValue:@"1" forKey:@"minor"];
+        NSMutableDictionary * infoItemBeacon1Dic = [[NSMutableDictionary alloc] init];
+        [infoItemBeacon1Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825" forKey:@"uuid"];
+        [infoItemBeacon1Dic setValue:@"1" forKey:@"major"];
+        [infoItemBeacon1Dic setValue:@"1" forKey:@"minor"];
         
         registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
                                                                   withIdentifier:@"beacon1@miso.uam.es"
-                                                                     withInfoDic:infoRegionBeacon1Dic
+                                                                     withInfoDic:infoItemBeacon1Dic
                                                        andWithCredentialsUserDic:credentialsUserDic];
         
-        NSMutableDictionary * infoRegionBeacon2Dic = [[NSMutableDictionary alloc] init];
-        [infoRegionBeacon2Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824" forKey:@"uuid"];
-        [infoRegionBeacon2Dic setValue:@"1" forKey:@"major"];
-        [infoRegionBeacon2Dic setValue:@"1" forKey:@"minor"];
+        NSMutableDictionary * infoItemBeacon2Dic = [[NSMutableDictionary alloc] init];
+        [infoItemBeacon2Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824" forKey:@"uuid"];
+        [infoItemBeacon2Dic setValue:@"1" forKey:@"major"];
+        [infoItemBeacon2Dic setValue:@"1" forKey:@"minor"];
         
         registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
                                                                   withIdentifier:@"beacon2@miso.uam.es"
-                                                                     withInfoDic:infoRegionBeacon2Dic
+                                                                     withInfoDic:infoItemBeacon2Dic
                                                        andWithCredentialsUserDic:credentialsUserDic];
         
-        NSMutableDictionary * infoRegionBeacon3Dic = [[NSMutableDictionary alloc] init];
-        [infoRegionBeacon3Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823" forKey:@"uuid"];
-        [infoRegionBeacon3Dic setValue:@"1" forKey:@"major"];
-        [infoRegionBeacon3Dic setValue:@"1" forKey:@"minor"];
+        NSMutableDictionary * infoItemBeacon3Dic = [[NSMutableDictionary alloc] init];
+        [infoItemBeacon3Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823" forKey:@"uuid"];
+        [infoItemBeacon3Dic setValue:@"1" forKey:@"major"];
+        [infoItemBeacon3Dic setValue:@"1" forKey:@"minor"];
         
         registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
                                                                   withIdentifier:@"beacon3@miso.uam.es"
-                                                                     withInfoDic:infoRegionBeacon2Dic
+                                                                     withInfoDic:infoItemBeacon3Dic
                                                        andWithCredentialsUserDic:credentialsUserDic];
     }
     
@@ -304,12 +304,12 @@
     }
     
     // Variables
-    if (!regionBeaconIdNumber) {
-        regionBeaconIdNumber = [NSNumber numberWithInteger:3];
+    if (!itemBeaconIdNumber) {
+        itemBeaconIdNumber = [NSNumber numberWithInteger:5];
     }
     
-    if (!regionPositionIdNumber) {
-        regionPositionIdNumber = [NSNumber numberWithInteger:0];
+    if (!itemPositionIdNumber) {
+        itemPositionIdNumber = [NSNumber numberWithInteger:5];
     }
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
@@ -403,21 +403,21 @@
 }
 
 /*!
- @method setRegionBeaconIdNumber:
+ @method setItemBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionBeaconIdNumber:(NSNumber *)givenRegionBeaconIdNumber
+- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
 {
-    regionBeaconIdNumber = givenRegionBeaconIdNumber;
+    itemBeaconIdNumber = givenItemBeaconIdNumber;
 }
 
 /*!
- @method setRegionPositionIdNumber:
+ @method setItemPositionIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionPositionIdNumber:(NSNumber *)givenRegionPositionIdNumber
+- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
 {
-    regionPositionIdNumber = givenRegionPositionIdNumber;
+    itemPositionIdNumber = givenItemPositionIdNumber;
 }
 
 #pragma mark - Butons event handle
@@ -525,8 +525,8 @@
         [viewControllerAddBeaconMenu setMotionManager:motion];
         [viewControllerAddBeaconMenu setLocationManager:location];
         
-        [viewControllerAddBeaconMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
-        [viewControllerAddBeaconMenu setRegionPositionIdNumber:regionPositionIdNumber];
+        [viewControllerAddBeaconMenu setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerAddBeaconMenu setItemPositionIdNumber:itemPositionIdNumber];
         
     }
     

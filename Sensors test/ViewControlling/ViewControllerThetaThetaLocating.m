@@ -54,7 +54,6 @@
     
     [self.tableItemsChosen reloadData];
     [self.tableTypes reloadData];
-    NSLog(@"[HOLA][VCTTL] View did load");
 }
 
 /*!
@@ -115,21 +114,21 @@
 }
 
 /*!
- @method setRegionBeaconIdNumber:
+ @method setItemBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionBeaconIdNumber:(NSNumber *)givenRegionBeaconIdNumber
+- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
 {
-    regionBeaconIdNumber = givenRegionBeaconIdNumber;
+    itemBeaconIdNumber = givenItemBeaconIdNumber;
 }
 
 /*!
- @method setRegionPositionIdNumber:
+ @method setItemPositionIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionPositionIdNumber:(NSNumber *)givenRegionPositionIdNumber
+- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
 {
-    regionPositionIdNumber = givenRegionPositionIdNumber;
+    itemPositionIdNumber = givenItemPositionIdNumber;
 }
 
 #pragma mark - Buttons event handles
@@ -160,6 +159,7 @@
     // In every state the button performs different behaviours
     NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic];
+    NSLog(@"[HOLA][VCTTL] Measure button state from %@", state);
     
     if ([state isEqualToString:@"IDLE"]) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
         // If user did chose a position to aim
@@ -168,12 +168,17 @@
             [self.buttonMeasure setEnabled:YES];
             [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                        andWithCredentialsUserDic:credentialsUserDic];
+            ////////////////
+            NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
+                                                                andCredentialsUserDic:credentialsUserDic];
+            NSLog(@"[HOLA][VCTTL] Measure button state to %@", state);
+            ////////////////
             [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
             
             // And send the notification
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
                                                                 object:nil];
-            NSLog(@"[NOTI][VCRTM] Notification \"startMeasuring\" posted.");
+            NSLog(@"[NOTI][VCTTL] Notification \"startMeasuring\" posted.");
             return;
         } else {
             return;
@@ -183,10 +188,15 @@
         [self.buttonMeasure setEnabled:YES];
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
+        ////////////////
+        NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
+                                                            andCredentialsUserDic:credentialsUserDic];
+        NSLog(@"[HOLA][VCTTL] Measure button state to %@", state);
+        ////////////////
         [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"stopMeasuring\" posted.");
+        NSLog(@"[NOTI][VCTTL] Notification \"stopMeasuring\" posted.");
         return;
     }
 }
@@ -240,7 +250,7 @@
  */
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSLog(@"[INFO][VCRTM] Asked segue %@", [segue identifier]);
+    NSLog(@"[INFO][VCTTL] Asked segue %@", [segue identifier]);
     
     // If main menu is going to be displayed, any variable can be returned here
     if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToMain"]) {
@@ -257,10 +267,10 @@
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"stopMeasuring\" posted.");
+        NSLog(@"[NOTI][VCTTL] Notification \"stopMeasuring\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"reset\" posted.");
+        NSLog(@"[NOTI][VCTTL] Notification \"reset\" posted.");
         return;
     }
 }

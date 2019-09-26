@@ -110,21 +110,21 @@
 }
 
 /*!
- @method setRegionBeaconIdNumber:
+ @method setItemBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionBeaconIdNumber:(NSNumber *)givenRegionBeaconIdNumber
+- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
 {
-    regionBeaconIdNumber = givenRegionBeaconIdNumber;
+    itemBeaconIdNumber = givenItemBeaconIdNumber;
 }
 
 /*!
- @method setRegionPositionIdNumber:
+ @method setItemPositionIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionPositionIdNumber:(NSNumber *)givenRegionPositionIdNumber
+- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
 {
-    regionPositionIdNumber = givenRegionPositionIdNumber;
+    itemPositionIdNumber = givenItemPositionIdNumber;
 }
 
 #pragma mark - Buttons event handles

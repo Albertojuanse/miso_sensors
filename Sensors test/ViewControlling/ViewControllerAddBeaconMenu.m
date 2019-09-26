@@ -308,21 +308,21 @@
 }
 
 /*!
- @method setRegionBeaconIdNumber:
+ @method setItemBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionBeaconIdNumber:(NSNumber *)givenRegionBeaconIdNumber
+- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
 {
-    regionBeaconIdNumber = givenRegionBeaconIdNumber;
+    itemBeaconIdNumber = givenItemBeaconIdNumber;
 }
 
 /*!
- @method setRegionPositionIdNumber:
+ @method setItemPositionIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionPositionIdNumber:(NSNumber *)givenRegionPositionIdNumber
+- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
 {
-    regionPositionIdNumber = givenRegionPositionIdNumber;
+    itemPositionIdNumber = givenItemPositionIdNumber;
 }
 
 #pragma mark - Buttons event handles
@@ -406,13 +406,20 @@
     // Different behaviour if position or beacon
     if (selectedSegmentIndex == 0) { // iBeacon mode
         infoDic[@"sort"] = @"beacon";
+        infoDic[@"uuid"] = [self.textUUID text];
+        infoDic[@"major"] = [self.textMajor text];
+        infoDic[@"minor"] = [self.textMinor text];
+        NSString * beaconId = [@"beacon" stringByAppendingString:[itemPositionIdNumber stringValue]];
+        beaconId = [beaconId stringByAppendingString:@"@miso.uam.es"];
+        infoDic[@"identifier"] = beaconId;
     }
     if (selectedSegmentIndex == 1) { // position mode
         infoDic[@"sort"] = @"position";
+        infoDic[@"uuid"] = [[NSUUID UUID] UUIDString];
+        NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
+        positionId = [positionId stringByAppendingString:@"@miso.uam.es"];
+        infoDic[@"identifier"] = positionId;
     }
-    infoDic[@"uuid"] = [self.textUUID text];
-    infoDic[@"major"] = [self.textMajor text];
-    infoDic[@"minor"] = [self.textMinor text];
     if ([sharedData fromSessionDataGetSessionWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic]) {
         MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
@@ -486,7 +493,7 @@
             infoDic[@"position"] = positionToAdd;
         } else {
             
-            // If all coordinate values missing the user tries to re-register a beacon, unless the user wanted to set its type
+            // If all coordinate values missing the user tries to register a no located position but set its type.
             if (
                 [[self.textPositionX text] isEqualToString:@""] &&
                 [[self.textPositionY text] isEqualToString:@""] &&
@@ -494,17 +501,14 @@
                 )
             {
                 // This code is reached also when an type was set or uploaded, so check it
-                if (![sharedData fromSessionDataGetSessionWithUserDic:userDic
-                                                andCredentialsUserDic:credentialsUserDic]) {
-                    [self alertUserWithTitle:@"Warning."
-                                     message:@"As no coordinate values were introduced, the item's position is null."
-                                  andHandler:^(UIAlertAction * action) {
-                                      // Do nothing
-                                  }
-                     ];
-                    self.labelPositionError.text = @"Warning. As no coordinate values were introduced, the item's position is null.";
-                    infoDic[@"position"] = nil;
-                }
+                [self alertUserWithTitle:@"Warning."
+                                 message:@"Please, submit three (x, y, z) values or push \"Back\"."
+                              andHandler:^(UIAlertAction * action) {
+                                  // Do nothing
+                              }
+                 ];
+                self.labelPositionError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+                return;
             } else {
                 // If ths code is reached means that there is only some coordinate values but not all of them
                 [self alertUserWithTitle:@"Some coordinate values missing."
@@ -518,7 +522,6 @@
             }
         }
     }
-
     
     // Add the item
     [sharedData inItemDataAddItemOfSort:infoDic[@"sort"]
@@ -820,8 +823,8 @@
         [viewControllerMainMenu setMotionManager:motion];
         [viewControllerMainMenu setLocationManager:location];
         
-        [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
-        [viewControllerMainMenu setRegionPositionIdNumber:regionPositionIdNumber];
+        [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
         
     }
     if ([[segue identifier] isEqualToString:@"backFromAddToMain"]) {
@@ -835,8 +838,8 @@
         [viewControllerMainMenu setMotionManager:motion];
         [viewControllerMainMenu setLocationManager:location];
         
-        [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
-        [viewControllerMainMenu setRegionPositionIdNumber:regionPositionIdNumber];
+        [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
         
     }
 }

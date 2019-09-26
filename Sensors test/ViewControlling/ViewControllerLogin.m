@@ -225,7 +225,7 @@
  */
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSLog(@"[INFO][VCAB] Asked segue %@", [segue identifier]);
+    NSLog(@"[INFO][VCL] Asked segue %@", [segue identifier]);
     if ([[segue identifier] isEqualToString:@"loginFromLoginToMain"]) {
         
         // Get destination view

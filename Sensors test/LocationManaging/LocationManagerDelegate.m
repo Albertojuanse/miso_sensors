@@ -112,6 +112,7 @@
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self initWithSharedData:initSharedData];
+    NSLog(@"[HOLA][LM] init with cedentials %@", credentialsUserDic);
     credentialsUserDic = initCredentialsUserDic;
     userDic = initUserDic;
     deviceUUID = initDeviceUUID;
@@ -503,6 +504,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     
     // Different behave depending on the current state
     // If app is measuring the device user
+    NSLog(@"[HOLA][LM] Going to isMeasuring in didHeading %@", credentialsUserDic);
     if ([sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic]) {
         
         // Get the measuring mode
@@ -728,6 +730,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             NSLog(@"[ERROR][LM] Heading not avalible.");
         }
         
+        NSLog(@"[HOLA][LM] Going to validate credentials in start measuring %@", credentialsUserDic);
         // Validate the acess to the data shared collection
         if (
             [sharedData validateCredentialsUserDic:credentialsUserDic]
@@ -868,7 +871,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         [[NSNotificationCenter defaultCenter] postNotificationName:@"getPositionRespond"
                                                             object:nil
                                                           userInfo:data];
-        NSLog(@"[NOTI][VCRRM] Notification \"getPositionRespond\" posted.");
+        NSLog(@"[NOTI][LM] Notification \"getPositionRespond\" posted.");
     }
 }
 
@@ -900,6 +903,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         NSLog(@"[NOTI][LM] Notfication \"reset\" recived.");
         
         // Components
+        NSLog(@"[HOLA][LM] Going to reset SD with credentials in reset %@", credentialsUserDic);
         [sharedData resetWithCredentialsUserDic:credentialsUserDic];
         
         // Instance variables

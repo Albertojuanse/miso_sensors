@@ -37,8 +37,8 @@
     NSString * chosenMode;
     
     // Beacons' region identifiers
-    NSNumber * regionBeaconIdNumber;
-    NSNumber * regionPositionIdNumber;
+    NSNumber * itemBeaconIdNumber;
+    NSNumber * itemPositionIdNumber;
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *tableModes;
@@ -52,7 +52,7 @@
 - (void) setLocationManager:(LocationManagerDelegate *)givenLocation;
 
 
-- (void) setRegionBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
-- (void) setRegionPositionIdNumber:(NSNumber *)givenRegionIdNumber;
+- (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
+- (void) setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 
 @end

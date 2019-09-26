@@ -771,11 +771,11 @@
  */
 - (void) startTraveling:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"startTraveling"]){
-        NSLog(@"[NOTI][LM] Notfication \"startTraveling\" recived.");
+        NSLog(@"[NOTI][MM] Notfication \"startTraveling\" recived.");
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"getPosition"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRRM] Notification \"getPosition\" posted.");
+        NSLog(@"[NOTI][MM] Notification \"getPosition\" posted.");
     }
 }
 /*!
@@ -784,7 +784,7 @@
  */
 - (void) stopTraveling:(NSNotification *) notification  {
     if ([[notification name] isEqualToString:@"stopTraveling"]){
-        NSLog(@"[NOTI][LM] Notfication \"stopTraveling\" recived.");
+        NSLog(@"[NOTI][MM] Notfication \"stopTraveling\" recived.");
         traveling = NO;
         
         NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
@@ -798,7 +798,7 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"setPosition"
                                                             object:nil
                                                           userInfo:data];
-        NSLog(@"[NOTI][VCRRM] Notification \"setPosition\" posted.");
+        NSLog(@"[NOTI][MM] Notification \"setPosition\" posted.");
     }
 }
 
@@ -808,7 +808,7 @@
  */
 - (void) startTravelingFrom:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"getPositionRespond"]){
-        NSLog(@"[NOTI][LM] Notfication \"getPositionRespond\" recived.");
+        NSLog(@"[NOTI][MM] Notfication \"getPositionRespond\" recived.");
         
         NSDictionary * data = notification.userInfo;
         RDPosition * initialPosition = data[@"currentPosition"];

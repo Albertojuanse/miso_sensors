@@ -28,8 +28,8 @@
     NSMutableDictionary * userDic;
     
     // Beacons' region identifiers
-    NSNumber * regionBeaconIdNumber;
-    NSNumber * regionPositionIdNumber;
+    NSNumber * itemBeaconIdNumber;
+    NSNumber * itemPositionIdNumber;
     NSString * locatedPositionUUID; // This one changes when the user measures and generates a new position for the device.
     
 }
@@ -46,7 +46,7 @@
 - (void) setMotionManager:(MotionManager *)givenMotion;
 - (void) setLocationManager:(LocationManagerDelegate *)givenLocation;
 
-- (void) setRegionBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
-- (void) setRegionPositionIdNumber:(NSNumber *)givenRegionIdNumber;
+- (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
+- (void) setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 
 @end
