@@ -474,18 +474,19 @@
 
 /*!
  @method validatecredentialsUserDic:
- @discussion This method returns YES if the given dictionary with the user credentials is compliant; is there is not users in the collection, returns null; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ @discussion This method returns YES if the given dictionary with the user credentials is compliant; is there is not users in the collection, returns null.
  */
 - (BOOL) validateCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
+    if ([userData count] == 0) {
+        return nil;
+    }
     for (NSMutableDictionary * userDic in userData) {
         if ([credentialsUserDic isEqualToDictionary:userDic]) {
             return YES;
-        } else {
-            return NO;
         }
     }
-    return nil;
+    return NO;
 }
 
 #pragma mark - Session data specific getters

@@ -161,9 +161,9 @@
                            userDic:(NSMutableDictionary *)initUserDic
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
-    self = [self initWithSharedData:initSharedData];
     credentialsUserDic = initCredentialsUserDic;
     userDic = initUserDic;
+    self = [self initWithSharedData:initSharedData];
     return self;
 }
 

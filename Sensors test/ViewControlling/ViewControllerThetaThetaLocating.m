@@ -159,7 +159,6 @@
     // In every state the button performs different behaviours
     NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic];
-    NSLog(@"[HOLA][VCTTL] Measure button state from %@", state);
     
     if ([state isEqualToString:@"IDLE"]) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
         // If user did chose a position to aim
@@ -168,11 +167,6 @@
             [self.buttonMeasure setEnabled:YES];
             [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                        andWithCredentialsUserDic:credentialsUserDic];
-            ////////////////
-            NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
-                                                                andCredentialsUserDic:credentialsUserDic];
-            NSLog(@"[HOLA][VCTTL] Measure button state to %@", state);
-            ////////////////
             [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
             
             // And send the notification
@@ -188,11 +182,6 @@
         [self.buttonMeasure setEnabled:YES];
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
-        ////////////////
-        NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
-                                                            andCredentialsUserDic:credentialsUserDic];
-        NSLog(@"[HOLA][VCTTL] Measure button state to %@", state);
-        ////////////////
         [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
                                                             object:nil];

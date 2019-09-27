@@ -21,9 +21,18 @@
         
         // Components
         sharedData = sharedDataFromAppDelegate;
-        rhoRhoSystem = [[RDRhoRhoSystem alloc] init];
-        rhoThetaSystem = [[RDRhoThetaSystem alloc] init];
-        thetaThetaSystem = [[RDThetaThetaSystem alloc] init];
+        rhoRhoSystem = [[RDRhoRhoSystem alloc] initWithSharedData:sharedData
+                                                          userDic:userDic
+                                                       deviceUUID:deviceUUID
+                                            andCredentialsUserDic:credentialsUserDic];
+        rhoThetaSystem = [[RDRhoThetaSystem alloc] initWithSharedData:sharedData
+                                                              userDic:userDic
+                                                           deviceUUID:deviceUUID
+                                                andCredentialsUserDic:credentialsUserDic];
+        thetaThetaSystem = [[RDThetaThetaSystem alloc] initWithSharedData:sharedData
+                                                                  userDic:userDic
+                                                               deviceUUID:deviceUUID
+                                                    andCredentialsUserDic:credentialsUserDic];
         
         // Instance variables
         // Set device's location at the origin
@@ -111,11 +120,10 @@
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
-    self = [self initWithSharedData:initSharedData];
-    NSLog(@"[HOLA][LM] init with cedentials %@", credentialsUserDic);
     credentialsUserDic = initCredentialsUserDic;
     userDic = initUserDic;
     deviceUUID = initDeviceUUID;
+    self = [self initWithSharedData:initSharedData];
     return self;
 }
 
@@ -504,7 +512,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     
     // Different behave depending on the current state
     // If app is measuring the device user
-    NSLog(@"[HOLA][LM] Going to isMeasuring in didHeading %@", credentialsUserDic);
     if ([sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic]) {
         
         // Get the measuring mode
@@ -730,7 +737,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             NSLog(@"[ERROR][LM] Heading not avalible.");
         }
         
-        NSLog(@"[HOLA][LM] Going to validate credentials in start measuring %@", credentialsUserDic);
         // Validate the acess to the data shared collection
         if (
             [sharedData validateCredentialsUserDic:credentialsUserDic]
@@ -903,7 +909,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         NSLog(@"[NOTI][LM] Notfication \"reset\" recived.");
         
         // Components
-        NSLog(@"[HOLA][LM] Going to reset SD with credentials in reset %@", credentialsUserDic);
         [sharedData resetWithCredentialsUserDic:credentialsUserDic];
         
         // Instance variables

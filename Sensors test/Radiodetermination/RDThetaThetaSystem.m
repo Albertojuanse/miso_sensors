@@ -31,6 +31,7 @@
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self init];
+    sharedData = initSharedData;
     credentialsUserDic = initCredentialsUserDic;
     userDic = initUserDic;
     deviceUUID = initDeviceUUID;
@@ -96,21 +97,23 @@
 - (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithPrecisions:(NSDictionary *)precisions
 {
     NSLog(@"[INFO][TT] Start locating positions");
-    
+    if (!sharedData) {
+    }
     // Check the acess to data shared collections
     if (
         ![sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-        NSLog(@"[ERROR][TT] Shared data could not be acessed while loading cells' item.");
+        NSLog(@"[ERROR][TT] Shared data could not be acessed before location procces.");
     }
     
     // Declare collections
     NSMutableDictionary * locatedPositions = [[NSMutableDictionary alloc] init];
     
     // Different behaviour depending on location mode
-    NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
+    NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                      andCredentialsUserDic:credentialsUserDic];
     /*
     if ([mode isEqualToString:@"THETA_THETA_MODELING"]) {
     
