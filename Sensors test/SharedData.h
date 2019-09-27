@@ -63,6 +63,10 @@
                                         andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableDictionary *)fromSessionDataGetSessionWithUserName:(NSString *)userName
                                          andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                                                         andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserName:(NSString *)userName
+                                                          andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSString *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary *)userDic
                                   andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSString *)fromSessionDataGetModeFromUserWithUserName:(NSString *)userName

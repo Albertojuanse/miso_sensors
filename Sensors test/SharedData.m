@@ -2647,7 +2647,10 @@
         // The 'measureDic', the innermost one, is always new.
         measureDic = [[NSMutableDictionary alloc] init];
         measureDic[@"user"] = givenUserDic;
-        measureDic[@"position"] = position;
+        // Position can be nil in location modes
+        if (position) {
+            measureDic[@"position"] = position;
+        }
         if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic]) {
             measureDic[@"itemUUID"] = itemUUID;
             measureDic[@"deviceUUID"] = deviceUUID;

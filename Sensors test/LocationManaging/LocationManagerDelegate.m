@@ -14,13 +14,13 @@
  @method init
  @discussion Constructor given the shared data collection.
  */
-- (instancetype)initWithSharedData:(SharedData *)sharedDataFromAppDelegate
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
 {
     self = [super init];
     if (self) {
         
         // Components
-        sharedData = sharedDataFromAppDelegate;
+        sharedData = initSharedData;
         rhoRhoSystem = [[RDRhoRhoSystem alloc] initWithSharedData:sharedData
                                                           userDic:userDic
                                                        deviceUUID:deviceUUID
@@ -120,6 +120,7 @@
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
+    sharedData = initSharedData;
     credentialsUserDic = initCredentialsUserDic;
     userDic = initUserDic;
     deviceUUID = initDeviceUUID;
@@ -575,33 +576,24 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             )
         {
             
-            // The heading measures in this mode are only saved if the user did select the item to aim tod...
-            if(isItemChosenByUserRanged) {
-                // ...whose item dictionary is stored in session dictionary as 'itemChosenByUser'.
-                NSMutableDictionary * itemChosenByUserDic = [sharedData
-                                                             fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                             andCredentialsUserDic:credentialsUserDic
-                                                             ];
+            // The heading measures in this mode are only saved if the user did select the item to aim to whose item dictionary is stored in session dictionary as 'itemChosenByUser'.
+            NSMutableDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                                                                 andCredentialsUserDic:credentialsUserDic];
+            if(itemChosenByUser) {
                 // If its not null retrieve the information needed.
-                NSString * itemUUID;
-                if (itemChosenByUserDic) {
-                    itemUUID = itemChosenByUserDic[@"uuid"];
-                }
+                NSString * itemUUID = itemChosenByUser[@"uuid"];
+                RDPosition * measurePosition = [[RDPosition alloc] init];
+                measurePosition.x = position.x;
+                measurePosition.y = position.y;
+                measurePosition.z = position.z;
                 
-                if (itemChosenByUserDic) {
-                    RDPosition * measurePosition = [[RDPosition alloc] init];
-                    measurePosition.x = position.x;
-                    measurePosition.y = position.y;
-                    measurePosition.z = position.z;
-                    
-                    [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithDouble:[newHeading trueHeading]*M_PI/180.0]
-                                                  ofSort:@"heading"
-                                            withItemUUID:itemUUID
-                                          withDeviceUUID:deviceUUID
-                                              atPosition:measurePosition
-                                          takenByUserDic:userDic
-                               andWithCredentialsUserDic:credentialsUserDic];
-                }
+                [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithDouble:[newHeading trueHeading]*M_PI/180.0]
+                                              ofSort:@"heading"
+                                        withItemUUID:itemUUID
+                                      withDeviceUUID:deviceUUID
+                                          atPosition:nil
+                                      takenByUserDic:userDic
+                           andWithCredentialsUserDic:credentialsUserDic];
             } else {
                 NSLog(@"[INFO][LM] User did choose a UUID source that is not being ranging; disposing.");
             }
