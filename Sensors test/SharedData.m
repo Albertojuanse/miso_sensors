@@ -202,6 +202,7 @@
         
         // Colections of data
         userData = [[NSMutableArray alloc] init];
+        [userData addObject:credentialsUserDic];
         sessionData = [[NSMutableArray alloc] init];
         itemsData = [[NSMutableArray alloc] init];
         measuresData = [[NSMutableArray alloc] init];

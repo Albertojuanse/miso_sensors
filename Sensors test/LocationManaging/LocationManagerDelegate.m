@@ -900,9 +900,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     if ([[notification name] isEqualToString:@"reset"]){
         NSLog(@"[NOTI][LM] Notfication \"reset\" recived.");
         
-        // Components
-        [sharedData resetWithCredentialsUserDic:credentialsUserDic];
-        
         // Instance variables
         // Set device's location at the origin
         position = [[RDPosition alloc] init];
@@ -922,6 +919,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         [locationManager stopUpdatingHeading];
         monitoredRegions = nil; // For ARC disposing
         monitoredPositions = nil;
+        
+        // Components
+        [sharedData resetWithCredentialsUserDic:credentialsUserDic];
     }
 }
 

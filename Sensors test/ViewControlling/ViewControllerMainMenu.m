@@ -143,7 +143,8 @@
     
     // Create a session for the current user; if it joins another one later, this will be remplaced or deleted.
     // Check if a session with this user is created before
-    if ([sharedData fromSessionDataGetSessionWithUserDic:userDic andCredentialsUserDic:credentialsUserDic]) {
+    if ([sharedData fromSessionDataGetSessionWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic]) {
         // Do nothing
     } else {
         NSMutableDictionary * sessionDic = [[NSMutableDictionary alloc] init];
