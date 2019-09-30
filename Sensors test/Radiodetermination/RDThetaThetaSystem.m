@@ -452,7 +452,8 @@
                 [orderedItemsPositions addObject:[NSNumber numberWithInteger:0]];
             }
             
-            NSNumber * lastSavedMin = [NSNumber numberWithFloat:-FLT_MAX];
+            // Ordering
+            NSNumber * lastSavedMin;
             // As many times as elements to be ordered...
             for (NSUInteger i = 0; i < [data count]; i++) {
                 NSNumber * min = [NSNumber numberWithFloat:FLT_MAX];
@@ -468,18 +469,12 @@
                     NSLog(@"[INFO][TT] -> with last min saved heading %.2f ", [lastSavedMin floatValue]);
                     
                     // ...and if it is greater than the last saved one...
-                    if ([eachHeading floatValue] >= [lastSavedMin floatValue]) {
+                    if ([eachHeading floatValue] > [lastSavedMin floatValue]) {
                         
                         NSLog(@"[INFO][TT] -> and with the partial min %.2f ", [min floatValue]);
                         
                         // ...compare with the others to get the minimum.
                         if ([eachHeading floatValue] <= [min floatValue]) {
-                            if(!eachHeading) {
-                                NSLog(@"[HOLA][TT] eachHeading is nil");
-                            }
-                            if(!dataDic[@"position"]) {
-                                NSLog(@"[HOLA][TT] dataDic[@\"position\"] is nil");
-                            }
                             min = eachHeading;
                             minPosition = dataDic[@"position"];
                         }
@@ -491,18 +486,12 @@
                 NSLog(@"[INFO][TT] -> at index %.2f ", [min floatValue]);
                 NSLog(@"[INFO][TT] -> and its position %@ ", minPosition);
                 
-                if(!min) {
-                    NSLog(@"[HOLA][TT] min is nil");
-                }
-                if(!minPosition) {
-                    NSLog(@"[HOLA][TT] minPosition is nil");                    
-                }
-                
                 [orderedMeasureHeadings replaceObjectAtIndex:i withObject:min];
                 [orderedItemsPositions replaceObjectAtIndex:i withObject:minPosition];
                 lastSavedMin = min;
             }
             
+            // Calculus with ordered values
             // Angle between the north and the model 'north'
             NSNumber * north = [NSNumber numberWithFloat:70*M_PI/180.0];
             

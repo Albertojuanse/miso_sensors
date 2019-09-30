@@ -1211,7 +1211,7 @@
         
         for (NSMutableDictionary * itemDic in itemsData) {
             
-            if ([@"yes" isEqualToString:itemDic[@"located"]]) {
+            if ([@"YES" isEqualToString:itemDic[@"located"]]) {
                 [itemsFound addObject:itemDic];
             }
         }
@@ -2647,6 +2647,7 @@
         // The 'measureDic', the innermost one, is always new.
         measureDic = [[NSMutableDictionary alloc] init];
         measureDic[@"user"] = givenUserDic;
+        measureDic[@"sort"] = sort;
         // Position can be nil in location modes
         if (position) {
             measureDic[@"position"] = position;
