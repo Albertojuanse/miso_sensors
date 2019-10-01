@@ -390,10 +390,6 @@
     
     // Registro de lo que se representa
     
-    // Representar las posiciones de los chosen items
-        // Representar los tipos de los items
-        // Representar los UUID de los items
-    
     // Representar las posiciones localizadas
         // ¿Ya esta representada?
             // Si sí, completar
@@ -457,7 +453,55 @@
                        andWithType:itemType];
             }
         } else {
-            NSLog(@"[ERROR][CA] No UUID found in item while its showing.");
+            NSLog(@"[ERROR][CA] No item's UUID found in item while its showing.");
+        }
+        
+    }
+    
+    // Show the located positions, the ones located with the radiolocation systems.
+    // For every located position...
+    for (RDPosition * realLocatedPosition in locatedPositions) {
+        
+        // ...get the transformed position...
+        RDPosition * canvasLocatedPosition = [self transformSingleRealPointToCanvasPoint:realLocatedPosition];
+        NSLog(@"[INFO][CA] Drawing canvas located position %@", canvasLocatedPosition);
+        
+        // ...,its type and UUID, ...
+        NSMutableArray * itemsInRealLocatedPosition = [sharedData fromItemDataGetItemsWithPosition:realLocatedPosition
+                                                                             andCredentialsUserDic:credentialsUserDic];
+        MDType * itemType;
+        NSString * itemUUID;
+        if (itemsInRealLocatedPosition) {
+            if (itemsInRealLocatedPosition.count != 0) {
+                if (!(itemsInRealLocatedPosition.count > 1)) {
+                    NSMutableDictionary * itemDicSelected = [itemsInRealLocatedPosition objectAtIndex:0];
+                    itemType = itemDicSelected[@"type"];
+                    itemUUID = itemDicSelected[@"uuid"];
+                } else {  // More than one items found
+                    NSLog(@"[ERROR][CA] Too items types found when getting types for some located position; using first one.");
+                    // TO DO: Manage this. Alberto J. 2019/10/1.
+                }
+            } else {  // Items not found
+                NSLog(@"[ERROR][CA] No items found when getting types for some located position; empty array returned.");
+            }
+        } else {  // Acess could not be granted or items not found
+            NSLog(@"[ERROR][CA] No items found when getting types for some located position; null returned.");
+        }
+        
+        // ...and draw it.
+        if (itemUUID) {  // Items UUID are always required
+            if (!itemType) {
+                [self drawPosition:realLocatedPosition
+                  inCanvasPosition:canvasLocatedPosition
+                           andUUID:itemUUID];
+            } else {
+                [self drawPosition:realLocatedPosition
+                  inCanvasPosition:canvasLocatedPosition
+                              UUID:itemUUID
+                       andWithType:itemType];
+            }
+        } else {
+            NSLog(@"[ERROR][CA] No located position's UUID found in item while its showing.");
         }
         
     }
@@ -466,16 +510,12 @@
     for (RDPosition * realMeasurePosition in measurePositions) {
         
         // ...get the transformed position...
-        RDPosition * canvasMeasurePosition = [self transformSingleRealPointToCanvasPoint:realMeasurePosition];
-        NSLog(@"[INFO][CA] Drawing canvas mesure position %@", canvasMeasurePosition);
+        //RDPosition * canvasMeasurePosition = [self transformSingleRealPointToCanvasPoint:realMeasurePosition];
+        //NSLog(@"[INFO][CA] Drawing canvas mesure position %@", canvasMeasurePosition);
         // ...and draw it.
         // [self drawPosition:realMeasurePosition inCanvasPosition:canvasMeasurePosition];
-        VCPosition * positionView = [[VCPosition alloc] initWithFrame:
-                                     CGRectMake([canvasMeasurePosition.x floatValue],
-                                                [canvasMeasurePosition.y floatValue],
-                                                3.0,
-                                                3.0)];
-        [self addSubview:positionView];
+        //VCPosition * positionView = [[VCPosition alloc] initWithFrame:CGRectMake([canvasMeasurePosition.x floatValue],[canvasMeasurePosition.y floatValue],3.0,3.0)];
+        //[self addSubview:positionView];
         
         
         
