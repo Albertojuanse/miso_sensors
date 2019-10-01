@@ -15,14 +15,17 @@
 		422798902271F37800E07C39 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4227988E2271F37800E07C39 /* LaunchScreen.storyboard */; };
 		422798932271F37800E07C39 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798922271F37800E07C39 /* main.m */; };
 		4227989B2271F60700E07C39 /* MotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227989A2271F60700E07C39 /* MotionManager.m */; };
+		42300BDB2330E03000E2385F /* VCPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 42300BDA2330E03000E2385F /* VCPosition.m */; };
 		4242F6C122CB99BF00C4B0B7 /* Threshold.m in Sources */ = {isa = PBXBuildFile; fileRef = 4242F6C022CB99BF00C4B0B7 /* Threshold.m */; };
 		4242F6C422CB9EC200C4B0B7 /* Buffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4242F6C322CB9EC200C4B0B7 /* Buffer.m */; };
 		4242F6C722CBA7C600C4B0B7 /* Adder.m in Sources */ = {isa = PBXBuildFile; fileRef = 4242F6C622CBA7C600C4B0B7 /* Adder.m */; };
 		4242F6CB22CBACAB00C4B0B7 /* Averager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4242F6CA22CBACAB00C4B0B7 /* Averager.m */; };
+		425124292320F3840096D0A8 /* ViewControllerLogin.m in Sources */ = {isa = PBXBuildFile; fileRef = 425124282320F3840096D0A8 /* ViewControllerLogin.m */; };
 		426501BA22A03B3000BE20B7 /* LocationManagerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */; };
 		426501BD22A03B4300BE20B7 /* Canvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501BC22A03B4300BE20B7 /* Canvas.m */; };
 		426501C322A03B5200BE20B7 /* RDPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C022A03B5200BE20B7 /* RDPosition.m */; };
 		426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */; };
+		42673BA0234336E3004E46A8 /* VCType.m in Sources */ = {isa = PBXBuildFile; fileRef = 42673B9F234336E3004E46A8 /* VCType.m */; };
 		4275ED5A22D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m in Sources */ = {isa = PBXBuildFile; fileRef = 4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m */; };
 		4275ED5D22D5F84300A5CAB7 /* RDRhoThetaSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 4275ED5C22D5F84300A5CAB7 /* RDRhoThetaSystem.m */; };
 		4276127422C0EE91007BDED8 /* SharedData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4276127322C0EE91007BDED8 /* SharedData.m */; };
@@ -32,7 +35,7 @@
 		42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 42917F02229BE12900EE6CD3 /* Blackbox.m */; };
 		4295FB2222D35D7A0024B155 /* ViewControllerMainMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */; };
 		4295FB2622D360BB0024B155 /* ViewControllerAddBeaconMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */; };
-		429FA65F22EB19DB00F3D415 /* MDEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 429FA65E22EB19DB00F3D415 /* MDEntity.m */; };
+		429FA65F22EB19DB00F3D415 /* MDType.m in Sources */ = {isa = PBXBuildFile; fileRef = 429FA65E22EB19DB00F3D415 /* MDType.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +52,8 @@
 		422798922271F37800E07C39 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		422798992271F5D600E07C39 /* MotionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MotionManager.h; sourceTree = "<group>"; };
 		4227989A2271F60700E07C39 /* MotionManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MotionManager.m; sourceTree = "<group>"; };
+		42300BD92330DF6D00E2385F /* VCPosition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCPosition.h; sourceTree = "<group>"; };
+		42300BDA2330E03000E2385F /* VCPosition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCPosition.m; sourceTree = "<group>"; };
 		4242F6BF22CB999900C4B0B7 /* Threshold.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Threshold.h; sourceTree = "<group>"; };
 		4242F6C022CB99BF00C4B0B7 /* Threshold.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Threshold.m; sourceTree = "<group>"; };
 		4242F6C222CB9E5200C4B0B7 /* Buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Buffer.h; sourceTree = "<group>"; };
@@ -57,6 +62,8 @@
 		4242F6C622CBA7C600C4B0B7 /* Adder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Adder.m; sourceTree = "<group>"; };
 		4242F6C922CBAAD500C4B0B7 /* Averager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Averager.h; sourceTree = "<group>"; };
 		4242F6CA22CBACAB00C4B0B7 /* Averager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Averager.m; sourceTree = "<group>"; };
+		425124272320F35B0096D0A8 /* ViewControllerLogin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerLogin.h; sourceTree = "<group>"; };
+		425124282320F3840096D0A8 /* ViewControllerLogin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerLogin.m; sourceTree = "<group>"; };
 		426501B822A03B2A00BE20B7 /* LocationManagerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationManagerDelegate.h; sourceTree = "<group>"; };
 		426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManagerDelegate.m; sourceTree = "<group>"; };
 		426501BB22A03B4000BE20B7 /* Canvas.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Canvas.h; sourceTree = "<group>"; };
@@ -65,13 +72,15 @@
 		426501C022A03B5200BE20B7 /* RDPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDPosition.m; sourceTree = "<group>"; };
 		426501C122A03B5200BE20B7 /* RDRhoRhoSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDRhoRhoSystem.h; sourceTree = "<group>"; };
 		426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDRhoRhoSystem.m; sourceTree = "<group>"; };
+		42673B9E234336D4004E46A8 /* VCType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCType.h; sourceTree = "<group>"; };
+		42673B9F234336E3004E46A8 /* VCType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCType.m; sourceTree = "<group>"; };
 		4275ED5822D5E88E00A5CAB7 /* ViewControllerRhoThetaModeling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerRhoThetaModeling.h; sourceTree = "<group>"; };
 		4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerRhoThetaModeling.m; sourceTree = "<group>"; };
 		4275ED5B22D5F83000A5CAB7 /* RDRhoThetaSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDRhoThetaSystem.h; sourceTree = "<group>"; };
 		4275ED5C22D5F84300A5CAB7 /* RDRhoThetaSystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDRhoThetaSystem.m; sourceTree = "<group>"; };
 		4276127222C0EE71007BDED8 /* SharedData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedData.h; sourceTree = "<group>"; };
 		4276127322C0EE91007BDED8 /* SharedData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedData.m; sourceTree = "<group>"; };
-		42867F5722EA1C9A00927FEE /* MDEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDEntity.h; sourceTree = "<group>"; };
+		42867F5722EA1C9A00927FEE /* MDType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDType.h; sourceTree = "<group>"; };
 		428AF6BE22D7912400BE5374 /* ViewControllerSelectPositions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerSelectPositions.h; sourceTree = "<group>"; };
 		428AF6BF22D7915000BE5374 /* ViewControllerSelectPositions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerSelectPositions.m; sourceTree = "<group>"; };
 		428AF6C122D7A64E00BE5374 /* ViewControllerThetaThetaLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerThetaThetaLocating.h; sourceTree = "<group>"; };
@@ -84,7 +93,7 @@
 		4295FB2322D35D8D0024B155 /* ViewControllerMainMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerMainMenu.h; sourceTree = "<group>"; };
 		4295FB2422D360930024B155 /* ViewControllerAddBeaconMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerAddBeaconMenu.h; sourceTree = "<group>"; };
 		4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerAddBeaconMenu.m; sourceTree = "<group>"; };
-		429FA65E22EB19DB00F3D415 /* MDEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDEntity.m; sourceTree = "<group>"; };
+		429FA65E22EB19DB00F3D415 /* MDType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDType.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +158,8 @@
 			children = (
 				422798892271F37800E07C39 /* Main.storyboard */,
 				4227988E2271F37800E07C39 /* LaunchScreen.storyboard */,
+				425124272320F35B0096D0A8 /* ViewControllerLogin.h */,
+				425124282320F3840096D0A8 /* ViewControllerLogin.m */,
 				4295FB2322D35D8D0024B155 /* ViewControllerMainMenu.h */,
 				4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */,
 				4295FB2422D360930024B155 /* ViewControllerAddBeaconMenu.h */,
@@ -163,6 +174,10 @@
 				428AF6C222D7A67500BE5374 /* ViewControllerThetaThetaLocating.m */,
 				426501BB22A03B4000BE20B7 /* Canvas.h */,
 				426501BC22A03B4300BE20B7 /* Canvas.m */,
+				42300BD92330DF6D00E2385F /* VCPosition.h */,
+				42300BDA2330E03000E2385F /* VCPosition.m */,
+				42673B9E234336D4004E46A8 /* VCType.h */,
+				42673B9F234336E3004E46A8 /* VCType.m */,
 			);
 			path = ViewControlling;
 			sourceTree = "<group>";
@@ -185,8 +200,8 @@
 		42867F5622EA1C7800927FEE /* Modeling */ = {
 			isa = PBXGroup;
 			children = (
-				42867F5722EA1C9A00927FEE /* MDEntity.h */,
-				429FA65E22EB19DB00F3D415 /* MDEntity.m */,
+				42867F5722EA1C9A00927FEE /* MDType.h */,
+				429FA65E22EB19DB00F3D415 /* MDType.m */,
 			);
 			path = Modeling;
 			sourceTree = "<group>";
@@ -295,12 +310,15 @@
 				426501C322A03B5200BE20B7 /* RDPosition.m in Sources */,
 				428AF6C022D7915000BE5374 /* ViewControllerSelectPositions.m in Sources */,
 				4275ED5D22D5F84300A5CAB7 /* RDRhoThetaSystem.m in Sources */,
+				42673BA0234336E3004E46A8 /* VCType.m in Sources */,
 				422798882271F37800E07C39 /* ViewControllerRhoRhoModeling.m in Sources */,
+				425124292320F3840096D0A8 /* ViewControllerLogin.m in Sources */,
 				4242F6C722CBA7C600C4B0B7 /* Adder.m in Sources */,
 				422798932271F37800E07C39 /* main.m in Sources */,
 				422798852271F37800E07C39 /* AppDelegate.m in Sources */,
-				429FA65F22EB19DB00F3D415 /* MDEntity.m in Sources */,
+				429FA65F22EB19DB00F3D415 /* MDType.m in Sources */,
 				4276127422C0EE91007BDED8 /* SharedData.m in Sources */,
+				42300BDB2330E03000E2385F /* VCPosition.m in Sources */,
 				426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */,
 				4242F6CB22CBACAB00C4B0B7 /* Averager.m in Sources */,
 				4295FB2622D360BB0024B155 /* ViewControllerAddBeaconMenu.m in Sources */,

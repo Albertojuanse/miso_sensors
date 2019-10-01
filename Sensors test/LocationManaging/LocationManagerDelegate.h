@@ -20,36 +20,39 @@
  */
 @interface LocationManagerDelegate: NSObject<CLLocationManagerDelegate>{
     
+    // Session and user context
+    NSMutableDictionary * credentialsUserDic;
+    NSMutableDictionary * userDic;
+    NSString * deviceUUID;
+    
     // Components
     SharedData * sharedData;
     RDRhoRhoSystem * rhoRhoSystem;
     RDRhoThetaSystem * rhoThetaSystem;
     RDThetaThetaSystem * thetaThetaSystem;
+    CLLocationManager * locationManager;
     
     // Variables
-    RDPosition * position;
+    RDPosition * position;  // Current position of device
     NSNumber * lastHeadingPosition;
-    BOOL measuring;
-    BOOL idle;
-    NSString * mode;
-    NSString * uuidChosenByUser;
-    NSString * locatedPositionUUID;
-    RDPosition * positionChosenByUser;
-    BOOL isUuidChosenByUserRanged;
+    BOOL isItemChosenByUserRanged;
     
     // Data store
     NSMutableArray * monitoredRegions;
     NSMutableArray * monitoredPositions;
-    NSMutableArray * rangedRegions;
-    CLLocationManager * locationManager;
-    NSMutableArray * rangedBeacons;
     
     // Orchestration variables
 }
 
-- (instancetype)initWithSharedData:(SharedData *)initSharedData;
-- (RDPosition *) getPosition;
-- (void) setPosition:(RDPosition *)newPosition;
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
+                           userDic:(NSMutableDictionary *)initUserDic
+                        deviceUUID:(NSString *)initDeviceUUID
+             andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
+- (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
+- (void)setUserDic:(NSMutableDictionary *)givenUserDic;
+- (void)setDeviceUUID:(NSString *)givenDeviceUUID;
+- (void)setPosition:(RDPosition *)givenPosition;
+- (RDPosition *)getPosition;
 
 @end
 

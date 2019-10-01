@@ -16,24 +16,37 @@
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
  */
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
     // Visualization
     // Sets if the user wants to modify a beacon device or a position, or nothing
-    if (uuidChosenByUser) {
+    NSDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                                                  andCredentialsUserDic:credentialsUserDic];
+    if (
+        ![@"beacon" isEqualToString:itemChosenByUser[@"sort"]] &&
+        ![@"position" isEqualToString:itemChosenByUser[@"sort"]]
+        )
+    { // Add new one
         selectedSegmentIndex = 0;
+    } else {
+        if ([@"beacon" isEqualToString:itemChosenByUser[@"sort"]]) {
+            selectedSegmentIndex = 0;
+        }
+        if ([@"position" isEqualToString:itemChosenByUser[@"sort"]]) {
+            selectedSegmentIndex = 1;
+        }
+         if (
+             [@"beacon" isEqualToString:itemChosenByUser[@"sort"]] &&
+             [@"position" isEqualToString:itemChosenByUser[@"sort"]]
+             )
+         {
+             NSLog(@"[ERROR][VCAB] User did choose both Beacon and Position to change; UUID by default.");
+             selectedSegmentIndex = 0;
+         }
     }
-    if (positionChosenByUser) {
-        selectedSegmentIndex = 1;
-    }
-    if (!uuidChosenByUser && !positionChosenByUser) { // Add new one
-        selectedSegmentIndex = 0;
-    }
-    if (uuidChosenByUser && positionChosenByUser) {
-        NSLog(@"[ERROR][VCAB] User did choose both Beacon and Position to change; UUID by default.");
-        selectedSegmentIndex = 0;
-    }
+    
     [self.segmentedControl setSelectedSegmentIndex:selectedSegmentIndex];
     [self changeView];
     
@@ -43,18 +56,28 @@
                     forControlEvents:UIControlEventValueChanged];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
-    self.tableEntities.delegate = self;
-    self.tableEntities.dataSource = self;
+    self.tableTypes.delegate = self;
+    self.tableTypes.dataSource = self;
     
-    [self.tableEntities reloadData];
+    [self.tableTypes reloadData];
+}
+
+/*!
+ @method didReceiveMemoryWarning
+ @discussion This method dispose of any resources that can be recreated id a memory warning is recived.
+ */
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 
 /*!
  @method uploadSegmentIndex:
  @discussion This method is called when the segmented control is tapped and changes the enable and view values of the forms to alternate between them.
  */
-- (void) uploadSegmentIndex:(id)sender {
-    
+- (void) uploadSegmentIndex:(id)sender
+{
     // Upload global variable value
     selectedSegmentIndex = [self.segmentedControl selectedSegmentIndex];
     [self changeView];
@@ -66,7 +89,8 @@
  @method changeView
  @discussion This method is called when the segmented control is tapped and changes the enable and view values of the forms to alternate between them.
  */
- - (void) changeView {
+ - (void) changeView
+{
      
      // Empty text boxes
      self.textUUID.text = @"";
@@ -81,7 +105,7 @@
      
      // Different behaviour if position or beacon
      switch (selectedSegmentIndex) {
-         case 0: // iBeacon mode
+         case 0: {// iBeacon mode
              
              // Visualization
              // Enable beacon elements
@@ -128,28 +152,26 @@
              self.textPositionZ.placeholder = @"";
              
              // If user did select an object to modify, search for it and display it on texts.
-             if (uuidChosenByUser) {
-                 
-                 for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-                     if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
-                         if ([regionDic[@"uuid"] isEqualToString:uuidChosenByUser]) {
-                             self.textUUID.text = regionDic[@"uuid"];
-                             self.textMajor.text = regionDic[@"major"];
-                             self.textMinor.text = regionDic[@"minor"];
+             NSMutableDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                                                                  andCredentialsUserDic:credentialsUserDic];
+             NSMutableArray * itemsData = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
+             if ([@"beacon" isEqualToString:itemChosenByUser[@"sort"]]) {
+                 for (NSMutableDictionary * itemDic in itemsData) {
+                     if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
+                         if ([itemDic[@"uuid"] isEqualToString:itemChosenByUser[@"uuid"]]) {
+                             self.textUUID.text = itemDic[@"uuid"];
+                             self.textMajor.text = itemDic[@"major"];
+                             self.textMinor.text = itemDic[@"minor"];
                              
-                             if (regionDic[@"entity"]){
-                                 self.textEntity.text = regionDic[@"entity"][@"name"];
+                             if (itemDic[@"type"]){
+                                 self.textType.text = [NSString stringWithFormat:@"%@", [itemDic[@"type"] stringValue]];
                              }
                              
-                             if (
-                                 regionDic[@"x"] &&
-                                 regionDic[@"y"] &&
-                                 regionDic[@"z"]
-                                 )
-                             {
-                                 self.textBeaconX.text = regionDic[@"x"];
-                                 self.textBeaconY.text = regionDic[@"y"];
-                                 self.textBeaconZ.text = regionDic[@"z"];
+                             if (itemDic[@"position"]) {
+                                 RDPosition * position = itemDic[@"position"];
+                                 self.textBeaconX.text = [NSString stringWithFormat:@"%.2f", [position.x floatValue]];
+                                 self.textBeaconY.text = [NSString stringWithFormat:@"%.2f", [position.y floatValue]];
+                                 self.textBeaconZ.text = [NSString stringWithFormat:@"%.2f", [position.z floatValue]];
                              }
                          }
                      }
@@ -158,8 +180,9 @@
              }
              
              break;
+         }
              
-         case 1: // position mode
+         case 1: { // position mode
              
              // Visualization
              // Enable beacon elements
@@ -206,19 +229,23 @@
              self.textPositionZ.placeholder = @"0.0";
              
              // If user did select an object to modify, search for it and display it on texts.
-             if (positionChosenByUser) {
+             NSMutableDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                                                                  andCredentialsUserDic:credentialsUserDic];
+             NSMutableArray * itemsData = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
+             if ([@"position" isEqualToString:itemChosenByUser[@"sort"]]) {
                  
-                 for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-                     if ([@"position" isEqualToString:regionDic[@"type"]]) {
+                 for (NSMutableDictionary * itemDic in itemsData) {
+                     if ([@"position" isEqualToString:itemDic[@"sort"]]) {
                          
-                         if (regionDic[@"entity"]){
-                             self.textEntity.text = regionDic[@"entity"][@"name"];
+                         if (itemDic[@"type"]){
+                             self.textType.text = [NSString stringWithFormat:@"%@", [itemDic[@"type"] stringValue]];
                          }
                          
-                         if ([regionDic[@"position"] isEqual:positionChosenByUser]) {
-                             self.textPositionX.text = regionDic[@"x"];
-                             self.textPositionY.text = regionDic[@"y"];
-                             self.textPositionZ.text = regionDic[@"z"];
+                         if (itemDic[@"position"]) {
+                             RDPosition * position = itemDic[@"position"];
+                             self.textPositionX.text = [NSString stringWithFormat:@"%.2f", [position.x floatValue]];
+                             self.textPositionY.text = [NSString stringWithFormat:@"%.2f", [position.y floatValue]];
+                             self.textPositionZ.text = [NSString stringWithFormat:@"%.2f", [position.z floatValue]];
                          }
                      }
                  }
@@ -226,7 +253,7 @@
              }
              
              break;
-             
+         }
          default:
              break;
      }
@@ -236,51 +263,66 @@
 #pragma mark - Instance methods
 
 /*!
- @method setBeaconsAndPositionsRegistered:
+ @method setCredentialsUserDic:
+ @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
+ */
+- (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic
+{
+    credentialsUserDic = givenCredentialsUserDic;
+}
+
+/*!
+ @method setUserDic:
+ @discussion This method sets the NSMutableDictionary with the identifying purposes user credentials.
+ */
+- (void) setUserDic:(NSMutableDictionary *)givenUserDic
+{
+    userDic = givenUserDic;
+}
+
+/*!
+ @method setSharedData:
+ @discussion This method sets the shared data collection.
+ */
+- (void) setSharedData:(SharedData *)givenSharedData
+{
+    sharedData = givenSharedData;
+}
+
+/*!
+ @method setMotionManager:
+ @discussion This method sets the motion manager.
+ */
+- (void) setMotionManager:(MotionManager *)givenMotion
+{
+    motion = givenMotion;
+}
+
+/*!
+ @method setLocationManager:
+ @discussion This method sets the location manager.
+ */
+- (void) setLocationManager:(LocationManagerDelegate *)givenLocation
+{
+    location = givenLocation;
+}
+
+/*!
+ @method setItemBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered {
-    beaconsAndPositionsRegistered = newBeaconsAndPositionsRegistered;
+- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
+{
+    itemBeaconIdNumber = givenItemBeaconIdNumber;
 }
 
 /*!
- @method setRegionBeaconIdNumber:
+ @method setItemPositionIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
-- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionBeaconIdNumber {
-    regionBeaconIdNumber = newRegionBeaconIdNumber;
-}
-
-/*!
- @method setRegionPositionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setRegionPositionIdNumber:(NSNumber *)newRegionPositionIdNumber {
-    regionPositionIdNumber = newRegionPositionIdNumber;
-}
-
-/*!
- @method setUuidChosenByUser:
- @discussion This method sets the NSString variable 'uuidChosenByUser'.
- */
-- (void) setUuidChosenByUser:(NSString *)newUuidChosenByUser {
-    uuidChosenByUser = newUuidChosenByUser;
-}
-
-/*!
- @method setPositionChosenByUser:
- @discussion This method sets the NSString variable 'uuidChosenByUser'.
- */
-- (void) setPositionChosenByUser:(RDPosition *)newPositionChosenByUser {
-    positionChosenByUser = newPositionChosenByUser;
-}
-
-/*!
- @method setEntitiesRegistered:
- @discussion This method sets the NSMutableArray variable 'entitiesRegistered'.
- */
-- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered {
-    entitiesRegistered = newEntitiesRegistered;
+- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
+{
+    itemPositionIdNumber = givenItemPositionIdNumber;
 }
 
 #pragma mark - Buttons event handles
@@ -289,62 +331,325 @@
  @method handleButtonDelete:
  @discussion This method handles the 'Delete' button action and ask the main menu to delete the beacon submitted by the user.
  */
-- (IBAction)handleButtonDelete:(id)sender {
+- (IBAction)handleButtonDelete:(id)sender
+{
+    // Validate data
+    if (![self validateUserEntries]) {
+        return;
+    }
     
-    NSMutableDictionary * regionDicToRemove;
+    // Compose a dictionary with the information provided
+    NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
     
     // Different behaviour if position or beacon
     if (selectedSegmentIndex == 0) { // iBeacon mode
-            
-        // Search for it and delete it
-        for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-            if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
-                if ([[self.textUUID text] isEqualToString:regionDic[@"uuid"]]) {
-                    if ([[self.textMajor text] isEqualToString:regionDic[@"major"]]) {
-                        if ([[self.textMinor text] isEqualToString:regionDic[@"minor"]]) {
-                            
-                            // Save its reference
-                            regionDicToRemove = regionDic;
-                            
-                        }
-                    }
-                }
-            }
-        }
+        infoDic[@"sort"] = @"beacon";
     }
     if (selectedSegmentIndex == 1) { // position mode
-        
-        // Search for it and delete it
-        for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-            if ([@"position" isEqualToString:regionDic[@"type"]]) {
-                
-                RDPosition * positionToRemove = [[RDPosition alloc] init];
-                positionToRemove.x = [NSNumber numberWithFloat:[[self.textPositionX text] floatValue]];
-                positionToRemove.y = [NSNumber numberWithFloat:[[self.textPositionY text] floatValue]];
-                positionToRemove.z = [NSNumber numberWithFloat:[[self.textPositionZ text] floatValue]];
-                
-                if ([positionToRemove isEqual:regionDic[@"position"]]) {
-                    // Save its reference
-                    regionDicToRemove = regionDic;
-                }
-            }
-        }
+        infoDic[@"sort"] = @"position";
     }
+    infoDic[@"uuid"] = [self.textUUID text];
+    infoDic[@"major"] = [self.textMajor text];
+    infoDic[@"minor"] = [self.textMinor text];
     
-    [beaconsAndPositionsRegistered removeObject:regionDicToRemove];
-    
-    [self performSegueWithIdentifier:@"backFromAddToMain" sender:sender];
+    // Ask shared data to remove it; database could not be acessed.
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        
+        // It can be not found
+        if (
+            [sharedData inItemDataRemoveItemWithInfoDic:infoDic withCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            [self performSegueWithIdentifier:@"backFromAddToMain" sender:sender];
+        } else { // Not found
+            [self alertUserWithTitle:@"Type won't be removed."
+                             message:[NSString stringWithFormat:@"Type could not be found; please, try again or check for multiuser interferences."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCAB] Type could not be removed.");
+        }
+        
+    } else { // Type not found
+        [self alertUserWithTitle:@"Type won't be removed."
+                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCAB] Shared data could not be acessed while removing a type.");
+    }
+    return;
 }
 
 /*!
  @method handleButtonAdd:
  @discussion This method handles the Add button action and ask the main menu to add the new beacon submitted by the user.
  */
-- (IBAction)handleButtonAdd:(id)sender {
+- (IBAction)handleButtonAdd:(id)sender
+{
     
     // The beacons cannot be registered twice with different ID because Location Manager will fail their initialization; because of coherence, two equals positions cannot be registered. Thus, the data of every item must be searched and not only its identifier.
     
     // Different behaviour if position or beacon
+    // Validate data
+    if (![self validateUserEntries]) {
+        return;
+    }
+    
+    // Compose a dictionary with the information provided
+    NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
+    // Different behaviour if position or beacon
+    if (selectedSegmentIndex == 0) { // iBeacon mode
+        infoDic[@"sort"] = @"beacon";
+        infoDic[@"uuid"] = [self.textUUID text];
+        infoDic[@"major"] = [self.textMajor text];
+        infoDic[@"minor"] = [self.textMinor text];
+        NSString * beaconId = [@"beacon" stringByAppendingString:[itemPositionIdNumber stringValue]];
+        beaconId = [beaconId stringByAppendingString:@"@miso.uam.es"];
+        infoDic[@"identifier"] = beaconId;
+    }
+    if (selectedSegmentIndex == 1) { // position mode
+        infoDic[@"sort"] = @"position";
+        infoDic[@"uuid"] = [[NSUUID UUID] UUIDString];
+        NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
+        positionId = [positionId stringByAppendingString:@"@miso.uam.es"];
+        infoDic[@"identifier"] = positionId;
+    }
+    if ([sharedData fromSessionDataGetSessionWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic]) {
+        MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
+                                                                    andCredentialsUserDic:credentialsUserDic];
+        infoDic[@"type"] = type;
+        
+    }
+    
+    // Position
+    if (selectedSegmentIndex == 0) { // iBeacon mode
+        // If the three coordinate values had been submitted
+        if (
+            ![[self.textBeaconX text] isEqualToString:@""] &&
+            ![[self.textBeaconY text] isEqualToString:@""] &&
+            ![[self.textBeaconZ text] isEqualToString:@""]
+            )
+        {
+            
+            RDPosition * positionToAdd = [[RDPosition alloc] init];
+            positionToAdd.x = [NSNumber numberWithFloat:[[self.textBeaconX text] floatValue]];
+            positionToAdd.y = [NSNumber numberWithFloat:[[self.textBeaconY text] floatValue]];
+            positionToAdd.z = [NSNumber numberWithFloat:[[self.textBeaconZ text] floatValue]];
+            infoDic[@"position"] = positionToAdd;
+        } else {
+            
+            // If all coordinate values missing the user tries to re-register a beacon, unless the user wanted to set its type
+            if (
+                [[self.textBeaconX text] isEqualToString:@""] &&
+                [[self.textBeaconY text] isEqualToString:@""] &&
+                [[self.textBeaconZ text] isEqualToString:@""]
+                )
+            {
+                // This code is reached also when an type was set or uploaded, so check it
+                if (![sharedData fromSessionDataGetSessionWithUserDic:userDic
+                                                andCredentialsUserDic:credentialsUserDic]) {
+                    [self alertUserWithTitle:@"Warning."
+                                     message:@"As no coordinate values were introduced, the item's position is null."
+                                  andHandler:^(UIAlertAction * action) {
+                                      // Do nothing
+                                  }
+                     ];
+                    self.labelPositionError.text = @"Warning. As no coordinate values were introduced, the item's position is null.";
+                    infoDic[@"position"] = nil;
+                }
+            } else {
+                // If ths code is reached means that there is only some coordinate values but not all of them
+                [self alertUserWithTitle:@"Some coordinate values missing."
+                                 message:@"Please, submit three (x, y, z) values or push \"Back\"."
+                              andHandler:^(UIAlertAction * action) {
+                                  // Do nothing
+                              }
+                 ];
+                self.labelBeaconError.text = @"Error. Some coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+                return;
+            }
+        }
+    }
+    if (selectedSegmentIndex == 1) { // position mode
+        // If the three coordinate values had been submitted
+        if (
+            ![[self.textPositionX text] isEqualToString:@""] &&
+            ![[self.textPositionY text] isEqualToString:@""] &&
+            ![[self.textPositionZ text] isEqualToString:@""]
+            )
+        {
+            
+            RDPosition * positionToAdd = [[RDPosition alloc] init];
+            positionToAdd.x = [NSNumber numberWithFloat:[[self.textPositionX text] floatValue]];
+            positionToAdd.y = [NSNumber numberWithFloat:[[self.textPositionY text] floatValue]];
+            positionToAdd.z = [NSNumber numberWithFloat:[[self.textPositionZ text] floatValue]];
+            infoDic[@"position"] = positionToAdd;
+        } else {
+            
+            // If all coordinate values missing the user tries to register a no located position but set its type.
+            if (
+                [[self.textPositionX text] isEqualToString:@""] &&
+                [[self.textPositionY text] isEqualToString:@""] &&
+                [[self.textPositionZ text] isEqualToString:@""]
+                )
+            {
+                // This code is reached also when an type was set or uploaded, so check it
+                [self alertUserWithTitle:@"Warning."
+                                 message:@"Please, submit three (x, y, z) values or push \"Back\"."
+                              andHandler:^(UIAlertAction * action) {
+                                  // Do nothing
+                              }
+                 ];
+                self.labelPositionError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+                return;
+            } else {
+                // If ths code is reached means that there is only some coordinate values but not all of them
+                [self alertUserWithTitle:@"Some coordinate values missing."
+                                 message:@"Please, submit three (x, y, z) values or push \"Back\"."
+                              andHandler:^(UIAlertAction * action) {
+                                  // Do nothing
+                              }
+                 ];
+                self.labelBeaconError.text = @"Error. Some coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
+                return;
+            }
+        }
+    }
+    
+    // Add the item
+    [sharedData inItemDataAddItemOfSort:infoDic[@"sort"]
+                               withUUID:infoDic[@"uuid"]
+                            withInfoDic:infoDic
+              andWithCredentialsUserDic:credentialsUserDic];
+
+    [self performSegueWithIdentifier:@"submitFromAddToMain" sender:sender];
+}
+
+/*!
+ @method handleButtonBack:
+ @discussion This method handles the 'Back' button action and segue back to the main menu; 'prepareForSegue:sender:' method is called before.
+ */
+- (IBAction)handleButtonBack:(id)sender
+{
+    [self performSegueWithIdentifier:@"backFromAddToMain" sender:sender];
+}
+
+/*!
+ @method handleButtonAddType:
+ @discussion This method handles the 'Add type' button action and register the user type if it does not exit.
+ */
+- (IBAction)handleButtonAddType:(id)sender
+{
+    // The user tries to register the type called
+    NSString * newTypeName = [self.textType text];
+    
+    // Search if the MDType with this name is not already registered and submit it; if it is so, alert the user.
+    if (![sharedData fromMetamodelDataIsTypeWithName:newTypeName andWithCredentialsUserDic:credentialsUserDic]) {
+        MDType * newType = [[MDType alloc] initWithName:newTypeName];
+        
+        // If the remove transaction is succesful it returns YES
+        if (
+            [sharedData inMetamodelDataAddType:newType withCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            self.textType.text = @"";
+            return;
+        } else { // Shared data not acessible
+            [self alertUserWithTitle:@"Type won't be registered."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while registering type.");
+        }
+        
+    } else {
+        [self alertUserWithTitle:@"Invalid type name."
+                         message:[NSString stringWithFormat:@"The type <%@> already exists. Please, use a different one or reuse the type <%@>", newTypeName, newTypeName]
+                      andHandler:^(UIAlertAction * action) {
+                          self.textType.text = @"";
+                      }
+         ];
+    }
+    
+    // Reload visualization
+    [self.tableTypes reloadData];
+    return;
+}
+
+
+/*!
+ @method handleButtonRemoveType:
+ @discussion This method handles the 'Remove type' button action and unregister the user type if it exits.
+ */
+- (IBAction)handleButtonRemoveType:(id)sender
+{
+    // The user tries to remove a type; the user must select it in the table, not write it
+    MDType * typeToRemove;
+    if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        typeToRemove = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
+                                                                            andCredentialsUserDic:credentialsUserDic];
+        self.textType.text = @"";
+    } else { // Type not found
+        [self alertUserWithTitle:@"Type won't be removed."
+                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCAB] Shared data could not be acessed while removing type.");
+        return;
+    }
+    
+    // Search it and remove it.
+    NSString * typeToRemoveName = [typeToRemove getName];
+    if ([sharedData fromMetamodelDataIsTypeWithName:typeToRemoveName andWithCredentialsUserDic:credentialsUserDic]) {
+        
+        // If the remove transaction is succesful it returns YES
+        if (
+            [sharedData inMetamodelDataRemoveItemWithName:typeToRemoveName andCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            self.textType.text = @"";
+        } else { // Type not found
+            [self alertUserWithTitle:@"Type won't be removed."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while removing type.");
+        }
+    } else {
+        [self alertUserWithTitle:@"Invalid type selected."
+                         message:[NSString stringWithFormat:@"The type <%@> does not exist. Please, try again", typeToRemoveName]
+                      andHandler:^(UIAlertAction * action) {
+                          
+                      }
+         ];
+    }
+    
+    // Reload visualization
+    [self.tableTypes reloadData];
+    return;
+}
+
+/*!
+ @method prepareForSegue:sender:
+ @discussion This method is called before any segue and it is used for pass other views variables.
+ */
+- (BOOL) validateUserEntries {
     
     // Validate data
     if (selectedSegmentIndex == 0) { // iBeacon mode
@@ -354,8 +659,14 @@
         if ([uuidTest evaluateWithObject:[self.textUUID text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"UUID not valid."
+                             message:@"Please, submit a valid UUID."
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelBeaconError.text = @"Error. UUID not valid. Please, submit a valid UUID.";
-            return;
+            return NO;
         }
         
         NSString * majorAndMinorRegex = @"[0-9]{1}|[0-9]{1}[0-9]{1}|[0-9]{1}[0-9]{1}[0-9]{1}|[0-9]{1}[0-9]{1}[0-9]{1}[0-9]{1}";
@@ -363,14 +674,26 @@
         if ([majorAndMinorTest evaluateWithObject:[self.textMajor text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"Major value not valid."
+                             message:@"Please, submit a valid major value."
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelBeaconError.text = @"Error. Major value not valid. Please, submit a valid major value.";
-            return;
+            return NO;
         }
         if ([majorAndMinorTest evaluateWithObject:[self.textMinor text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"Minor value not valid."
+                             message:@"Please, submit a valid minor value."
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelBeaconError.text = @"Error. Minor value not valid. Please, submit a valid minor value.";
-            return;
+            return NO;
         }
         
         NSString * floatRegex = @"^$|[+-]?([0-9]*[.])?[0-9]+";
@@ -378,23 +701,41 @@
         if ([floatTest evaluateWithObject:[self.textBeaconX text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"X value not valid."
+                             message:@"Please, use decimal dot: 0.01"
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelBeaconError.text = @"Error. X value not valid. Please, use decimal dot: 0.01";
-            return;
+            return NO;
         }
         if ([floatTest evaluateWithObject:[self.textBeaconY text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"Y value not valid."
+                             message:@"Please, use decimal dot: 0.01"
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelBeaconError.text = @"Error. Y value not valid. Please, use decimal dot: 0.01";
-            return;
+            return NO;
         }
         if ([floatTest evaluateWithObject:[self.textBeaconZ text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"X value not valid."
+                             message:@"Please, use decimal dot: 0.01"
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelBeaconError.text = @"Error. Z value not valid. Please, use decimal dot: 0.01";
-            return;
+            return NO;
         }
-        
     }
+    
     if (selectedSegmentIndex == 1) { // position mode
         
         NSString * floatRegex = @"^$|[+-]?([0-9]*[.])?[0-9]+";
@@ -402,364 +743,67 @@
         if ([floatTest evaluateWithObject:[self.textPositionX text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"X value not valid."
+                             message:@"Please, use decimal dot: 0.01"
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelPositionError.text = @"Error. X value not valid. Please, use decimal dot: 0.01";
-            return;
+            return NO;
         }
         if ([floatTest evaluateWithObject:[self.textPositionY text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"Y value not valid."
+                             message:@"Please, use decimal dot: 0.01"
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelPositionError.text = @"Error. Y value not valid. Please, use decimal dot: 0.01";
-            return;
+            return NO;
         }
         if ([floatTest evaluateWithObject:[self.textPositionZ text]]){
             //Matches
         } else {
+            [self alertUserWithTitle:@"Z value not valid."
+                             message:@"Please, use decimal dot: 0.01"
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             self.labelPositionError.text = @"Error. Z value not valid. Please, use decimal dot: 0.01";
-            return;
-        }
-        
-    }
-    
-    // Search the submitted in the dictionary
-    BOOL dicFound = NO;
-    for (NSMutableDictionary * regionDic in beaconsAndPositionsRegistered) {
-        
-        // Different behaviour if position or beacon
-        if (selectedSegmentIndex == 0) { // iBeacon mode
-            // If it is a beacon
-            if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
-                if ([[self.textUUID text] isEqualToString:regionDic[@"uuid"]]) {
-                    if ([[self.textMajor text] isEqualToString:regionDic[@"major"]]) {
-                        if ([[self.textMinor text] isEqualToString:regionDic[@"minor"]]) {
-                            
-                            // If this code is reached, the beacon is registered and its position can be set or uploaded but not registered again.
-                            dicFound = YES;
-                            
-                            // Also its entity can be modified or set
-                            if (entityChosenByUser) {
-                                
-                                // The special entity <No entity> is selected by user to remove the previous chosen entity
-                                if ([entityChosenByUser isEqualToString:@"<No entity>"]) {
-                                    regionDic[@"entity"] = nil;
-                                } else {
-                                    // search for its dictionary and set it
-                                    for (NSMutableDictionary * entityDic in entitiesRegistered) {
-                                        if ([entityChosenByUser isEqualToString:entityDic[@"name"]]) {
-                                            regionDic[@"entity"] = entityDic;
-                                        }
-                                    }
-                                }
-                            }
-                            
-                            // If the three coordinate values had been submitted
-                            if (
-                                ![[self.textBeaconX text] isEqualToString:@""] &&
-                                ![[self.textBeaconY text] isEqualToString:@""] &&
-                                ![[self.textBeaconZ text] isEqualToString:@""]
-                                )
-                            {
-                                regionDic[@"x"] = [self.textBeaconX text];
-                                regionDic[@"y"] = [self.textBeaconY text];
-                                regionDic[@"z"] = [self.textBeaconZ text];
-                                RDPosition * positionToAdd = [[RDPosition alloc] init];
-                                positionToAdd.x = [NSNumber numberWithFloat:[[self.textBeaconX text] floatValue]];
-                                positionToAdd.y = [NSNumber numberWithFloat:[[self.textBeaconY text] floatValue]];
-                                positionToAdd.z = [NSNumber numberWithFloat:[[self.textBeaconZ text] floatValue]];
-                                regionDic[@"position"] = positionToAdd;
-                            } else {
-                                
-                                // If all coordinate values missing the user tries to re-register a beacon, unless the user wanted to set its entity
-                                if (
-                                    [[self.textBeaconX text] isEqualToString:@""] &&
-                                    [[self.textBeaconY text] isEqualToString:@""] &&
-                                    [[self.textBeaconZ text] isEqualToString:@""]
-                                    )
-                                {
-                                    // This code is reached also when an entity was set or uploaded, so check it
-                                    if (!entityChosenByUser) {
-                                        self.labelPositionError.text = @"Error. This position is already registered. Please, submit a different one or push \"Back\".";
-                                        return;
-                                    }
-                                } else {
-                                    // If ths code is reached means that there is only some coordinate values but not all of them
-                                    self.labelBeaconError.text = @"Error. Some coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
-                                    return;
-                                }
-                            }
-                            
-                        }
-                    }
-                }
-            }
-        }
-        if (selectedSegmentIndex == 1) { // position mode
-            // If it is a position
-            if ([@"position" isEqualToString:regionDic[@"type"]]) {
-                
-                RDPosition * positionToFind = [[RDPosition alloc] init];
-                positionToFind.x = [NSNumber numberWithFloat:[[self.textPositionX text] floatValue]];
-                positionToFind.y = [NSNumber numberWithFloat:[[self.textPositionY text] floatValue]];
-                positionToFind.z = [NSNumber numberWithFloat:[[self.textPositionZ text] floatValue]];
-                
-                if ([positionToFind isEqual:regionDic[@"position"]]) {
-                    
-                    // If this code is reached, the position is registered and its position can be uploaded.
-                    dicFound = YES;
-                    
-                    // Also its entity can be modified or set
-                    if (entityChosenByUser) {
-                        
-                        // The special entity <No entity> is selected by user to remove the previous chosen entity
-                        if ([entityChosenByUser isEqualToString:@"<No entity>"]) {
-                            regionDic[@"entity"] = nil;
-                        } else {
-                            // search for its dictionary and set it
-                            for (NSMutableDictionary * entityDic in entitiesRegistered) {
-                                if ([entityChosenByUser isEqualToString:entityDic[@"name"]]) {
-                                    regionDic[@"entity"] = entityDic;
-                                }
-                            }
-                        }
-                    }
-                    
-                    // If the three coordinate values had been submitted
-                    if (
-                        ![[self.textPositionX text] isEqualToString:@""] &&
-                        ![[self.textPositionY text] isEqualToString:@""] &&
-                        ![[self.textPositionZ text] isEqualToString:@""]
-                        )
-                    {
-                        regionDic[@"x"] = [self.textPositionX text];
-                        regionDic[@"y"] = [self.textPositionY text];
-                        regionDic[@"z"] = [self.textPositionZ text];
-                        regionDic[@"position"] = positionToFind;
-                    } else {
-                        
-                        // If all coordinate values missing the user tries to re-register the same position, unless user wants to set its entoty
-                        if (
-                            [[self.textPositionX text] isEqualToString:@""] &&
-                            [[self.textPositionY text] isEqualToString:@""] &&
-                            [[self.textPositionZ text] isEqualToString:@""]
-                            )
-                        {
-                            // This code is reached also when an entity was set or uploaded, so check it
-                            if (!entityChosenByUser) {
-                                self.labelPositionError.text = @"Error. This position is already registered. Please, submit a different one or push \"Back\".";
-                                return;
-                            }
-                        } else {
-                            // If ths code is reached means that there is only some coordinate values but not all of them
-                            self.labelPositionError.text = @"Error. Some coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
-                            return;
-                        }
-                    }
-                    
-                }
-            }
+            return NO;
         }
     }
     
-    // But if not found in the dictionary, the user is subitting a new device or position
-    if (!dicFound) {
-        
-        NSMutableDictionary * newRegionDic = [[NSMutableDictionary alloc] init];
-        
-        if (selectedSegmentIndex == 0) { // iBeacon mode
-       
-            [newRegionDic setValue:@"beacon" forKey:@"type"];
-            [newRegionDic setValue:[self.textUUID text] forKey:@"uuid"];
-            [newRegionDic setValue:[self.textMajor text] forKey:@"major"];
-            [newRegionDic setValue:[self.textMinor text] forKey:@"minor"];
-            
-            regionBeaconIdNumber = [NSNumber numberWithInt:[regionBeaconIdNumber intValue] + 1];
-            NSString * regionId = [@"beacon" stringByAppendingString:[regionBeaconIdNumber stringValue]];
-            regionId = [regionId stringByAppendingString:@"@miso.uam.es"];
-            [newRegionDic setValue:regionId forKey:@"identifier"];
-            
-            // Its entity can be set
-            if (entityChosenByUser) {
-                
-                // The special entity <No entity> is selected by user to remove the previous chosen entity
-                if ([entityChosenByUser isEqualToString:@"<No entity>"]) {
-                    newRegionDic[@"entity"] = nil;
-                } else {
-                    // search for its dictionary and set it
-                    for (NSMutableDictionary * entityDic in entitiesRegistered) {
-                        if ([entityChosenByUser isEqualToString:entityDic[@"name"]]) {
-                            newRegionDic[@"entity"] = entityDic;
-                        }
-                    }
-                }
-            }
-            
-            // If exists the three coordinate values
-            if (
-                ![[self.textBeaconX text] isEqualToString:@""] &&
-                ![[self.textBeaconY text] isEqualToString:@""] &&
-                ![[self.textBeaconZ text] isEqualToString:@""]
-                )
-            {
-                newRegionDic[@"x"] = [self.textBeaconX text];
-                newRegionDic[@"y"] = [self.textBeaconY text];
-                newRegionDic[@"z"] = [self.textBeaconZ text];
-                RDPosition * positionToAdd = [[RDPosition alloc] init];
-                positionToAdd.x = [NSNumber numberWithFloat:[[self.textBeaconX text] floatValue]];
-                positionToAdd.y = [NSNumber numberWithFloat:[[self.textBeaconY text] floatValue]];
-                positionToAdd.z = [NSNumber numberWithFloat:[[self.textBeaconZ text] floatValue]];
-                newRegionDic[@"position"] = positionToAdd;
-            } else {
-                
-                // If all coordinate values missing, the user does not want to save the position
-                if (
-                    [[self.textBeaconX text] isEqualToString:@""] &&
-                    [[self.textBeaconY text] isEqualToString:@""] &&
-                    [[self.textBeaconZ text] isEqualToString:@""]
-                    )
-                {
-                    // Do nothing
-                } else {
-                    // If ths code is reached means that there is only some coordinate values but not all of them
-                    self.labelBeaconError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
-                    return;
-                }
-            }
-            
-        }
-        if (selectedSegmentIndex == 1) { // position mode
-            
-            [newRegionDic setValue:@"position" forKey:@"type"];
-            [newRegionDic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-            
-            regionPositionIdNumber = [NSNumber numberWithInt:[regionPositionIdNumber intValue] + 1];
-            NSString * regionId = [@"position" stringByAppendingString:[regionPositionIdNumber stringValue]];
-            regionId = [regionId stringByAppendingString:@"@miso.uam.es"];
-            [newRegionDic setValue:regionId forKey:@"identifier"];
-            
-            RDPosition * positionToSave = [[RDPosition alloc] init];
-            positionToSave.x = [NSNumber numberWithFloat:[[self.textPositionX text] floatValue]];
-            positionToSave.y = [NSNumber numberWithFloat:[[self.textPositionY text] floatValue]];
-            positionToSave.z = [NSNumber numberWithFloat:[[self.textPositionZ text] floatValue]];
-            
-            // Its entity can be set
-            if (entityChosenByUser) {
-                
-                // The special entity <No entity> is selected by user to remove the previous chosen entity
-                if ([entityChosenByUser isEqualToString:@"<No entity>"]) {
-                    newRegionDic[@"entity"] = nil;
-                } else {
-                    // search for its dictionary and set it
-                    for (NSMutableDictionary * entityDic in entitiesRegistered) {
-                        if ([entityChosenByUser isEqualToString:entityDic[@"name"]]) {
-                            newRegionDic[@"entity"] = entityDic;
-                        }
-                    }
-                }
-            }
-            
-            if (
-                ![[self.textPositionX text] isEqualToString:@""] &&
-                ![[self.textPositionY text] isEqualToString:@""] &&
-                ![[self.textPositionZ text] isEqualToString:@""]
-                )
-            {
-                newRegionDic[@"x"] = [self.textPositionX text];
-                newRegionDic[@"y"] = [self.textPositionY text];
-                newRegionDic[@"z"] = [self.textPositionZ text];
-                newRegionDic[@"position"] = positionToSave;
-            } else {
-                
-                // If all coordinate values missing the user tries to re-register the same position
-                if (
-                    [[self.textPositionX text] isEqualToString:@""] &&
-                    [[self.textPositionY text] isEqualToString:@""] &&
-                    [[self.textPositionZ text] isEqualToString:@""]
-                    )
-                {
-                    // Do nothing
-                } else {
-                    // If ths code is reached means that there is only some coordinate values but not all of them
-                    self.labelPositionError.text = @"Error. Coordinate values missing. Please, submit three (x, y, z) values or push \"Back\".";
-                    return;
-                }
-            }
-            
-        }
-        
-        [beaconsAndPositionsRegistered addObject:newRegionDic];
-    }
-
-    [self performSegueWithIdentifier:@"submitFromAddToMain" sender:sender];
+    return YES;
 }
 
 /*!
- @method handleButtonBack:
- @discussion This method handles the 'Back' button action and segue back to the main menu; 'prepareForSegue:sender:' method is called before.
+ @method alertUserWithTitle:andMessage:
+ @discussion This method alerts the user with a pop up window with a single "Ok" button given its message and title and lambda funcion handler.
  */
-- (IBAction)handleButtonBack:(id)sender {
-    [self performSegueWithIdentifier:@"backFromAddToMain" sender:sender];
-}
-
-/*!
- @method handleButtonAddEntity:
- @discussion This method handles the 'Add entity' button action and register the user entity if it does not exit.
- */
-- (IBAction)handleButtonAddEntity:(id)sender {
+- (void) alertUserWithTitle:(NSString *)title
+                    message:(NSString *)message
+                 andHandler:(void (^)(UIAlertAction *action))handler;
+{
+    UIAlertController * alertUsersNotFound = [UIAlertController
+                                              alertControllerWithTitle:title
+                                              message:message
+                                              preferredStyle:UIAlertControllerStyleAlert];
     
-    // The user tries to register the entity called
-    NSString * newEntityName = [self.textEntity text];
+    UIAlertAction * okButton = [UIAlertAction
+                                actionWithTitle:@"Ok"
+                                style:UIAlertActionStyleDefault
+                                handler:handler
+                                ];
     
-    // Search for it
-    BOOL dicFound = NO;
-    for (NSMutableDictionary * entityDic in entitiesRegistered) {
-        
-        // If it exists, return
-        if ([entityDic[@"name"] isEqualToString:newEntityName]) {
-            dicFound = YES;
-            return;
-        } else {
-            // Nothing
-        }
-    }
-    
-    // If it did not exist, create it
-    if (!dicFound) {
-        NSMutableDictionary * entityDic = [[NSMutableDictionary alloc] init];
-        [entityDic setValue:newEntityName forKey:@"name"];
-        [entitiesRegistered addObject:entityDic];
-    }
-    
-    // Reload visualization
-    [self.tableEntities reloadData];
+    [alertUsersNotFound addAction:okButton];
+    [self presentViewController:alertUsersNotFound animated:YES completion:nil];
     return;
 }
-
-
-/*!
- @method handleButtonRemoveEntity:
- @discussion This method handles the 'Remove entity' button action and unregister the user entity if it exits.
- */
-- (IBAction)handleButtonRemoveEntity:(id)sender {
-    
-    // The user tries to remove the entity called
-    NSString * removeEntityName = [self.textEntity text];
-    
-    // Search for it
-    NSMutableDictionary * entityDicFound;
-    for (NSMutableDictionary * entityDic in entitiesRegistered) {
-        // If it exists, save its reference
-        if ([entityDic[@"name"] isEqualToString:removeEntityName]) {
-            entityDicFound = entityDic;
-        }
-    }
-    if (entityDicFound) {
-        [entitiesRegistered removeObject:entityDicFound];
-    }
-    
-    // Reload visualization
-    [self.tableEntities reloadData];
-    return;
-}
-
 
 /*!
  @method prepareForSegue:sender:
@@ -772,22 +816,30 @@
         
         // Get destination view
         ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
-        // Set the variable
-        [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
-        [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
-        [viewControllerMainMenu setRegionPositionIdNumber:regionPositionIdNumber];
+        // Set the variables
+        [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerMainMenu setUserDic:userDic];
+        [viewControllerMainMenu setSharedData:sharedData];
+        [viewControllerMainMenu setMotionManager:motion];
+        [viewControllerMainMenu setLocationManager:location];
+        
+        [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
         
     }
     if ([[segue identifier] isEqualToString:@"backFromAddToMain"]) {
         
         // Get destination view
-        ViewControllerMainMenu *viewControllerMainMenu = [segue destinationViewController];
-        // Set the variable
-        [viewControllerMainMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerMainMenu setEntitiesRegistered:entitiesRegistered];
-        [viewControllerMainMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
-        [viewControllerMainMenu setRegionPositionIdNumber:regionPositionIdNumber];
+        ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
+        // Set the variables
+        [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerMainMenu setUserDic:userDic];
+        [viewControllerMainMenu setSharedData:sharedData];
+        [viewControllerMainMenu setMotionManager:motion];
+        [viewControllerMainMenu setLocationManager:location];
+        
+        [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
         
     }
 }
@@ -802,8 +854,22 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.tableEntities) {
-        return [entitiesRegistered count];
+    if (tableView == self.tableTypes) {
+        // Get the number of metamodel elements; if acess the database is imposible, warn the user.
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            return [[sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic] count];
+        } else { // Type not found
+            [self alertUserWithTitle:@"Types won't be loaded."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while loading types.");
+        }
     }
     return 0;
 }
@@ -819,26 +885,95 @@
     }
     
     // Configure individual cells
-    if (tableView == self.tableEntities) {
-        NSMutableDictionary * entityDic = [entitiesRegistered objectAtIndex:indexPath.row];
-        cell.textLabel.numberOfLines = 0; // Means any number
+    if (tableView == self.tableTypes) {
         
-        cell.textLabel.text = [NSString stringWithFormat:@"%@", entityDic[@"name"]];
-        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+        // Database could not be acessed.
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            MDType * type = [
+                             [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                             objectAtIndex:indexPath.row
+                             ];
+            cell.textLabel.numberOfLines = 0; // Means any number
+            
+            cell.textLabel.text = [NSString stringWithFormat:@"%@", [type getName]];
+            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+        } else { // Type not found
+            [self alertUserWithTitle:@"Types won't be loaded."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while loading cells' type.");
+        }
     }
         
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView
-didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     
-    if (tableView == self.tableEntities) {
+    if (tableView == self.tableTypes) {
         
-        // Get the chosen entity name
-        entityChosenByUser = [entitiesRegistered objectAtIndex:indexPath.row][@"name"];
-        self.textEntity.text = [entitiesRegistered objectAtIndex:indexPath.row][@"name"];
-        
+        // Get the chosen type name
+        // Database could not be acessed.
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            
+            MDType * typeChosenByUser = [
+                                         [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                                         objectAtIndex:indexPath.row
+                                         ];
+            
+            // If the already chosen type is the same, the user wants to deselect it; if not, could be that a type is already selected or not
+            
+            // If a type is already selected
+            MDType * typeChosenByUserStored = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
+                                                                                          andCredentialsUserDic:credentialsUserDic];
+            if (typeChosenByUserStored) { // Already one type selected
+                if ([typeChosenByUser isEqualToMDType:typeChosenByUserStored]) { // Deselect
+                    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+                    [sharedData inSessionDataSetTypeChosenByUser:nil
+                                               toUserWithUserDic:userDic
+                                           andCredentialsUserDic:credentialsUserDic];
+                } else { // Deselect the old one and select the new one
+                    
+                    NSInteger oldIndex = [
+                                          [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                                          indexOfObject:typeChosenByUserStored
+                                          ];
+                    // Deselect
+                    [tableView deselectRowAtIndexPath:[NSIndexPath indexPathForRow:oldIndex inSection:indexPath.section]
+                                             animated:NO
+                     ];
+                    // Select
+                    [sharedData inSessionDataSetTypeChosenByUser:typeChosenByUser
+                                               toUserWithUserDic:userDic
+                                           andCredentialsUserDic:credentialsUserDic];
+                    
+                }
+            } else { // No type selected; select
+                [sharedData inSessionDataSetTypeChosenByUser:typeChosenByUser
+                                           toUserWithUserDic:userDic
+                                       andCredentialsUserDic:credentialsUserDic];
+            }
+            
+        } else { // Type not found
+            [self alertUserWithTitle:@"Types won't be selected."
+                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while selecting a cells' type.");
+        }
     }
     return;
 }

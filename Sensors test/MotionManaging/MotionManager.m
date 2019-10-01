@@ -12,130 +12,203 @@
 
 /*!
  @method init
- @discussion Constructor.
+ @discussion Constructor given the shared data collection.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
 {
-self = [super init];
-if (self) {
-    // Components
-    sharedData = initSharedData;
-    
-    // Configuration variables
-    t = [NSNumber numberWithFloat:1.0/100.0];
-    gx = [NSNumber numberWithFloat:0.0];
-    gy = [NSNumber numberWithFloat:0.0];
-    gz = [NSNumber numberWithFloat:-9.7994];
-    
-    //  Signal processing configuration variables
-    self.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
-    self.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
-    self.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
-    self.acce_biasBuffer_capacity = [NSNumber numberWithInt:500];
-    self.gyro_measuresBuffer_capacity = [NSNumber numberWithInt:500];
-    self.gyro_biasBuffer_capacity = [NSNumber numberWithInt:500];
-    
-    // Signal processing variables
-    acce_mea_x = [NSNumber numberWithFloat:0.0];
-    acce_mea_y = [NSNumber numberWithFloat:0.0];
-    acce_mea_z = [NSNumber numberWithFloat:0.0];
-    
-    acce_bias_x = [NSNumber numberWithFloat:0.0];
-    acce_bias_y = [NSNumber numberWithFloat:0.0];
-    acce_bias_z = [NSNumber numberWithFloat:0.0];
-    
-    
-    // Signal processing components
-    acce_threshold_x = [[Threshold alloc] initWithThreshold:self.acce_sensitivity_threshold];
-    acce_gravityAdder_x = [[Adder alloc] init];
-    acce_measuresBuffer_x = [[Buffer alloc] initWithCapacity:self.acce_measuresBuffer_capacity];
-    acce_measuresBuffer_x.enabled = YES;
-    acce_biasBuffer_x = [[Buffer alloc] initWithCapacity:self.acce_biasBuffer_capacity];
-    acce_averager_x = [[Averager alloc] init];
-    
-    gyro_threshold_x = [[Threshold alloc] initWithThreshold:self.gyro_sensitivity_threshold];
-    gyro_measuresBuffer_x = [[Buffer alloc] initWithCapacity:self.gyro_measuresBuffer_capacity];
-    gyro_measuresBuffer_x.enabled = YES;
-    gyro_biasBuffer_x = [[Buffer alloc] initWithCapacity:self.gyro_biasBuffer_capacity];
-    gyro_averager_x = [[Averager alloc] init];
-    gyro_biasAdder_x = [[Adder alloc] init]; // This will subtract using a inversed input
-    
-    acce_threshold_y = [[Threshold alloc] initWithThreshold:self.acce_sensitivity_threshold];
-    acce_gravityAdder_y = [[Adder alloc] init];
-    acce_measuresBuffer_y = [[Buffer alloc] initWithCapacity:self.acce_measuresBuffer_capacity];
-    acce_measuresBuffer_y.enabled = YES;
-    acce_biasBuffer_y = [[Buffer alloc] initWithCapacity:self.acce_biasBuffer_capacity];
-    acce_averager_y = [[Averager alloc] init];
-    
-    gyro_threshold_y = [[Threshold alloc] initWithThreshold:self.gyro_sensitivity_threshold];
-    gyro_measuresBuffer_y = [[Buffer alloc] initWithCapacity:self.gyro_measuresBuffer_capacity];
-    gyro_measuresBuffer_y.enabled = YES;
-    gyro_biasBuffer_y = [[Buffer alloc] initWithCapacity:self.gyro_biasBuffer_capacity];
-    gyro_averager_y = [[Averager alloc] init];
-    gyro_biasAdder_y = [[Adder alloc] init]; // This will subtract using a inversed input
-    
-    acce_threshold_z = [[Threshold alloc] initWithThreshold:self.acce_sensitivity_threshold];
-    acce_gravityAdder_z = [[Adder alloc] init];
-    acce_measuresBuffer_z = [[Buffer alloc] initWithCapacity:self.acce_measuresBuffer_capacity];
-    acce_measuresBuffer_z.enabled = YES;
-    acce_biasBuffer_z = [[Buffer alloc] initWithCapacity:self.acce_biasBuffer_capacity];
-    acce_averager_z = [[Averager alloc] init];
-    
-    gyro_threshold_z = [[Threshold alloc] initWithThreshold:self.gyro_sensitivity_threshold];
-    gyro_measuresBuffer_z = [[Buffer alloc] initWithCapacity:self.gyro_measuresBuffer_capacity];
-    gyro_measuresBuffer_z.enabled = YES;
-    gyro_biasBuffer_z = [[Buffer alloc] initWithCapacity:self.gyro_biasBuffer_capacity];
-    gyro_averager_z = [[Averager alloc] init];
-    gyro_biasAdder_z = [[Adder alloc] init]; // This will subtract using a inversed input
-    
-    // Kinematic variables
-    pos_x = [NSNumber numberWithFloat:0.0];
-    pos_y = [NSNumber numberWithFloat:0.0];
-    pos_z = [NSNumber numberWithFloat:0.0];
-    
-    vel_x = [NSNumber numberWithFloat:0.0];
-    vel_y = [NSNumber numberWithFloat:0.0];
-    vel_z = [NSNumber numberWithFloat:0.0];
-    
-    Rnb_11 = [NSNumber numberWithFloat:1.0];
-    Rnb_12 = [NSNumber numberWithFloat:0.0];
-    Rnb_13 = [NSNumber numberWithFloat:0.0];
-    
-    Rnb_21 = [NSNumber numberWithFloat:0.0];
-    Rnb_22 = [NSNumber numberWithFloat:1.0];
-    Rnb_23 = [NSNumber numberWithFloat:0.0];
-    
-    Rnb_31 = [NSNumber numberWithFloat:0.0];
-    Rnb_32 = [NSNumber numberWithFloat:0.0];
-    Rnb_33 = [NSNumber numberWithFloat:1.0];
-    
-    attitude_x = [NSNumber numberWithFloat:0.0]; // Pitch
-    attitude_y = [NSNumber numberWithFloat:0.0]; // Roll
-    attitude_z = [NSNumber numberWithFloat:0.0]; // Yaw
-    
-    // Orchestration variables
-    traveling = NO;
-    calibrated = NO;
-    position = [[RDPosition alloc] init];
-    
-    // This object must listen to this events
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(startTraveling:)
-                                                 name:@"startTraveling"
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(stopTraveling:)
-                                                 name:@"stopTraveling"
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(startTravelingFrom:)
-                                                 name:@"getPositionRespond"
-                                               object:nil];
-    
-    
-    NSLog(@"[INFO][MM] MotionManager prepared");
-    }
+    self = [super init];
+    if (self) {
+        // Components
+        sharedData = initSharedData;
+        
+        // Configuration variables
+        t = [NSNumber numberWithFloat:1.0/100.0];
+        gx = [NSNumber numberWithFloat:0.0];
+        gy = [NSNumber numberWithFloat:0.0];
+        gz = [NSNumber numberWithFloat:-9.7994];
+        
+        //  Signal processing configuration variables
+        self.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
+        self.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
+        self.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
+        self.acce_biasBuffer_capacity = [NSNumber numberWithInt:500];
+        self.gyro_measuresBuffer_capacity = [NSNumber numberWithInt:500];
+        self.gyro_biasBuffer_capacity = [NSNumber numberWithInt:500];
+        
+        // Signal processing variables
+        acce_mea_x = [NSNumber numberWithFloat:0.0];
+        acce_mea_y = [NSNumber numberWithFloat:0.0];
+        acce_mea_z = [NSNumber numberWithFloat:0.0];
+        
+        acce_bias_x = [NSNumber numberWithFloat:0.0];
+        acce_bias_y = [NSNumber numberWithFloat:0.0];
+        acce_bias_z = [NSNumber numberWithFloat:0.0];
+        
+        
+        // Signal processing components
+        acce_threshold_x = [[Threshold alloc] initWithThreshold:self.acce_sensitivity_threshold];
+        acce_gravityAdder_x = [[Adder alloc] init];
+        acce_measuresBuffer_x = [[Buffer alloc] initWithCapacity:self.acce_measuresBuffer_capacity];
+        acce_measuresBuffer_x.enabled = YES;
+        acce_biasBuffer_x = [[Buffer alloc] initWithCapacity:self.acce_biasBuffer_capacity];
+        acce_averager_x = [[Averager alloc] init];
+        
+        gyro_threshold_x = [[Threshold alloc] initWithThreshold:self.gyro_sensitivity_threshold];
+        gyro_measuresBuffer_x = [[Buffer alloc] initWithCapacity:self.gyro_measuresBuffer_capacity];
+        gyro_measuresBuffer_x.enabled = YES;
+        gyro_biasBuffer_x = [[Buffer alloc] initWithCapacity:self.gyro_biasBuffer_capacity];
+        gyro_averager_x = [[Averager alloc] init];
+        gyro_biasAdder_x = [[Adder alloc] init]; // This will subtract using a inversed input
+        
+        acce_threshold_y = [[Threshold alloc] initWithThreshold:self.acce_sensitivity_threshold];
+        acce_gravityAdder_y = [[Adder alloc] init];
+        acce_measuresBuffer_y = [[Buffer alloc] initWithCapacity:self.acce_measuresBuffer_capacity];
+        acce_measuresBuffer_y.enabled = YES;
+        acce_biasBuffer_y = [[Buffer alloc] initWithCapacity:self.acce_biasBuffer_capacity];
+        acce_averager_y = [[Averager alloc] init];
+        
+        gyro_threshold_y = [[Threshold alloc] initWithThreshold:self.gyro_sensitivity_threshold];
+        gyro_measuresBuffer_y = [[Buffer alloc] initWithCapacity:self.gyro_measuresBuffer_capacity];
+        gyro_measuresBuffer_y.enabled = YES;
+        gyro_biasBuffer_y = [[Buffer alloc] initWithCapacity:self.gyro_biasBuffer_capacity];
+        gyro_averager_y = [[Averager alloc] init];
+        gyro_biasAdder_y = [[Adder alloc] init]; // This will subtract using a inversed input
+        
+        acce_threshold_z = [[Threshold alloc] initWithThreshold:self.acce_sensitivity_threshold];
+        acce_gravityAdder_z = [[Adder alloc] init];
+        acce_measuresBuffer_z = [[Buffer alloc] initWithCapacity:self.acce_measuresBuffer_capacity];
+        acce_measuresBuffer_z.enabled = YES;
+        acce_biasBuffer_z = [[Buffer alloc] initWithCapacity:self.acce_biasBuffer_capacity];
+        acce_averager_z = [[Averager alloc] init];
+        
+        gyro_threshold_z = [[Threshold alloc] initWithThreshold:self.gyro_sensitivity_threshold];
+        gyro_measuresBuffer_z = [[Buffer alloc] initWithCapacity:self.gyro_measuresBuffer_capacity];
+        gyro_measuresBuffer_z.enabled = YES;
+        gyro_biasBuffer_z = [[Buffer alloc] initWithCapacity:self.gyro_biasBuffer_capacity];
+        gyro_averager_z = [[Averager alloc] init];
+        gyro_biasAdder_z = [[Adder alloc] init]; // This will subtract using a inversed input
+        
+        // Kinematic variables
+        pos_x = [NSNumber numberWithFloat:0.0];
+        pos_y = [NSNumber numberWithFloat:0.0];
+        pos_z = [NSNumber numberWithFloat:0.0];
+        
+        vel_x = [NSNumber numberWithFloat:0.0];
+        vel_y = [NSNumber numberWithFloat:0.0];
+        vel_z = [NSNumber numberWithFloat:0.0];
+        
+        Rnb_11 = [NSNumber numberWithFloat:1.0];
+        Rnb_12 = [NSNumber numberWithFloat:0.0];
+        Rnb_13 = [NSNumber numberWithFloat:0.0];
+        
+        Rnb_21 = [NSNumber numberWithFloat:0.0];
+        Rnb_22 = [NSNumber numberWithFloat:1.0];
+        Rnb_23 = [NSNumber numberWithFloat:0.0];
+        
+        Rnb_31 = [NSNumber numberWithFloat:0.0];
+        Rnb_32 = [NSNumber numberWithFloat:0.0];
+        Rnb_33 = [NSNumber numberWithFloat:1.0];
+        
+        attitude_x = [NSNumber numberWithFloat:0.0]; // Pitch
+        attitude_y = [NSNumber numberWithFloat:0.0]; // Roll
+        attitude_z = [NSNumber numberWithFloat:0.0]; // Yaw
+        
+        // Orchestration variables
+        traveling = NO;
+        calibrated = NO;
+        position = [[RDPosition alloc] init];
+        
+        // This object must listen to this events
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(startTraveling:)
+                                                     name:@"startTraveling"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(stopTraveling:)
+                                                     name:@"stopTraveling"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(startTravelingFrom:)
+                                                     name:@"getPositionRespond"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(startAccelerometers)
+                                                     name:@"startAccelerometers"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(stopAccelerometers)
+                                                     name:@"stopAccelerometers"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(startGyroscopes)
+                                                     name:@"startGyroscopes"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(stopGyroscopes)
+                                                     name:@"stopGyroscopes"
+                                                   object:nil];
+        
+        NSLog(@"[INFO][MM] MotionManager prepared");
+        }
     return self;
+}
+
+/*!
+ @method initWithSharedData:userDic:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved and the credentials of the user for access it.
+ */
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
+                           userDic:(NSMutableDictionary *)initUserDic
+             andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
+{
+    credentialsUserDic = initCredentialsUserDic;
+    userDic = initUserDic;
+    self = [self initWithSharedData:initSharedData];
+    return self;
+}
+
+#pragma mark - Instance methods
+/*!
+ @method setCredentialUserDic:
+ @discussion This method sets the dictionary with the user's credentials for acess the collections in shared data database.
+ */
+- (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic
+{
+    credentialsUserDic = givenCredentialsUserDic;
+    return;
+}
+
+/*!
+ @method setUserDic:
+ @discussion This method sets the dictionary of the user in whose name the measures are saved.
+ */
+- (void)setUserDic:(NSMutableDictionary *)givenUserDic
+{
+    userDic = givenUserDic;
+    return;
+}
+
+/*!
+ @method getPosition
+ @discussion This method gets the device's position.
+ */
+- (RDPosition *) getPosition {
+    RDPosition * newPosition = [[RDPosition alloc] init];
+    newPosition.x = [NSNumber numberWithFloat:[position.x floatValue]];
+    newPosition.y = [NSNumber numberWithFloat:[position.y floatValue]];
+    newPosition.z = [NSNumber numberWithFloat:[position.z floatValue]];
+    return newPosition;
+}
+
+/*!
+ @method setPosition:
+ @discussion This method sets the device's position.
+ */
+- (void) setPosition:(RDPosition *)givenPosition{
+    position = [[RDPosition alloc] init];
+    position.x = [NSNumber numberWithFloat:[givenPosition.x floatValue]];
+    position.y = [NSNumber numberWithFloat:[givenPosition.y floatValue]];
+    position.z = [NSNumber numberWithFloat:[givenPosition.z floatValue]];
 }
 
 #pragma mark - Location manager methods
@@ -171,7 +244,7 @@ if (self) {
 
 /*!
  @method stopAccelerometers
- @discussion This method manages how the accelerometer status acquisition stops and its error's control.
+ @discussion This method manages how the accelerometer status acquisition stops.
  */
 - (void) stopAccelerometers {
     [self.tr invalidate];
@@ -211,7 +284,7 @@ if (self) {
 
 /*!
  @method stopGyroscopes
- @discussion This method manages how the gyroscope status acquisition stops and its error's control.
+ @discussion This method manages how the gyroscope status acquisition stops.
  */
 - (void) stopGyroscopes {
     [self.tr invalidate];
@@ -698,11 +771,11 @@ if (self) {
  */
 - (void) startTraveling:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"startTraveling"]){
-        NSLog(@"[NOTI][LM] Notfication \"startTraveling\" recived.");
+        NSLog(@"[NOTI][MM] Notfication \"startTraveling\" recived.");
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"getPosition"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRRM] Notification \"getPosition\" posted.");
+        NSLog(@"[NOTI][MM] Notification \"getPosition\" posted.");
     }
 }
 /*!
@@ -711,7 +784,7 @@ if (self) {
  */
 - (void) stopTraveling:(NSNotification *) notification  {
     if ([[notification name] isEqualToString:@"stopTraveling"]){
-        NSLog(@"[NOTI][LM] Notfication \"stopTraveling\" recived.");
+        NSLog(@"[NOTI][MM] Notfication \"stopTraveling\" recived.");
         traveling = NO;
         
         NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
@@ -725,7 +798,7 @@ if (self) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"setPosition"
                                                             object:nil
                                                           userInfo:data];
-        NSLog(@"[NOTI][VCRRM] Notification \"setPosition\" posted.");
+        NSLog(@"[NOTI][MM] Notification \"setPosition\" posted.");
     }
 }
 
@@ -735,7 +808,7 @@ if (self) {
  */
 - (void) startTravelingFrom:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"getPositionRespond"]){
-        NSLog(@"[NOTI][LM] Notfication \"getPositionRespond\" recived.");
+        NSLog(@"[NOTI][MM] Notfication \"getPositionRespond\" recived.");
         
         NSDictionary * data = notification.userInfo;
         RDPosition * initialPosition = data[@"currentPosition"];

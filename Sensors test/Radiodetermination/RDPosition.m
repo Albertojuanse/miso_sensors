@@ -29,8 +29,8 @@
  @method euclideanDistance1Dfrom:to:
  @discussion This method perfoms the calculus of the abssolute value of two NSNumbers.
  */
-+ (NSNumber*) euclideanDistance1Dfrom:(NSNumber*)value1
-                                   to:(NSNumber*)value2
++ (NSNumber *) euclideanDistance1Dfrom:(NSNumber *)value1
+                                   to:(NSNumber *)value2
 {
     NSNumber * res = [NSNumber numberWithFloat:powf(powf([value2 floatValue] - [value1  floatValue], 2) , 0.5)];
     return res;
@@ -40,7 +40,7 @@
  @method euclideanDistance2Dto:
  @discussion This method perfoms the calculus of euclidean distance between this point and another 2D point.
  */
-- (NSNumber*) euclideanDistance2Dto:(RDPosition*)other
+- (NSNumber *) euclideanDistance2Dto:(RDPosition *)other
 {
     NSNumber * res = [NSNumber numberWithFloat:powf(
                                                     powf([other.x floatValue] - [self.x floatValue], 2) +
@@ -55,7 +55,7 @@
  @method euclideanDistance3Dto:
  @discussion This method perfoms the calculus of euclidean distance between this point and another  3D points.
  */
-- (NSNumber*) euclideanDistance3Dto:(RDPosition*)other
+- (NSNumber *) euclideanDistance3Dto:(RDPosition *)other
 {
     NSNumber * res = [NSNumber numberWithFloat:powf(
                                                     powf([other.x floatValue] - [self.x floatValue], 2) +
