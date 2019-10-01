@@ -21,6 +21,10 @@
  */
 @interface MotionManager : CMMotionManager {
     
+    // Session and user context
+    NSMutableDictionary * credentialsUserDic;
+    NSMutableDictionary * userDic;
+    
     // Components
     SharedData * sharedData;
     
@@ -129,7 +133,12 @@
 @property NSNumber * gyro_biasBuffer_capacity;
 
 // Methods
-- (instancetype) initWithSharedData:(SharedData *)initSharedData;
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
+                           userDic:(NSMutableDictionary *)initUserDic
+             andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
+- (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
+- (void)setUserDic:(NSMutableDictionary *)givenUserDic;
+- (void)setPosition:(RDPosition *)givenPosition;
 - (void) startAccelerometers;
 - (void) stopAccelerometers;
 - (void) startGyroscopes;

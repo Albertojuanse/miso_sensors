@@ -17,15 +17,21 @@
  */
 @interface ViewControllerAddBeaconMenu : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
-    NSMutableArray * beaconsAndPositionsRegistered;
-    NSMutableArray * entitiesRegistered;
-    NSNumber * regionBeaconIdNumber;
-    NSNumber * regionPositionIdNumber;
+    // Other components
+    SharedData * sharedData;
+    MotionManager * motion;
+    LocationManagerDelegate * location;
+    
+    // Session and user context
+    // The first credentials dictionary is for security issues and its proprietary is the one who logs-in in the device; the second one is used for identifying purposes; in multiuser context, the first one is used in the device for accessing data, etc. while the second one is shared to the rest of users when a measure is taken or something is changed to indicate who did it.
+    NSMutableDictionary * credentialsUserDic;
+    NSMutableDictionary * userDic;
+    
+    // Beacons' region identifiers
+    NSNumber * itemBeaconIdNumber;
+    NSNumber * itemPositionIdNumber;
     
     // User selection in main manu
-    RDPosition * positionChosenByUser;
-    NSString * uuidChosenByUser;
-    NSString * entityChosenByUser;
     NSInteger selectedSegmentIndex;
     
 }
@@ -64,16 +70,18 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonPositionBack;
 @property (weak, nonatomic) IBOutlet UIButton *buttonPositionAdd;
 
-@property (weak, nonatomic) IBOutlet UITextField *textEntity;
-@property (weak, nonatomic) IBOutlet UITableView *tableEntities;
+@property (weak, nonatomic) IBOutlet UITextField *textType;
+@property (weak, nonatomic) IBOutlet UITableView *tableTypes;
 
 
-- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
-- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;
-- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;
-- (void) setRegionPositionIdNumber:(NSNumber *)newRegionIdNumber;
-- (void) setUuidChosenByUser:(NSString *)uuidChosenByUser;
-- (void) setPositionChosenByUser:(RDPosition *)newPositionChosenByUser;
+- (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
+- (void) setUserDic:(NSMutableDictionary *)givenUserDic;
+- (void) setSharedData:(SharedData *)givenSharedData;
+- (void) setMotionManager:(MotionManager *)givenMotion;
+- (void) setLocationManager:(LocationManagerDelegate *)givenLocation;
+
+- (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
+- (void) setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 
 @end
 

@@ -27,7 +27,8 @@
  @method initWithFrame:
  @discussion Constructor with a given specific frame in which be embedded.
  */
--(instancetype)initWithFrame:(CGRect)frame{
+-(instancetype)initWithFrame:(CGRect)frame
+{
     self = [super initWithFrame:frame];
     if (self) {
         
@@ -38,28 +39,70 @@
 #pragma mark - Instance methods
 
 /*!
- @method prepareCanvasWithMode:
+ @method setCredentialsUserDic:
+ @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
+ */
+- (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic
+{
+    credentialsUserDic = givenCredentialsUserDic;
+}
+
+/*!
+ @method setUserDic:
+ @discussion This method sets the NSMutableDictionary with the identifying purposes user credentials.
+ */
+- (void) setUserDic:(NSMutableDictionary *)givenUserDic
+{
+    userDic = givenUserDic;
+}
+
+/*!
+ @method prepareCanvasWithSharedData:userDic:andCredentialsUserDic:
  @discussion This method initializes some properties of the canvas; is called when the main view is loaded by its controller.
  */
--(void)prepareCanvasWithMode:(NSString *) setMode{
-    // Initialize variables
-    mode = setMode;
-    self.measuresDic = [[NSMutableDictionary alloc] init];
+- (void)prepareCanvasWithSharedData:(SharedData *)givenSharedData
+                            userDic:(NSMutableDictionary *)givenUserDic
+              andCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic
+{
+    // Initialize components and variables
+    sharedData = givenSharedData;
+    credentialsUserDic = givenCredentialsUserDic;
+    userDic = givenUserDic;
+    credentialsUserDic = givenCredentialsUserDic;
     rHeight = 1.0;
     rWidth = 1.0;
     barycenter = [[RDPosition alloc] init];
     barycenter.x = [NSNumber numberWithFloat:0.0];
     barycenter.y = [NSNumber numberWithFloat:0.0];
     barycenter.z = [NSNumber numberWithFloat:0.0];
-    mode = nil; // If it is not initialized, the information won't be displayed until initialized
     
     // Canvas configurations
     [self setUserInteractionEnabled:NO];
     self.backgroundColor = [UIColor colorWithRed:218/255.0 green:224/255.0 blue:235/255.0 alpha:0.6];
     
+    // This object must listen to this events
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshCanvas:)
+                                                 name:@"refreshCanvas"
+                                               object:nil];
+    
     // Center point
     [self displayCenter];
 
+    [self setNeedsDisplay];
+}
+
+#pragma mark - Notifications events handlers
+/*!
+ @method refreshCanvas:
+ @discussion This method gets the beacons that must be represented in canvas and ask it to upload; this method is called when someone submits the 'refreshCanvas' notification.
+ */
+- (void) refreshCanvas:(NSNotification *) notification
+{
+    if ([[notification name] isEqualToString:@"refreshCanvas"]){
+        NSLog(@"[NOTI][VC] Notification \"refreshCanvas\" recived");
+        // TO DO. Logic. Alberto J. 2019/09/13.
+    }
     [self setNeedsDisplay];
 }
 
@@ -69,7 +112,8 @@
  @method testCanvas
  @discussion This method displays a pattern of 8 points in canvas to test its adjustment.
  */
-- (void)testCanvas {
+- (void)testCanvas
+{
     NSMutableArray * realPoints = [[NSMutableArray alloc] init];
 
     RDPosition * point1 = [[RDPosition alloc] init];
@@ -138,12 +182,12 @@
 - (void)drawRect:(CGRect)rect {
     
     // Remove the old layers
-    [self removeLayers];
+    // [self removeLayers];
     
     // Display the center point
     [self displayCenter];
     
-    // Inspect dictionary from location manager for data retrieving
+    // Inspect shared data for data retrieving
     [self inspectDataDicsAndDrawTheInfoInRect:rect];
     
     [self setNeedsDisplay];
@@ -192,77 +236,260 @@
 
 /*!
  @method inspectDataDicsAndDrawTheInfoInRect:
- @discussion This method inspects dictionaries from location manager for data retrieving and ask to display the information.
+ @discussion This method inspects collections in shared data for retrieving and ask to display the information.
  */
 - (void) inspectDataDicsAndDrawTheInfoInRect:(CGRect)rect {
     
-    // Inspect dictionary from location manager for data retrieving
+    //                // USER DATA //
     //
-    // { "measurePosition1":                              //  self.measuresDic
-    //     { "measurePosition": measurePosition;          //  positionDic
-    //       "positionMeasures":
-    //         { "measureUuid1":                          //  uuidDicDic
-    //             { "uuid": uuid1;                       //  uuidDic
-    //               "uuidMeasures":
-    //                 { "measure1":                      //  measureDicDic
-    //                     { "type": "rssi"/"heading";    //  measureDic
-    //                       "measure": rssi/heading
-    //                     };
-    //                   "measure2":  { (···) }
-    //                 }
-    //             };
-    //           "measureUuid2": { (···) }
-    //         }
-    //     };
-    //   "measurePosition2": { (···) }
-    // }
+    // The schema of the userData collection is:
     //
-    
-    // Declare the inner dictionaries.
-    NSMutableDictionary * measureDic;
-    NSMutableDictionary * measureDicDic;
-    NSMutableDictionary * uuidDic;
-    NSMutableDictionary * uuidDicDic;
-    NSMutableDictionary * positionDic;
+    //  [{ "name": (NSString *)name1;                  // userDic
+    //     "pass": (NSString *)pass1;
+    //     "role": (NSString *)role1;
+    //   },
+    //   { "name": (NSString *)name2;                  // userDic
+    //     (···)
+    //   },
+    //   (···)
+    //  ]
+    //
+    //              // SESSION DATA //
+    //
+    // The schema of the sessionData collection is:
+    //
+    //  [{ "user": { "name": (NSString *)name1;                  // sessionDic; userDic
+    //               "pass": (NSString *)pass1;
+    //               "role": (NSString *)role1;
+    //             }
+    //     "mode": (NSString *)mode1;
+    //     "state": (NSString *)state1;
+    //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
+    //     "itemsChosenByUser": (NSMutableArray *)items1;
+    //     "typeChosenByUser": (MDType *)type1
+    //   },
+    //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
+    //     (···)
+    //   },
+    //   (···)
+    //  ]
+    //
+    //             // ITEMS DATA //
+    //
+    // The schema of the itemsData collection is:
+    //
+    //  [{ "sort": @"beacon" | @"position";                      //  itemDic
+    //     "identifier": (NSString *)identifier1;
+    //
+    //     "uuid": (NSString *)uuid1;
+    //
+    //     "major": (NSString *)major1;
+    //     "minor": (NSString *)minor1;
+    //
+    //     "position": (RDPosition *)position1;
+    //
+    //     "located": @"YES" | @"NO";
+    //
+    //     "type": (MDType *)type1
+    //   },
+    //   { "sort": @"beacon" | @"position";
+    //     "identifier": (NSString *)identifier2;
+    //     (···)
+    //   },
+    //   (···)
+    //  ]
+    //
+    //            // MEASURES DATA //
+    //
+    //  [{ "user": { "name": (NSString *)name1;                  // measureDic; userDic
+    //               "pass": (NSString *)pass1;
+    //               "role": (NSString *)role1;
+    //             }
+    //     "position": (RDPosition *)position1;
+    //     "itemUUID": (NSString *)itemUUID1;
+    //     "deviceUUID": (NSString *)deviceUUID1;
+    //     "sort" : (NSString *)type1;
+    //     "measure": (NSNumber *)measure1
+    //   },
+    //   { "user": { "name": (NSString *)name2;                  // measureDic; userDic
+    //               "pass": (NSString *)pass2;
+    //               "role": (NSString *)role2;
+    //             }
+    //     "position": (RDPosition *)position2;
+    //     (···)
+    //   },
+    //   (···)
+    //  ]
+    //
+    //            // METAMODEL DATA //
+    //
+    // The schema of typesData collection is
+    //
+    //  [ (MDType *)type1,
+    //    (···)
+    //  ]
+    //
+    //              // MODEL DATA //
+    //
+    // The schema of modelData collection is is
+    //
+    //  [{ "name": name1;                                        //  modelDic
+    //     "components": [
+    //         { "position": (RDPosition *)position1;            //  componentDic
+    //           "type": (MDType *)type1;
+    //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
+    //           "references": [
+    //               { "position": (RDPosition *)positionA;      //  componentDic
+    //                 "type": (MDType *)typeA;
+    //                 "sourceItem": (NSMutableDictionary *)itemDicA;
+    //               },
+    //           ];
+    //         { "position": (RDPosition *)positionB;
+    //           (···)
+    //         },
+    //         (···)
+    //     ];
+    //   },
+    //   { "name": name2;                                        //  modelDic
+    //     (···)
+    //   },
+    //  ]
+    //
     
     // The positions must be scaled before its displaying
-    // Get the measures positions and the located positions
+    // Get measured, chosen items' and locations' positions and merge them into a single array
+    NSMutableArray * itemsPositions = [sharedData fromSessionDataGetPositionsOfItemsChosenByUserDic:credentialsUserDic
+                                                                            withCredentialsUserName:credentialsUserDic];
+    NSMutableArray * locatedPositions = [sharedData fromItemDataGetPositionsOfLocatedItemsByUser:userDic
+                                                                andCredentialsUserDic:credentialsUserDic];
+    NSMutableArray * measurePositions = [sharedData fromMeasuresDataGetPositionsWithCredentialsUserDic:credentialsUserDic];
     NSMutableArray * realPositions = [[NSMutableArray alloc] init];
-    NSArray * positionKeys = [self.measuresDic allKeys];
-    for (id positionKey in positionKeys) {
-        // ...get the dictionary for this position...
-        positionDic = [self.measuresDic objectForKey:positionKey];
-        // ...and the position.
-        RDPosition * dicPosition = positionDic[@"measurePosition"];
-        RDPosition * position = [[RDPosition alloc] init];
-        position.x = dicPosition.x;
-        position.y = dicPosition.y;
-        position.z = dicPosition.z;
-        NSLog(@"[INFO][CA] Added real position %@", position);
+    for (RDPosition * position in itemsPositions) {
         [realPositions addObject:position];
+        NSLog(@"[INFO][CA] Got real item position %@", position);
     }
-    NSArray * locatedKeys = [self.locatedDic allKeys];
-    for (id locatedKey in locatedKeys) {
-        // ...get the dictionary for this position...
-        positionDic = [self.locatedDic objectForKey:locatedKey];
-        // ...and the position.
-        RDPosition * dicPosition = positionDic[@"locatedPosition"];
-        RDPosition * position = [[RDPosition alloc] init];
-        position.x = dicPosition.x;
-        position.y = dicPosition.y;
-        position.z = dicPosition.z;
-        NSLog(@"[INFO][CA] Added real position %@", position);
+    for (RDPosition * position in locatedPositions) {
         [realPositions addObject:position];
+        NSLog(@"[INFO][CA] Got real located position %@", position);
+    }
+    for (RDPosition * position in measurePositions) {
+        [realPositions addObject:position];
+        NSLog(@"[INFO][CA] Got real measure position %@", position);
     }
     
     // Transform the real positions to an apropiate canvas ones, with the barycenter of the set of points in the center of the canvas
     // This method also sets the ratios in the class variables 'rWidth' and 'rHeight'; then, they will be used for transform every single point
+    // TO DO: make the SafeAreaRatio configurable (zoom). Alberto J. 2019/09/16.
     [self calculateRatiosOfTransformationFromRealPointsToCanvasPoints:realPositions
                                                     withSafeAreaRatio:[NSNumber numberWithFloat:0.35]];
+    NSLog(@"[INFO][CA] Calculated trasformation ratio rWith: %.2f", rWidth);
+    NSLog(@"[INFO][CA] Calculated trasformation ratio rHeight: %.2f", rHeight);
     
     // Now, inspect the dictionary and get the information to display
     
-    // For every (canvas) position where measures were taken
+    
+    // Registro de lo que se representa
+    
+    // Representar las posiciones de los chosen items
+        // Representar los tipos de los items
+        // Representar los UUID de los items
+    
+    // Representar las posiciones localizadas
+        // ¿Ya esta representada?
+            // Si sí, completar
+            // Si no
+                // Representar los tipos de las posiciones
+                // Representar los UUID de las posiciones
+    
+    // Representar las posiciones de medida
+        // ¿Ya esta representada?
+            // Si sí, completar
+            // Si no
+                // Representar los UUID de las medidas
+    
+    // Hay que representar por tanto
+        // Posiciones
+        // Tipos centrados en ellas
+        // UUID en interfaz
+        // UUID centrados en ellas
+        // Medidas centrados en ellas
+    
+    // Show the chosen items by the user; the items used for locations like positions or beacons if known.
+    // For every item position...
+    for (RDPosition * realItemPosition in itemsPositions) {
+        
+        // ...get the transformed position...
+        RDPosition * canvasItemPosition = [self transformSingleRealPointToCanvasPoint:realItemPosition];
+        NSLog(@"[INFO][CA] Drawing canvas item position %@", canvasItemPosition);
+        
+        // ...,its type and UUID, ...
+        NSMutableArray * itemsInRealItemPosition = [sharedData fromItemDataGetItemsWithPosition:realItemPosition
+                                                                          andCredentialsUserDic:credentialsUserDic];
+        MDType * itemType;
+        NSString * itemUUID;
+        if (itemsInRealItemPosition) {
+            if (itemsInRealItemPosition.count != 0) {
+                if (!(itemsInRealItemPosition.count > 1)) {
+                    NSMutableDictionary * itemDicSelected = [itemsInRealItemPosition objectAtIndex:0];
+                    itemType = itemDicSelected[@"type"];
+                    itemUUID = itemDicSelected[@"uuid"];
+                } else {  // More than one items found
+                    NSLog(@"[ERROR][CA] Too items types found when getting types for some item's position; using first one.");
+                    // TO DO: Manage this. Alberto J. 2019/10/1.
+                }
+            } else {  // Items not found
+                NSLog(@"[ERROR][CA] No items found when getting types for some item's position; empty array returned.");
+            }
+        } else {  // Acess could not be granted or items not found
+            NSLog(@"[ERROR][CA] No items found when getting types for some item's position; null returned.");
+        }
+        
+        // ...and draw it.
+        if (itemUUID) {  // Items UUID are always required
+            if (!itemType) {
+                [self drawPosition:realItemPosition
+                  inCanvasPosition:canvasItemPosition
+                           andUUID:itemUUID];
+            } else {
+                [self drawPosition:realItemPosition
+                  inCanvasPosition:canvasItemPosition
+                              UUID:itemUUID
+                       andWithType:itemType];
+            }
+        } else {
+            NSLog(@"[ERROR][CA] No UUID found in item while its showing.");
+        }
+        
+    }
+    
+    // For every (canvas) position where measures were taken...
+    for (RDPosition * realMeasurePosition in measurePositions) {
+        
+        // ...get the transformed position...
+        RDPosition * canvasMeasurePosition = [self transformSingleRealPointToCanvasPoint:realMeasurePosition];
+        NSLog(@"[INFO][CA] Drawing canvas mesure position %@", canvasMeasurePosition);
+        // ...and draw it.
+        // [self drawPosition:realMeasurePosition inCanvasPosition:canvasMeasurePosition];
+        VCPosition * positionView = [[VCPosition alloc] initWithFrame:
+                                     CGRectMake([canvasMeasurePosition.x floatValue],
+                                                [canvasMeasurePosition.y floatValue],
+                                                3.0,
+                                                3.0)];
+        [self addSubview:positionView];
+        
+        
+        
+        //NSLog(@"[INFO][CA] Real position to show: %@", realMeasurePosition);
+        //NSLog(@"[INFO][CA] Canvas position to show: %@",  canvasMeasurePosition);
+        //NSLog(@"[INFO][CA] rWith: %.2f", rWidth);
+        //NSLog(@"[INFO][CA] rHeight: %.2f", rHeight);
+        
+        // Get the collection of UUID measured from that position...
+        // NSMutableArray * measuredUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic withCredentialsUserDic:credentialsUserDic];
+        
+    }
+    
+    /*
     for (id positionKey in positionKeys) {
         // ...get the dictionary for this position...
         positionDic = [self.measuresDic objectForKey:positionKey];
@@ -307,7 +534,7 @@
                 measureDic = [measureDicDic objectForKey:measureKey];
                 // ...and the measure.
                 NSNumber * measure = [NSNumber numberWithFloat:[measureDic[@"measure"] floatValue]];
-                NSString * type = measureDic[@"type"];
+                NSString * type = measureDic[@"sort"];
                 
                 // Draw the measure
                 [self drawMeasure:measure
@@ -325,10 +552,100 @@
             UUIDindex++;
         }
     }
+     */
 }
 
-- (void) drawLocatedPositionIfItSharesUUIDWith:(NSString*)uuid
-                                     withColor:(UIColor*)color
+/*!
+ @method drawPosition:inCanvasPosition:andUUID
+ @discussion This method displays a position in space 'realPosition' using its coordinates in the canvas, 'canvasPosition', given its UUID.
+ */
+- (void) drawPosition:(RDPosition *)realPosition
+     inCanvasPosition:(RDPosition *)canvasPosition
+              andUUID:(NSString *)uuid
+{
+    // Draw the point
+    UIBezierPath *positionBezierPath = [UIBezierPath bezierPath];
+    [positionBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+    CAShapeLayer *positionLayer = [[CAShapeLayer alloc] init];
+    [positionLayer setPath:positionBezierPath.CGPath];
+    [positionLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
+    [positionLayer setFillColor:[UIColor clearColor].CGColor];
+    [[self layer] addSublayer:positionLayer];
+    
+    // Text of real position but in canvas position
+    CATextLayer *positionTextLayer = [CATextLayer layer];
+    positionTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] + 5.0);
+    positionTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 0.0,
+                                         [canvasPosition.y floatValue] + 5.0,
+                                         100,
+                                         20);
+    positionTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)", [realPosition.x floatValue], [realPosition.y floatValue]];
+    positionTextLayer.fontSize = 10;
+    positionTextLayer.alignmentMode = kCAAlignmentCenter;
+    positionTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+    positionTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
+    [[self layer] addSublayer:positionTextLayer];
+    
+    // Text of UUID in canvas position
+    CATextLayer * uuidTextLayer = [CATextLayer layer];
+    uuidTextLayer.position = CGPointMake([canvasPosition.x floatValue] - 0.0, [canvasPosition.y floatValue] + 15.0);
+    uuidTextLayer.frame = CGRectMake([canvasPosition.x floatValue] - 0.0,
+                                     [canvasPosition.y floatValue] + 15.0,
+                                     100,
+                                     20);
+    uuidTextLayer.string = [NSString stringWithFormat:@"%@", [uuid substringFromIndex:30]];
+    uuidTextLayer.fontSize = 10;
+    uuidTextLayer.alignmentMode = kCAAlignmentCenter;
+    uuidTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+    uuidTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
+    [[self layer] addSublayer:uuidTextLayer];
+    
+    return;
+}
+
+/*!
+ @method drawPosition:inCanvasPosition:UUID:andWithType:
+ @discussion This method displays a position in space 'realPosition' using its coordinates in the canvas, 'canvasPosition', given its UUID and type.
+ */
+- (void) drawPosition:(RDPosition *)realPosition
+     inCanvasPosition:(RDPosition *)canvasPosition
+                 UUID:(NSString *)uuid
+          andWithType:(MDType *)type
+{
+    // Call the position representation
+    [self drawPosition:realPosition inCanvasPosition:canvasPosition andUUID:uuid];
+    
+    // Draw the type
+    // Get its color...
+    NSUInteger typeIndex = 3;
+    NSMutableArray * types = [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic];
+    for (MDType * eachType in types) {
+        typeIndex++;
+        if ([eachType isEqualToMDType:type]) {
+            break;
+        }
+    }
+    UIColor * color = [self getColorForIndex:typeIndex];
+    
+    // ...and draw it
+    CATextLayer *typeTextLayer = [CATextLayer layer];
+    typeTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] - 10.0);
+    typeTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 5.0,
+                                     [canvasPosition.y floatValue] - 10.0,
+                                     100,
+                                     20);
+    typeTextLayer.string = [NSString stringWithFormat:@"%@", type];
+    typeTextLayer.fontSize = 12;
+    typeTextLayer.alignmentMode = kCAAlignmentCenter;
+    typeTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+    typeTextLayer.foregroundColor = [color CGColor];
+    [[self layer] addSublayer:typeTextLayer];
+}
+
+/*
+
+- (void) drawLocatedPositionIfItSharesUUIDWith:(NSString *)uuid
+                                     withColor:(UIColor *)color
 {
     
     // The schema of the locatedDic object is:
@@ -395,45 +712,13 @@
         }
     }
 }
-
-/*!
- @method drawPosition:inCanvasPosition:
- @discussion This method displays a position in space 'realPosition' using its coordinates in the canvas, 'canvasPosition'.
  */
-- (void) drawPosition:(RDPosition *)realPosition
-     inCanvasPosition:(RDPosition *)canvasPosition
-{
-    // Draw the point
-    UIBezierPath *positionBezierPath = [UIBezierPath bezierPath];
-    [positionBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
-    CAShapeLayer *positionLayer = [[CAShapeLayer alloc] init];
-    [positionLayer setPath:positionBezierPath.CGPath];
-    [positionLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-    [positionLayer setFillColor:[UIColor clearColor].CGColor];
-    [[self layer] addSublayer:positionLayer];
-    
-    // Text of real position but in canvas position
-    CATextLayer *positionTextLayer = [CATextLayer layer];
-    positionTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] + 5.0);
-    positionTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 5.0,
-                                         [canvasPosition.y floatValue] + 5.0,
-                                         100,
-                                         20);
-    positionTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)", [realPosition.x floatValue], [realPosition.y floatValue]];
-    positionTextLayer.fontSize = 10;
-    positionTextLayer.alignmentMode = kCAAlignmentCenter;
-    positionTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-    positionTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
-    [[self layer] addSublayer:positionTextLayer];
-    
-    return;
-}
 
 /*!
  @method getColorForIndex:
  @discussion This method returns a 'UIColor' object given the index in which certain object is found while dictionaries inspection; it provides a feed of different colors.
  */
-- (UIColor*) getColorForIndex:(NSInteger)index {
+- (UIColor *) getColorForIndex:(NSInteger)index {
     // Choose a color for each UUID
     UIColor *color;
     switch (index % 8) {
@@ -472,9 +757,9 @@
  @method drawMeasureUUID
  @discussion This method displays a certain measure source UUID given its color.
  */
-- (void) drawMeasureUUID:(NSString*)uuid
+- (void) drawMeasureUUID:(NSString *)uuid
                  atIndex:(NSInteger)index
-               andWithColor:(UIColor*)color
+               andWithColor:(UIColor *)color
 {
     UIBezierPath * uuidBezierPath = [UIBezierPath bezierPath];
     
@@ -503,11 +788,11 @@
 }
 
 /*!
- @method drawMeasure:ofType:withColor:atPosition:inRect:
- @discussion This method displays a measure given its color, position, type and the object 'CGRect' in which the canvas is being drawn.
+ @method drawMeasure:ofSort:withColor:atPosition:inRect:
+ @discussion This method displays a measure given its color, position, sort and the object 'CGRect' in which the canvas is being drawn.
  */
 - (void) drawMeasure:(NSNumber *)measure
-              ofType:(NSString *)type
+              ofSort:(NSString *)type
            withColor:(UIColor *)color
           atPosition:(RDPosition *)realPosition
               inRect:(CGRect)rect
@@ -555,7 +840,6 @@
 }
 
 #pragma mark - Drawing methods helpers
-
 /*!
  @method getBarycenterOf:
  @discussion This method calculated the barycenter of a given set of RDPosition objects.
@@ -700,7 +984,7 @@
  @discussion This method calculate the ratios needed for showing a set of real points in the canvas; the 'safeAreaRatio' defines a safe area near the canvas' boundaries in wich the points won't be allocated, and it is tipically 0.4, and only the centered 20% of the canvas will allocate the points.
  */
 - (void) calculateRatiosOfTransformationFromRealPointsToCanvasPoints:(NSMutableArray *)realPoints
-                                                               withSafeAreaRatio:(NSNumber*)safeAreaRatio
+                                                               withSafeAreaRatio:(NSNumber *)safeAreaRatio
 {
     // Get the canvas dimensions and its center
     float canvasWidth = self.frame.size.width;

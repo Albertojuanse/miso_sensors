@@ -16,8 +16,164 @@
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
  */
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
+    
+    // Other components; only inizialated if they didn't be so
+    // Init the shared data collection with the credentials of the device user.
+    if (!sharedData) {
+        sharedData = [[SharedData alloc] initWithCredentialsUserDic:credentialsUserDic];
+    }
+    //                // USER DATA //
+    //
+    // The schema of the userData collection is:
+    //
+    //  [{ "name": (NSString *)name1;                  // userDic
+    //     "pass": (NSString *)pass1;
+    //     "role": (NSString *)role1;
+    //   },
+    //   { "name": (NSString *)name2;                  // userDic
+    //     (···)
+    //   },
+    //   (···)
+    //  ]
+    //
+    //              // SESSION DATA //
+    //
+    // The schema of the sessionData collection is:
+    //
+    //  [{ "user": { "name": (NSString *)name1;                  // sessionDic; userDic
+    //               "pass": (NSString *)pass1;
+    //               "role": (NSString *)role1;
+    //             }
+    //     "mode": (NSString *)mode1;
+    //     "state": (NSString *)state1;
+    //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
+    //     "itemsChosenByUser": (NSMutableArray *)items1;
+    //     "typeChosenByUser": (MDType *)type1
+    //   },
+    //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
+    //     (···)
+    //   },
+    //   (···)
+    //  ]
+    //
+    //             // ITEMS DATA //
+    //
+    // The schema of the itemsData collection is:
+    //
+    //  [{ "sort": @"beacon" | @"position";                      //  itemDic
+    //     "identifier": (NSString *)identifier1;
+    //
+    //     "uuid": (NSString *)uuid1;
+    //
+    //     "major": (NSString *)major1;
+    //     "minor": (NSString *)minor1;
+    //
+    //     "position": (RDPosition *)position1;
+    //
+    //     "located": @"YES" | @"NO";
+    //
+    //     "type": (MDType *)type1
+    //   },
+    //   { "sort": @"beacon" | @"position";
+    //     "identifier": (NSString *)identifier2;
+    //     (···)
+    //   },
+    //   (···)
+    //  ]
+    //
+    //            // MEASURES DATA //
+    //
+    //  [{ "user": { "name": (NSString *)name1;                  // measureDic; userDic
+    //               "pass": (NSString *)pass1;
+    //               "role": (NSString *)role1;
+    //             }
+    //     "position": (RDPosition *)position1;
+    //     "itemUUID": (NSString *)itemUUID1;
+    //     "deviceUUID": (NSString *)deviceUUID1;
+    //     "sort" : (NSString *)type1;
+    //     "measure": (NSNumber *)measure1
+    //   },
+    //   { "user": { "name": (NSString *)name2;                  // measureDic; userDic
+    //               "pass": (NSString *)pass2;
+    //               "role": (NSString *)role2;
+    //             }
+    //     "position": (RDPosition *)position2;
+    //     (···)
+    //   },
+    //   (···)
+    //  ]
+    //
+    //            // METAMODEL DATA //
+    //
+    // The schema of typesData collection is
+    //
+    //  [ (MDType *)type1,
+    //    (···)
+    //  ]
+    //
+    //              // MODEL DATA //
+    //
+    // The schema of modelData collection is is
+    //
+    //  [{ "name": name1;                                        //  modelDic
+    //     "components": [
+    //         { "position": (RDPosition *)position1;            //  componentDic
+    //           "type": (MDType *)type1;
+    //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
+    //           "references": [
+    //               { "position": (RDPosition *)positionA;      //  componentDic
+    //                 "type": (MDType *)typeA;
+    //                 "sourceItem": (NSMutableDictionary *)itemDicA;
+    //               },
+    //           ];
+    //         { "position": (RDPosition *)positionB;
+    //           (···)
+    //         },
+    //         (···)
+    //     ];
+    //   },
+    //   { "name": name2;                                        //  modelDic
+    //     (···)
+    //   },
+    //  ]
+    //
+    
+    // Create a session for the current user; if it joins another one later, this will be remplaced or deleted.
+    // Check if a session with this user is created before
+    if ([sharedData fromSessionDataGetSessionWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic]) {
+        // Do nothing
+    } else {
+        NSMutableDictionary * sessionDic = [[NSMutableDictionary alloc] init];
+        sessionDic [@"user"] = userDic;
+        [[sharedData getSessionDataWithCredentialsUserDic:credentialsUserDic] addObject:sessionDic];
+    }
+    
+    // Init the motion manager, given the shared data component and the credentials of the device user; if it is the first time the view loads this components won't exist but if not these had been created and set as others views' atributes.
+    if(!motion) {
+        motion = [[MotionManager alloc] initWithSharedData:sharedData
+                                                   userDic:credentialsUserDic
+                                     andCredentialsUserDic:credentialsUserDic];
+        
+        // TO DO: make this configurable or properties. Alberto J. 2019/09/13.
+        motion.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
+        motion.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
+        motion.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.acce_biasBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.gyro_measuresBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.gyro_biasBuffer_capacity = [NSNumber numberWithInt:500];
+    }
+    
+    // Init the location manager, given the shared data component and the credentials of the device user.
+    if (!location) {
+        location = [[LocationManagerDelegate alloc] initWithSharedData:sharedData
+                                                               userDic:credentialsUserDic
+                                                            deviceUUID:[[NSUUID UUID] UUIDString]
+                                                 andCredentialsUserDic:credentialsUserDic];
+    }
     
     // Variables; only inizialated if they didn't be so.
     if (!modes) {
@@ -28,201 +184,174 @@
         [modes addObject:@"RHO_RHO_LOCATING"];
         [modes addObject:@"RHO_THETA_LOCATING"];
         [modes addObject:@"THETA_THETA_LOCATING"];
+        // TO DO: BASIC, ROUTING AND TRACKING modes. Alberto J. 2019/09/13.
     }
-
-    // The schema of the beaconsAndPositionsRegistered object is:
-    //
-    //  [{ "type": @"beacon" | @"position";                             //  regionDic
-    //     "identifier": (NSString *)identifier1;
-    //
-    //     "uuid": (NSString *)uuid1;
-    //
-    //     "major": (NSString *)major1;
-    //     "minor": (NSString *)minor1;
-    //
-    //     "position": (RDPosition *)position1;
-    //     "x": (NSString *)x1;
-    //     "y": (NSString *)y1;
-    //     "z": (NSString *)z1;
-    //
-    //     "entity": (NSMutableDictionary *)entityDic1;                 //  entityDic
-    //
-    //   },
-    //   { "type": @"beacon" | @"position";
-    //     "identifier": (NSString *)identifier2;
-    //     "uuid": (NSString *)uuid2;
-    //     (···)
-    //   },
-    //   (···)
-    //  ]
-    //
-    // The schema of entitiesRegistered is
-    //
-    //  [{ "name": name1                                               //  entityDic
-    //   },
-    //   { "name": name2
-    //   },
-    //   (···)
-    //  ]
-    //
-    // The schema of modelsGenerated is
-    //
-    //  [{ "name": name1;                                              //  modelDic
-    //     "components": (NSMutableArray *)modelComponents1            //  modelComponents
-    //   },
-    //   { "name": name2;
-    //     "components": (NSMutableArray *)modelComponents2
-    //   },
-    //   (···)
-    //  ]
-    //
-    // The schema of modelComponents is
-    //
-    //  [{ "type": @"beacon" | @"position";                            //  modelDic
-    //     "entity": (NSMutableDictionary *)entityDic1;                //  entityDic
-    //     "regionDic": (NSMutableDictionary *)regionDic1              //  regionDic
-    //   },
-    //   { "type": @"beacon" | @"position";
-    //     "entity": (NSMutableDictionary *)entityDic2;
-    //     "regionDic": (NSMutableDictionary *)regionDic2
-    //   },
-    //   (···)
-    //  ]
-    //
     
-    if (!beaconsAndPositionsRegistered) {
-        beaconsAndPositionsRegistered = [[NSMutableArray alloc] init];
-        // Pre-registered regions
-        NSMutableDictionary * entityDic = [[NSMutableDictionary alloc] init];
-        [entityDic setValue:@"Corner" forKey:@"name"];
-        NSMutableDictionary * regionPos1Dic = [[NSMutableDictionary alloc] init];
-        [regionPos1Dic setValue:@"position" forKey:@"type"];
-        [regionPos1Dic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [regionPos1Dic setValue:@"0.0" forKey:@"x"];
-        [regionPos1Dic setValue:@"0.0" forKey:@"y"];
-        [regionPos1Dic setValue:@"0.0" forKey:@"z"];
+    // Register something in the shared data collection if it is empty for exampling and showing porpuses
+    BOOL registerCorrect = YES;
+    // Register some types
+    MDType * noType = [[MDType alloc] initWithName:@"<No type>"];
+    MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
+    MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
+    if ([sharedData isMetamodelDataEmptyWithCredentialsUserDic:credentialsUserDic]) {
+        registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:noType withCredentialsUserDic:credentialsUserDic];
+        registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:cornerType withCredentialsUserDic:credentialsUserDic];
+        registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:deviceType withCredentialsUserDic:credentialsUserDic];
+    }
+    
+    // Register some items
+    if ([sharedData isItemsDataEmptyWithCredentialsUserDic:credentialsUserDic]) {
+        
+        // The item's setter ask for identifier and sort but the copies everything else from a NSMutableDitionary with the same values and keys.
+        NSMutableDictionary * infoDic1 = [[NSMutableDictionary alloc] init];
         RDPosition * position1 = [[RDPosition alloc] init];
         position1.x = [NSNumber numberWithFloat:0.0];
         position1.y = [NSNumber numberWithFloat:0.0];
         position1.z = [NSNumber numberWithFloat:0.0];
-        [regionPos1Dic setValue:position1 forKey:@"position"];
-        [regionPos1Dic setValue:entityDic forKey:@"entity"];
-        [regionPos1Dic setValue:@"position1@miso.uam.es" forKey:@"identifier"];
-        [beaconsAndPositionsRegistered addObject:regionPos1Dic];
-        NSMutableDictionary * regionPos2Dic = [[NSMutableDictionary alloc] init];
-        [regionPos2Dic setValue:@"position" forKey:@"type"];
-        [regionPos2Dic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [regionPos2Dic setValue:@"3.5" forKey:@"x"];
-        [regionPos2Dic setValue:@"0.0" forKey:@"y"];
-        [regionPos2Dic setValue:@"0.0" forKey:@"z"];
+        [infoDic1 setValue:position1 forKey:@"position"];
+        [infoDic1 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDic1 setValue:cornerType forKey:@"type"];
+        
+        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
+                                                                  withIdentifier:@"position1@miso.uam.es"
+                                                                     withInfoDic:infoDic1
+                                                       andWithCredentialsUserDic:credentialsUserDic];
+        
+        NSMutableDictionary * infoDic2 = [[NSMutableDictionary alloc] init];
         RDPosition * position2 = [[RDPosition alloc] init];
         position2.x = [NSNumber numberWithFloat:3.5];
         position2.y = [NSNumber numberWithFloat:0.0];
         position2.z = [NSNumber numberWithFloat:0.0];
-        [regionPos2Dic setValue:position2 forKey:@"position"];
-        [regionPos2Dic setValue:entityDic forKey:@"entity"];
-        [regionPos2Dic setValue:@"position2@miso.uam.es" forKey:@"identifier"];
-        [beaconsAndPositionsRegistered addObject:regionPos2Dic];
-        NSMutableDictionary * regionPos3Dic = [[NSMutableDictionary alloc] init];
-        [regionPos3Dic setValue:@"position" forKey:@"type"];
-        [regionPos3Dic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [regionPos3Dic setValue:@"3.5" forKey:@"x"];
-        [regionPos3Dic setValue:@"-13.0" forKey:@"y"];
-        [regionPos3Dic setValue:@"0.0" forKey:@"z"];
+        [infoDic2 setValue:position2 forKey:@"position"];
+        [infoDic2 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDic2 setValue:cornerType forKey:@"type"];
+        
+        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
+                                                                  withIdentifier:@"position2@miso.uam.es"
+                                                                     withInfoDic:infoDic2
+                                                       andWithCredentialsUserDic:credentialsUserDic];
+        
+        NSMutableDictionary * infoDic3 = [[NSMutableDictionary alloc] init];
         RDPosition * position3 = [[RDPosition alloc] init];
         position3.x = [NSNumber numberWithFloat:3.5];
         position3.y = [NSNumber numberWithFloat:-13.0];
         position3.z = [NSNumber numberWithFloat:0.0];
-        [regionPos3Dic setValue:position3 forKey:@"position"];
-        [regionPos3Dic setValue:entityDic forKey:@"entity"];
-        [regionPos3Dic setValue:@"position3@miso.uam.es" forKey:@"identifier"];
-        [beaconsAndPositionsRegistered addObject:regionPos3Dic];
-        NSMutableDictionary * regionPos4Dic = [[NSMutableDictionary alloc] init];
-        [regionPos4Dic setValue:@"position" forKey:@"type"];
-        [regionPos4Dic setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [regionPos4Dic setValue:@"0.0" forKey:@"x"];
-        [regionPos4Dic setValue:@"-13.0" forKey:@"y"];
-        [regionPos4Dic setValue:@"0.0" forKey:@"z"];
+        [infoDic3 setValue:position3 forKey:@"position"];
+        [infoDic3 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDic3 setValue:cornerType forKey:@"type"];
+        
+        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
+                                                                  withIdentifier:@"position3@miso.uam.es"
+                                                                     withInfoDic:infoDic3
+                                                       andWithCredentialsUserDic:credentialsUserDic];
+        
+        NSMutableDictionary * infoDic4 = [[NSMutableDictionary alloc] init];
         RDPosition * position4 = [[RDPosition alloc] init];
         position4.x = [NSNumber numberWithFloat:0.0];
         position4.y = [NSNumber numberWithFloat:-13.0];
         position4.z = [NSNumber numberWithFloat:0.0];
-        [regionPos4Dic setValue:position4 forKey:@"position"];
-        [regionPos4Dic setValue:entityDic forKey:@"entity"];
-        [regionPos4Dic setValue:@"position4@miso.uam.es" forKey:@"identifier"];
-        [beaconsAndPositionsRegistered addObject:regionPos4Dic];
+        [infoDic4 setValue:position4 forKey:@"position"];
+        [infoDic4 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDic4 setValue:cornerType forKey:@"type"];
         
-        NSMutableDictionary * regionRaspiDic = [[NSMutableDictionary alloc] init];
-        [regionRaspiDic setValue:@"beacon" forKey:@"type"];
-        [regionRaspiDic setValue:@"25DC8A73-F3C9-4111-A7DD-C39CD4B828C7" forKey:@"uuid"];
-        [regionRaspiDic setValue:@"1" forKey:@"major"];
-        [regionRaspiDic setValue:@"0" forKey:@"minor"];
-        [regionRaspiDic setValue:@"raspi@miso.uam.es" forKey:@"identifier"];
-        [beaconsAndPositionsRegistered addObject:regionRaspiDic];
-        NSMutableDictionary * regionBeacon1Dic = [[NSMutableDictionary alloc] init];
-        [regionBeacon1Dic setValue:@"beacon" forKey:@"type"];
-        [regionBeacon1Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825" forKey:@"uuid"];
-        [regionBeacon1Dic setValue:@"1" forKey:@"major"];
-        [regionBeacon1Dic setValue:@"1" forKey:@"minor"];
-        [regionBeacon1Dic setValue:@"beacon1@miso.uam.es" forKey:@"identifier"];
-        [beaconsAndPositionsRegistered addObject:regionBeacon1Dic];
-        NSMutableDictionary * regionBeacon2Dic = [[NSMutableDictionary alloc] init];
-        [regionBeacon2Dic setValue:@"beacon" forKey:@"type"];
-        [regionBeacon2Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824" forKey:@"uuid"];
-        [regionBeacon2Dic setValue:@"1" forKey:@"major"];
-        [regionBeacon2Dic setValue:@"1" forKey:@"minor"];
-        [regionBeacon2Dic setValue:@"beacon2@miso.uam.es" forKey:@"identifier"];
-        [beaconsAndPositionsRegistered addObject:regionBeacon2Dic];
-        NSMutableDictionary * regionBeacon3Dic = [[NSMutableDictionary alloc] init];
-        [regionBeacon3Dic setValue:@"beacon" forKey:@"type"];
-        [regionBeacon3Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823" forKey:@"uuid"];
-        [regionBeacon3Dic setValue:@"1" forKey:@"major"];
-        [regionBeacon3Dic setValue:@"1" forKey:@"minor"];
-        [regionBeacon3Dic setValue:@"beacon3@miso.uam.es" forKey:@"identifier"];
-        [beaconsAndPositionsRegistered addObject:regionBeacon3Dic];
+        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
+                                                                  withIdentifier:@"position4@miso.uam.es"
+                                                                     withInfoDic:infoDic4
+                                                       andWithCredentialsUserDic:credentialsUserDic];
+        
+        NSMutableDictionary * infoRegionRaspiDic = [[NSMutableDictionary alloc] init];
+        [infoRegionRaspiDic setValue:@"25DC8A73-F3C9-4111-A7DD-C39CD4B828C7" forKey:@"uuid"];
+        [infoRegionRaspiDic setValue:@"1" forKey:@"major"];
+        [infoRegionRaspiDic setValue:@"0" forKey:@"minor"];
+        
+        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
+                                                                  withIdentifier:@"raspi@miso.uam.es"
+                                                                     withInfoDic:infoRegionRaspiDic
+                                                       andWithCredentialsUserDic:credentialsUserDic];
+        
+        NSMutableDictionary * infoItemBeacon1Dic = [[NSMutableDictionary alloc] init];
+        [infoItemBeacon1Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825" forKey:@"uuid"];
+        [infoItemBeacon1Dic setValue:@"1" forKey:@"major"];
+        [infoItemBeacon1Dic setValue:@"1" forKey:@"minor"];
+        
+        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
+                                                                  withIdentifier:@"beacon1@miso.uam.es"
+                                                                     withInfoDic:infoItemBeacon1Dic
+                                                       andWithCredentialsUserDic:credentialsUserDic];
+        
+        NSMutableDictionary * infoItemBeacon2Dic = [[NSMutableDictionary alloc] init];
+        [infoItemBeacon2Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824" forKey:@"uuid"];
+        [infoItemBeacon2Dic setValue:@"1" forKey:@"major"];
+        [infoItemBeacon2Dic setValue:@"1" forKey:@"minor"];
+        
+        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
+                                                                  withIdentifier:@"beacon2@miso.uam.es"
+                                                                     withInfoDic:infoItemBeacon2Dic
+                                                       andWithCredentialsUserDic:credentialsUserDic];
+        
+        NSMutableDictionary * infoItemBeacon3Dic = [[NSMutableDictionary alloc] init];
+        [infoItemBeacon3Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823" forKey:@"uuid"];
+        [infoItemBeacon3Dic setValue:@"1" forKey:@"major"];
+        [infoItemBeacon3Dic setValue:@"1" forKey:@"minor"];
+        
+        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
+                                                                  withIdentifier:@"beacon3@miso.uam.es"
+                                                                     withInfoDic:infoItemBeacon3Dic
+                                                       andWithCredentialsUserDic:credentialsUserDic];
     }
     
-    if (!entitiesRegistered) {
-        entitiesRegistered = [[NSMutableArray alloc] init];
-        // Pre-registered entities
-        NSMutableDictionary * entityRemoveDic = [[NSMutableDictionary alloc] init];
-        [entityRemoveDic setValue:@"<No entity>" forKey:@"name"];
-        [entitiesRegistered addObject:entityRemoveDic];
-        NSMutableDictionary * entity1Dic = [[NSMutableDictionary alloc] init];
-        [entity1Dic setValue:@"Corner" forKey:@"name"];
-        [entitiesRegistered addObject:entity1Dic];
-        NSMutableDictionary * entity2Dic = [[NSMutableDictionary alloc] init];
-        [entity2Dic setValue:@"Device" forKey:@"name"];
-        [entitiesRegistered addObject:entity2Dic];
+    if (!registerCorrect) {
+        NSLog(@"[ERROR][VCMM] Register of items incorrect; user credentials granted?");
     }
     
-    if (!modelsGenerated) {
-        modelsGenerated = [[NSMutableArray alloc] init];
+    // Variables
+    if (!itemBeaconIdNumber) {
+        itemBeaconIdNumber = [NSNumber numberWithInteger:5];
     }
     
-    if (!regionBeaconIdNumber) {
-        regionBeaconIdNumber = [NSNumber numberWithInteger:3];
-    }
-    
-    if (!regionPositionIdNumber) {
-        regionPositionIdNumber = [NSNumber numberWithInteger:0];
+    if (!itemPositionIdNumber) {
+        itemPositionIdNumber = [NSNumber numberWithInteger:5];
     }
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableModes.delegate = self;
     self.tableModes.dataSource = self;
-    self.tableBeaconsAndPositions.delegate = self;
-    self.tableBeaconsAndPositions.dataSource = self;
+    self.tableItems.delegate = self;
+    self.tableItems.dataSource = self;
     
     [self.tableModes reloadData];
-    [self.tableBeaconsAndPositions reloadData];
+    [self.tableItems reloadData];
+}
+
+/*!
+ @method viewDidAppear
+ @discussion This method notifies the view controller that its view was added to a view hierarchy.
+ */
+- (void)viewDidAppear:(BOOL)animated {
+    // Verify that credentials grant user to shared data
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        NSLog(@"[INFO][VCMM] User credentials have been validated.");
+    } else {
+        [self alertUserWithTitle:@"User not allowed."
+                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCMM] Shared data could not be acessed after view loading.");
+        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+    }
 }
 
 /*!
  @method didReceiveMemoryWarning
  @discussion This method dispose of any resources that can be recreated id a memory warning is recived.
  */
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
@@ -230,35 +359,66 @@
 #pragma mark - Instance methods
 
 /*!
- @method setBeaconsAndPositionsRegistered:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ @method setCredentialsUserDic:
+ @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
  */
-- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered {
-    beaconsAndPositionsRegistered = newBeaconsAndPositionsRegistered;
+- (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic
+{
+    credentialsUserDic = givenCredentialsUserDic;
 }
 
 /*!
- @method setRegionBeaconIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ @method setUserDic:
+ @discussion This method sets the NSMutableDictionary with the identifying purposes user credentials.
  */
-- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionBeaconIdNumber {
-    regionBeaconIdNumber = newRegionBeaconIdNumber;
+- (void) setUserDic:(NSMutableDictionary *)givenUserDic
+{
+    userDic = givenUserDic;
 }
 
 /*!
- @method setRegionPositionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ @method setSharedData:
+ @discussion This method sets the shared data collection.
  */
-- (void) setRegionPositionIdNumber:(NSNumber *)newRegionPositionIdNumber {
-    regionPositionIdNumber = newRegionPositionIdNumber;
+- (void) setSharedData:(SharedData *)givenSharedData
+{
+    sharedData = givenSharedData;
 }
 
 /*!
- @method setEntitiesRegistered:
- @discussion This method sets the NSMutableArray variable 'entitiesRegistered'.
+ @method setMotionManager:
+ @discussion This method sets the motion manager.
  */
-- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered {
-    entitiesRegistered = newEntitiesRegistered;
+- (void) setMotionManager:(MotionManager *)givenMotion
+{
+    motion = givenMotion;
+}
+
+/*!
+ @method setLocationManager:
+ @discussion This method sets the location manager.
+ */
+- (void) setLocationManager:(LocationManagerDelegate *)givenLocation
+{
+    location = givenLocation;
+}
+
+/*!
+ @method setItemBeaconIdNumber:
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ */
+- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
+{
+    itemBeaconIdNumber = givenItemBeaconIdNumber;
+}
+
+/*!
+ @method setItemPositionIdNumber:
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ */
+- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
+{
+    itemPositionIdNumber = givenItemPositionIdNumber;
 }
 
 #pragma mark - Butons event handle
@@ -272,36 +432,78 @@
     [self performSegueWithIdentifier:@"fromMainToAdd" sender:sender];
 }
 
-- (IBAction)handleButonStart:(id)sender {
-    // If user did select a row in the table
-    if (chosenMode) {
-        
-        if ([chosenMode isEqualToString:[modes objectAtIndex:0]]) { // RHO_RHO_MODELING
-            [self performSegueWithIdentifier:@"fromMainToRHO_RHO_MODELING" sender:sender];
-        }
-        if ([chosenMode isEqualToString:[modes objectAtIndex:1]]) { // RHO_THETA_MODELING
-            [self performSegueWithIdentifier:@"fromMainToRHO_THETA_MODELING" sender:sender];
-        }
-        if ([chosenMode isEqualToString:[modes objectAtIndex:2]]) { // RHO_THETA_MODELING
+- (IBAction)handleButonStart:(id)sender
+{
+    // Register the current mode
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // If user did select a row in the table
+        if (chosenMode) {
+            
+            if ([chosenMode isEqualToString:[modes objectAtIndex:0]]) { // RHO_RHO_MODELING
+                [sharedData inSessionDataSetMode:@"RHO_RHO_MODELING"
+                               toUserWithUserDic:userDic
+                           andCredentialsUserDic:userDic];
+                [self performSegueWithIdentifier:@"fromMainToRHO_RHO_MODELING" sender:sender];
+            }
+            if ([chosenMode isEqualToString:[modes objectAtIndex:1]]) { // RHO_THETA_MODELING
+                [sharedData inSessionDataSetMode:@"RHO_THETA_MODELING"
+                               toUserWithUserDic:userDic
+                           andCredentialsUserDic:credentialsUserDic];
+                [self performSegueWithIdentifier:@"fromMainToRHO_THETA_MODELING" sender:sender];
+            }
+            if ([chosenMode isEqualToString:[modes objectAtIndex:2]]) { // RHO_THETA_MODELING
+                return;
+                // [self performSegueWithIdentifier:@"fromMainToTHETA_THETA_MODELING" sender:sender];
+            }
+            if ([chosenMode isEqualToString:[modes objectAtIndex:3]]) { // RHO_RHO_LOCATING
+                return;
+                // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+            }
+            if ([chosenMode isEqualToString:[modes objectAtIndex:4]]) { // RHO_THETA_LOCATING
+                return;
+                // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+            }
+            if ([chosenMode isEqualToString:[modes objectAtIndex:5]]) { // THETA_THETA_LOCATING
+                [sharedData inSessionDataSetMode:@"THETA_THETA_LOCATING"
+                               toUserWithUserDic:userDic
+                           andCredentialsUserDic:credentialsUserDic];
+                [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+            }
+            
             return;
-            // [self performSegueWithIdentifier:@"fromMainToTHETA_THETA_MODELING" sender:sender];
-        }
-        if ([chosenMode isEqualToString:[modes objectAtIndex:3]]) { // RHO_RHO_LOCATING
+        } else {
             return;
-            // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
         }
-        if ([chosenMode isEqualToString:[modes objectAtIndex:4]]) { // RHO_THETA_LOCATING
-            return;
-            // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
-        }
-        if ([chosenMode isEqualToString:[modes objectAtIndex:5]]) { // THETA_THETA_LOCATING
-            [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
-        }
-        
-        return;
     } else {
-        return;
+        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
     }
+}
+
+/*!
+ @method alertUserWithTitle:andMessage:
+ @discussion This method alerts the user with a pop up window with a single "Ok" button given its message and title and lambda funcion handler.
+ */
+- (void) alertUserWithTitle:(NSString *)title
+                    message:(NSString *)message
+                 andHandler:(void (^)(UIAlertAction *action))handler;
+{
+    UIAlertController * alertUsersNotFound = [UIAlertController
+                                              alertControllerWithTitle:title
+                                              message:message
+                                              preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction * okButton = [UIAlertAction
+                                actionWithTitle:@"Ok"
+                                style:UIAlertActionStyleDefault
+                                handler:handler
+                                ];
+    
+    [alertUsersNotFound addAction:okButton];
+    [self presentViewController:alertUsersNotFound animated:YES completion:nil];
+    return;
 }
 
 /*!
@@ -316,20 +518,16 @@
     if ([[segue identifier] isEqualToString:@"fromMainToAdd"]) {
         
         // Get destination view
-        ViewControllerAddBeaconMenu *viewControllerAddBeaconMenu = [segue destinationViewController];
-        // Set the variable
-        [viewControllerAddBeaconMenu setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerAddBeaconMenu setEntitiesRegistered:entitiesRegistered];
-        [viewControllerAddBeaconMenu setRegionBeaconIdNumber:regionBeaconIdNumber];
-        [viewControllerAddBeaconMenu setRegionPositionIdNumber:regionPositionIdNumber];
+        ViewControllerAddBeaconMenu * viewControllerAddBeaconMenu = [segue destinationViewController];
+        // Set the variables and components
+        [viewControllerAddBeaconMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerAddBeaconMenu setUserDic:userDic];
+        [viewControllerAddBeaconMenu setSharedData:sharedData];
+        [viewControllerAddBeaconMenu setMotionManager:motion];
+        [viewControllerAddBeaconMenu setLocationManager:location];
         
-        // When user selects a cell in the table, sets one of the following with a value and the other one with null.
-        if (uuidChosenByUser) {
-            [viewControllerAddBeaconMenu setUuidChosenByUser:uuidChosenByUser];
-        }
-        if (positionChosenByUser) {
-            [viewControllerAddBeaconMenu setPositionChosenByUser:positionChosenByUser];
-        }
+        [viewControllerAddBeaconMenu setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerAddBeaconMenu setItemPositionIdNumber:itemPositionIdNumber];
         
     }
     
@@ -337,10 +535,13 @@
     if ([[segue identifier] isEqualToString:@"fromMainToRHO_RHO_MODELING"]) {
         
         // Get destination view
-        ViewControllerRhoRhoModeling *viewControllerRhoRhoModeling = [segue destinationViewController];
-        // Set the variable
-        [viewControllerRhoRhoModeling setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerRhoRhoModeling setEntitiesRegistered:entitiesRegistered];
+        ViewControllerRhoRhoModeling * viewControllerRhoRhoModeling = [segue destinationViewController];
+        // Set the variables and components
+        [viewControllerRhoRhoModeling setCredentialsUserDic:credentialsUserDic];
+        [viewControllerRhoRhoModeling setUserDic:userDic];
+        [viewControllerRhoRhoModeling setSharedData:sharedData];
+        [viewControllerRhoRhoModeling setMotionManager:motion];
+        [viewControllerRhoRhoModeling setLocationManager:location];
         
     }
     
@@ -348,16 +549,21 @@
     if ([[segue identifier] isEqualToString:@"fromMainToRHO_THETA_MODELING"]) {
         
         // Get destination view
-        ViewControllerRhoThetaModeling *viewControllerRhoThetaModeling = [segue destinationViewController];
-        // Set the variable
-        [viewControllerRhoThetaModeling setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerRhoThetaModeling setEntitiesRegistered:entitiesRegistered];
+        ViewControllerRhoThetaModeling * viewControllerRhoThetaModeling = [segue destinationViewController];
+        // Set the variables
+        [viewControllerRhoThetaModeling setCredentialsUserDic:credentialsUserDic];
+        [viewControllerRhoThetaModeling setUserDic:userDic];
+        [viewControllerRhoThetaModeling setSharedData:sharedData];
+        [viewControllerRhoThetaModeling setMotionManager:motion];
+        [viewControllerRhoThetaModeling setLocationManager:location];
         
     }
     
     // If Theta Theta Syetem based Modeling is going to be displayed, there is no need of the beaconsAndPositionsRegistered array.
     if ([[segue identifier] isEqualToString:@"fromMainToTHETA_THETA_MODELING"]) {
-        // Do nothing
+        
+        // TO DO. Alberto J. 2019/09/06.
+        
     }
     
     // If Rho Theta Syetem or Rho Rho Sytem based Locating is going to be displayed, pass it the beaconsAndPositionsRegistered array.
@@ -365,10 +571,12 @@
         
         // Get destination view
         ViewControllerSelectPositions * viewControllerSelectPositions = [segue destinationViewController];
-        // Set the variable
-        [viewControllerSelectPositions setBeaconsAndPositionsRegistered:beaconsAndPositionsRegistered];
-        [viewControllerSelectPositions setEntitiesRegistered:entitiesRegistered];
-        [viewControllerSelectPositions setChosenMode:chosenMode];
+        // Set the variables
+        [viewControllerSelectPositions setCredentialsUserDic:credentialsUserDic];
+        [viewControllerSelectPositions setUserDic:userDic];
+        [viewControllerSelectPositions setSharedData:sharedData];
+        [viewControllerSelectPositions setMotionManager:motion];
+        [viewControllerSelectPositions setLocationManager:location];
         
     }
 }
@@ -383,8 +591,8 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.tableBeaconsAndPositions) {
-        return [beaconsAndPositionsRegistered count];
+    if (tableView == self.tableItems) {
+        return [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
     }
     if (tableView == self.tableModes) {
         return [modes count];
@@ -403,89 +611,111 @@
     }
     
     // Configure individual cells
-    if (tableView == self.tableBeaconsAndPositions) {
-        NSMutableDictionary * regionDic = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row];
-        cell.textLabel.numberOfLines = 0; // Means any number
+    if (tableView == self.tableItems) {
         
-        // If it is a beacon
-        if ([@"beacon" isEqualToString:regionDic[@"type"]]) {
+        // Database could not be acessed.
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
+        {
+        
+            NSMutableDictionary * itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] objectAtIndex:indexPath.row];
             
-            // It representation depends on if exist its position or its entity
-            if (regionDic[@"x"] && regionDic[@"y"] && regionDic[@"z"]) {
-                if (regionDic[@"entity"]) {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
-                                           regionDic[@"identifier"],
-                                           regionDic[@"entity"][@"name"],
-                                           regionDic[@"uuid"],
-                                           regionDic[@"major"],
-                                           regionDic[@"minor"],
-                                           regionDic[@"x"],
-                                           regionDic[@"y"],
-                                           regionDic[@"z"]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    
-                } else {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%@, %@, %@)",
-                                           regionDic[@"identifier"],
-                                           regionDic[@"uuid"],
-                                           regionDic[@"major"],
-                                           regionDic[@"minor"],
-                                           regionDic[@"x"],
-                                           regionDic[@"y"],
-                                           regionDic[@"z"]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    
-                }
-            } else {
-                if (regionDic[@"entity"]) {
+            // The itemDic variable can be null or NO if access is not granted or there are not items stored.
+            if (itemDic) {
+                cell.textLabel.numberOfLines = 0; // Means any number
                 
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> UUID: %@ \nmajor: %@ ; minor: %@",
-                                           regionDic[@"identifier"],
-                                           regionDic[@"entity"][@"name"],
-                                           regionDic[@"uuid"],
-                                           regionDic[@"major"],
-                                           regionDic[@"minor"]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                // If it is a beacon
+                if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
                     
-                } else  {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
-                                           regionDic[@"identifier"],
-                                           regionDic[@"uuid"],
-                                           regionDic[@"major"],
-                                           regionDic[@"minor"]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    
+                    // It representation depends on if exist its position or its type
+                    if (itemDic[@"position"]) {
+                        if (itemDic[@"type"]) {
+                            
+                            RDPosition * position = itemDic[@"position"];
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
+                                                   itemDic[@"identifier"],
+                                                   itemDic[@"type"],
+                                                   itemDic[@"uuid"],
+                                                   itemDic[@"major"],
+                                                   itemDic[@"minor"],
+                                                   [position.x floatValue],
+                                                   [position.y floatValue],
+                                                   [position.z floatValue]
+                                                   ];
+                            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                            
+                        } else {
+                            
+                            RDPosition * position = itemDic[@"position"];
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
+                                                   itemDic[@"identifier"],
+                                                   itemDic[@"uuid"],
+                                                   itemDic[@"major"],
+                                                   itemDic[@"minor"],
+                                                   [position.x floatValue],
+                                                   [position.y floatValue],
+                                                   [position.z floatValue]
+                                                   ];
+                            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                            
+                        }
+                    } else {
+                        if (itemDic[@"type"]) {
+                        
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nmajor: %@ ; minor: %@",
+                                                   itemDic[@"identifier"],
+                                                   itemDic[@"type"],
+                                                   itemDic[@"uuid"],
+                                                   itemDic[@"major"],
+                                                   itemDic[@"minor"]
+                                                   ];
+                            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                            
+                        } else  {
+                            
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
+                                                   itemDic[@"identifier"],
+                                                   itemDic[@"uuid"],
+                                                   itemDic[@"major"],
+                                                   itemDic[@"minor"]
+                                                   ];
+                            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                            
+                        }
+                    }
                 }
-            }
-        }
-        
-        // And if it is a position
-        if ([@"position" isEqualToString:regionDic[@"type"]]) {
-            // If its entity is set
-            if (regionDic[@"entity"]) {
-                cell.textLabel.text = [NSString stringWithFormat:@"%@ <%@> \n Position: (%@, %@, %@)",
-                                       regionDic[@"identifier"],
-                                       regionDic[@"entity"][@"name"],
-                                       regionDic[@"x"],
-                                       regionDic[@"y"],
-                                       regionDic[@"z"]
-                                       ];
-                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            
+                // And if it is a position
+                if ([@"position" isEqualToString:itemDic[@"sort"]]) {
+                    // If its type is set
+                    RDPosition * position = itemDic[@"position"];
+                    if (itemDic[@"type"]) {
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%.2f, %.2f, %.2f)",
+                                               itemDic[@"identifier"],
+                                               itemDic[@"type"],
+                                               [position.x floatValue],
+                                               [position.y floatValue],
+                                               [position.z floatValue]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    } else {
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%.2f, %.2f, %.2f)",
+                                               itemDic[@"identifier"],
+                                               [position.x floatValue],
+                                               [position.y floatValue],
+                                               [position.z floatValue]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    }
+                }
             } else {
-                cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%@, %@, %@)",
-                                       regionDic[@"identifier"],
-                                       regionDic[@"x"],
-                                       regionDic[@"y"],
-                                       regionDic[@"z"]
-                                       ];
-                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                // The itemDic variable is null or NO
+                NSLog(@"[VCMM][ERROR] No items found for showing");
+                if (indexPath.row == 0) {
+                    cell.textLabel.text = @"No items found.";
+                    cell.textLabel.textColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:0.2];
+                }
             }
         }
     }
@@ -497,22 +727,30 @@
 }
 
 - (void)tableView:(UITableView *)tableView
-didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     
-    if (tableView == self.tableBeaconsAndPositions) {
+    if (tableView == self.tableItems) {
         
         // Reset
-        uuidChosenByUser = nil;
-        positionChosenByUser = nil;
-        
-        // Depending on type, get the UUID or RDPosition object
-        NSString * type = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"type"];
-        
-        if ([type isEqualToString:@"beacon"]) {
-            uuidChosenByUser = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"uuid"];
-        }
-        if ([type isEqualToString:@"position"]) {
-            positionChosenByUser = [beaconsAndPositionsRegistered objectAtIndex:indexPath.row][@"position"];
+        // CredentialsUserDic is the current device's user.
+        [sharedData inSessionDataSetItemChosenByUser:nil
+                                   toUserWithUserDic:userDic
+                               andCredentialsUserDic:credentialsUserDic];
+        // Update
+        NSMutableArray * itemsData = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
+        // Can be null if credentials are not allowed.
+        if (itemsData) {
+            NSMutableDictionary * itemChosenByUser = [itemsData objectAtIndex:indexPath.row];
+            
+            // Can be null if it did not exist
+            if(itemChosenByUser) {
+                [sharedData inSessionDataSetItemChosenByUser:itemChosenByUser
+                                       toUserWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic];
+            } else {
+                NSLog(@"[VCMM][ERROR] User did choose an inexisting item.");
+            }
         }
         
     }

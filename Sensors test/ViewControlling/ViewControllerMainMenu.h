@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "MotionManager.h"
+#import "LocationManagerDelegate.h"
+#import "SharedData.h"
 #import "ViewControllerAddBeaconMenu.h"
 #import "ViewControllerSelectPositions.h"
 #import "ViewControllerRhoRhoModeling.h"
@@ -19,31 +22,37 @@
  */
 @interface ViewControllerMainMenu : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
+    // Other components
+    SharedData * sharedData;
+    MotionManager * motion;
+    LocationManagerDelegate * location;
+    
+    // Session and user context
+    // The first credentials dictionary is for security issues and its proprietary is the one who logs-in in the device; the second one is used for identifying purposes; in multiuser context, the first one is used in the device for accessing data, etc. while the second one is shared to the rest of users when a measure is taken or something is changed to indicate who did it.
+    NSMutableDictionary * credentialsUserDic;
+    NSMutableDictionary * userDic;
+    
     // Modes
     NSMutableArray * modes;
     NSString * chosenMode;
     
     // Beacons' region identifiers
-    NSMutableArray * beaconsAndPositionsRegistered;
-    NSMutableArray * entitiesRegistered;
-    NSMutableArray * modelsGenerated;
-    NSNumber * regionBeaconIdNumber;
-    NSNumber * regionPositionIdNumber;
-    
-    // user choose to pass to add beacon and positions view controller; one of both must be alwais nil
-    NSString * uuidChosenByUser;
-    RDPosition * positionChosenByUser;
-    
+    NSNumber * itemBeaconIdNumber;
+    NSNumber * itemPositionIdNumber;
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *tableModes;
-@property (weak, nonatomic) IBOutlet UITableView *tableBeaconsAndPositions;
+@property (weak, nonatomic) IBOutlet UITableView *tableItems;
 
-- (void) setBeaconsAndPositionsRegistered:(NSMutableArray *)newBeaconsAndPositionsRegistered;
-- (void) setEntitiesRegistered:(NSMutableArray *)newEntitiesRegistered;
-- (void) setRegionBeaconIdNumber:(NSNumber *)newRegionIdNumber;
-- (void) setRegionPositionIdNumber:(NSNumber *)newRegionIdNumber;
+
+- (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
+- (void) setUserDic:(NSMutableDictionary *)givenUserDic;
+- (void) setSharedData:(SharedData *)givenSharedData;
+- (void) setMotionManager:(MotionManager *)givenMotion;
+- (void) setLocationManager:(LocationManagerDelegate *)givenLocation;
+
+
+- (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
+- (void) setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 
 @end
-
-
