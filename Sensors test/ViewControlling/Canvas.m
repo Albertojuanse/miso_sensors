@@ -356,14 +356,6 @@
     //  ]
     //
     
-    // Declare the inner dictionaries; they will be created or gotten if they already exists each use
-    NSMutableDictionary * sessionDic;
-    NSMutableDictionary * userDic;
-    NSMutableDictionary * itemDic;
-    NSMutableDictionary * measureDic;
-    NSMutableDictionary * locationDic;
-    NSMutableDictionary * modelDic;
-    
     // The positions must be scaled before its displaying
     // Get measured, chosen items' and locations' positions and merge them into a single array
     NSMutableArray * itemsPositions = [sharedData fromSessionDataGetPositionsOfItemsChosenByUserDic:credentialsUserDic
@@ -559,43 +551,34 @@
  @method drawPosition:inCanvasPosition:
  @discussion This method displays a position in space 'realPosition' using its coordinates in the canvas, 'canvasPosition'.
  */
-- (void) drawPosition:(RDPosition *)realPosition
-     inCanvasPosition:(RDPosition *)canvasPosition
-{
-    // Draw the point
-    VCPosition * positionView = [[VCPosition alloc] initWithFrame:
-                                 CGRectMake([canvasPosition.x floatValue],
-                                            [canvasPosition.y floatValue],
-                                            3.0,
-                                            3.0)];
-    [self addSubview:positionView];
-    
-    /*
-    UIBezierPath *positionBezierPath = [UIBezierPath bezierPath];
-    [positionBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
-    CAShapeLayer *positionLayer = [[CAShapeLayer alloc] init];
-    [positionLayer setPath:positionBezierPath.CGPath];
-    [positionLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-    [positionLayer setFillColor:[UIColor clearColor].CGColor];
-    [[self layer] addSublayer:positionLayer];
-    
-    // Text of real position but in canvas position
-    CATextLayer *positionTextLayer = [CATextLayer layer];
-    positionTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] + 5.0);
-    positionTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 5.0,
-                                         [canvasPosition.y floatValue] + 5.0,
-                                         100,
-                                         20);
-    positionTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)", [realPosition.x floatValue], [realPosition.y floatValue]];
-    positionTextLayer.fontSize = 10;
-    positionTextLayer.alignmentMode = kCAAlignmentCenter;
-    positionTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-    positionTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
-    [[self layer] addSublayer:positionTextLayer];
-     */
-    
-    return;
-}
+ - (void) drawPosition:(RDPosition *)realPosition
+      inCanvasPosition:(RDPosition *)canvasPosition
+ {
+     // Draw the point
+     UIBezierPath *positionBezierPath = [UIBezierPath bezierPath];
+     [positionBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+     CAShapeLayer *positionLayer = [[CAShapeLayer alloc] init];
+     [positionLayer setPath:positionBezierPath.CGPath];
+     [positionLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
+     [positionLayer setFillColor:[UIColor clearColor].CGColor];
+     [[self layer] addSublayer:positionLayer];
+     
+     // Text of real position but in canvas position
+     CATextLayer *positionTextLayer = [CATextLayer layer];
+     positionTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] + 5.0);
+     positionTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 5.0,
+                                          [canvasPosition.y floatValue] + 5.0,
+                                          100,
+                                          20);
+     positionTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)", [realPosition.x floatValue], [realPosition.y floatValue]];
+     positionTextLayer.fontSize = 10;
+     positionTextLayer.alignmentMode = kCAAlignmentCenter;
+     positionTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+     positionTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
+     [[self layer] addSublayer:positionTextLayer];
+     
+     return;
+ }
 
 /*!
  @method drawPosition:inCanvasPosition:
@@ -605,13 +588,8 @@
      inCanvasPosition:(RDPosition *)canvasPosition
           andWithType:(MDType *)type
 {
-    
-    // Draw the point
-    VCPosition * positionView = [[VCPosition alloc] initWithFrame:
-                                 CGRectMake([canvasPosition.x floatValue],
-                                            [canvasPosition.y floatValue],
-                                            3.0,
-                                            3.0)];
+    // Call the position representation
+    [self drawPosition:realPosition inCanvasPosition:canvasPosition];
     
     // Draw the type
     // Get its color...
@@ -623,15 +601,21 @@
             break;
         }
     }
-    // ...and draw it
-    VCType * typeView = [[VCType alloc] initWithFrame:
-                         CGRectMake([canvasPosition.x floatValue],
-                                    [canvasPosition.y floatValue],
-                                    8.0,
-                                    8.0)];
+    UIColor * color = [self getColorForIndex:typeIndex];
     
-    [self addSubview:positionView];
-    [self addSubview:typeView];
+    // ...and draw it
+    CATextLayer *typeTextLayer = [CATextLayer layer];
+    typeTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] - 10.0);
+    typeTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 5.0,
+                                     [canvasPosition.y floatValue] - 10.0,
+                                     100,
+                                     20);
+    typeTextLayer.string = [NSString stringWithFormat:@"%@", type];
+    typeTextLayer.fontSize = 12;
+    typeTextLayer.alignmentMode = kCAAlignmentCenter;
+    typeTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+    typeTextLayer.foregroundColor = [color CGColor];
+    [[self layer] addSublayer:typeTextLayer];
 }
 
 /*
@@ -703,41 +687,6 @@
             
         }
     }
-}
- */
-
-/*!
- @method drawPosition:inCanvasPosition:
- @discussion This method displays a position in space 'realPosition' using its coordinates in the canvas, 'canvasPosition'.
- */
-/*
-- (void) drawPosition:(RDPosition *)realPosition
-     inCanvasPosition:(RDPosition *)canvasPosition
-{
-    // Draw the point
-    UIBezierPath *positionBezierPath = [UIBezierPath bezierPath];
-    [positionBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
-    CAShapeLayer *positionLayer = [[CAShapeLayer alloc] init];
-    [positionLayer setPath:positionBezierPath.CGPath];
-    [positionLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-    [positionLayer setFillColor:[UIColor clearColor].CGColor];
-    [[self layer] addSublayer:positionLayer];
-    
-    // Text of real position but in canvas position
-    CATextLayer *positionTextLayer = [CATextLayer layer];
-    positionTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] + 5.0);
-    positionTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 5.0,
-                                         [canvasPosition.y floatValue] + 5.0,
-                                         100,
-                                         20);
-    positionTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)", [realPosition.x floatValue], [realPosition.y floatValue]];
-    positionTextLayer.fontSize = 10;
-    positionTextLayer.alignmentMode = kCAAlignmentCenter;
-    positionTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-    positionTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
-    [[self layer] addSublayer:positionTextLayer];
-    
-    return;
 }
  */
 
