@@ -1079,8 +1079,10 @@
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         NSMutableArray * items = [[NSMutableArray alloc] init];
         for (itemDic in itemsData) {
-            if ([position isEqualToRDPosition:itemDic[@"position"]]) {
-                [items addObject:itemDic];
+            if (itemDic[@"position"]) {
+                if ([position isEqualToRDPosition:itemDic[@"position"]]) {
+                    [items addObject:itemDic];
+                }
             }
         }
         return items;
