@@ -422,34 +422,42 @@
         RDPosition * canvasItemPosition = [self transformSingleRealPointToCanvasPoint:realItemPosition];
         NSLog(@"[INFO][CA] Drawing canvas item position %@", canvasItemPosition);
         
-        // ...,and its type, ...
+        // ...,its type and UUID, ...
         NSMutableArray * itemsInRealItemPosition = [sharedData fromItemDataGetItemsWithPosition:realItemPosition
                                                                           andCredentialsUserDic:credentialsUserDic];
         MDType * itemType;
+        NSString * itemUUID;
         if (itemsInRealItemPosition) {
             if (itemsInRealItemPosition.count != 0) {
                 if (!(itemsInRealItemPosition.count > 1)) {
                     NSMutableDictionary * itemDicSelected = [itemsInRealItemPosition objectAtIndex:0];
                     itemType = itemDicSelected[@"type"];
-                } else { // More than one items found
-                    NSLog(@"[ERROR][CA] Too many types found when getting types for some item's position; using first one.");
+                    itemUUID = itemDicSelected[@"uuid"];
+                } else {  // More than one items found
+                    NSLog(@"[ERROR][CA] Too items types found when getting types for some item's position; using first one.");
                     // TO DO: Manage this. Alberto J. 2019/10/1.
                 }
-            } else { // Items not found
-                NSLog(@"[ERROR][CA] No types found when getting types for some item's position; empty array returned.");
+            } else {  // Items not found
+                NSLog(@"[ERROR][CA] No items found when getting types for some item's position; empty array returned.");
             }
-        } else { // Acess could not be granted or items not found
-            NSLog(@"[ERROR][CA] No types found when getting types for some item's position; null returned.");
+        } else {  // Acess could not be granted or items not found
+            NSLog(@"[ERROR][CA] No items found when getting types for some item's position; null returned.");
         }
         
         // ...and draw it.
-        if (!itemType) {
-            [self drawPosition:realItemPosition
-              inCanvasPosition:canvasItemPosition];
+        if (itemUUID) {  // Items UUID are always required
+            if (!itemType) {
+                [self drawPosition:realItemPosition
+                  inCanvasPosition:canvasItemPosition
+                           andUUID:itemUUID];
+            } else {
+                [self drawPosition:realItemPosition
+                  inCanvasPosition:canvasItemPosition
+                              UUID:itemUUID
+                       andWithType:itemType];
+            }
         } else {
-            [self drawPosition:realItemPosition
-              inCanvasPosition:canvasItemPosition
-                   andWithType:itemType];
+            NSLog(@"[ERROR][CA] No UUID found in item while its showing.");
         }
         
     }
@@ -548,48 +556,64 @@
 }
 
 /*!
- @method drawPosition:inCanvasPosition:
- @discussion This method displays a position in space 'realPosition' using its coordinates in the canvas, 'canvasPosition'.
- */
- - (void) drawPosition:(RDPosition *)realPosition
-      inCanvasPosition:(RDPosition *)canvasPosition
- {
-     // Draw the point
-     UIBezierPath *positionBezierPath = [UIBezierPath bezierPath];
-     [positionBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
-     CAShapeLayer *positionLayer = [[CAShapeLayer alloc] init];
-     [positionLayer setPath:positionBezierPath.CGPath];
-     [positionLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-     [positionLayer setFillColor:[UIColor clearColor].CGColor];
-     [[self layer] addSublayer:positionLayer];
-     
-     // Text of real position but in canvas position
-     CATextLayer *positionTextLayer = [CATextLayer layer];
-     positionTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] + 5.0);
-     positionTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 5.0,
-                                          [canvasPosition.y floatValue] + 5.0,
-                                          100,
-                                          20);
-     positionTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)", [realPosition.x floatValue], [realPosition.y floatValue]];
-     positionTextLayer.fontSize = 10;
-     positionTextLayer.alignmentMode = kCAAlignmentCenter;
-     positionTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-     positionTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
-     [[self layer] addSublayer:positionTextLayer];
-     
-     return;
- }
-
-/*!
- @method drawPosition:inCanvasPosition:
- @discussion This method displays a position in space 'realPosition' using its coordinates in the canvas, 'canvasPosition'.
+ @method drawPosition:inCanvasPosition:andUUID
+ @discussion This method displays a position in space 'realPosition' using its coordinates in the canvas, 'canvasPosition', given its UUID.
  */
 - (void) drawPosition:(RDPosition *)realPosition
      inCanvasPosition:(RDPosition *)canvasPosition
+              andUUID:(NSString *)uuid
+{
+    // Draw the point
+    UIBezierPath *positionBezierPath = [UIBezierPath bezierPath];
+    [positionBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+    CAShapeLayer *positionLayer = [[CAShapeLayer alloc] init];
+    [positionLayer setPath:positionBezierPath.CGPath];
+    [positionLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
+    [positionLayer setFillColor:[UIColor clearColor].CGColor];
+    [[self layer] addSublayer:positionLayer];
+    
+    // Text of real position but in canvas position
+    CATextLayer *positionTextLayer = [CATextLayer layer];
+    positionTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] + 5.0);
+    positionTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 0.0,
+                                         [canvasPosition.y floatValue] + 5.0,
+                                         100,
+                                         20);
+    positionTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)", [realPosition.x floatValue], [realPosition.y floatValue]];
+    positionTextLayer.fontSize = 10;
+    positionTextLayer.alignmentMode = kCAAlignmentCenter;
+    positionTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+    positionTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
+    [[self layer] addSublayer:positionTextLayer];
+    
+    // Text of UUID in canvas position
+    CATextLayer * uuidTextLayer = [CATextLayer layer];
+    uuidTextLayer.position = CGPointMake([canvasPosition.x floatValue] - 0.0, [canvasPosition.y floatValue] + 15.0);
+    uuidTextLayer.frame = CGRectMake([canvasPosition.x floatValue] - 0.0,
+                                     [canvasPosition.y floatValue] + 15.0,
+                                     100,
+                                     20);
+    uuidTextLayer.string = [NSString stringWithFormat:@"%@", [uuid substringFromIndex:30]];
+    uuidTextLayer.fontSize = 10;
+    uuidTextLayer.alignmentMode = kCAAlignmentCenter;
+    uuidTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+    uuidTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
+    [[self layer] addSublayer:uuidTextLayer];
+    
+    return;
+}
+
+/*!
+ @method drawPosition:inCanvasPosition:UUID:andWithType:
+ @discussion This method displays a position in space 'realPosition' using its coordinates in the canvas, 'canvasPosition', given its UUID and type.
+ */
+- (void) drawPosition:(RDPosition *)realPosition
+     inCanvasPosition:(RDPosition *)canvasPosition
+                 UUID:(NSString *)uuid
           andWithType:(MDType *)type
 {
     // Call the position representation
-    [self drawPosition:realPosition inCanvasPosition:canvasPosition];
+    [self drawPosition:realPosition inCanvasPosition:canvasPosition andUUID:uuid];
     
     // Draw the type
     // Get its color...
