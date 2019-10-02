@@ -36,6 +36,7 @@
 		4295FB2222D35D7A0024B155 /* ViewControllerMainMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */; };
 		4295FB2622D360BB0024B155 /* ViewControllerAddBeaconMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */; };
 		429FA65F22EB19DB00F3D415 /* MDType.m in Sources */ = {isa = PBXBuildFile; fileRef = 429FA65E22EB19DB00F3D415 /* MDType.m */; };
+		42CEBE2E234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -94,6 +95,8 @@
 		4295FB2422D360930024B155 /* ViewControllerAddBeaconMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerAddBeaconMenu.h; sourceTree = "<group>"; };
 		4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerAddBeaconMenu.m; sourceTree = "<group>"; };
 		429FA65E22EB19DB00F3D415 /* MDType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDType.m; sourceTree = "<group>"; };
+		42CEBE2C2345009D0094B1BA /* ViewControllerModelingThetaThetaLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerModelingThetaThetaLocating.h; sourceTree = "<group>"; };
+		42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerModelingThetaThetaLocating.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +175,8 @@
 				428AF6BF22D7915000BE5374 /* ViewControllerSelectPositions.m */,
 				428AF6C122D7A64E00BE5374 /* ViewControllerThetaThetaLocating.h */,
 				428AF6C222D7A67500BE5374 /* ViewControllerThetaThetaLocating.m */,
+				42CEBE2C2345009D0094B1BA /* ViewControllerModelingThetaThetaLocating.h */,
+				42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */,
 				426501BB22A03B4000BE20B7 /* Canvas.h */,
 				426501BC22A03B4300BE20B7 /* Canvas.m */,
 				42300BD92330DF6D00E2385F /* VCPosition.h */,
@@ -318,6 +323,7 @@
 				422798852271F37800E07C39 /* AppDelegate.m in Sources */,
 				429FA65F22EB19DB00F3D415 /* MDType.m in Sources */,
 				4276127422C0EE91007BDED8 /* SharedData.m in Sources */,
+				42CEBE2E234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m in Sources */,
 				42300BDB2330E03000E2385F /* VCPosition.m in Sources */,
 				426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */,
 				4242F6CB22CBACAB00C4B0B7 /* Averager.m in Sources */,

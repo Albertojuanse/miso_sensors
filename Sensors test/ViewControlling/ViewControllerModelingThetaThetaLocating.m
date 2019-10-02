@@ -2,13 +2,13 @@
 //  ViewControllerModelingThetaThetaLocating.m
 //  Sensors test
 //
-//  Created by MISO on 11/7/19.
+//  Created by Alberto J. on 2/10/19.
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
 #import "ViewControllerModelingThetaThetaLocating.h"
 
-@implementation ViewControllerThetaThetaLocating
+@implementation ViewControllerModelingThetaThetaLocating
 
 #pragma mark - UIViewController delegated methods
 
@@ -132,66 +132,6 @@
 }
 
 #pragma mark - Buttons event handles
-
-/*!
- @method handleButtonMeasure:
- @discussion This method handles the action in which the Measure button is pressed; it must disable 'Travel' control buttons and ask location manager delegate to start measuring.
- */
-- (IBAction)handleButtonMeasure:(id)sender
-{
-    // First, validate the acess to the data shared collection
-    if (
-        [sharedData validateCredentialsUserDic:credentialsUserDic]
-        )
-    {
-        
-    } else {
-        [self alertUserWithTitle:@"Travel won't be started."
-                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
-                      andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-                      }
-         ];
-        NSLog(@"[ERROR][VCRRM] Shared data could not be acessed while starting travel.");
-        return;
-    }
-    
-    // In every state the button performs different behaviours
-    NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic];
-    
-    if ([state isEqualToString:@"IDLE"]) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
-        // If user did chose a position to aim
-        if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic]) {
-            [self.buttonMeasure setEnabled:YES];
-            [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
-                                       andWithCredentialsUserDic:credentialsUserDic];
-            [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
-            
-            // And send the notification
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
-                                                                object:nil];
-            NSLog(@"[NOTI][VCTTL] Notification \"startMeasuring\" posted.");
-            return;
-        } else {
-            return;
-        }
-    }
-    if ([state isEqualToString:@"MEASURING"]) { // If 'Measuring' is tapped, ask stop measuring.
-        [self.buttonMeasure setEnabled:YES];
-        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
-                              andWithCredentialsUserDic:credentialsUserDic];
-        [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
-                                                            object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopMeasuring\" posted.");
-        // For showing the located items
-        [self.tableItemsChosen reloadData];
-        return;
-    }
-}
-
 /*!
  @method handleBackButton:
  @discussion This method dismiss this view and ask main menu view to be displayed; 'prepareForSegue:sender:' method is called before.
@@ -209,6 +149,14 @@
 {
     // New UUID
     locatedPositionUUID = [[NSUUID UUID] UUIDString];
+}
+
+/*!
+ @method handleButtonModel:
+ @discussion This method is called when user is prepared for modeling.
+ */
+- (IBAction)handleButtonModel:(id)sender {
+    [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToModelingToMain" sender:sender];
 }
 
 /*!
@@ -244,7 +192,7 @@
     NSLog(@"[INFO][VCTTL] Asked segue %@", [segue identifier]);
     
     // If main menu is going to be displayed, any variable can be returned here
-    if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToMain"]) {
+    if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToModelingToMain"]) {
         
         // Get destination view
         ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
@@ -254,6 +202,27 @@
         [viewControllerMainMenu setSharedData:sharedData];
         [viewControllerMainMenu setMotionManager:motion];
         [viewControllerMainMenu setLocationManager:location];
+        
+        // Ask Location manager to clean the measures taken and reset its position.
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
+                                                            object:nil];
+        NSLog(@"[NOTI][VCTTL] Notification \"stopMeasuring\" posted.");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
+                                                            object:nil];
+        NSLog(@"[NOTI][VCTTL] Notification \"reset\" posted.");
+        return;
+    }
+    
+    if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING"]) {
+        
+        // Get destination view
+        ViewControllerModelingThetaThetaLocating * viewControllerModelingThetaThetaLocating = [segue destinationViewController];
+        // Set the variables
+        [viewControllerModelingThetaThetaLocating setCredentialsUserDic:credentialsUserDic];
+        [viewControllerModelingThetaThetaLocating setUserDic:userDic];
+        [viewControllerModelingThetaThetaLocating setSharedData:sharedData];
+        [viewControllerModelingThetaThetaLocating setMotionManager:motion];
+        [viewControllerModelingThetaThetaLocating setLocationManager:location];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
@@ -445,7 +414,7 @@
                     
                 } else {
                     
-                     if (position) {
+                    if (position) {
                         cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%.2f, %.2f, %.2f)",
                                                itemDic[@"identifier"],
                                                [position.x floatValue],
@@ -453,13 +422,13 @@
                                                [position.z floatValue]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                     } else {
-                         cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n",
-                                                itemDic[@"identifier"],
-                                                itemDic[@"type"]
-                                                ];
-                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                     }
+                    } else {
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n",
+                                               itemDic[@"identifier"],
+                                               itemDic[@"type"]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    }
                 }
                 
             }
@@ -509,17 +478,17 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             NSMutableDictionary * itemSelected = nil;
             if (indexPath.row < itemsChosenCount) {
                 itemSelected = [
-                           [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic]
-                           objectAtIndex:indexPath.row
-                           ];
+                                [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic]
+                                objectAtIndex:indexPath.row
+                                ];
             }
             if (indexPath.row >= itemsChosenCount && indexPath.row < itemsChosenCount + itemsLocatedCount) {
                 itemSelected = [
-                           [sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                   andCredentialsUserDic:credentialsUserDic]
-                           objectAtIndex:indexPath.row - itemsChosenCount
-                           ];
+                                [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                        andCredentialsUserDic:credentialsUserDic]
+                                objectAtIndex:indexPath.row - itemsChosenCount
+                                ];
             }
             
             // Only not located positions can be aimed, positions were marked
@@ -530,7 +499,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                                        andCredentialsUserDic:credentialsUserDic];
             } else {
                 
-                [tableView deselectRowAtIndexPath:indexPath animated:NO];
             }
         } else {
             [self alertUserWithTitle:@"Items won't be loaded."
@@ -554,3 +522,4 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 @end
+
