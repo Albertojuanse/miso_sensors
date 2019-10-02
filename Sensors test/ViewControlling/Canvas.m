@@ -659,7 +659,7 @@
     
     // Draw the type
     // Get its color...
-    NSUInteger typeIndex = 3;
+    NSUInteger typeIndex = 5;
     NSMutableArray * types = [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic];
     for (MDType * eachType in types) {
         typeIndex++;

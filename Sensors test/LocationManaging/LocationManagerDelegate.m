@@ -623,6 +623,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                            [positionKey length] - 4]
                                           ];
                 infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
+                // Check if it is a item chosen by user
+                MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
+                                                                            andCredentialsUserDic:credentialsUserDic];
+                if(type) {
+                    infoDic[@"type"] = type;
+                }
                 [sharedData inItemDataAddItemOfSort:@"position"
                                            withUUID:positionKey
                                         withInfoDic:infoDic

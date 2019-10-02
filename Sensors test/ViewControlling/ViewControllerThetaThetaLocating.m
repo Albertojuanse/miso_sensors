@@ -499,14 +499,31 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
-            NSMutableDictionary * itemSelected = [
-                                                  [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                                               andCredentialsUserDic:credentialsUserDic]
-                                                  objectAtIndex:indexPath.row
-                                                  ];
+            // Select the source of items; both chosen and located items are shown
+            NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                                       andCredentialsUserDic:credentialsUserDic] count];
+            NSInteger itemsLocatedCount = [[sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                                   andCredentialsUserDic:credentialsUserDic] count];
             
-            // Only positions can be aimed, positions were marked
-            if ([@"position" isEqualToString:itemSelected[@"sort"]])
+            // Load the item depending of the source
+            NSMutableDictionary * itemSelected = nil;
+            if (indexPath.row < itemsChosenCount) {
+                itemSelected = [
+                           [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                        andCredentialsUserDic:credentialsUserDic]
+                           objectAtIndex:indexPath.row
+                           ];
+            }
+            if (indexPath.row >= itemsChosenCount && indexPath.row < itemsChosenCount + itemsLocatedCount) {
+                itemSelected = [
+                           [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                   andCredentialsUserDic:credentialsUserDic]
+                           objectAtIndex:indexPath.row - itemsChosenCount
+                           ];
+            }
+            
+            // Only not located positions can be aimed, positions were marked
+            if ([@"position" isEqualToString:itemSelected[@"sort"]] && ([@"NO" isEqualToString:itemSelected[@"located"]] || !itemSelected[@"located"]))
             {
                 [sharedData inSessionDataSetItemChosenByUser:itemSelected
                                            toUserWithUserDic:userDic
