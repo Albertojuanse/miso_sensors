@@ -43,7 +43,6 @@
     [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic andCredentialsUserDic:credentialsUserDic];
     
     // Visualization
-    [self.buttonMeasure setEnabled:YES];
     [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
