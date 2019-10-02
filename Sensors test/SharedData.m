@@ -2571,7 +2571,7 @@
                 for (id key in infoDicKeys) {
                     itemDic[key] = infoDic[key];
                 }
-                
+            
             } else {
                 // Do nothing
             }

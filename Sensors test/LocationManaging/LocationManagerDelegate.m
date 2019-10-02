@@ -431,6 +431,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                         for (id positionKey in positionKeys) {
                             NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
                             infoDic[@"located"] = @"YES";
+                            infoDic[@"sort"] = @"position";
                             infoDic[@"identifier"] = [NSString
                                                       stringWithFormat:@"location%@@miso.uam.es",
                                                       [positionKey substringFromIndex:
@@ -615,6 +616,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             for (id positionKey in positionKeys) {
                 NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
                 infoDic[@"located"] = @"YES";
+                infoDic[@"sort"] = @"position";
                 infoDic[@"identifier"] = [NSString
                                           stringWithFormat:@"location%@@miso.uam.es",
                                           [positionKey substringFromIndex:

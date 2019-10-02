@@ -186,6 +186,8 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
                                                             object:nil];
         NSLog(@"[NOTI][VCTTL] Notification \"stopMeasuring\" posted.");
+        // For showing the located items
+        [self.tableItemsChosen reloadData];
         return;
     }
 }
@@ -275,8 +277,12 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableItemsChosen) {
-        return [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                             andCredentialsUserDic:credentialsUserDic] count];
+        NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                                   andCredentialsUserDic:credentialsUserDic] count];
+        NSInteger itemsLocatedCount = [[sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                               andCredentialsUserDic:credentialsUserDic] count];
+        NSInteger itemsCount = itemsChosenCount + itemsLocatedCount;
+        return itemsCount;
     }
     if (tableView == self.tableTypes) {
         return [[sharedData fromMetamodelDataGetTypesWithCredentialsUserDic:credentialsUserDic] count];
@@ -302,13 +308,28 @@
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
+            // Select the source of items; both chosen and located items are shown
+            NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                                       andCredentialsUserDic:credentialsUserDic] count];
+            NSInteger itemsLocatedCount = [[sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                                   andCredentialsUserDic:credentialsUserDic] count];
             
-            // Load the item
-            NSMutableDictionary * itemDic = [
-                                             [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                                          andCredentialsUserDic:credentialsUserDic]
-                                             objectAtIndex:indexPath.row
-                                             ];
+            // Load the item depending of the source
+            NSMutableDictionary * itemDic = nil;
+            if (indexPath.row < itemsChosenCount) {
+                itemDic = [
+                           [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                        andCredentialsUserDic:credentialsUserDic]
+                           objectAtIndex:indexPath.row
+                           ];
+            }
+            if (indexPath.row >= itemsChosenCount && indexPath.row < itemsChosenCount + itemsLocatedCount) {
+                itemDic = [
+                           [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                   andCredentialsUserDic:credentialsUserDic]
+                           objectAtIndex:indexPath.row - itemsChosenCount
+                           ];
+            }
             cell.textLabel.numberOfLines = 0; // Means any number
             
             // If it is a beacon
@@ -373,7 +394,7 @@
             }
             
             // And if it is a position
-            if ([@"position" isEqualToString:itemDic[@"sort"]]) {
+            if ([@"position" isEqualToString:itemDic[@"sort"]] && ([@"NO" isEqualToString:itemDic[@"located"]] || !itemDic[@"located"])) {
                 // If its type is set
                 RDPosition * position = itemDic[@"position"];
                 if (itemDic[@"type"]) {
@@ -395,6 +416,50 @@
                                            [position.z floatValue]
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                }
+                
+            }
+            
+            // And if it is a location
+            if ([@"position" isEqualToString:itemDic[@"sort"]] && [@"YES" isEqualToString:itemDic[@"located"]]) {
+                // If its type is set
+                RDPosition * position = itemDic[@"position"];
+                if (itemDic[@"type"]) {
+                    
+                    if (position) {
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%.2f, %.2f, %.2f)",
+                                               itemDic[@"identifier"],
+                                               itemDic[@"type"],
+                                               [position.x floatValue],
+                                               [position.y floatValue],
+                                               [position.z floatValue]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    } else {
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n",
+                                               itemDic[@"identifier"],
+                                               itemDic[@"type"]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    }
+                    
+                } else {
+                    
+                     if (position) {
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%.2f, %.2f, %.2f)",
+                                               itemDic[@"identifier"],
+                                               [position.x floatValue],
+                                               [position.y floatValue],
+                                               [position.z floatValue]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                     } else {
+                         cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n",
+                                                itemDic[@"identifier"],
+                                                itemDic[@"type"]
+                                                ];
+                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                     }
                 }
                 
             }
