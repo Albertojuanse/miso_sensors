@@ -548,7 +548,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                                   ofSort:@"heading"
                                             withItemUUID:itemUUID
                                           withDeviceUUID:deviceUUID
-                                              atPosition:measurePosition
+                                              atPosition:nil
                                           takenByUserDic:userDic
                                andWithCredentialsUserDic:credentialsUserDic];
                 }

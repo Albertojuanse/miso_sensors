@@ -182,7 +182,7 @@
 - (void)drawRect:(CGRect)rect {
     
     // Remove the old layers
-    // [self removeLayers];
+    [self removeLayers];
     
     // Display the center point
     [self displayCenter];
@@ -413,6 +413,8 @@
     // Show the chosen items by the user; the items used for locations like positions or beacons if known.
     // For every item position...
     for (RDPosition * realItemPosition in itemsPositions) {
+        
+        
         
         // ...get the transformed position...
         RDPosition * canvasItemPosition = [self transformSingleRealPointToCanvasPoint:realItemPosition];
@@ -897,6 +899,7 @@
     barycenter.x = [[NSNumber alloc] initWithFloat: sumx / points.count];
     barycenter.y = [[NSNumber alloc] initWithFloat: sumy / points.count];
     barycenter.z = [[NSNumber alloc] initWithFloat: sumz / points.count];
+    
     return barycenter;
 }
 
@@ -1010,6 +1013,7 @@
         }
         // Correct the points location.
         barycenter = [self getBarycenterOf:centeredCanvasPoints];
+        // NSLog(@"-> [INFO][CA] transform barycenter %@", barycenter);
         RDPosition * correction = [self subtract:RDcenter from:barycenter];
         for (RDPosition * centeredCanvasPoint in centeredCanvasPoints) {
             RDPosition * correctedCanvasPoint = [self add:centeredCanvasPoint to:correction];
@@ -1024,7 +1028,7 @@
  @discussion This method calculate the ratios needed for showing a set of real points in the canvas; the 'safeAreaRatio' defines a safe area near the canvas' boundaries in wich the points won't be allocated, and it is tipically 0.4, and only the centered 20% of the canvas will allocate the points.
  */
 - (void) calculateRatiosOfTransformationFromRealPointsToCanvasPoints:(NSMutableArray *)realPoints
-                                                               withSafeAreaRatio:(NSNumber *)safeAreaRatio
+                                                   withSafeAreaRatio:(NSNumber *)safeAreaRatio
 {
     // Get the canvas dimensions and its center
     float canvasWidth = self.frame.size.width;
@@ -1100,6 +1104,7 @@
         }
         // Correct the points location.
         barycenter = [self getBarycenterOf:centeredCanvasPoints];
+        // NSLog(@"-> [INFO][CA] caculate ratios barycenter %@", barycenter);
     }
 }
 
@@ -1125,6 +1130,11 @@
     // Correct the points location.
     RDPosition * correction = [self subtract:RDcenter from:barycenter];
     RDPosition * correctedCanvasPoint = [self add:centeredCanvasPoint to:correction];
+    //NSLog(@"-> [INFO][CA] RDCenter %@", RDcenter);
+    //NSLog(@"-> [INFO][CA] centeredCanvasPoint %@", centeredCanvasPoint);
+    //NSLog(@"-> [INFO][CA] correction %@", correction);
+    //NSLog(@"-> [INFO][CA] correctedCanvasPoint %@", correctedCanvasPoint);
+    //NSLog(@"-> [INFO][CA] barycenter %@", barycenter);
     
     return correctedCanvasPoint;
 }

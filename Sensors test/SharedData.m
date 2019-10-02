@@ -1292,12 +1292,14 @@
         
         // Get every dictionary with measures and copy and save the position
         for (measureDic in measuresData) {
-            RDPosition * newPosition = [[RDPosition alloc] init];
             RDPosition * storedPosition = measureDic[@"position"];
-            storedPosition.x = newPosition.x;
-            storedPosition.y = newPosition.y;
-            storedPosition.z = newPosition.z;
-            [positions addObject:newPosition];
+            if (storedPosition) {
+                RDPosition * newPosition = [[RDPosition alloc] init];
+                storedPosition.x = newPosition.x;
+                storedPosition.y = newPosition.y;
+                storedPosition.z = newPosition.z;
+                [positions addObject:newPosition];
+            }
         }
         
         return positions;
