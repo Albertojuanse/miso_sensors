@@ -40,7 +40,7 @@
 #pragma mark - Instance methods
 /*!
  @method setCredentialUserDic:
- @discussion This method sets the dictionary with the user's credentials for acess the collections in shared data database.
+ @discussion This method sets the dictionary with the user's credentials for access the collections in shared data database.
  */
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic
 {
@@ -98,13 +98,13 @@
 {
     NSLog(@"[INFO][RT] Start Radiolocating beacons");
     
-    // Check the acess to data shared collections
+    // Check the access to data shared collections
     if (
         ![sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-        NSLog(@"[ERROR][RT] Shared data could not be acessed while loading cells' item.");
+        NSLog(@"[ERROR][RT] Shared data could not be accessed while loading cells' item.");
     }
     
     // Declare collections

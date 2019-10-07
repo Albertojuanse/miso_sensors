@@ -128,7 +128,7 @@
  */
 - (IBAction)handleButtonTravel:(id)sender
 {
-    // First, validate the acess to the data shared collection
+    // First, validate the access to the data shared collection
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
@@ -141,7 +141,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCRRM] Shared data could not be acessed while starting travel.");
+        NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting travel.");
         return;
     }
     
@@ -189,7 +189,7 @@
  */
 - (IBAction)handleButtonMeasure:(id)sender
 {
-    // First, validate the acess to the data shared collection
+    // First, validate the access to the data shared collection
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
@@ -202,7 +202,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCRRM] Shared data could not be acessed while starting travel.");
+        NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting travel.");
         return;
     }
     

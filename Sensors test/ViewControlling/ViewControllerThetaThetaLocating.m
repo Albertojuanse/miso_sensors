@@ -139,7 +139,7 @@
  */
 - (IBAction)handleButtonMeasure:(id)sender
 {
-    // First, validate the acess to the data shared collection
+    // First, validate the access to the data shared collection
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
@@ -152,7 +152,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCRRM] Shared data could not be acessed while starting travel.");
+        NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting travel.");
         return;
     }
     
@@ -198,7 +198,7 @@
  */
 - (IBAction)handleBackButton:(id)sender
 {
-    [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToMain" sender:sender];
+    [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToSelectPosition" sender:sender];
 }
 
 /*!
@@ -236,6 +236,14 @@
 }
 
 /*!
+ @method handleButtonModel:
+ @discussion This method is called when user is prepared for modeling.
+ */
+- (IBAction)handleButtonModel:(id)sender {
+    [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING" sender:sender];
+}
+
+/*!
  @method prepareForSegue:sender:
  @discussion This method is called before any segue and it is used for pass other views variables.
  */
@@ -244,16 +252,16 @@
     NSLog(@"[INFO][VCTTL] Asked segue %@", [segue identifier]);
     
     // If main menu is going to be displayed, any variable can be returned here
-    if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToMain"]) {
+    if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToSelectPosition"]) {
         
         // Get destination view
-        ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
+        ViewControllerSelectPositions * viewControllerSelectPositions = [segue destinationViewController];
         // Set the variables
-        [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
-        [viewControllerMainMenu setUserDic:userDic];
-        [viewControllerMainMenu setSharedData:sharedData];
-        [viewControllerMainMenu setMotionManager:motion];
-        [viewControllerMainMenu setLocationManager:location];
+        [viewControllerSelectPositions setCredentialsUserDic:credentialsUserDic];
+        [viewControllerSelectPositions setUserDic:userDic];
+        [viewControllerSelectPositions setSharedData:sharedData];
+        [viewControllerSelectPositions setMotionManager:motion];
+        [viewControllerSelectPositions setLocationManager:location];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
@@ -262,6 +270,19 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
                                                             object:nil];
         NSLog(@"[NOTI][VCTTL] Notification \"reset\" posted.");
+        return;
+    }
+    
+    if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING"]) {
+        
+        // Get destination view
+        ViewControllerModelingThetaThetaLocating * viewControllerModelingThetaThetaLocating = [segue destinationViewController];
+        // Set the variables
+        [viewControllerModelingThetaThetaLocating setCredentialsUserDic:credentialsUserDic];
+        [viewControllerModelingThetaThetaLocating setUserDic:userDic];
+        [viewControllerModelingThetaThetaLocating setSharedData:sharedData];
+        [viewControllerModelingThetaThetaLocating setMotionManager:motion];
+        [viewControllerModelingThetaThetaLocating setLocationManager:location];
         return;
     }
 }
@@ -470,7 +491,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCTTL] Shared data could not be acessed while loading cells' item.");
+            NSLog(@"[ERROR][VCTTL] Shared data could not be accessed while loading cells' item.");
         }
     }
     
@@ -539,7 +560,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCTTL] Shared data could not be acessed while loading cells' item.");
+            NSLog(@"[ERROR][VCTTL] Shared data could not be accessed while loading cells' item.");
         }
     }
     if (tableView == self.tableTypes) {

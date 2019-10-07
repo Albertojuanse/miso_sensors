@@ -209,7 +209,7 @@
         metamodelData = [[NSMutableArray alloc] init];
         modelData = [[NSMutableArray alloc] init];
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
     }
     return;
 }
@@ -236,7 +236,7 @@
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         return userData;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -250,7 +250,7 @@
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         return sessionData;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -264,7 +264,7 @@
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         return itemsData;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -278,7 +278,7 @@
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         return measuresData;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -292,7 +292,7 @@
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         return metamodelData;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -306,7 +306,7 @@
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         return modelData;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -324,7 +324,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -342,7 +342,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -360,7 +360,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -378,7 +378,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -396,7 +396,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -414,7 +414,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -432,7 +432,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -467,7 +467,7 @@
             }
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
     return nil;
@@ -526,7 +526,7 @@
             }
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
     return nil;
@@ -547,7 +547,7 @@
             }
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
     return nil;
@@ -570,7 +570,7 @@
             return nil;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
     return nil;
@@ -593,7 +593,7 @@
             return nil;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
     return nil;
@@ -654,7 +654,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
     return nil;
@@ -675,7 +675,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
     return nil;
@@ -696,7 +696,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
     return nil;
@@ -717,7 +717,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -737,7 +737,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 
@@ -759,7 +759,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -852,7 +852,7 @@
         }
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -886,7 +886,7 @@
         }
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -920,7 +920,7 @@
         return positions;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -995,7 +995,7 @@
         }
         return items;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1016,7 +1016,7 @@
         }
         return items;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1037,7 +1037,7 @@
         }
         return items;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1064,7 +1064,7 @@
         }
         return items;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1087,7 +1087,7 @@
         }
         return items;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1108,7 +1108,7 @@
         }
         return items;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1176,7 +1176,7 @@
         
         return itemsFound;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1196,7 +1196,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1221,7 +1221,7 @@
         
         return itemsFound;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1249,7 +1249,7 @@
         
         return positionsFound;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1305,7 +1305,7 @@
         return positions;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1337,7 +1337,7 @@
         return positions;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1372,7 +1372,7 @@
         return positions;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1418,7 +1418,7 @@
         return uuid;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1463,7 +1463,7 @@
         return uuid;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1497,7 +1497,7 @@
         return uuid;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1530,7 +1530,7 @@
         return uuid;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1565,7 +1565,7 @@
         return measures;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1605,7 +1605,7 @@
         return measures;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1645,7 +1645,7 @@
         return measures;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1685,7 +1685,7 @@
         return measures;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1729,7 +1729,7 @@
         return measures;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1773,7 +1773,7 @@
         return measures;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1797,7 +1797,7 @@
         }
         return max;        
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1825,7 +1825,7 @@
         }
         return metamodel;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1850,7 +1850,7 @@
         // This code is reached if the type is not found
         return NO;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1896,7 +1896,7 @@
         }
         return models;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1917,7 +1917,7 @@
         }
         return models;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
 }
@@ -1986,7 +1986,7 @@
         }
         return YES;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
 }
@@ -2037,7 +2037,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
     return nil;
@@ -2066,7 +2066,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
     return nil;
@@ -2276,7 +2276,7 @@
         return YES;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
 }
@@ -2337,7 +2337,7 @@
         return YES;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
 }
@@ -2394,7 +2394,7 @@
         return YES;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
 }
@@ -2451,7 +2451,7 @@
         return YES;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
 }
@@ -2540,7 +2540,7 @@
         return YES;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
 }
@@ -2602,7 +2602,7 @@
         return YES;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
 }
@@ -2669,7 +2669,7 @@
         return YES;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
 }
@@ -2712,7 +2712,7 @@
         
         return YES;
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
 }
@@ -2787,7 +2787,7 @@
         return YES;
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
 }
@@ -2866,7 +2866,7 @@
         }
         
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
 }
@@ -2904,7 +2904,7 @@
             return NO;
         }
     } else {
-        NSLog(@"[ALARM][SD] User tried to acess with no valid user credentials.");
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
 }

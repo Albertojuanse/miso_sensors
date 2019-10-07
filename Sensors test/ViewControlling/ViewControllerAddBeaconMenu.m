@@ -381,7 +381,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCAB] Shared data could not be acessed while removing a type.");
+        NSLog(@"[ERROR][VCAB] Shared data could not be accessed while removing a type.");
     }
     return;
 }
@@ -568,7 +568,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while registering type.");
+            NSLog(@"[ERROR][VCAB] Shared data could not be accessed while registering type.");
         }
         
     } else {
@@ -608,7 +608,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCAB] Shared data could not be acessed while removing type.");
+        NSLog(@"[ERROR][VCAB] Shared data could not be accessed while removing type.");
         return;
     }
     
@@ -629,7 +629,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while removing type.");
+            NSLog(@"[ERROR][VCAB] Shared data could not be accessed while removing type.");
         }
     } else {
         [self alertUserWithTitle:@"Invalid type selected."
@@ -855,7 +855,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableTypes) {
-        // Get the number of metamodel elements; if acess the database is imposible, warn the user.
+        // Get the number of metamodel elements; if access the database is imposible, warn the user.
         if (
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
@@ -868,7 +868,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while loading types.");
+            NSLog(@"[ERROR][VCAB] Shared data could not be accessed while loading types.");
         }
     }
     return 0;
@@ -907,7 +907,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while loading cells' type.");
+            NSLog(@"[ERROR][VCAB] Shared data could not be accessed while loading cells' type.");
         }
     }
         
@@ -972,7 +972,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCAB] Shared data could not be acessed while selecting a cells' type.");
+            NSLog(@"[ERROR][VCAB] Shared data could not be accessed while selecting a cells' type.");
         }
     }
     return;

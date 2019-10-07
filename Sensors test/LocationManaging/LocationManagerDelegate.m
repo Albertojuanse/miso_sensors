@@ -132,7 +132,7 @@
 
 /*!
  @method setCredentialUserDic:
- @discussion This method sets the dictionary with the user's credentials for acess the collections in shared data database.
+ @discussion This method sets the dictionary with the user's credentials for access the collections in shared data database.
  */
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic
 {
@@ -283,7 +283,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
        didRangeBeacons:(NSArray *)beacons
               inRegion:(CLBeaconRegion *)region
 {
-    // First, validate the acess to the data shared collection
+    // First, validate the access to the data shared collection
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
@@ -299,7 +299,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          ];
          */
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-        NSLog(@"[ERROR][VCRRM] Shared data could not be acessed while starting travel.");
+        NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting travel.");
         return;
     }
     
@@ -493,7 +493,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 - (void)locationManager:(CLLocationManager *)manager
        didUpdateHeading:(CLHeading *)newHeading
 {
-    // First, validate the acess to the data shared collection
+    // First, validate the access to the data shared collection
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
@@ -508,7 +508,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          }
          ];
          */
-        NSLog(@"[ERROR][VCRRM] Shared data could not be acessed while starting travel.");
+        NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting travel.");
         return;
     }
     
@@ -737,7 +737,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             NSLog(@"[ERROR][LM] Heading not avalible.");
         }
         
-        // Validate the acess to the data shared collection
+        // Validate the access to the data shared collection
         if (
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
@@ -752,7 +752,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
              }
              ];
              */
-            NSLog(@"[ERROR][VCRRM] Shared data could not be acessed while starting measuring.");
+            NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting measuring.");
             return;
         }
         

@@ -133,7 +133,7 @@
  */
 - (IBAction)handleButtonMeasure:(id)sender
 {
-    // First, validate the acess to the data shared collection
+    // First, validate the access to the data shared collection
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
@@ -146,7 +146,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCRRM] Shared data could not be acessed while starting travel.");
+        NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting travel.");
         return;
     }
     
@@ -257,7 +257,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableItems) {
-        // Get the number of metamodel elements; if acess the database is imposible, warn the user.
+        // Get the number of metamodel elements; if access the database is imposible, warn the user.
         if (
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
@@ -270,7 +270,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCRTM] Shared data could not be acessed while loading items.");
+            NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while loading items.");
         }
     }
     return 0;
@@ -401,7 +401,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCRTM] Shared data could not be acessed while loading cells' item.");
+            NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while loading cells' item.");
         }
     }
     return cell;
@@ -439,7 +439,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCRTM] Shared data could not be acessed while loading cells' item.");
+            NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while loading cells' item.");
         }
     }
 }

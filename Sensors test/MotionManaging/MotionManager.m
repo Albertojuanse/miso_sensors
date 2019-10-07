@@ -170,7 +170,7 @@
 #pragma mark - Instance methods
 /*!
  @method setCredentialUserDic:
- @discussion This method sets the dictionary with the user's credentials for acess the collections in shared data database.
+ @discussion This method sets the dictionary with the user's credentials for access the collections in shared data database.
  */
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic
 {

@@ -341,7 +341,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCMM] Shared data could not be acessed after view loading.");
+        NSLog(@"[ERROR][VCMM] Shared data could not be accessed after view loading.");
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
     }
 }

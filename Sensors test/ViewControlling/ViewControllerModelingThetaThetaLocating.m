@@ -43,7 +43,7 @@
     [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic andCredentialsUserDic:credentialsUserDic];
     
     // Visualization
-    [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
+    [self.labelStatus setText:@"Please, finish the model process."];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableItemsChosen.delegate = self;
@@ -137,25 +137,7 @@
  */
 - (IBAction)handleBackButton:(id)sender
 {
-    [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToMain" sender:sender];
-}
-
-/*!
- @method handleButtonNext:
- @discussion This method is called one the user wnats to locate a new position and thus a new UUID is generated for it.
- */
-- (IBAction)handleButtonNext:(id)sender
-{
-    // New UUID
-    locatedPositionUUID = [[NSUUID UUID] UUIDString];
-}
-
-/*!
- @method handleButtonModel:
- @discussion This method is called when user is prepared for modeling.
- */
-- (IBAction)handleButtonModel:(id)sender {
-    [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToModelingToMain" sender:sender];
+    [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING" sender:sender];
 }
 
 /*!
@@ -188,48 +170,19 @@
  */
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSLog(@"[INFO][VCTTL] Asked segue %@", [segue identifier]);
+    NSLog(@"[INFO][VCMTTL] Asked segue %@", [segue identifier]);
     
     // If main menu is going to be displayed, any variable can be returned here
-    if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToModelingToMain"]) {
+    if ([[segue identifier] isEqualToString:@"fromModelingTHETA_THETA_LOCATINGToTHETA_THETA_LOCATING"]) {
         
         // Get destination view
-        ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
+        ViewControllerThetaThetaLocating * viewControllerThetaThetaLocating = [segue destinationViewController];
         // Set the variables
-        [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
-        [viewControllerMainMenu setUserDic:userDic];
-        [viewControllerMainMenu setSharedData:sharedData];
-        [viewControllerMainMenu setMotionManager:motion];
-        [viewControllerMainMenu setLocationManager:location];
-        
-        // Ask Location manager to clean the measures taken and reset its position.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
-                                                            object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopMeasuring\" posted.");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
-                                                            object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"reset\" posted.");
-        return;
-    }
-    
-    if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING"]) {
-        
-        // Get destination view
-        ViewControllerModelingThetaThetaLocating * viewControllerModelingThetaThetaLocating = [segue destinationViewController];
-        // Set the variables
-        [viewControllerModelingThetaThetaLocating setCredentialsUserDic:credentialsUserDic];
-        [viewControllerModelingThetaThetaLocating setUserDic:userDic];
-        [viewControllerModelingThetaThetaLocating setSharedData:sharedData];
-        [viewControllerModelingThetaThetaLocating setMotionManager:motion];
-        [viewControllerModelingThetaThetaLocating setLocationManager:location];
-        
-        // Ask Location manager to clean the measures taken and reset its position.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
-                                                            object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopMeasuring\" posted.");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
-                                                            object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"reset\" posted.");
+        [viewControllerThetaThetaLocating setCredentialsUserDic:credentialsUserDic];
+        [viewControllerThetaThetaLocating setUserDic:userDic];
+        [viewControllerThetaThetaLocating setSharedData:sharedData];
+        [viewControllerThetaThetaLocating setMotionManager:motion];
+        [viewControllerThetaThetaLocating setLocationManager:location];
         return;
     }
 }
@@ -438,7 +391,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCTTL] Shared data could not be acessed while loading cells' item.");
+            NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed while loading cells' item.");
         }
     }
     
@@ -506,7 +459,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCTTL] Shared data could not be acessed while loading cells' item.");
+            NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed while loading cells' item.");
         }
     }
     if (tableView == self.tableTypes) {
