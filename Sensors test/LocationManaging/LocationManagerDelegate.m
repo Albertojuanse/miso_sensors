@@ -157,6 +157,15 @@
 - (void)setDeviceUUID:(NSString *)givenDeviceUUID
 {
     deviceUUID = givenDeviceUUID;
+    if (rhoRhoSystem) {
+        [rhoRhoSystem setDeviceUUID:deviceUUID];
+    }
+    if (rhoThetaSystem) {
+        [rhoThetaSystem setDeviceUUID:deviceUUID];
+    }
+    if (thetaThetaSystem) {
+        [thetaThetaSystem setDeviceUUID:deviceUUID];
+    }
     return;
 }
 
@@ -611,7 +620,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             
             // Ask radiolocation of beacons if posible...
             locatedPositions = [thetaThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
-            // ...and save it in dictionary 'locatedDic'.
+            // ...and save them as a located item.
             NSArray *positionKeys = [locatedPositions allKeys];
             for (id positionKey in positionKeys) {
                 NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];

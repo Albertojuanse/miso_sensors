@@ -209,6 +209,7 @@
 {
     // New UUID
     locatedPositionUUID = [[NSUUID UUID] UUIDString];
+    [location setDeviceUUID:locatedPositionUUID];
 }
 
 /*!

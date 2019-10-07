@@ -801,7 +801,7 @@
  */
 - (void) drawMeasureUUID:(NSString *)uuid
                  atIndex:(NSInteger)index
-               andWithColor:(UIColor *)color
+            andWithColor:(UIColor *)color
 {
     UIBezierPath * uuidBezierPath = [UIBezierPath bezierPath];
     

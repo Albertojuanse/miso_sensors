@@ -137,7 +137,7 @@
  */
 - (IBAction)handleBackButton:(id)sender
 {
-    [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING" sender:sender];
+    [self performSegueWithIdentifier:@"fromModelingTHETA_THETA_LOCATINGToTHETA_THETA_LOCATING" sender:sender];
 }
 
 /*!

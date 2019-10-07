@@ -1183,7 +1183,6 @@
                                         <state key="normal" title="Model"/>
                                         <connections>
                                             <action selector="handleButtonModel:" destination="iCa-UJ-9hQ" eventType="touchUpInside" id="CDY-Rd-9DB"/>
-                                            <segue destination="fiB-CG-Opu" kind="show" identifier="fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING" id="e5A-vz-c1N"/>
                                         </connections>
                                     </button>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="19c-FT-8ax">
@@ -1251,6 +1250,7 @@
                         <outlet property="tableItemsChosen" destination="4ll-jJ-GH8" id="Pzc-Ir-BNo"/>
                         <outlet property="tableTypes" destination="19c-FT-8ax" id="nSF-SH-t2q"/>
                         <segue destination="zBC-hA-n0a" kind="show" identifier="fromTHETA_THETA_LOCATINGToSelectPosition" id="2AF-RI-iGH"/>
+                        <segue destination="fiB-CG-Opu" kind="show" identifier="fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING" id="Ul9-9n-vjH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="O8n-DL-srm" sceneMemberID="firstResponder"/>
@@ -1344,13 +1344,19 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Bnf-0m-cPD"/>
                     </view>
+                    <connections>
+                        <outlet property="canvas" destination="P72-n4-OIn" id="hiB-9A-nfe"/>
+                        <outlet property="labelStatus" destination="6yn-w8-AGx" id="8Ly-nq-ccJ"/>
+                        <outlet property="tableItemsChosen" destination="GG4-Qe-Xxb" id="cOp-re-JJd"/>
+                        <outlet property="tableTypes" destination="ucz-ve-aVR" id="HZi-pD-zow"/>
+                    </connections>
                 </viewController>
             </objects>
             <point key="canvasLocation" x="2141" y="-1246"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="e5A-vz-c1N"/>
+        <segue reference="Ul9-9n-vjH"/>
         <segue reference="NKP-hK-ln4"/>
         <segue reference="2AF-RI-iGH"/>
         <segue reference="OWJ-G0-Y79"/>
