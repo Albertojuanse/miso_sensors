@@ -294,6 +294,10 @@
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
+            // No item chosen by user
+            [sharedData inSessionDataSetItemChosenByUser:nil
+                                       toUserWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic];
             
             // Load the item
             NSMutableDictionary * itemDic = [
@@ -417,6 +421,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
+            // No item chosen by user
+            [sharedData inSessionDataSetItemChosenByUser:nil
+                                       toUserWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic];
+            
             NSMutableDictionary * itemSelected = [
                                                   [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
                                                   objectAtIndex:indexPath.row

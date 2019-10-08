@@ -1611,6 +1611,171 @@
 }
 
 /*!
+ @method fromMeasuresDataGetMeasuresOfUserDic:ofDeviceUUID:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken from a given device UUID by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
+                                            ofDeviceUUID:(NSString *)deviceUUID
+                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * measures = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and save the measures.
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
+                
+                NSString * storedDeviceUUID = measureDic[@"deviceUUID"];
+                if ([storedDeviceUUID isEqualToString:deviceUUID]) {
+                    
+                    if (measureDic[@"measure"]) {
+                        [measures addObject:measureDic[@"measure"]];
+                    }
+                }
+            }
+        }
+        
+        return measures;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetMeasuresOfUserDic:ofDeviceUUID:ofSort:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken from a given device UUID and sort by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
+                                            ofDeviceUUID:(NSString *)deviceUUID
+                                                  ofSort:(NSString *)sort
+                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * measures = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and save the measures.
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
+                
+                NSString * storedDeviceUUID = measureDic[@"deviceUUID"];
+                if ([storedDeviceUUID isEqualToString:deviceUUID]) {
+                    
+                    NSString * storedMeasureSort = measureDic[@"sort"];
+                    if ([storedMeasureSort isEqualToString:sort]) {
+                        
+                        if (measureDic[@"measure"]) {
+                            [measures addObject:measureDic[@"measure"]];
+                        }
+                    }
+                }
+            }
+        }
+        
+        return measures;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetMeasuresOfUserDic:takenFromItemUUID:andOfDeviceUUID:ofSort:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken from a given device UUID, item UUID, and sort by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
+                                       takenFromItemUUID:(NSString *)itemUUID
+                                         andOfDeviceUUID:(NSString *)deviceUUID
+                                                  ofSort:(NSString *)sort
+                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * measures = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and save the measures.
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
+                
+                NSString * storedDeviceUUID = measureDic[@"deviceUUID"];
+                if ([storedDeviceUUID isEqualToString:deviceUUID]) {
+                
+                    NSString * storedItemUUID = measureDic[@"itemUUID"];
+                    if ([storedItemUUID isEqualToString:itemUUID]) {
+                        
+                        NSString * storedMeasureSort = measureDic[@"sort"];
+                        if ([storedMeasureSort isEqualToString:sort]) {
+                            
+                            if (measureDic[@"measure"]) {
+                                [measures addObject:measureDic[@"measure"]];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return measures;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetMeasuresOfUserDic:ofDeviceUUID:andTakenFromItem:ofSort:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken from a given device UUID, item UUID, and sort by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
+                                            ofDeviceUUID:(NSString *)deviceUUID
+                                        andTakenFromItem:(NSString *)itemUUID
+                                                  ofSort:(NSString *)sort
+                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * measures = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and save the measures.
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
+                
+                NSString * storedDeviceUUID = measureDic[@"deviceUUID"];
+                if ([storedDeviceUUID isEqualToString:deviceUUID]) {
+                    
+                    NSString * storedItemUUID = measureDic[@"itemUUID"];
+                    if ([storedItemUUID isEqualToString:itemUUID]) {
+                        
+                        NSString * storedMeasureSort = measureDic[@"sort"];
+                        if ([storedMeasureSort isEqualToString:sort]) {
+                            
+                            if (measureDic[@"measure"]) {
+                                [measures addObject:measureDic[@"measure"]];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return measures;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
  @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:fromItemUUID:withCredentialsUserDic:
  @discussion This method returns a 'NSMutableArray' with every measure taken from a given item UUID, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
@@ -1763,6 +1928,104 @@
                         if ([storedSort isEqualToString:sort]) {
                             if (measureDic[@"measure"]) {
                                 [measures addObject:measureDic[@"measure"]];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return measures;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:fromDeviceUUID:andOfDeviceUUID:ofSort:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken of a given device UUID, itemUUID, the given sort, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
+                                       takenFromPosition:(RDPosition *)givenPosition
+                                            fromItemUUID:(NSString *)itemUUID
+                                         andOfDeviceUUID:(NSString *)deviceUUID
+                                                  ofSort:(NSString *)sort
+                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * measures = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and save the measures.
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
+                
+                RDPosition * storedPosition = measureDic[@"position"];
+                if ([storedPosition isEqualToRDPosition:givenPosition]) {
+                    
+                    NSString * storedItemUUID = measureDic[@"itemUUID"];
+                    if ([storedItemUUID isEqualToString:itemUUID]) {
+                        
+                        NSString * storedDeviceUUID = measureDic[@"deviceUUID"];
+                        if ([storedDeviceUUID isEqualToString:deviceUUID]) {
+                            
+                            NSString * storedSort = measureDic[@"sort"];
+                            if ([storedSort isEqualToString:sort]) {
+                                if (measureDic[@"measure"]) {
+                                    [measures addObject:measureDic[@"measure"]];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return measures;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetMeasuresOfUserDic:takenFromPosition:offDeviceUUID:andFromDeviceUUID:ofSort:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken of a given device UUID, item UUID, the given sort, the given position by the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
+                                       takenFromPosition:(RDPosition *)givenPosition
+                                            ofDeviceUUID:(NSString *)deviceUUID
+                                         andFromItemUUID:(NSString *)itemUUID
+                                                  ofSort:(NSString *)sort
+                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * measures = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and save the measures.
+        for (measureDic in measuresData) {
+            NSMutableDictionary * storedUserDic = measureDic[@"user"];
+            if ([storedUserDic isEqualToDictionary:givenUserDic]) {
+                
+                RDPosition * storedPosition = measureDic[@"position"];
+                if ([storedPosition isEqualToRDPosition:givenPosition]) {
+                    
+                    NSString * storedItemUUID = measureDic[@"itemUUID"];
+                    if ([storedItemUUID isEqualToString:itemUUID]) {
+                        
+                        NSString * storedDeviceUUID = measureDic[@"deviceUUID"];
+                        if ([storedDeviceUUID isEqualToString:deviceUUID]) {
+                            
+                            NSString * storedSort = measureDic[@"sort"];
+                            if ([storedSort isEqualToString:sort]) {
+                                if (measureDic[@"measure"]) {
+                                    [measures addObject:measureDic[@"measure"]];
+                                }
                             }
                         }
                     }

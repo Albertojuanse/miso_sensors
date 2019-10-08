@@ -330,6 +330,11 @@
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
+            // No item chosen by user
+            [sharedData inSessionDataSetItemChosenByUser:nil
+                                       toUserWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic];
+            
             // Select the source of items; both chosen and located items are shown
             NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
                                                                        andCredentialsUserDic:credentialsUserDic] count];
@@ -521,6 +526,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
+            // No item chosen by user
+            [sharedData inSessionDataSetItemChosenByUser:nil
+                                       toUserWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic];
+            
             // Select the source of items; both chosen and located items are shown
             NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
                                                                        andCredentialsUserDic:credentialsUserDic] count];
@@ -551,7 +561,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                                            toUserWithUserDic:userDic
                                        andCredentialsUserDic:credentialsUserDic];
             } else {
-                
                 [tableView deselectRowAtIndexPath:indexPath animated:NO];
             }
         } else {

@@ -1260,7 +1260,6 @@
         <!--View Controller Modeling Theta Theta Locating-->
         <scene sceneID="faq-hk-mzo">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="YrL-1w-GUs" sceneMemberID="firstResponder"/>
                 <viewController id="fiB-CG-Opu" customClass="ViewControllerModelingThetaThetaLocating" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="OZb-Mo-ZU0">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
@@ -1294,7 +1293,7 @@
                                             <constraint firstAttribute="height" constant="200" id="ZgR-KJ-OUV"/>
                                         </constraints>
                                     </tableView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please, finish the model process." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vlC-zJ-lj4">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select each located item and asing a type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vlC-zJ-lj4">
                                         <rect key="frame" x="32" y="735" width="704" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
@@ -1351,12 +1350,12 @@
                         <outlet property="tableTypes" destination="ucz-ve-aVR" id="HZi-pD-zow"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YrL-1w-GUs" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2141" y="-1246"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Ul9-9n-vjH"/>
         <segue reference="NKP-hK-ln4"/>
         <segue reference="2AF-RI-iGH"/>
         <segue reference="OWJ-G0-Y79"/>

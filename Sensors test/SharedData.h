@@ -87,10 +87,6 @@
                             andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)fromSessionDataIsTravelingUserWithUserName:(NSString *)userName
                              andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
-- (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserDic:(NSMutableDictionary *)userDic
-                                                         andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
-- (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserName:(NSString *)userName
-                                                          andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSString *)fromSessionDataGetModeChosenByUserFromUserWithUserDic:(NSMutableDictionary *)userDic
                                                          andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSString *)fromSessionDataGetModeChosenByUserFromUserWithUserName:(NSString *)userName
@@ -161,6 +157,26 @@
                                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 - (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
+                                            ofDeviceUUID:(NSString *)deviceUUID
+                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
+                                            ofDeviceUUID:(NSString *)deviceUUID
+                                                  ofSort:(NSString *)sort
+                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
+                                       takenFromItemUUID:(NSString *)itemUUID
+                                         andOfDeviceUUID:(NSString *)deviceUUID
+                                                  ofSort:(NSString *)sort
+                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
+                                            ofDeviceUUID:(NSString *)deviceUUID
+                                        andTakenFromItem:(NSString *)itemUUID
+                                                  ofSort:(NSString *)sort
+                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+
+
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
                                        takenFromPosition:(RDPosition *)givenPosition
                                             fromItemUUID:(NSString *)itemUUID
                                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
@@ -177,6 +193,19 @@
 - (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
                                        takenFromPosition:(RDPosition *)givenPosition
                                             ofDeviceUUID:(NSString *)deviceUUID
+                                                  ofSort:(NSString *)sort
+                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
+                                       takenFromPosition:(RDPosition *)givenPosition
+                                            fromItemUUID:(NSString *)itemUUID
+                                         andOfDeviceUUID:(NSString *)deviceUUID
+                                                  ofSort:(NSString *)sort
+                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfUserDic:(NSMutableDictionary *)givenUserDic
+                                       takenFromPosition:(RDPosition *)givenPosition
+                                            ofDeviceUUID:(NSString *)deviceUUID
+                                         andFromItemUUID:(NSString *)itemUUID
                                                   ofSort:(NSString *)sort
                                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
