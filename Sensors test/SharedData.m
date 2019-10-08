@@ -2147,10 +2147,10 @@
 //
 
 /*!
- @method fromMetamodelDataGetModelDicsWithCredentialsUserDic:
+ @method fromModelDataGetModelDicsWithCredentialsUserDic:
  @discussion This method returns the 'NSMutableArray' with all models dictionaries stored; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (NSMutableArray *)fromMetamodelDataGetModelDicsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+- (NSMutableArray *)fromModelDataGetModelDicsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         NSMutableArray * models = [[NSMutableArray alloc] init];
@@ -2165,10 +2165,10 @@
 }
 
 /*!
- @method fromMetamodelDataGetModelDicWithName:withCredentialsUserDic:
+ @method fromModelDataGetModelDicWithName:withCredentialsUserDic:
  @discussion This method returns the 'NSMutableArray' with the models whose name is the given one; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (NSMutableArray *)fromMetamodelDataGetModelDicWithName:(NSString *)name
+- (NSMutableArray *)fromModelDataGetModelDicWithName:(NSString *)name
                                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {

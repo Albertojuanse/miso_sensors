@@ -218,8 +218,8 @@
                andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific model data specific getters
-- (NSMutableArray *)fromMetamodelDataGetModelDicsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
-- (NSMutableArray *)fromMetamodelDataGetModelDicWithName:(NSString *)name
+- (NSMutableArray *)fromModelDataGetModelDicsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray *)fromModelDataGetModelDicWithName:(NSString *)name
                                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific user data setters
