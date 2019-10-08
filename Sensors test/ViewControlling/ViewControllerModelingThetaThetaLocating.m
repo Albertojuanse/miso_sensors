@@ -50,6 +50,9 @@
     self.tableTypes.delegate = self;
     self.tableItemsChosen.dataSource = self;
     self.tableTypes.dataSource = self;
+    // Allow multiple selection
+    self.tableItemsChosen.allowsMultipleSelection = true;
+    self.tableTypes.allowsMultipleSelection = true;
     
     [self.tableItemsChosen reloadData];
     [self.tableTypes reloadData];
@@ -141,6 +144,42 @@
 }
 
 /*!
+ @method handleModifyButton:
+ @discussion This method changes the already represented model.
+ */
+- (IBAction)handleModifyButton:(id)sender
+{
+    // Database could not be acessed.
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        
+        // Get the user selection
+        NSMutableDictionary * itemDic = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                                                    andCredentialsUserDic:credentialsUserDic];
+        MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
+                                                                    andCredentialsUserDic:credentialsUserDic];
+        if (itemDic && type) {
+            itemDic[@"type"] = type;
+        }
+        
+        [self.canvas setNeedsDisplay];
+        [self.tableTypes reloadData];
+        [self.tableItemsChosen reloadData];
+        
+    } else {
+        [self alertUserWithTitle:@"Items won't be loaded."
+                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed while loading cells' item.");
+    }
+}
+
+/*!
  @method alertUserWithTitle:andMessage:
  @discussion This method alerts the user with a pop up window with a single "Ok" button given its message and title and lambda funcion handler.
  */
@@ -229,10 +268,12 @@
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
-            // No item chosen by user
+            // No item chosen by user; for reloading after using
             [sharedData inSessionDataSetItemChosenByUser:nil
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
+            [cell setAccessoryType:UITableViewCellAccessoryNone];
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
             
             // Select the source of items; both chosen and located items are shown
             NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
@@ -402,6 +443,13 @@
     
     // Configure individual cells
     if (tableView == self.tableTypes) {
+        // No type chosen by user; for reloading after using
+        [sharedData inSessionDataSetItemChosenByUser:nil
+                                   toUserWithUserDic:userDic
+                               andCredentialsUserDic:credentialsUserDic];
+        [cell setAccessoryType:UITableViewCellAccessoryNone];
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+        
         MDType * type = [
                          [sharedData fromMetamodelDataGetTypesWithCredentialsUserDic:credentialsUserDic]
                          objectAtIndex:indexPath.row
@@ -418,17 +466,12 @@
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
-    if (tableView == self.tableItemsChosen) {
-        // Database could not be acessed.
-        if (
-            [sharedData validateCredentialsUserDic:credentialsUserDic]
-            )
-        {
-            // No item chosen by user
-            [sharedData inSessionDataSetItemChosenByUser:nil
-                                       toUserWithUserDic:userDic
-                                   andCredentialsUserDic:credentialsUserDic];
+    // Database could not be acessed.
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        if (tableView == self.tableItemsChosen) {
             
             // Select the source of items; both chosen and located items are shown
             NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
@@ -453,33 +496,66 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                                 ];
             }
             
-            // Only not located positions can be aimed, positions were marked
-            if ([@"position" isEqualToString:itemSelected[@"sort"]] && ([@"NO" isEqualToString:itemSelected[@"located"]] || !itemSelected[@"located"]))
-            {
+            // The table was set in 'viewDidLoad' as multiple-selecting
+            // Manage multi-selection
+            UITableViewCell *selectedCell = [tableView cellForRowAtIndexPath:indexPath];
+            
+            if ([selectedCell accessoryType] == UITableViewCellAccessoryNone) { // If not checkmark
+                
+                [selectedCell setAccessoryType:UITableViewCellAccessoryCheckmark];
                 [sharedData inSessionDataSetItemChosenByUser:itemSelected
                                            toUserWithUserDic:userDic
                                        andCredentialsUserDic:credentialsUserDic];
-            } else {
-                [tableView deselectRowAtIndexPath:indexPath animated:NO];
+                
+            } else { // If checkmark
+                
+                [selectedCell setAccessoryType:UITableViewCellAccessoryNone];
+                [sharedData inSessionDataSetItemChosenByUser:nil
+                                           toUserWithUserDic:userDic
+                                       andCredentialsUserDic:credentialsUserDic];
+                
             }
-        } else {
-            [self alertUserWithTitle:@"Items won't be loaded."
-                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
-                          andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-                          }
-             ];
-            NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed while loading cells' item.");
+            
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+            
         }
-    }
-    if (tableView == self.tableTypes) {
-        MDType * typeSelected = [
-                                 [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
-                                 objectAtIndex:indexPath.row
-                                 ];
-        [sharedData inSessionDataSetTypeChosenByUser:typeSelected
-                                   toUserWithUserDic:userDic
-                               andCredentialsUserDic:credentialsUserDic];
+        if (tableView == self.tableTypes) {
+            
+            MDType * typeSelected = [
+                                     [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                                     objectAtIndex:indexPath.row
+                                     ];
+            
+            // The table was set in 'viewDidLoad' as multiple-selecting
+            // Manage multi-selection
+            UITableViewCell *selectedCell = [tableView cellForRowAtIndexPath:indexPath];
+            
+            if ([selectedCell accessoryType] == UITableViewCellAccessoryNone) { // If not checkmark
+                
+                [selectedCell setAccessoryType:UITableViewCellAccessoryCheckmark];
+                [sharedData inSessionDataSetTypeChosenByUser:typeSelected
+                                           toUserWithUserDic:userDic
+                                       andCredentialsUserDic:credentialsUserDic];
+                
+            } else { // If checkmark
+                
+                [selectedCell setAccessoryType:UITableViewCellAccessoryNone];
+                [sharedData inSessionDataSetTypeChosenByUser:nil
+                                           toUserWithUserDic:userDic
+                                       andCredentialsUserDic:credentialsUserDic];
+               
+            }
+            
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+        }
+    } else {
+        [self alertUserWithTitle:@"Items won't be loaded."
+                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed while loading cells' item.");
     }
 }
 

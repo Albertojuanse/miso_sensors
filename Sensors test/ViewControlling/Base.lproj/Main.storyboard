@@ -1307,6 +1307,13 @@
                                         <rect key="frame" x="695" y="880" width="41" height="30"/>
                                         <state key="normal" title="Finish"/>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ItZ-rp-Y43">
+                                        <rect key="frame" x="688" y="818" width="48" height="30"/>
+                                        <state key="normal" title="Modify"/>
+                                        <connections>
+                                            <action selector="handleModifyButton:" destination="fiB-CG-Opu" eventType="touchUpInside" id="nTp-C0-BTr"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -1318,8 +1325,10 @@
                                     <constraint firstItem="GG4-Qe-Xxb" firstAttribute="top" secondItem="vlC-zJ-lj4" secondAttribute="bottom" constant="16" id="FhD-mD-xPo"/>
                                     <constraint firstItem="vlC-zJ-lj4" firstAttribute="leading" secondItem="DO5-Fk-Tq8" secondAttribute="leading" constant="32" id="KlK-f9-krQ"/>
                                     <constraint firstItem="ucz-ve-aVR" firstAttribute="leading" secondItem="GG4-Qe-Xxb" secondAttribute="trailing" constant="8" id="UQS-p0-eD3"/>
+                                    <constraint firstItem="ihY-1S-kJR" firstAttribute="top" secondItem="ItZ-rp-Y43" secondAttribute="bottom" constant="32" id="XKU-TY-e1L"/>
                                     <constraint firstAttribute="trailing" secondItem="P72-n4-OIn" secondAttribute="trailing" constant="32" id="Xsn-uz-JWM"/>
                                     <constraint firstAttribute="bottom" secondItem="ucz-ve-aVR" secondAttribute="bottom" constant="32" id="aLZ-xj-L9k"/>
+                                    <constraint firstAttribute="trailing" secondItem="ItZ-rp-Y43" secondAttribute="trailing" constant="32" id="bCS-qu-Anx"/>
                                     <constraint firstItem="ucz-ve-aVR" firstAttribute="height" secondItem="GG4-Qe-Xxb" secondAttribute="height" id="cIk-pJ-PLf"/>
                                     <constraint firstItem="ucz-ve-aVR" firstAttribute="width" secondItem="GG4-Qe-Xxb" secondAttribute="width" id="cRb-g9-gJB"/>
                                     <constraint firstItem="6yn-w8-AGx" firstAttribute="leading" secondItem="DO5-Fk-Tq8" secondAttribute="leading" constant="32" id="cdP-d6-rel"/>
