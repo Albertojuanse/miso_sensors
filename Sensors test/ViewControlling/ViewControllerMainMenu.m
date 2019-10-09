@@ -728,7 +728,7 @@
                 }
                 
                 // If it is a model
-                if (itemDic[@"components"]) {
+                if ([@"model" isEqualToString:itemDic[@"sort"]]) {
                     cell.textLabel.text = [NSString stringWithFormat:@"%@",
                                            itemDic[@"identifier"]
                                            ];
@@ -745,7 +745,31 @@
         }
     }
     if (tableView == self.tableModes) {
-        cell.textLabel.text = [modes objectAtIndex:indexPath.row];
+        NSString * mode = [modes objectAtIndex:indexPath.row];
+        NSString * modeToShow;
+        if([@"RHO_RHO_MODELING" stringByAppendingString:mode]) {
+            modeToShow = @"Locate others using iBeacon";
+        }
+        if([@"RHO_THETA_MODELING" stringByAppendingString:mode]) {
+            modeToShow = @"Locate others using iBeacon and brújula";
+        }
+        if([@"THETA_THETA_MODELING" stringByAppendingString:mode]) {
+            modeToShow = @"Locate others using  brújula";
+        }
+        if([@"RHO_RHO_LOCATING" stringByAppendingString:mode]) {
+            modeToShow = @"Self locate using iBeacon";
+        }
+        if([@"RHO_THETA_LOCATING" stringByAppendingString:mode]) {
+            modeToShow = @"Self locate using iBeacon and brújula";
+        }
+        if([@"THETA_THETA_LOCATING" stringByAppendingString:mode]) {
+            modeToShow = @"Self locate using  brújula";
+        }
+        if (modeToShow) {
+            cell.textLabel.text = modeToShow;
+        } else{
+            cell.textLabel.text = @"MODE_NAME_NOT_AVALIBLE";
+        }
         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
     }
     return cell;

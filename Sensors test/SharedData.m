@@ -3060,6 +3060,7 @@
             // Wrap components collection in a dictionary with its name
             modelDic = [[NSMutableDictionary alloc] init];
             modelDic[@"name"] = name;
+            modelDic[@"sort"] = @"model";
             modelDic[@"components"] = components;
             
             // Set it into locatedDic
