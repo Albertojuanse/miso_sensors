@@ -36,6 +36,7 @@
 
 @property (weak, nonatomic) IBOutlet UITextView *modelText;
 @property (weak, nonatomic) IBOutlet UITextField *nameText;
+@property (weak, nonatomic) IBOutlet UILabel *statusLabel;
 
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;

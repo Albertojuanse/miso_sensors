@@ -2169,7 +2169,7 @@
  @discussion This method returns the 'NSMutableArray' with the models whose name is the given one; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 - (NSMutableArray *)fromModelDataGetModelDicWithName:(NSString *)name
-                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+                              withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         NSMutableArray * models = [[NSMutableArray alloc] init];
@@ -2179,6 +2179,26 @@
             }
         }
         return models;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromModelDataIsModelWithName:withCredentialsUserDic:
+ @discussion This method returns YES is there is any model named like the given 'NSString'; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (BOOL)fromModelDataIsModelWithName:(NSString *)name
+              withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        for (modelDic in modelData) {
+            if ([name isEqualToString:modelDic[@"name"]]) {
+                return YES;
+            }
+        }
+        return NO;
     } else {
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;

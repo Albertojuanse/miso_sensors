@@ -1297,6 +1297,12 @@
                                     <action selector="handleButonSubmit:" destination="Yt7-Vj-vjk" eventType="touchUpInside" id="A6P-T3-gLY"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5dI-h9-4KW">
+                                <rect key="frame" x="32" y="77" width="704" height="0.0"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -1309,16 +1315,20 @@
                             <constraint firstItem="bnV-SP-aOK" firstAttribute="bottom" secondItem="Yrl-yT-Wq9" secondAttribute="bottom" constant="32" id="NrA-0I-284"/>
                             <constraint firstItem="tQK-lt-D6z" firstAttribute="leading" secondItem="bnV-SP-aOK" secondAttribute="leading" constant="32" id="Q9s-r2-e3u"/>
                             <constraint firstItem="q4F-Cp-2jo" firstAttribute="top" secondItem="tQK-lt-D6z" secondAttribute="bottom" constant="32" id="SQd-xv-oTy"/>
+                            <constraint firstItem="bnV-SP-aOK" firstAttribute="trailing" secondItem="5dI-h9-4KW" secondAttribute="trailing" constant="32" id="SSC-1n-rm3"/>
+                            <constraint firstItem="5dI-h9-4KW" firstAttribute="leading" secondItem="bnV-SP-aOK" secondAttribute="leading" constant="32" id="VhD-tY-vKY"/>
                             <constraint firstItem="tQK-lt-D6z" firstAttribute="top" secondItem="bnV-SP-aOK" secondAttribute="top" constant="32" id="Vup-55-J1P"/>
                             <constraint firstItem="eAE-qk-qLD" firstAttribute="leading" secondItem="tQK-lt-D6z" secondAttribute="trailing" constant="16" id="bFn-xH-hFU"/>
                             <constraint firstItem="bnV-SP-aOK" firstAttribute="trailing" secondItem="Yrl-yT-Wq9" secondAttribute="trailing" constant="32" id="gXX-g4-AjJ"/>
                             <constraint firstItem="eAE-qk-qLD" firstAttribute="centerY" secondItem="tQK-lt-D6z" secondAttribute="centerY" id="iee-FJ-kyA"/>
+                            <constraint firstItem="5dI-h9-4KW" firstAttribute="top" secondItem="eAE-qk-qLD" secondAttribute="bottom" id="vlN-bF-rUM"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="bnV-SP-aOK"/>
                     </view>
                     <connections>
                         <outlet property="modelText" destination="q4F-Cp-2jo" id="gpB-7p-pda"/>
                         <outlet property="nameText" destination="eAE-qk-qLD" id="7U8-gv-FQj"/>
+                        <outlet property="statusLabel" destination="5dI-h9-4KW" id="IFd-54-UOu"/>
                         <segue destination="lVP-jp-YaV" kind="show" identifier="fromFinalModelToMain" id="jdU-ib-UCO"/>
                     </connections>
                 </viewController>

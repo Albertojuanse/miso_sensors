@@ -157,6 +157,13 @@
     //  ]
     //
     
+    // Check if name exists
+    NSString * name = [self.nameText text];
+    if ([sharedData fromMetamodelDataIsTypeWithName:name andWithCredentialsUserDic:credentialsUserDic]) {
+        self.statusLabel.text = [NSString stringWithFormat:@"A model with that name already exists; the names must be unique."];
+        return;
+    }
+    
     // Display configurations
     [[self.modelText layer] setBorderColor:[[UIColor lightGrayColor] CGColor]];
     [[self.modelText layer] setBorderWidth:.4];
@@ -176,7 +183,6 @@
     }
     
     // Save the model
-    NSString * name = [self.nameText text];
     [sharedData inModelDataAddModelWithName:name
                                  components:components
                   andWithCredentialsUserDic:credentialsUserDic];
