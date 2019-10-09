@@ -182,13 +182,16 @@
         [components addObject:locatedDic];
     }
     
+    // Make a new name for saving
+    NSString * savingName = [NSString stringWithFormat:@"%@@miso.uam.es", name];
+    
     // Save the model
-    [sharedData inModelDataAddModelWithName:name
+    [sharedData inModelDataAddModelWithName:savingName
                                  components:components
                   andWithCredentialsUserDic:credentialsUserDic];
     
     // Show the model
-    NSMutableArray * model = [sharedData fromModelDataGetModelDicWithName:name
+    NSMutableArray * model = [sharedData fromModelDataGetModelDicWithName:savingName
                                                    withCredentialsUserDic:credentialsUserDic];
     NSString * modelString = [NSString stringWithFormat:@"%@", [model objectAtIndex:0]];
     self.modelText.text = modelString;

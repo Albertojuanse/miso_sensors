@@ -592,7 +592,9 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableItems) {
-        return [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+        NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+        NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
+        return itemsCount + modelCount;
     }
     if (tableView == self.tableModes) {
         return [modes count];
@@ -619,7 +621,22 @@
             )
         {
         
-            NSMutableDictionary * itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] objectAtIndex:indexPath.row];
+            // Select the source of items; both items and models are shown
+            NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+            NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
+            
+            // Load the item depending of the source
+            NSMutableDictionary * itemDic = nil;
+            if (indexPath.row < itemsCount) {
+                itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                           objectAtIndex:indexPath.row];
+            }
+            if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
+                itemDic = [
+                           [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
+                           objectAtIndex:indexPath.row - itemsCount
+                           ];
+            }
             
             // The itemDic variable can be null or NO if access is not granted or there are not items stored.
             if (itemDic) {
@@ -686,7 +703,7 @@
                     }
                 }
             
-                // And if it is a position
+                // If it is a position
                 if ([@"position" isEqualToString:itemDic[@"sort"]]) {
                     // If its type is set
                     RDPosition * position = itemDic[@"position"];
@@ -708,6 +725,14 @@
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                     }
+                }
+                
+                // If it is a model
+                if (itemDic[@"components"]) {
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@",
+                                           itemDic[@"identifier"]
+                                           ];
+                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                 }
             } else {
                 // The itemDic variable is null or NO
@@ -737,20 +762,33 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         [sharedData inSessionDataSetItemChosenByUser:nil
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
+        
+        // Select the source of items; both items are models shown
+        NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+        NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
+        
+        // Load the item depending of the source
+        NSMutableDictionary * itemChosenByUser = nil;
+        if (indexPath.row < itemsCount) {
+            itemChosenByUser = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                                objectAtIndex:indexPath.row
+                                ];
+        }
+        if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
+            itemChosenByUser = [
+                       [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
+                                objectAtIndex:indexPath.row - itemsCount
+                                ];
+        }
+        
         // Update
-        NSMutableArray * itemsData = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
         // Can be null if credentials are not allowed.
-        if (itemsData) {
-            NSMutableDictionary * itemChosenByUser = [itemsData objectAtIndex:indexPath.row];
-            
-            // Can be null if it did not exist
-            if(itemChosenByUser) {
-                [sharedData inSessionDataSetItemChosenByUser:itemChosenByUser
+        if (itemChosenByUser) {
+            [sharedData inSessionDataSetItemChosenByUser:itemChosenByUser
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
-            } else {
-                NSLog(@"[VCMM][ERROR] User did choose an inexisting item.");
-            }
+        } else {
+            NSLog(@"[VCMM][ERROR] User did choose an inexisting item.");
         }
         
     }
