@@ -22,6 +22,7 @@
 		4242F6CB22CBACAB00C4B0B7 /* Averager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4242F6CA22CBACAB00C4B0B7 /* Averager.m */; };
 		424F576B234C9D1D00826B27 /* ViewControllerFinalModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 424F576A234C9D1D00826B27 /* ViewControllerFinalModel.m */; };
 		425124292320F3840096D0A8 /* ViewControllerLogin.m in Sources */ = {isa = PBXBuildFile; fileRef = 425124282320F3840096D0A8 /* ViewControllerLogin.m */; };
+		425FAEC2234DE61C00091BEB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 425FAEC1234DE61C00091BEB /* icon.png */; };
 		426501BA22A03B3000BE20B7 /* LocationManagerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */; };
 		426501BD22A03B4300BE20B7 /* Canvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501BC22A03B4300BE20B7 /* Canvas.m */; };
 		426501C322A03B5200BE20B7 /* RDPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C022A03B5200BE20B7 /* RDPosition.m */; };
@@ -68,6 +69,7 @@
 		424F576A234C9D1D00826B27 /* ViewControllerFinalModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerFinalModel.m; sourceTree = "<group>"; };
 		425124272320F35B0096D0A8 /* ViewControllerLogin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerLogin.h; sourceTree = "<group>"; };
 		425124282320F3840096D0A8 /* ViewControllerLogin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerLogin.m; sourceTree = "<group>"; };
+		425FAEC1234DE61C00091BEB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		426501B822A03B2A00BE20B7 /* LocationManagerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationManagerDelegate.h; sourceTree = "<group>"; };
 		426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManagerDelegate.m; sourceTree = "<group>"; };
 		426501BB22A03B4000BE20B7 /* Canvas.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Canvas.h; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				4227988C2271F37800E07C39 /* Assets.xcassets */,
 				422798912271F37800E07C39 /* Info.plist */,
 				422798922271F37800E07C39 /* main.m */,
+				425FAEC1234DE61C00091BEB /* icon.png */,
 				421FCEB822CF5C8E00C62E5E /* miso.png */,
 			);
 			path = "Sensors test";
@@ -301,6 +304,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				422798902271F37800E07C39 /* LaunchScreen.storyboard in Resources */,
+				425FAEC2234DE61C00091BEB /* icon.png in Resources */,
 				4227988D2271F37800E07C39 /* Assets.xcassets in Resources */,
 				4227988B2271F37800E07C39 /* Main.storyboard in Resources */,
 				421FCEB922CF5C8E00C62E5E /* miso.png in Resources */,

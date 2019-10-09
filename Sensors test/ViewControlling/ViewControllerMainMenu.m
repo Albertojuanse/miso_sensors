@@ -637,6 +637,7 @@
                            objectAtIndex:indexPath.row - itemsCount
                            ];
             }
+            NSLog(@"[HOLA][VCMM] itemDic %@", itemDic);
             
             // The itemDic variable can be null or NO if access is not granted or there are not items stored.
             if (itemDic) {
@@ -730,7 +731,7 @@
                 // If it is a model
                 if ([@"model" isEqualToString:itemDic[@"sort"]]) {
                     cell.textLabel.text = [NSString stringWithFormat:@"%@",
-                                           itemDic[@"identifier"]
+                                           itemDic[@"name"]
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                 }
@@ -747,22 +748,22 @@
     if (tableView == self.tableModes) {
         NSString * mode = [modes objectAtIndex:indexPath.row];
         NSString * modeToShow;
-        if([@"RHO_RHO_MODELING" stringByAppendingString:mode]) {
+        if([@"RHO_RHO_MODELING" isEqualToString:mode]) {
             modeToShow = @"Locate others using iBeacon";
         }
-        if([@"RHO_THETA_MODELING" stringByAppendingString:mode]) {
+        if([@"RHO_THETA_MODELING" isEqualToString:mode]) {
             modeToShow = @"Locate others using iBeacon and brújula";
         }
-        if([@"THETA_THETA_MODELING" stringByAppendingString:mode]) {
+        if([@"THETA_THETA_MODELING" isEqualToString:mode]) {
             modeToShow = @"Locate others using  brújula";
         }
-        if([@"RHO_RHO_LOCATING" stringByAppendingString:mode]) {
+        if([@"RHO_RHO_LOCATING" isEqualToString:mode]) {
             modeToShow = @"Self locate using iBeacon";
         }
-        if([@"RHO_THETA_LOCATING" stringByAppendingString:mode]) {
+        if([@"RHO_THETA_LOCATING" isEqualToString:mode]) {
             modeToShow = @"Self locate using iBeacon and brújula";
         }
-        if([@"THETA_THETA_LOCATING" stringByAppendingString:mode]) {
+        if([@"THETA_THETA_LOCATING" isEqualToString:mode]) {
             modeToShow = @"Self locate using  brújula";
         }
         if (modeToShow) {
