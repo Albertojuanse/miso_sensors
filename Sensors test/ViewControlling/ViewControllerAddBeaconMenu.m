@@ -26,7 +26,8 @@
                                                                                   andCredentialsUserDic:credentialsUserDic];
     if (
         ![@"beacon" isEqualToString:itemChosenByUser[@"sort"]] &&
-        ![@"position" isEqualToString:itemChosenByUser[@"sort"]]
+        ![@"position" isEqualToString:itemChosenByUser[@"sort"]] &&
+        ![@"model" isEqualToString:itemChosenByUser[@"sort"]]
         )
     { // Add new one
         selectedSegmentIndex = 0;
