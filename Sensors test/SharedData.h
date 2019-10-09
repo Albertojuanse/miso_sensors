@@ -221,6 +221,8 @@
 - (NSMutableArray *)fromModelDataGetModelDicsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)fromModelDataGetModelDicWithName:(NSString *)name
                                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL)fromModelDataIsModelWithName:(NSString *)name
+              withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific user data setters
 - (BOOL) inUserDataSetUsedDic:(NSMutableDictionary *)givenUserDic
@@ -280,6 +282,8 @@
                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific items data setters
+- (BOOL) inItemDataAddItemDic:(NSMutableDictionary *)givenItemDic
+       withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL) inItemDataAddItemOfSort:(NSString *)sort
                   withIdentifier:(NSString *)identifier
                      withInfoDic:(NSMutableDictionary *)infoDic

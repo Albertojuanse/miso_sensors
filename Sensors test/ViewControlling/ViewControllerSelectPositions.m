@@ -286,7 +286,9 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableItems) {
-        return [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+        NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+        NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
+        return itemsCount + modelCount;
     }
     return 0;
 }
@@ -303,7 +305,24 @@
     
     // Configure individual cells
     if (tableView == self.tableItems) {
-        NSMutableDictionary * itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] objectAtIndex:indexPath.row];
+        
+        // Select the source of items; both items and models are shown
+        NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+        NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
+        
+        // Load the item depending of the source
+        NSMutableDictionary * itemDic = nil;
+        if (indexPath.row < itemsCount) {
+            itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                       objectAtIndex:indexPath.row];
+        }
+        if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
+            itemDic = [
+                       [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
+                       objectAtIndex:indexPath.row - itemsCount
+                       ];
+        }
+        NSLog(@"[HOLA][VCSP] itemDic %@", itemDic);
         
         // The itemDic variable can be null or NO if access is not granted or there are not items stored.
         if (itemDic) {
@@ -376,7 +395,7 @@
                 }
             }
             
-            // And if it is a position
+            // If it is a position
             if ([@"position" isEqualToString:itemDic[@"sort"]]) {
                 // If its type is set
                 RDPosition * position = itemDic[@"position"];
@@ -400,6 +419,14 @@
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                 }
+            }
+            
+            // If it is a model
+            if ([@"model" isEqualToString:itemDic[@"sort"]]) {
+                cell.textLabel.text = [NSString stringWithFormat:@"%@",
+                                       itemDic[@"name"]
+                                       ];
+                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
             }
 
             
@@ -425,32 +452,86 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         // Manage multi-selection
         UITableViewCell *selectedCell = [tableView cellForRowAtIndexPath:indexPath];
         
+        
+        
+        
+        // Select the source of items; both items are models shown
+        NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+        NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
+        
+        // Load the item depending of the source
+        NSMutableDictionary * itemDic = nil;
+        if (indexPath.row < itemsCount) {
+            itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                                objectAtIndex:indexPath.row
+                                ];
+        }
+        if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
+            itemDic = [
+                                [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
+                                objectAtIndex:indexPath.row - itemsCount
+                                ];
+        }
+        
         if ([selectedCell accessoryType] == UITableViewCellAccessoryNone) { // If not checkmark
             
-            // Only if the item have a position can be selected
-            NSMutableDictionary * itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] objectAtIndex:indexPath.row];
-            if (itemDic[@"position"]) {
+            // Only models and items with position can be selected
+            if (![@"model" isEqualToString:itemDic[@"sort"]]) {
+                if (itemDic[@"position"]) {
+                    [selectedCell setAccessoryType:UITableViewCellAccessoryCheckmark];
+                    [sharedData  inSessionDataSetAsChosenItem:itemDic
+                                            toUserWithUserDic:userDic
+                                       withCredentialsUserDic:credentialsUserDic];
+                } else {
+                    [selectedCell setAccessoryType:UITableViewCellAccessoryDetailButton];
+                    [selectedCell setTintColor:[UIColor redColor]];
+                }
+                
+            } else { // if model
+                
                 [selectedCell setAccessoryType:UITableViewCellAccessoryCheckmark];
-                [sharedData  inSessionDataSetAsChosenItem:itemDic
-                                        toUserWithUserDic:userDic
-                                   withCredentialsUserDic:credentialsUserDic];
-            } else {
-                [selectedCell setAccessoryType:UITableViewCellAccessoryDetailButton];
-                [selectedCell setTintColor:[UIColor redColor]];
+                // Retrieve the components, verify if they exists as items, and if not, add them
+                NSMutableArray * components = itemDic[@"components"];
+                for (NSMutableDictionary * eachComponent in components) {
+                    if ([sharedData fromItemDataIsItemWithInfoDic:eachComponent andCredentialsUserDic:credentialsUserDic]) {
+                        [sharedData  inSessionDataSetAsChosenItem:eachComponent
+                                                toUserWithUserDic:userDic
+                                           withCredentialsUserDic:credentialsUserDic];
+                    } else { // If it does not exist, just add it and set as chosen
+                        [sharedData inItemDataAddItemDic:eachComponent withCredentialsUserDic:credentialsUserDic];
+                        [sharedData  inSessionDataSetAsChosenItem:eachComponent
+                                                toUserWithUserDic:userDic
+                                           withCredentialsUserDic:credentialsUserDic];
+                    }
+                }
+                
             }
             
         } else { // If checkmark or detail mark
             
-            // Only if the item have a position can be selected; if not is done again, the simbol disapears when deselecting
-            NSMutableDictionary * itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] objectAtIndex:indexPath.row];
-            if (itemDic[@"position"]) {
+            // Only models and items with position can be selected
+            if (![@"model" isEqualToString:itemDic[@"sort"]]) {
+                if (itemDic[@"position"]) {
+                    [selectedCell setAccessoryType:UITableViewCellAccessoryNone];
+                    [sharedData  inSessionDataSetAsNotChosenItem:itemDic
+                                               toUserWithUserDic:userDic
+                                          withCredentialsUserDic:credentialsUserDic];
+                } else {
+                    [selectedCell setAccessoryType:UITableViewCellAccessoryDetailButton];
+                    [selectedCell setTintColor:[UIColor redColor]];
+                }
+            
+            } else { // if model
+                
                 [selectedCell setAccessoryType:UITableViewCellAccessoryNone];
-                [sharedData  inSessionDataSetAsNotChosenItem:itemDic
-                                           toUserWithUserDic:userDic
-                                      withCredentialsUserDic:credentialsUserDic];
-            } else {
-                [selectedCell setAccessoryType:UITableViewCellAccessoryDetailButton];
-                [selectedCell setTintColor:[UIColor redColor]];
+                // Retrieve the components, verify if they exists as items, and if not, add them
+                NSMutableArray * components = itemDic[@"components"];
+                for (NSMutableDictionary * eachComponent in components) {
+                    [sharedData  inSessionDataSetAsNotChosenItem:eachComponent
+                                               toUserWithUserDic:userDic
+                                          withCredentialsUserDic:credentialsUserDic];
+                }
+                
             }
             
         }

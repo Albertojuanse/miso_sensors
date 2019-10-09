@@ -2767,6 +2767,23 @@
 //
 
 /*!
+ @method inItemDataAddItemDic:withCredentialsUserDic:
+ @discussion This method saves in the items collection data an item with the provided information dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL) inItemDataAddItemDic:(NSMutableDictionary *)givenItemDic
+       withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        [itemsData addObject:itemDic];
+        return YES;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return NO;
+    }
+}
+
+/*!
  @method inItemDataAddItemOfSort:withIdentifier:withInfoDic:andWithCredentialsUserDic:
  @discussion This method saves in the items collection data an item with the provided information in the information dictionary, its sort and its identifier; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */

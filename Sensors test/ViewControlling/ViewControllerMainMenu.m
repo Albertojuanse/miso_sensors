@@ -637,7 +637,6 @@
                            objectAtIndex:indexPath.row - itemsCount
                            ];
             }
-            NSLog(@"[HOLA][VCMM] itemDic %@", itemDic);
             
             // The itemDic variable can be null or NO if access is not granted or there are not items stored.
             if (itemDic) {
