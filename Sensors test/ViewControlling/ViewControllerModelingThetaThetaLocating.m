@@ -144,6 +144,15 @@
 }
 
 /*!
+ @method handleBackFinish:
+ @discussion This method dismiss this view and ask the final model to be shown; 'prepareForSegue:sender:' method is called before.
+ */
+- (IBAction)handleBackFinish:(id)sender
+{
+    [self performSegueWithIdentifier:@"fromModelingTHETA_THETA_LOCATINGToFinalModel" sender:sender];
+}
+
+/*!
  @method handleModifyButton:
  @discussion This method changes the already represented model.
  */
@@ -224,6 +233,19 @@
         [viewControllerThetaThetaLocating setLocationManager:location];
         return;
     }
+    if ([[segue identifier] isEqualToString:@"fromModelingTHETA_THETA_LOCATINGToFinalModel"]) {
+        
+        // Get destination view
+        ViewControllerFinalModel * viewControllerFinalModel = [segue destinationViewController];
+        // Set the variables
+        [viewControllerFinalModel setCredentialsUserDic:credentialsUserDic];
+        [viewControllerFinalModel setUserDic:userDic];
+        [viewControllerFinalModel setSharedData:sharedData];
+        [viewControllerFinalModel setMotionManager:motion];
+        [viewControllerFinalModel setLocationManager:location];
+        return;
+    }
+    
 }
 
 #pragma mark - UItableView delegate methods

@@ -20,63 +20,6 @@
 {
     [super viewDidLoad];
     
-    //              // MODEL DATA //
-    //
-    // The schema of modelData collection is is
-    //
-    //  [{ "name": name1;                                        //  modelDic
-    //     "components": [
-    //         { "position": (RDPosition *)position1;            //  componentDic
-    //           "type": (MDType *)type1;
-    //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
-    //           "references": [
-    //               { "position": (RDPosition *)positionA;      //  componentDic
-    //                 "type": (MDType *)typeA;
-    //                 "sourceItem": (NSMutableDictionary *)itemDicA;
-    //               },
-    //           ];
-    //         { "position": (RDPosition *)positionB;
-    //           (···)
-    //         },
-    //         (···)
-    //     ];
-    //   },
-    //   { "name": name2;                                        //  modelDic
-    //     (···)
-    //   },
-    //  ]
-    //
-    
-    // Display configurations
-    [[self.modelText layer] setBorderColor:[[UIColor lightGrayColor] CGColor]];
-    [[self.modelText layer] setBorderWidth:.4];
-    [[self.modelText layer] setCornerRadius:8.0f];
-    
-    // Retrieve the model components
-    NSMutableArray * components = [[NSMutableArray alloc] init];
-    NSMutableArray * items = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                          andCredentialsUserDic:credentialsUserDic];
-    for (NSMutableDictionary * itemDic in items) {
-        [components addObject:itemDic];
-    }
-    NSMutableArray * locations = [sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                         andCredentialsUserDic:credentialsUserDic];
-    for (NSMutableDictionary * locatedDic in locations) {
-        [components addObject:locatedDic];
-    }
-    
-    // Save the model
-    NSString * name = [self.nameText text];
-    [sharedData inModelDataAddModelWithName:name
-                                 components:components
-                  andWithCredentialsUserDic:credentialsUserDic];
-    
-    // Show the model
-    NSMutableArray * model = [sharedData fromModelDataGetModelDicWithName:name
-                                                   withCredentialsUserDic:credentialsUserDic];
-    NSString * modelString = [NSString stringWithFormat:@"%@", [model objectAtIndex:0]];
-    self.modelText.text = modelString;
-    
 }
 
 /*!
@@ -178,6 +121,72 @@
 }
 
 #pragma mark - Butons event handle
+
+/*!
+ @method handleButtonSubmit:
+ @discussion This method handles the Submit button action and shows the final model; 'prepareForSegue:sender:' method is called before.
+ */
+- (IBAction)handleButonSubmit:(id)sender
+{
+    
+    
+    //              // MODEL DATA //
+    //
+    // The schema of modelData collection is is
+    //
+    //  [{ "name": name1;                                        //  modelDic
+    //     "components": [
+    //         { "position": (RDPosition *)position1;            //  componentDic
+    //           "type": (MDType *)type1;
+    //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
+    //           "references": [
+    //               { "position": (RDPosition *)positionA;      //  componentDic
+    //                 "type": (MDType *)typeA;
+    //                 "sourceItem": (NSMutableDictionary *)itemDicA;
+    //               },
+    //           ];
+    //         { "position": (RDPosition *)positionB;
+    //           (···)
+    //         },
+    //         (···)
+    //     ];
+    //   },
+    //   { "name": name2;                                        //  modelDic
+    //     (···)
+    //   },
+    //  ]
+    //
+    
+    // Display configurations
+    [[self.modelText layer] setBorderColor:[[UIColor lightGrayColor] CGColor]];
+    [[self.modelText layer] setBorderWidth:.4];
+    [[self.modelText layer] setCornerRadius:8.0f];
+    
+    // Retrieve the model components
+    NSMutableArray * components = [[NSMutableArray alloc] init];
+    NSMutableArray * items = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                          andCredentialsUserDic:credentialsUserDic];
+    for (NSMutableDictionary * itemDic in items) {
+        [components addObject:itemDic];
+    }
+    NSMutableArray * locations = [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                         andCredentialsUserDic:credentialsUserDic];
+    for (NSMutableDictionary * locatedDic in locations) {
+        [components addObject:locatedDic];
+    }
+    
+    // Save the model
+    NSString * name = [self.nameText text];
+    [sharedData inModelDataAddModelWithName:name
+                                 components:components
+                  andWithCredentialsUserDic:credentialsUserDic];
+    
+    // Show the model
+    NSMutableArray * model = [sharedData fromModelDataGetModelDicWithName:name
+                                                   withCredentialsUserDic:credentialsUserDic];
+    NSString * modelString = [NSString stringWithFormat:@"%@", [model objectAtIndex:0]];
+    self.modelText.text = modelString;
+}
 
 /*!
  @method handleButtonFinish:
