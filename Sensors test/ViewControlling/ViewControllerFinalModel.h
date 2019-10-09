@@ -32,6 +32,9 @@
     NSNumber * itemBeaconIdNumber;
     NSNumber * itemPositionIdNumber;
     
+    // Naming concurrency
+    BOOL userDidTrySubmit;
+    
 }
 
 @property (weak, nonatomic) IBOutlet UITextView *modelText;

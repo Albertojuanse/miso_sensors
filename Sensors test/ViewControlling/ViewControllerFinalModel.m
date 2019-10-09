@@ -157,11 +157,21 @@
     //  ]
     //
     
+    
     // Check if name exists
     NSString * name = [self.nameText text];
     if ([sharedData fromMetamodelDataIsTypeWithName:name andWithCredentialsUserDic:credentialsUserDic]) {
-        self.statusLabel.text = [NSString stringWithFormat:@"A model with that name already exists; the names must be unique."];
-        return;
+        
+        if (userDidTrySubmit) { // If it es the second try
+            self.statusLabel.text = [NSString stringWithFormat:@"The components of new model have been merged in %@@miso.uam.es", name];
+        } else { // If it es the first try
+            self.statusLabel.text = [NSString stringWithFormat:@"A model with that name already exists; models will be merged. Press 'submit' again or change the name"];
+            userDidTrySubmit = true;
+            return;
+        }
+    } else {
+        // the user might chage the name because a collision
+        userDidTrySubmit = false;
     }
     
     // Display configurations
