@@ -322,16 +322,17 @@
                        objectAtIndex:indexPath.row - itemsCount
                        ];
         }
-        NSLog(@"[HOLA][VCSP] itemDic %@", itemDic);
         
         // The itemDic variable can be null or NO if access is not granted or there are not items stored.
         if (itemDic) {
             cell.textLabel.numberOfLines = 0; // Means any number
             
-            // Only if the item have a position can be selected
+            // Only if the item have a position can be selected; not prevent selecting models
             if (!itemDic[@"position"]) {
-                [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
-                [cell setTintColor:[UIColor redColor]];
+                if (![@"model" isEqualToString:itemDic[@"sort"]]) {
+                    [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
+                    [cell setTintColor:[UIColor redColor]];
+                }
             }
             
             // If it is a beacon
