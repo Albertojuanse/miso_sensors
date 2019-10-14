@@ -503,31 +503,31 @@
                 }
                 
                 // Calculus with ordered values
-                // Angle between the north and the model 'north'
-                NSNumber * north = [NSNumber numberWithFloat:70*M_PI/180.0];
+                // Angle between the north and the model 'north'                
+                NSNumber * north = [NSNumber numberWithFloat:-1.11];
                 
                 // Perform the calculus
                 RDPosition * locatedPosition = [[RDPosition alloc] init];
                 NSMutableArray * solutions = [[NSMutableArray alloc] init];
                 
-                NSNumber * firstHeading = nil;
-                RDPosition * firstPosition = nil;
+                NSNumber * lastHeading = nil;
+                RDPosition * lastPosition = nil;
                 for (NSUInteger m = 0; m < [orderedMeasureHeadings count]; m++) {
                     
                     NSNumber * eachHeading = [orderedMeasureHeadings objectAtIndex:m];
                     
                     // The first one is saved.
                     if (m == 0) {
-                        firstHeading = eachHeading;
-                        firstPosition = [orderedItemsPositions objectAtIndex:m];
+                        lastHeading = eachHeading;
+                        lastPosition = [orderedItemsPositions objectAtIndex:m];
                         NSLog(@"[INFO][TT] First heading %.2f ", [eachHeading floatValue]);
-                        NSLog(@"[INFO][TT] First position %@", firstPosition);
+                        NSLog(@"[INFO][TT] First position %@", lastPosition);
                     } else {
                         // The rest of iterations, the code executed is the following
                         
                         RDPosition * eachPosition = [orderedItemsPositions objectAtIndex:m];
-                        NSLog(@"[INFO][TT] First heading %.2f ", [firstHeading floatValue]);
-                        NSLog(@"[INFO][TT] First position %@", firstPosition);
+                        NSLog(@"[INFO][TT] First heading %.2f ", [lastHeading floatValue]);
+                        NSLog(@"[INFO][TT] First position %@", lastPosition);
                         NSLog(@"[INFO][TT] Each position %@", eachPosition);
                         NSLog(@"[INFO][TT] Each heading %.2f ", [eachHeading floatValue]);
                         
@@ -535,39 +535,28 @@
                         solution.x = [NSNumber numberWithFloat:
                                       (
                                        (
-                                        tan(M_PI/2.0 - [eachHeading doubleValue] - [north floatValue]) * [eachPosition.x floatValue] -
-                                        tan(M_PI/2.0 - [firstHeading doubleValue] - [north floatValue]) * [firstPosition.x floatValue] -
-                                        [eachPosition.y floatValue] +
-                                        [firstPosition.y floatValue]
+                                        ([eachPosition.y floatValue] - tan( M_PI/2.0 - [eachHeading doubleValue] - [north floatValue]) * [eachPosition.x floatValue]) -
+                                        ([lastPosition.y floatValue] - tan( M_PI/2.0 - [lastHeading doubleValue] - [north floatValue]) * [lastPosition.x floatValue])
                                         )
                                        /
                                        (
-                                        tan(M_PI/2.0 - [eachHeading doubleValue] - [north floatValue]) -
-                                        tan(M_PI/2.0 - [firstHeading doubleValue] - [north floatValue])
+                                        -tan(M_PI/2.0 - [eachHeading doubleValue] - [north floatValue]) +
+                                        tan(M_PI/2.0 - [lastHeading doubleValue] - [north floatValue])
                                         )
                                        )
                                       ];
                         solution.y = [NSNumber numberWithFloat:
                                       (
                                        (
-                                        tan(M_PI/2.0 - [firstHeading doubleValue] - [north floatValue]) *
-                                        (
-                                         tan(M_PI/2.0 - [eachHeading doubleValue] - [north floatValue]) *
-                                         [eachPosition.x floatValue] -
-                                         [eachPosition.y floatValue]
-                                         )
-                                        -
-                                        tan(M_PI/2.0 - [eachHeading doubleValue] - [north floatValue]) *
-                                        (
-                                         tan(M_PI/2.0 - [firstHeading doubleValue] - [north floatValue]) *
-                                         [firstPosition.x floatValue] -
-                                         [firstPosition.y floatValue]
-                                         )
+                                        ([lastPosition.y floatValue] - tan( M_PI/2.0 - [lastHeading doubleValue] - [north floatValue]) * [lastPosition.x floatValue]) *
+                                        (-tan( M_PI/2.0 - [eachHeading doubleValue] - [north floatValue])) -
+                                        ([eachPosition.y floatValue] - tan( M_PI/2.0 - [eachHeading doubleValue] - [north floatValue]) * [eachPosition.x floatValue]) *
+                                        (-tan( M_PI/2.0 - [lastHeading doubleValue] - [north floatValue]))
                                         )
                                        /
                                        (
-                                        tan(M_PI/2.0 - [eachHeading doubleValue] - [north floatValue]) -
-                                        tan(M_PI/2.0 - [firstHeading doubleValue] - [north floatValue])
+                                        -tan(M_PI/2.0 - [eachHeading doubleValue] - [north floatValue]) +
+                                        tan(M_PI/2.0 - [lastHeading doubleValue] - [north floatValue])
                                         )
                                        )
                                       ];
@@ -579,8 +568,8 @@
                         [solutions addObject:solution];
                         
                         // upload the first heading and position
-                        firstPosition = eachPosition;
-                        firstHeading = eachHeading;
+                        lastPosition = eachPosition;
+                        lastHeading = eachHeading;
                         
                     }
                 }
