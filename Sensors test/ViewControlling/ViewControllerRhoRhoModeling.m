@@ -218,9 +218,9 @@
         [self.labelStatus setText:@"MEASURING; please, tap 'Measure' again for finishing measure."];
         
         // And send the notification
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"startLocationMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRRM] Notification \"startMeasuring\" posted.");
+        NSLog(@"[NOTI][VCRRM] Notification \"startLocationMeasuring\" posted.");
         return;
         
     }

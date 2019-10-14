@@ -86,8 +86,8 @@
         
         // This object must listen to this events
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(startMeasuring:)
-                                                     name:@"startMeasuring"
+                                                 selector:@selector(startLocationMeasuring:)
+                                                     name:@"startLocationMeasuring"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(stopMeasuring:)
@@ -681,13 +681,13 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 #pragma mark - Notification event handles
 
 /*!
- @method startMeasuring
+ @method startLocationMeasuring
  @discussion This method sets the flag 'measuring' true, and thus the measures are stored.
  */
-- (void) startMeasuring:(NSNotification *) notification
+- (void) startLocationMeasuring:(NSNotification *) notification
 {
-    if ([[notification name] isEqualToString:@"startMeasuring"]){
-        NSLog(@"[NOTI][LM] Notfication \"startMeasuring\" recived.");
+    if ([[notification name] isEqualToString:@"startLocationMeasuring"]){
+        NSLog(@"[NOTI][LM] Notfication \"startLocationMeasuring\" recived.");
         
         NSMutableArray * items = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
         

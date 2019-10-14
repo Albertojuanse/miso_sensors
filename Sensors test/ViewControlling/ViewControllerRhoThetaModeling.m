@@ -163,9 +163,9 @@
             [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
         
             // And send the notification
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startMeasuring"
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"startLocationMeasuring"
                                                                 object:nil];
-            NSLog(@"[NOTI][VCRTM] Notification \"startMeasuring\" posted.");
+            NSLog(@"[NOTI][VCRTM] Notification \"startLocationMeasuring\" posted.");
             return;
         } else {
             return;
