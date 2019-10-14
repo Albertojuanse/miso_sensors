@@ -34,6 +34,11 @@
     NSNumber * gy;
     NSNumber * gz;
     
+    // Measuring variables
+    NSNumber * measured_gyroscope_x;
+    NSNumber * measured_gyroscope_y;
+    NSNumber * measured_gyroscope_z;
+    
     // Signal processing variables
     NSNumber * acce_mea_x;
     NSNumber * acce_mea_y;

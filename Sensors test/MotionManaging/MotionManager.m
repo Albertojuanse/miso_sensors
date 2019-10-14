@@ -128,6 +128,14 @@
                                                      name:@"stopTraveling"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(startGyroscopeMeasuring:)
+                                                     name:@"startGyroscopeMeasuring"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(stopGyroscopeMeasuring:)
+                                                     name:@"stopGyroscopeMeasuring"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(startTravelingFrom:)
                                                      name:@"getPositionRespond"
                                                    object:nil];
@@ -764,6 +772,48 @@
 }
 
 #pragma mark - Notification event handles
+/*!
+ @method startGyroscopeMeasuring
+ @discussion This method saves the current gyrosope as an initial state for measuring.
+ */
+- (void) startGyroscopeMeasuring:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"startGyroscopeMeasuring"]){
+        NSLog(@"[NOTI][MM] Notfication \"startGyroscopeMeasuring\" recived.");
+        // Retrieve the gyroscope values
+        measured_gyroscope_x = [NSNumber numberWithFloat:[gx floatValue]];
+        measured_gyroscope_y = [NSNumber numberWithFloat:[gy floatValue]];
+        measured_gyroscope_z = [NSNumber numberWithFloat:[gz floatValue]];
+        return;
+    }
+}
+
+/*!
+ @method stopGyroscopetMeasuring
+ @discussion This method compares the saved state of the gyroscope for generate a measure.
+ */
+- (void) stopGyroscopeMeasuring:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"stopGyroscopeMeasuring"]){
+        NSLog(@"[NOTI][MM] Notfication \"stopGyroscopeMeasuring\" recived.");
+        // Retrieve the gyroscope values
+        NSNumber * new_measured_gyroscope_x = [NSNumber numberWithFloat:[gx floatValue]];
+        NSNumber * new_measured_gyroscope_y = [NSNumber numberWithFloat:[gy floatValue]];
+        NSNumber * new_measured_gyroscope_z = [NSNumber numberWithFloat:[gz floatValue]];
+        // Generate the measure
+        NSNumber * diff_gyroscope_x = [NSNumber numberWithFloat: [new_measured_gyroscope_x floatValue] - [measured_gyroscope_x floatValue]];
+        NSNumber * diff_gyroscope_y = [NSNumber numberWithFloat: [new_measured_gyroscope_y floatValue] - [measured_gyroscope_y floatValue]];
+        NSNumber * diff_gyroscope_z = [NSNumber numberWithFloat: [new_measured_gyroscope_z floatValue] - [measured_gyroscope_z floatValue]];
+        // Set the measure
+        NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+        [data setObject:diff_gyroscope_x forKey:@"gyroscope_x"];
+        [data setObject:diff_gyroscope_y forKey:@"gyroscope_y"];
+        [data setObject:diff_gyroscope_z forKey:@"gyroscope_z"];
+        // Send the notification
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"returnGyroscopeMeasure"
+                                                            object:nil
+                                                          userInfo:data];
+        return;
+    }
+}
 
 /*!
  @method startTraveling
@@ -778,6 +828,7 @@
         NSLog(@"[NOTI][MM] Notification \"getPosition\" posted.");
     }
 }
+
 /*!
  @method stopTraveling
  @discussion This method simulate a traveling in space from a given 'RDPosition'.
