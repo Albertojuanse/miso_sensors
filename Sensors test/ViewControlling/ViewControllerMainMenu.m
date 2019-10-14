@@ -754,7 +754,7 @@
             modeToShow = @"Locate others using iBeacon and brújula";
         }
         if([@"THETA_THETA_MODELING" isEqualToString:mode]) {
-            modeToShow = @"Locate others using  brújula";
+            modeToShow = @"Locate others using compass";
         }
         if([@"RHO_RHO_LOCATING" isEqualToString:mode]) {
             modeToShow = @"Self locate using iBeacon";
@@ -763,7 +763,7 @@
             modeToShow = @"Self locate using iBeacon and brújula";
         }
         if([@"THETA_THETA_LOCATING" isEqualToString:mode]) {
-            modeToShow = @"Self locate using  brújula";
+            modeToShow = @"Self locate using compass";
         }
         if (modeToShow) {
             cell.textLabel.text = modeToShow;
