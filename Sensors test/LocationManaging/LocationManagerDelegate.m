@@ -687,7 +687,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 - (void) startLocationMeasuring:(NSNotification *) notification
 {
     if ([[notification name] isEqualToString:@"startLocationMeasuring"]){
-        NSLog(@"[NOTI][LM] Notfication \"startLocationMeasuring\" recived.");
+        NSLog(@"[NOTI][LM] Notification \"startLocationMeasuring\" recived.");
         
         NSMutableArray * items = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
         
@@ -850,7 +850,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  */
 - (void) stopMeasuring:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"stopMeasuring"]) {
-        NSLog(@"[NOTI][LM] Notfication \"stopMeasuring\" recived.");
+        NSLog(@"[NOTI][LM] Notification \"stopMeasuring\" recived.");
     
         // Instance variables
         isItemChosenByUserRanged = NO;
@@ -873,7 +873,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 - (void) getPositionUsingNotification:(NSNotification *) notification
 {
     if ([[notification name] isEqualToString:@"getPosition"]){
-        NSLog(@"[NOTI][LM] Notfication \"getPosition\" recived.");
+        NSLog(@"[NOTI][LM] Notification \"getPosition\" recived.");
         
         NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
         // Create a copy of the current position for sending it; concurrence issues prevented
@@ -897,7 +897,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 - (void) setPositionUsingNotification:(NSNotification *) notification
 {
     if ([[notification name] isEqualToString:@"setPosition"]){
-        NSLog(@"[NOTI][LM] Notfication \"setPosition\" recived.");
+        NSLog(@"[NOTI][LM] Notification \"setPosition\" recived.");
         
         NSDictionary * data = notification.userInfo;
         RDPosition * newPosition = data[@"currentPosition"];
@@ -915,7 +915,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 - (void) reset:(NSNotification *) notification
 {
     if ([[notification name] isEqualToString:@"reset"]){
-        NSLog(@"[NOTI][LM] Notfication \"reset\" recived.");
+        NSLog(@"[NOTI][LM] Notification \"reset\" recived.");
         
         // Instance variables
         // Set device's location at the origin
