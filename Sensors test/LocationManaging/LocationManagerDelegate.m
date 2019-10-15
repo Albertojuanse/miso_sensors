@@ -21,18 +21,6 @@
         
         // Components
         sharedData = initSharedData;
-        rhoRhoSystem = [[RDRhoRhoSystem alloc] initWithSharedData:sharedData
-                                                          userDic:userDic
-                                                       deviceUUID:deviceUUID
-                                            andCredentialsUserDic:credentialsUserDic];
-        rhoThetaSystem = [[RDRhoThetaSystem alloc] initWithSharedData:sharedData
-                                                              userDic:userDic
-                                                           deviceUUID:deviceUUID
-                                                andCredentialsUserDic:credentialsUserDic];
-        thetaThetaSystem = [[RDThetaThetaSystem alloc] initWithSharedData:sharedData
-                                                                  userDic:userDic
-                                                               deviceUUID:deviceUUID
-                                                    andCredentialsUserDic:credentialsUserDic];
         
         // Instance variables
         // Set device's location at the origin
@@ -90,8 +78,8 @@
                                                      name:@"startLocationMeasuring"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(stopMeasuring:)
-                                                     name:@"stopMeasuring"
+                                                 selector:@selector(stopLocationMeasuring:)
+                                                     name:@"stopLocationMeasuring"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(getPositionUsingNotification:)
@@ -112,11 +100,14 @@
 }
 
 /*!
- @method initWithSharedData:userDic:deviceUUID:andCredentialsUserDic:
- @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
+ @method initWithSharedData:userDic:rhoRhoSystem:rhoThetaSystem:thetaThetaSystem:deviceUUID:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the location systems, the device's UUID and the credentials of the user for access it.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
+                      rhoRhoSystem:(RDRhoRhoSystem *)initRhoRhoSystem
+                    rhoThetaSystem:(RDRhoThetaSystem *)initRhoThetaSystem
+                  thetaThetaSystem:(RDThetaThetaSystem *)initThetaThetaSystem
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
@@ -124,6 +115,9 @@
     credentialsUserDic = initCredentialsUserDic;
     userDic = initUserDic;
     deviceUUID = initDeviceUUID;
+    rhoRhoSystem = initRhoRhoSystem;
+    rhoThetaSystem = initRhoThetaSystem;
+    thetaThetaSystem = initThetaThetaSystem;
     self = [self initWithSharedData:initSharedData];
     return self;
 }
@@ -845,12 +839,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 }
 
 /*!
- @method stopMeasuring
+ @method stopLocationMeasuring:
  @discussion This method sets the flag 'measuring' false, and thus the measures are not stored; it also deletes the monitored regions from location manager.
  */
-- (void) stopMeasuring:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"stopMeasuring"]) {
-        NSLog(@"[NOTI][LM] Notification \"stopMeasuring\" recived.");
+- (void) stopLocationMeasuring:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"stopLocationMeasuring"]) {
+        NSLog(@"[NOTI][LM] Notification \"stopLocationMeasuring\" recived.");
     
         // Instance variables
         isItemChosenByUserRanged = NO;

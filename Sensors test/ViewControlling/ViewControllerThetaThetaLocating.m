@@ -167,12 +167,16 @@
             [self.buttonMeasure setEnabled:YES];
             [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                        andWithCredentialsUserDic:credentialsUserDic];
+            
             [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
             
             // And send the notification
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startLocationMeasuring"
+            // [[NSNotificationCenter defaultCenter] postNotificationName:@"startLocationMeasuring" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
+            NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopes\" posted.");
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring"
                                                                 object:nil];
-            NSLog(@"[NOTI][VCTTL] Notification \"startLocationMeasuring\" posted.");
+            NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopeHeadingMeasuring\" posted.");
             return;
         } else {
             return;
@@ -183,9 +187,12 @@
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
+        // [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
+        NSLog(@"[NOTI][VCTTL] Notification \"stopGyroscopes\" posted.");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopMeasuring\" posted.");
+        NSLog(@"[NOTI][VCTTL] Notification \"stopGyroscopeHeadingMeasuring\" posted.");
         // For showing the located items
         [self.tableItemsChosen reloadData];
         return;
@@ -210,6 +217,7 @@
     // New UUID
     locatedPositionUUID = [[NSUUID UUID] UUIDString];
     [location setDeviceUUID:locatedPositionUUID];
+    [motion setDeviceUUID:locatedPositionUUID];
 }
 
 /*!
@@ -265,9 +273,9 @@
         [viewControllerSelectPositions setLocationManager:location];
         
         // Ask Location manager to clean the measures taken and reset its position.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopMeasuring\" posted.");
+        NSLog(@"[NOTI][VCTTL] Notification \"stopLocationMeasuring\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
                                                             object:nil];
         NSLog(@"[NOTI][VCTTL] Notification \"reset\" posted.");

@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 #import <CoreMotion/CoreMotion.h>
 #include <stdlib.h>
+#import "RDPosition.h"
+#import "RDRhoRhoSystem.h"
+#import "RDRhoThetaSystem.h"
+#import "RDThetaThetaSystem.h"
 #import "SharedData.h"
 #import "Threshold.h"
 #import "Buffer.h"
@@ -24,9 +28,13 @@
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
+    NSString * deviceUUID;
     
     // Components
     SharedData * sharedData;
+    RDRhoRhoSystem * rhoRhoSystem;
+    RDRhoThetaSystem * rhoThetaSystem;
+    RDThetaThetaSystem * thetaThetaSystem;
     
     // Configuration variables
     NSNumber * t;
@@ -38,6 +46,24 @@
     NSNumber * measured_gyroscope_x;
     NSNumber * measured_gyroscope_y;
     NSNumber * measured_gyroscope_z;
+    NSUInteger calibration_counter;
+    NSUInteger calibrationSteps;
+    NSNumber * precision_threshold;
+    double d_gy_p;
+    double d_gy_r;
+    double d_gy_y;
+    double gy_p0;
+    double gy_p_ave;
+    double gy_p_ave_sum;
+    double gy_p;
+    double gy_r0;
+    double gy_r_ave;
+    double gy_r_ave_sum;
+    double gy_r;
+    double gy_y0;
+    double gy_y_ave;
+    double gy_y_ave_sum;
+    double gy_y;
     
     // Signal processing variables
     NSNumber * acce_mea_x;
@@ -140,10 +166,15 @@
 // Methods
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
+                      rhoRhoSystem:(RDRhoRhoSystem *)initRhoRhoSystem
+                    rhoThetaSystem:(RDRhoThetaSystem *)initRhoThetaSystem
+                  thetaThetaSystem:(RDThetaThetaSystem *)initThetaThetaSystem
+                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void)setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void)setPosition:(RDPosition *)givenPosition;
+- (void)setDeviceUUID:(NSString *)givenDeviceUUID;
 - (void) startAccelerometers;
 - (void) stopAccelerometers;
 - (void) startGyroscopes;

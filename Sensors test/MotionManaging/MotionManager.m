@@ -11,11 +11,12 @@
 @implementation MotionManager
 
 /*!
- @method init
+ @method initWithSharedData:
  @discussion Constructor given the shared data collection.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
 {
+    
     self = [super init];
     if (self) {
         // Components
@@ -26,6 +27,29 @@
         gx = [NSNumber numberWithFloat:0.0];
         gy = [NSNumber numberWithFloat:0.0];
         gz = [NSNumber numberWithFloat:-9.7994];
+        
+        // Measuring variables
+        calibration_counter = 0;
+        calibrationSteps = 60;
+        precision_threshold = [[NSNumber alloc] initWithFloat:0.01];
+        measured_gyroscope_x = [[NSNumber alloc] initWithFloat:0.0];
+        measured_gyroscope_y = [[NSNumber alloc] initWithFloat:0.0];
+        measured_gyroscope_z = [[NSNumber alloc] initWithFloat:0.0];
+        d_gy_p = 0.0;
+        d_gy_r = 0.0;
+        d_gy_y = 0.0;
+        gy_p0 = 0.0;
+        gy_p_ave = 0.0;
+        gy_p_ave_sum = 0.0;
+        gy_p = 0.0;
+        gy_r0 = 0.0;
+        gy_r_ave = 0.0;
+        gy_r_ave_sum = 0.0;
+        gy_r = 0.0;
+        gy_y0 = 0.0;
+        gy_y_ave = 0.0;
+        gy_y_ave_sum = 0.0;
+        gy_y = 0.0;
         
         //  Signal processing configuration variables
         self.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
@@ -128,12 +152,12 @@
                                                      name:@"stopTraveling"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(startGyroscopeMeasuring:)
-                                                     name:@"startGyroscopeMeasuring"
+                                                 selector:@selector(startGyroscopeHeadingMeasuring:)
+                                                     name:@"startGyroscopeHeadingMeasuring"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(stopGyroscopeMeasuring:)
-                                                     name:@"stopGyroscopeMeasuring"
+                                                 selector:@selector(stopGyroscopeHeadingMeasuring:)
+                                                     name:@"stopGyroscopeHeadingMeasuring"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(startTravelingFrom:)
@@ -162,15 +186,24 @@
 }
 
 /*!
- @method initWithSharedData:userDic:andCredentialsUserDic:
- @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved and the credentials of the user for access it.
+ @method initWithSharedData:userDic:rhoRhoSystem:rhoThetaSystem:thetaThetaSystem:deviceUUID:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the location systems, the device's UUID and the credentials of the user for access it.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
+                      rhoRhoSystem:(RDRhoRhoSystem *)initRhoRhoSystem
+                    rhoThetaSystem:(RDRhoThetaSystem *)initRhoThetaSystem
+                  thetaThetaSystem:(RDThetaThetaSystem *)initThetaThetaSystem
+                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
+    sharedData = initSharedData;
     credentialsUserDic = initCredentialsUserDic;
     userDic = initUserDic;
+    deviceUUID = initDeviceUUID;
+    rhoRhoSystem = initRhoRhoSystem;
+    rhoThetaSystem = initRhoThetaSystem;
+    thetaThetaSystem = initThetaThetaSystem;
     self = [self initWithSharedData:initSharedData];
     return self;
 }
@@ -200,7 +233,8 @@
  @method getPosition
  @discussion This method gets the device's position.
  */
-- (RDPosition *) getPosition {
+- (RDPosition *) getPosition
+{
     RDPosition * newPosition = [[RDPosition alloc] init];
     newPosition.x = [NSNumber numberWithFloat:[position.x floatValue]];
     newPosition.y = [NSNumber numberWithFloat:[position.y floatValue]];
@@ -212,11 +246,31 @@
  @method setPosition:
  @discussion This method sets the device's position.
  */
-- (void) setPosition:(RDPosition *)givenPosition{
+- (void) setPosition:(RDPosition *)givenPosition
+{
     position = [[RDPosition alloc] init];
     position.x = [NSNumber numberWithFloat:[givenPosition.x floatValue]];
     position.y = [NSNumber numberWithFloat:[givenPosition.y floatValue]];
     position.z = [NSNumber numberWithFloat:[givenPosition.z floatValue]];
+}
+
+/*!
+ @method setDeviceUUID:
+ @discussion This method sets the UUID to identify the measures when self-locating.
+ */
+- (void)setDeviceUUID:(NSString *)givenDeviceUUID
+{
+    deviceUUID = givenDeviceUUID;
+    if (rhoRhoSystem) {
+        [rhoRhoSystem setDeviceUUID:deviceUUID];
+    }
+    if (rhoThetaSystem) {
+        [rhoThetaSystem setDeviceUUID:deviceUUID];
+    }
+    if (thetaThetaSystem) {
+        [thetaThetaSystem setDeviceUUID:deviceUUID];
+    }
+    return;
 }
 
 #pragma mark - Location manager methods
@@ -225,8 +279,10 @@
  @method startAccelerometers
  @discussion This method manages how the accelerometer status acquisition starts and its error's control.
  */
-- (void) startAccelerometers {
+- (void) startAccelerometers
+{
     
+    NSLog(@"[INFO][MM] Notification \"startAccelerometers\" recived.");
     // Make sure the accelerometer hardware is available.
     if (self.isAccelerometerAvailable) {
         NSLog(@"[INFO][MM] Accelerometer avalible");
@@ -254,7 +310,9 @@
  @method stopAccelerometers
  @discussion This method manages how the accelerometer status acquisition stops.
  */
-- (void) stopAccelerometers {
+- (void) stopAccelerometers
+{
+    NSLog(@"[INFO][MM] Notification \"stopAccelerometers\" recived.");
     [self.tr invalidate];
     self.tr = nil;
     [self stopAccelerometerUpdates];
@@ -265,7 +323,9 @@
  @method startGyroscopes
  @discussion This method manages how the gyroscope status acquisition starts and its error's control.
  */
-- (void) startGyroscopes {
+- (void) startGyroscopes
+{
+    NSLog(@"[INFO][MM] Notification \"startGyroscopes\" recived.");
     // Make sure the gyroscope hardware is available.
     if (self.isGyroAvailable) {
         NSLog(@"[INFO][MM] Gyroscope avalible");
@@ -277,7 +337,7 @@
             self.tr = [[NSTimer alloc] initWithFireDate:[NSDate date]
                                                   interval:([t doubleValue])
                                                     target:self
-                                                  selector:@selector(process)
+                                                  selector:@selector(proccesHeadingMeasure)
                                                   userInfo:nil
                                                    repeats:YES];
             
@@ -294,7 +354,9 @@
  @method stopGyroscopes
  @discussion This method manages how the gyroscope status acquisition stops.
  */
-- (void) stopGyroscopes {
+- (void) stopGyroscopes
+{
+    NSLog(@"[INFO][MM] Notification \"stopGyroscopes\" recived.");
     [self.tr invalidate];
     self.tr = nil;
     [self stopGyroUpdates];
@@ -302,16 +364,86 @@
 }
 
 /*!
+ @method proccesHeadingMeasure
+ @discussion This method procces the acquisited data for measuring porpuses.
+ */
+- (void) proccesHeadingMeasure
+{
+    if (calibration_counter < calibrationSteps) {
+        
+        // Starts at zero; is needed to increase the counter here.
+        calibration_counter++;
+        
+        // Gyroscope calibration
+        gy_p0 = self.gyroData.rotationRate.x;
+        gy_p_ave_sum += gy_p0;
+        gy_p_ave = gy_p_ave_sum / calibration_counter;
+        
+        gy_r0 = self.gyroData.rotationRate.y;
+        gy_r_ave_sum += gy_r0;
+        gy_r_ave = gy_r_ave_sum / calibration_counter;
+        
+        gy_y0 = self.gyroData.rotationRate.z;
+        gy_y_ave_sum += gy_y0;
+        gy_y_ave = gy_y_ave_sum / calibration_counter;
+        
+    } else if (calibration_counter == calibrationSteps) {
+        NSLog(@"[INFO][MM] Gyroscope calibrated.");
+        calibration_counter++;
+    } else if (calibration_counter > calibrationSteps) {
+        calibration_counter++;
+        
+        // Gyroscope acquisition
+        gy_p = self.gyroData.rotationRate.x - gy_p_ave;
+        gy_r = self.gyroData.rotationRate.y - gy_r_ave;
+        gy_y = self.gyroData.rotationRate.z - gy_y_ave;
+        
+        // Attitude
+        if (gy_p > [precision_threshold floatValue]) {
+            d_gy_p = d_gy_p + gy_p * [t floatValue];
+            NSLog(@"Pith %.2f", d_gy_p);
+        }
+        if (gy_p < -[precision_threshold floatValue]) {
+            d_gy_p = d_gy_p + gy_p * [t floatValue];
+            NSLog(@"Pith %.2f", d_gy_p);
+        }
+        if (gy_r > [precision_threshold floatValue]) {
+            d_gy_r = d_gy_r + gy_r * [t floatValue];
+            NSLog(@"Roll %.2f", d_gy_r);
+        }
+        if (gy_r < -[precision_threshold floatValue]) {
+            d_gy_r = d_gy_r + gy_r * [t floatValue];
+            NSLog(@"Roll %.2f", d_gy_r);
+        }
+        if (gy_y > [precision_threshold floatValue]) {
+            d_gy_y = d_gy_y + gy_y * [t floatValue];
+            NSLog(@"Yaw %.2f", d_gy_y);
+        }
+        if (gy_y < -[precision_threshold floatValue]) {
+            d_gy_y = d_gy_y + gy_y * [t floatValue];
+            NSLog(@"Yaw %.2f", d_gy_y);
+        }
+        
+        measured_gyroscope_x = [NSNumber numberWithFloat:d_gy_p];
+        measured_gyroscope_y = [NSNumber numberWithFloat:d_gy_r];
+        measured_gyroscope_z = [NSNumber numberWithFloat:d_gy_y];
+        
+    }
+        
+}
+
+/*!
  @method procces
  @discussion This method procces the acquisited data.
  */
-- (void) process {
+- (void) process
+{
     // NSLog(@"; \"x\": %f, \"y\": %f, \"z\": %f, \"type\": \"gyroscope\"} {\"date\":", self.gyroData.rotationRate.x, self.gyroData.rotationRate.y, self.gyroData.rotationRate.y);
     // NSLog(@"; \"x\": %f, \"y\": %f, \"z\": %f, \"type\": \"accelerometer\"} {\"date\":", self.accelerometerData.acceleration.x, self.accelerometerData.acceleration.y, self.accelerometerData.acceleration.z);
     
     NSNumber * gravity_rotated_x = [NSNumber numberWithFloat:[gx floatValue]];
-    NSNumber * gravity_rotated_y = [NSNumber numberWithFloat:[gx floatValue]];
-    NSNumber * gravity_rotated_z = [NSNumber numberWithFloat:[gx floatValue]];
+    NSNumber * gravity_rotated_y = [NSNumber numberWithFloat:[gy floatValue]];
+    NSNumber * gravity_rotated_z = [NSNumber numberWithFloat:[gz floatValue]];
     
     // There will be necesary 6 processing channels: 3 for accelerometers and 3 for gyroscopes
     
@@ -773,16 +905,32 @@
 
 #pragma mark - Notification event handles
 /*!
- @method startGyroscopeMeasuring
+ @method startGyroscopeHeadingMeasuring
  @discussion This method saves the current gyrosope as an initial state for measuring.
  */
-- (void) startGyroscopeMeasuring:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"startGyroscopeMeasuring"]){
-        NSLog(@"[NOTI][MM] Notfication \"startGyroscopeMeasuring\" recived.");
-        // Retrieve the gyroscope values
-        measured_gyroscope_x = [NSNumber numberWithFloat:[gx floatValue]];
-        measured_gyroscope_y = [NSNumber numberWithFloat:[gy floatValue]];
-        measured_gyroscope_z = [NSNumber numberWithFloat:[gz floatValue]];
+- (void) startGyroscopeHeadingMeasuring:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"startGyroscopeHeadingMeasuring"]){
+        NSLog(@"[NOTI][MM] Notification \"startGyroscopeHeadingMeasuring\" recived.");
+        // Reset the gyroscope values
+        calibration_counter = 0;
+        d_gy_p = 0.0;
+        d_gy_r = 0.0;
+        d_gy_y = 0.0;
+        gy_p0 = 0.0;
+        gy_p_ave = 0.0;
+        gy_p_ave_sum = 0.0;
+        gy_p = 0.0;
+        gy_r0 = 0.0;
+        gy_r_ave = 0.0;
+        gy_r_ave_sum = 0.0;
+        gy_r = 0.0;
+        gy_y0 = 0.0;
+        gy_y_ave = 0.0;
+        gy_y_ave_sum = 0.0;
+        gy_y = 0.0;
+        measured_gyroscope_x = [[NSNumber alloc] initWithFloat:0.0];
+        measured_gyroscope_y = [[NSNumber alloc] initWithFloat:0.0];
+        measured_gyroscope_z = [[NSNumber alloc] initWithFloat:0.0];
         return;
     }
 }
@@ -791,26 +939,135 @@
  @method stopGyroscopetMeasuring
  @discussion This method compares the saved state of the gyroscope for generate a measure.
  */
-- (void) stopGyroscopeMeasuring:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"stopGyroscopeMeasuring"]){
-        NSLog(@"[NOTI][MM] Notfication \"stopGyroscopeMeasuring\" recived.");
-        // Retrieve the gyroscope values
-        NSNumber * new_measured_gyroscope_x = [NSNumber numberWithFloat:[gx floatValue]];
-        NSNumber * new_measured_gyroscope_y = [NSNumber numberWithFloat:[gy floatValue]];
-        NSNumber * new_measured_gyroscope_z = [NSNumber numberWithFloat:[gz floatValue]];
-        // Generate the measure
-        NSNumber * diff_gyroscope_x = [NSNumber numberWithFloat: [new_measured_gyroscope_x floatValue] - [measured_gyroscope_x floatValue]];
-        NSNumber * diff_gyroscope_y = [NSNumber numberWithFloat: [new_measured_gyroscope_y floatValue] - [measured_gyroscope_y floatValue]];
-        NSNumber * diff_gyroscope_z = [NSNumber numberWithFloat: [new_measured_gyroscope_z floatValue] - [measured_gyroscope_z floatValue]];
-        // Set the measure
-        NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-        [data setObject:diff_gyroscope_x forKey:@"gyroscope_x"];
-        [data setObject:diff_gyroscope_y forKey:@"gyroscope_y"];
-        [data setObject:diff_gyroscope_z forKey:@"gyroscope_z"];
-        // Send the notification
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"returnGyroscopeMeasure"
-                                                            object:nil
-                                                          userInfo:data];
+- (void) stopGyroscopeHeadingMeasuring:(NSNotification *) notification {
+    
+    
+    if ([[notification name] isEqualToString:@"stopGyroscopeHeadingMeasuring"]){
+        
+        NSLog(@"[NOTI][MM] Notification \"stopGyroscopeHeadingMeasuring\" recived.");
+        
+        // First, validate the access to the data shared collection
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            
+        } else {
+            /*
+             [self alertUserWithTitle:@"Beacon ranged won't be procesed."
+             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+             andHandler:^(UIAlertAction * action) {
+             // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+             }
+             ];
+             */
+            // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+            NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting travel.");
+            return;
+        }
+        
+        // Different behave depending on the mode
+            
+        // Get the measuring mode
+        NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                          andCredentialsUserDic:credentialsUserDic];
+        
+        // If a rho type system which needs ranging
+        if (
+            [mode isEqualToString:@"RHO_RHO_MODELING"] ||
+            [mode isEqualToString:@"RHO_RHO_LOCATING"]
+            )
+        {
+            // Do nothing
+            NSLog(@"[ERROR] Gyroscope measure method called when using a rho rho type system.");
+            
+        }
+        
+        // If a rho theta type system;
+        if (
+            [mode isEqualToString:@"RHO_THETA_MODELING"] ||
+            [mode isEqualToString:@"RHO_THETA_LOCATING"]
+            )
+        {
+            // TO DO: Alberto J. 2019/10/15.
+        }
+        
+        // If a theta theta type system; it is supposed that in this case gyroscopes are used to get the heading
+        if (
+            [mode isEqualToString:@"THETA_THETA_MODELING"] ||
+            [mode isEqualToString:@"THETA_THETA_LOCATING"]
+            )
+        {
+            // Calculate the measure
+            NSNumber * measure = [NSNumber numberWithFloat: sqrt([measured_gyroscope_x floatValue] * [measured_gyroscope_x floatValue] +
+                                                                 [measured_gyroscope_y floatValue] * [measured_gyroscope_y floatValue] +
+                                                                 [measured_gyroscope_z floatValue] * [measured_gyroscope_z floatValue]
+                                                                 )
+                                  ];
+            
+            // Save the measure
+            // The heading measures in this mode are only saved if the user did select the item to aim to whose item dictionary is stored in session dictionary as 'itemChosenByUser'.
+            NSMutableDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                                                                 andCredentialsUserDic:credentialsUserDic];
+            if(itemChosenByUser) {
+                // If its not null retrieve the information needed.
+                NSString * itemUUID = itemChosenByUser[@"uuid"];
+                
+                [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithFloat:[measure floatValue]]
+                                              ofSort:@"heading"
+                                        withItemUUID:itemUUID
+                                      withDeviceUUID:deviceUUID
+                                          atPosition:nil
+                                      takenByUserDic:userDic
+                           andWithCredentialsUserDic:credentialsUserDic];
+            }
+            
+            // Ask to calculate the positions
+            NSMutableDictionary * locatedPositions;
+            
+            // Precision is arbitrary set to 10 cm
+            // TO DO: Make this configurable. Alberto J. 2019/09/12.
+            NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
+                                         [NSNumber numberWithFloat:0.1], @"xPrecision",
+                                         [NSNumber numberWithFloat:0.1], @"yPrecision",
+                                         [NSNumber numberWithFloat:0.1], @"zPrecision",
+                                         nil];
+            
+            // Ask radiolocation of beacons if posible...
+            locatedPositions = [thetaThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
+            // ...and save them as a located item.
+            NSArray *positionKeys = [locatedPositions allKeys];
+            for (id positionKey in positionKeys) {
+                NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
+                infoDic[@"located"] = @"YES";
+                infoDic[@"sort"] = @"position";
+                infoDic[@"identifier"] = [NSString
+                                          stringWithFormat:@"location%@@miso.uam.es",
+                                          [positionKey substringFromIndex:
+                                           [positionKey length] - 4]
+                                          ];
+                infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
+                // Check if it is a item chosen by user
+                MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
+                                                                            andCredentialsUserDic:credentialsUserDic];
+                if(type) {
+                    infoDic[@"type"] = type;
+                }
+                [sharedData inItemDataAddItemOfSort:@"position"
+                                           withUUID:positionKey
+                                        withInfoDic:infoDic
+                          andWithCredentialsUserDic:credentialsUserDic];
+            }
+            
+            NSLog(@"[INFO][MM] Generated locations:");
+            NSLog(@"[INFO][MM]  -> %@", [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                                andCredentialsUserDic:credentialsUserDic]);
+            NSLog(@"[INFO][MM] Generated measures:");
+            NSLog(@"[INFO][MM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
+            
+                
+        }
+        
         return;
     }
 }
@@ -821,7 +1078,7 @@
  */
 - (void) startTraveling:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"startTraveling"]){
-        NSLog(@"[NOTI][MM] Notfication \"startTraveling\" recived.");
+        NSLog(@"[NOTI][MM] Notification \"startTraveling\" recived.");
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"getPosition"
                                                             object:nil];
@@ -835,7 +1092,7 @@
  */
 - (void) stopTraveling:(NSNotification *) notification  {
     if ([[notification name] isEqualToString:@"stopTraveling"]){
-        NSLog(@"[NOTI][MM] Notfication \"stopTraveling\" recived.");
+        NSLog(@"[NOTI][MM] Notification \"stopTraveling\" recived.");
         traveling = NO;
         
         NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
@@ -859,7 +1116,7 @@
  */
 - (void) startTravelingFrom:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"getPositionRespond"]){
-        NSLog(@"[NOTI][MM] Notfication \"getPositionRespond\" recived.");
+        NSLog(@"[NOTI][MM] Notification \"getPositionRespond\" recived.");
         
         NSDictionary * data = notification.userInfo;
         RDPosition * initialPosition = data[@"currentPosition"];

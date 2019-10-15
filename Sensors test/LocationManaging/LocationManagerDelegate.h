@@ -46,6 +46,9 @@
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
+                      rhoRhoSystem:(RDRhoRhoSystem *)initRhoRhoSystem
+                    rhoThetaSystem:(RDRhoThetaSystem *)initRhoThetaSystem
+                  thetaThetaSystem:(RDThetaThetaSystem *)initThetaThetaSystem
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;

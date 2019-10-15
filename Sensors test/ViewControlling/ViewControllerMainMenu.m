@@ -152,10 +152,36 @@
         [[sharedData getSessionDataWithCredentialsUserDic:credentialsUserDic] addObject:sessionDic];
     }
     
+    
+    // Init the radiodetermination components
+    NSString * deviceUUID = [[NSUUID UUID] UUIDString];
+    if (!rhoRhoSystem) {
+        rhoRhoSystem = [[RDRhoRhoSystem alloc] initWithSharedData:sharedData
+                                                          userDic:userDic
+                                                       deviceUUID:deviceUUID
+                                            andCredentialsUserDic:credentialsUserDic];
+    }
+    if (!rhoThetaSystem) {
+        rhoThetaSystem = [[RDRhoThetaSystem alloc] initWithSharedData:sharedData
+                                                              userDic:userDic
+                                                           deviceUUID:deviceUUID
+                                                andCredentialsUserDic:credentialsUserDic];
+    }
+    if (!thetaThetaSystem) {
+        thetaThetaSystem = [[RDThetaThetaSystem alloc] initWithSharedData:sharedData
+                                                                  userDic:userDic
+                                                               deviceUUID:deviceUUID
+                                                    andCredentialsUserDic:credentialsUserDic];
+    }
+    
     // Init the motion manager, given the shared data component and the credentials of the device user; if it is the first time the view loads this components won't exist but if not these had been created and set as others views' atributes.
     if(!motion) {
         motion = [[MotionManager alloc] initWithSharedData:sharedData
                                                    userDic:credentialsUserDic
+                                              rhoRhoSystem:rhoRhoSystem
+                                            rhoThetaSystem:rhoThetaSystem
+                                          thetaThetaSystem:thetaThetaSystem
+                                                deviceUUID:deviceUUID
                                      andCredentialsUserDic:credentialsUserDic];
         
         // TO DO: make this configurable or properties. Alberto J. 2019/09/13.
@@ -171,7 +197,10 @@
     if (!location) {
         location = [[LocationManagerDelegate alloc] initWithSharedData:sharedData
                                                                userDic:credentialsUserDic
-                                                            deviceUUID:[[NSUUID UUID] UUIDString]
+                                                          rhoRhoSystem:rhoRhoSystem
+                                                        rhoThetaSystem:rhoThetaSystem
+                                                      thetaThetaSystem:thetaThetaSystem
+                                                            deviceUUID:deviceUUID
                                                  andCredentialsUserDic:credentialsUserDic];
     }
     

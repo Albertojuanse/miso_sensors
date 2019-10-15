@@ -176,9 +176,9 @@
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, aim the iBEacon device and tap 'Measure' for starting. Tap back for finishing."];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"stopMeasuring\" posted.");
+        NSLog(@"[NOTI][VCRTM] Notification \"stopLocationMeasuring\" posted.");
         return;
     }
 }
@@ -237,9 +237,9 @@
         [viewControllerMainMenu setLocationManager:location];
         
         // Ask Location manager to clean the measures taken and reset its position.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"stopMeasuring\" posted.");
+        NSLog(@"[NOTI][VCRTM] Notification \"stopLocationMeasuring\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
                                                             object:nil];
         NSLog(@"[NOTI][VCRTM] Notification \"reset\" posted.");

@@ -230,9 +230,9 @@
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, tap 'Measure' or 'Travel' for starting. Tap back for finishing."];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRRM] Notification \"stopMeasuring\" posted.");
+        NSLog(@"[NOTI][VCRRM] Notification \"stopLocationMeasuring\" posted.");
         return;
         
     }
@@ -302,9 +302,9 @@
         [viewControllerMainMenu setLocationManager:location];
         
         // Ask Location manager to clean the measures taken and reset its position.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRRM] Notification \"stopMeasuring\" posted.");
+        NSLog(@"[NOTI][VCRRM] Notification \"stopLocationMeasuring\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopTraveling"
                                                             object:nil];
         NSLog(@"[NOTI][VCRRM] Notification \"stopTraveling\" posted.");
