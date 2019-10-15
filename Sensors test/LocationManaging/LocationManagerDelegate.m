@@ -470,26 +470,26 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                      object:nil];
                 }
             }
+        }
             
-            // If a theta theta type system; it is supposed that in this case regions are ot registered, but just in case
-            if (
-                [mode isEqualToString:@"THETA_THETA_MODELING"] ||
-                [mode isEqualToString:@"THETA_THETA_LOCATING"]
-                ) {
-                // Do nothing
-                NSLog(@"[ERROR][LM] Beacons ranged in Theta Theta system based mode.");
-            }
+        // If a theta theta type system; it is supposed that in this case regions are ot registered, but just in case
+        if (
+            [mode isEqualToString:@"THETA_THETA_MODELING"] ||
+            [mode isEqualToString:@"THETA_THETA_LOCATING"]
+            ) {
+            // Do nothing
+            NSLog(@"[ERROR][LM] Beacons ranged in Theta Theta system based mode.");
+        }
             
-        } else { // If is idle or traveling...
-            // ...if there is any beacon in the event...
-            if (beacons.count > 0) {
-                // ...do something with them or it will be saved in some Ipad's buffering queue and appear later.
-                for (CLBeacon *beacon in beacons) {
-                    NSString * uuid = [[beacon proximityUUID] UUIDString];
-                    uuid = nil; // ARC dispose
-                    NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
-                    rssi = nil;
-                }
+    } else { // If is idle or traveling...
+        // ...if there is any beacon in the event...
+        if (beacons.count > 0) {
+            // ...do something with them or it will be saved in some Ipad's buffering queue and appear later.
+            for (CLBeacon *beacon in beacons) {
+                NSString * uuid = [[beacon proximityUUID] UUIDString];
+                uuid = nil; // ARC dispose
+                NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
+                rssi = nil;
             }
         }
     }
