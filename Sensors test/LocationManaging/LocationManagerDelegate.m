@@ -295,7 +295,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     } else {
         /*
          [self alertUserWithTitle:@"Beacon ranged won't be procesed."
-                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
@@ -505,7 +505,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     } else {
         /*
          [self alertUserWithTitle:@"Beacon ranged won't be procesed."
-         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
          andHandler:^(UIAlertAction * action) {
          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
          }
@@ -749,7 +749,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         } else {
             /*
              [self alertUserWithTitle:@"Beacon ranged won't be procesed."
-             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
              andHandler:^(UIAlertAction * action) {
              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
              }

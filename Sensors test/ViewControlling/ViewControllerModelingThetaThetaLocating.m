@@ -158,7 +158,7 @@
  */
 - (IBAction)handleModifyButton:(id)sender
 {
-    // Database could not be acessed.
+    // Database could not be accessed.
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
@@ -179,7 +179,43 @@
         
     } else {
         [self alertUserWithTitle:@"Items won't be loaded."
-                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed while loading cells' item.");
+    }
+}
+
+/*!
+ @method handleReferenceButton:
+ @discussion This method creates a reference between teo components in the model.
+ */
+- (IBAction)handleReferenceButton:(id)sender
+{
+    // Database could not be accessed.
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        
+        // Get the user selection
+        NSMutableDictionary * itemDic = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                                                    andCredentialsUserDic:credentialsUserDic];
+        MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
+                                                                    andCredentialsUserDic:credentialsUserDic];
+        if (itemDic && type) {
+            itemDic[@"type"] = type;
+        }
+        
+        [self.canvas setNeedsDisplay];
+        [self.tableTypes reloadData];
+        [self.tableItemsChosen reloadData];
+        
+    } else {
+        [self alertUserWithTitle:@"Items won't be loaded."
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
@@ -285,7 +321,7 @@
     // Configure individual cells
     if (tableView == self.tableItemsChosen) {
         
-        // Database could not be acessed.
+        // Database could not be accessed.
         if (
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
@@ -454,7 +490,7 @@
             }
         } else { // Database not acessible
             [self alertUserWithTitle:@"Items won't be loaded."
-                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
@@ -488,7 +524,7 @@
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Database could not be acessed.
+    // Database could not be accessed.
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
@@ -572,7 +608,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         }
     } else {
         [self alertUserWithTitle:@"Items won't be loaded."
-                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }

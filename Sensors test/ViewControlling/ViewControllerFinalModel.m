@@ -35,7 +35,7 @@
         NSLog(@"[INFO][VCFM] User credentials have been validated.");
     } else {
         [self alertUserWithTitle:@"User not allowed."
-                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }

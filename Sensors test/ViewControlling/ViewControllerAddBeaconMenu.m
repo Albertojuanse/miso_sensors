@@ -353,7 +353,7 @@
     infoDic[@"major"] = [self.textMajor text];
     infoDic[@"minor"] = [self.textMinor text];
     
-    // Ask shared data to remove it; database could not be acessed.
+    // Ask shared data to remove it; database could not be accessed.
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
@@ -377,7 +377,7 @@
         
     } else { // Type not found
         [self alertUserWithTitle:@"Type won't be removed."
-                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
@@ -564,7 +564,7 @@
             return;
         } else { // Shared data not acessible
             [self alertUserWithTitle:@"Type won't be registered."
-                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again."]
+                             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again."]
                           andHandler:^(UIAlertAction * action) {
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
@@ -604,7 +604,7 @@
         self.textType.text = @"";
     } else { // Type not found
         [self alertUserWithTitle:@"Type won't be removed."
-                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again."]
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again."]
                       andHandler:^(UIAlertAction * action) {
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
@@ -625,7 +625,7 @@
             self.textType.text = @"";
         } else { // Type not found
             [self alertUserWithTitle:@"Type won't be removed."
-                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again."]
+                             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again."]
                           andHandler:^(UIAlertAction * action) {
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
@@ -864,7 +864,7 @@
             return [[sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic] count];
         } else { // Type not found
             [self alertUserWithTitle:@"Types won't be loaded."
-                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
@@ -888,7 +888,7 @@
     // Configure individual cells
     if (tableView == self.tableTypes) {
         
-        // Database could not be acessed.
+        // Database could not be accessed.
         if (
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
@@ -903,7 +903,7 @@
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         } else { // Type not found
             [self alertUserWithTitle:@"Types won't be loaded."
-                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
@@ -922,7 +922,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     if (tableView == self.tableTypes) {
         
         // Get the chosen type name
-        // Database could not be acessed.
+        // Database could not be accessed.
         if (
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
@@ -968,7 +968,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             
         } else { // Type not found
             [self alertUserWithTitle:@"Types won't be selected."
-                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }

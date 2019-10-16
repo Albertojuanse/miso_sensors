@@ -147,7 +147,7 @@
         
     } else {
         [self alertUserWithTitle:@"Travel won't be started."
-                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
@@ -333,7 +333,7 @@
     // Configure individual cells
     if (tableView == self.tableItemsChosen) {
         
-        // Database could not be acessed.
+        // Database could not be accessed.
         if (
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
@@ -500,7 +500,7 @@
             }
         } else { // Database not acessible
             [self alertUserWithTitle:@"Items won't be loaded."
-                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
@@ -529,7 +529,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     if (tableView == self.tableItemsChosen) {
-        // Database could not be acessed.
+        // Database could not be accessed.
         if (
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
@@ -573,7 +573,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             }
         } else {
             [self alertUserWithTitle:@"Items won't be loaded."
-                             message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }

@@ -21,7 +21,7 @@
     [super viewDidLoad];
     
     // Everytime that this view is loaded every item must be set as 'not chosen'
-    // Database could not be acessed.
+    // Database could not be accessed.
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
@@ -35,7 +35,7 @@
         
     } else {
         [self alertUserWithTitle:@"Items won't be loaded."
-                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
@@ -147,7 +147,7 @@
     
     NSLog(@"[INFO][VCSP] Button GO tapped.");
     
-    // Database could not be acessed.
+    // Database could not be accessed.
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
@@ -175,7 +175,7 @@
         
     } else {
         [self alertUserWithTitle:@"Mode won't load."
-                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }

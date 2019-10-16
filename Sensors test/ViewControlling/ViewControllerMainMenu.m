@@ -222,10 +222,12 @@
     MDType * noType = [[MDType alloc] initWithName:@"<No type>"];
     MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
     MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
+    MDType * wallType = [[MDType alloc] initWithName:@"Wall"];
     if ([sharedData isMetamodelDataEmptyWithCredentialsUserDic:credentialsUserDic]) {
         registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:noType withCredentialsUserDic:credentialsUserDic];
         registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:cornerType withCredentialsUserDic:credentialsUserDic];
         registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:deviceType withCredentialsUserDic:credentialsUserDic];
+        registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:wallType withCredentialsUserDic:credentialsUserDic];
     }
     
     // Register some items
@@ -365,7 +367,7 @@
         NSLog(@"[INFO][VCMM] User credentials have been validated.");
     } else {
         [self alertUserWithTitle:@"User not allowed."
-                         message:[NSString stringWithFormat:@"Database could not be acessed; please, try again later."]
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
@@ -644,7 +646,7 @@
     // Configure individual cells
     if (tableView == self.tableItems) {
         
-        // Database could not be acessed.
+        // Database could not be accessed.
         if (
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )

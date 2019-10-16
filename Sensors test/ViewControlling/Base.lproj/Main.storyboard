@@ -1396,6 +1396,13 @@
                                             <action selector="handleModifyButton:" destination="fiB-CG-Opu" eventType="touchUpInside" id="nTp-C0-BTr"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rz3-1b-rmV">
+                                        <rect key="frame" x="666" y="756" width="70" height="30"/>
+                                        <state key="normal" title="Reference"/>
+                                        <connections>
+                                            <action selector="handleReferenceButton:" destination="fiB-CG-Opu" eventType="touchUpInside" id="aCX-Ue-3mb"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -1406,6 +1413,8 @@
                                     <constraint firstItem="vlC-zJ-lj4" firstAttribute="top" secondItem="6yn-w8-AGx" secondAttribute="bottom" constant="16" id="9dK-gO-fjJ"/>
                                     <constraint firstItem="GG4-Qe-Xxb" firstAttribute="top" secondItem="vlC-zJ-lj4" secondAttribute="bottom" constant="16" id="FhD-mD-xPo"/>
                                     <constraint firstItem="vlC-zJ-lj4" firstAttribute="leading" secondItem="DO5-Fk-Tq8" secondAttribute="leading" constant="32" id="KlK-f9-krQ"/>
+                                    <constraint firstItem="ItZ-rp-Y43" firstAttribute="top" secondItem="rz3-1b-rmV" secondAttribute="bottom" constant="32" id="KtU-Yr-JhI"/>
+                                    <constraint firstAttribute="trailing" secondItem="rz3-1b-rmV" secondAttribute="trailing" constant="32" id="SG4-OX-0HU"/>
                                     <constraint firstItem="ucz-ve-aVR" firstAttribute="leading" secondItem="GG4-Qe-Xxb" secondAttribute="trailing" constant="8" id="UQS-p0-eD3"/>
                                     <constraint firstItem="ihY-1S-kJR" firstAttribute="top" secondItem="ItZ-rp-Y43" secondAttribute="bottom" constant="32" id="XKU-TY-e1L"/>
                                     <constraint firstAttribute="trailing" secondItem="P72-n4-OIn" secondAttribute="trailing" constant="32" id="Xsn-uz-JWM"/>
@@ -1448,7 +1457,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Ul9-9n-vjH"/>
         <segue reference="NKP-hK-ln4"/>
         <segue reference="2AF-RI-iGH"/>
         <segue reference="kiJ-cW-9Gg"/>
