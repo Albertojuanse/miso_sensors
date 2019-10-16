@@ -114,6 +114,10 @@
 //                 "sourceItem": (NSMutableDictionary *)itemDicA;
 //               },
 //           ];
+//           "referencesTypes":  [
+//               (MDType *)typeReference1,
+//               (···)
+//           ];
 //         { "position": (RDPosition *)positionB;
 //           (···)
 //         },
@@ -2134,6 +2138,10 @@
 //                 "sourceItem": (NSMutableDictionary *)itemDicA;
 //               },
 //           ];
+//           "referencesTypes":  [
+//               (MDType *)typeReference1,
+//               (···)
+//           ];
 //         { "position": (RDPosition *)positionB;
 //           (···)
 //         },
@@ -3032,6 +3040,10 @@
 //                 "type": (MDType *)typeA;
 //                 "sourceItem": (NSMutableDictionary *)itemDicA;
 //               },
+//           ];
+//           "referencesTypes":  [
+//               (MDType *)typeReference1,
+//               (···)
 //           ];
 //         { "position": (RDPosition *)positionB;
 //           (···)
