@@ -30,7 +30,7 @@
         
         // Measuring variables
         calibration_counter = 0;
-        calibrationSteps = 60;
+        calibrationSteps = 100;
         precision_threshold = [[NSNumber alloc] initWithFloat:0.01];
         measured_gyroscope_x = [[NSNumber alloc] initWithFloat:0.0];
         measured_gyroscope_y = [[NSNumber alloc] initWithFloat:0.0];
@@ -401,27 +401,27 @@
         // Attitude
         if (gy_p > [precision_threshold floatValue]) {
             d_gy_p = d_gy_p + gy_p * [t floatValue];
-            NSLog(@"Pith %.2f", d_gy_p);
+            // NSLog(@"[INFO][MM] Pith %.2f", d_gy_p);
         }
         if (gy_p < -[precision_threshold floatValue]) {
             d_gy_p = d_gy_p + gy_p * [t floatValue];
-            NSLog(@"Pith %.2f", d_gy_p);
+            // NSLog(@"[INFO][MM] Pith %.2f", d_gy_p);
         }
         if (gy_r > [precision_threshold floatValue]) {
             d_gy_r = d_gy_r + gy_r * [t floatValue];
-            NSLog(@"Roll %.2f", d_gy_r);
+            // NSLog(@"[INFO][MM] Roll %.2f", d_gy_r);
         }
         if (gy_r < -[precision_threshold floatValue]) {
             d_gy_r = d_gy_r + gy_r * [t floatValue];
-            NSLog(@"Roll %.2f", d_gy_r);
+            // NSLog(@"[INFO][MM] Roll %.2f", d_gy_r);
         }
         if (gy_y > [precision_threshold floatValue]) {
             d_gy_y = d_gy_y + gy_y * [t floatValue];
-            NSLog(@"Yaw %.2f", d_gy_y);
+            // NSLog(@"[INFO][MM] Yaw %.2f", d_gy_y);
         }
         if (gy_y < -[precision_threshold floatValue]) {
             d_gy_y = d_gy_y + gy_y * [t floatValue];
-            NSLog(@"Yaw %.2f", d_gy_y);
+            // NSLog(@"[INFO][MM] Yaw %.2f", d_gy_y);
         }
         
         measured_gyroscope_x = [NSNumber numberWithFloat:d_gy_p];
@@ -1067,7 +1067,11 @@
             NSLog(@"[INFO][MM] Generated measures:");
             NSLog(@"[INFO][MM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
             
-                
+            // Ask view controller to refresh the canvas
+            NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"refreshCanvas"
+             object:nil];
         }
         
         return;
