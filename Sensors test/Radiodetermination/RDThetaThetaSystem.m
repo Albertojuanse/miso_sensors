@@ -464,7 +464,8 @@
                 }
                 
                 // Ordering
-                NSNumber * lastSavedMin;
+                NSNumber * lastSavedMin = [NSNumber numberWithFloat:-FLT_MAX];
+                NSLog(@"->[HOLA][TT] Data collection %@", data);
                 // As many times as elements to be ordered...
                 for (NSUInteger i = 0; i < [data count]; i++) {
                     NSNumber * min = [NSNumber numberWithFloat:FLT_MAX];
@@ -479,7 +480,7 @@
                         NSLog(@"[INFO][TT] Evaluating heading %.2f ", [eachHeading floatValue]);
                         NSLog(@"[INFO][TT] -> with last min saved heading %.2f ", [lastSavedMin floatValue]);
                         
-                        // ...and if it is greater than the last saved one...
+                        // ...and if it is greater than the last ordered one...
                         if ([eachHeading floatValue] > [lastSavedMin floatValue]) {
                             
                             NSLog(@"[INFO][TT] -> and with the partial min %.2f ", [min floatValue]);
@@ -494,7 +495,7 @@
                     
                     // Save it and its position and upload lastSavedMin
                     NSLog(@"[INFO][TT] Ordered the heading %.2f ", [min floatValue]);
-                    NSLog(@"[INFO][TT] -> at index %.2f ", [min floatValue]);
+                    NSLog(@"[INFO][TT] -> at index %.2f ", [[NSNumber numberWithInteger:i] floatValue]);
                     NSLog(@"[INFO][TT] -> and its position %@ ", minPosition);
                     
                     [orderedMeasureHeadings replaceObjectAtIndex:i withObject:min];
@@ -504,73 +505,76 @@
                 
                 // Calculus with ordered values
                 // Angle between the north and the model 'north'                
-                NSNumber * north = [NSNumber numberWithFloat:-1.11];
+                // NSNumber * north = [NSNumber numberWithFloat:-1.11];
+                NSNumber * north = [NSNumber numberWithFloat:0.0]; // Gyroscope measures
                 
                 // Perform the calculus
                 RDPosition * locatedPosition = [[RDPosition alloc] init];
                 NSMutableArray * solutions = [[NSMutableArray alloc] init];
                 
-                NSNumber * lastHeading = nil;
+                NSNumber * accumulatedHeading = nil;
+                NSNumber * lastAccumulatedHeading = nil;
                 RDPosition * lastPosition = nil;
                 for (NSUInteger m = 0; m < [orderedMeasureHeadings count]; m++) {
                     
                     NSNumber * eachHeading = [orderedMeasureHeadings objectAtIndex:m];
+                    RDPosition * eachPosition = [orderedItemsPositions objectAtIndex:m];
                     
                     // The first one is saved.
                     if (m == 0) {
-                        lastHeading = eachHeading;
-                        lastPosition = [orderedItemsPositions objectAtIndex:m];
+                        lastAccumulatedHeading = eachHeading;
+                        lastPosition = eachPosition;
                         NSLog(@"[INFO][TT] First heading %.2f ", [eachHeading floatValue]);
                         NSLog(@"[INFO][TT] First position %@", lastPosition);
                     } else {
-                        // The rest of iterations, the code executed is the following
                         
-                        RDPosition * eachPosition = [orderedItemsPositions objectAtIndex:m];
-                        NSLog(@"[INFO][TT] First heading %.2f ", [lastHeading floatValue]);
-                        NSLog(@"[INFO][TT] First position %@", lastPosition);
-                        NSLog(@"[INFO][TT] Each position %@", eachPosition);
+                        // The rest of iterations, the code executed is the following
+                        lastAccumulatedHeading = [NSNumber numberWithFloat:[accumulatedHeading floatValue]];
+                        accumulatedHeading = [NSNumber numberWithFloat:[accumulatedHeading floatValue] + [eachHeading floatValue]];
+                        NSLog(@"[INFO][TT] LastAccumulated heading %.2f ", [lastAccumulatedHeading floatValue]);
                         NSLog(@"[INFO][TT] Each heading %.2f ", [eachHeading floatValue]);
+                        NSLog(@"[INFO][TT] Accumulated heading %.2f ", [accumulatedHeading floatValue]);
+                        NSLog(@"[INFO][TT] Last position %@", lastPosition);
+                        NSLog(@"[INFO][TT] Each position %@", eachPosition);
                         
                         RDPosition * solution = [[RDPosition alloc] init];
                         solution.x = [NSNumber numberWithFloat:
                                       (
                                        (
-                                        ([eachPosition.y floatValue] - tan( M_PI/2.0 - [eachHeading doubleValue] - [north floatValue]) * [eachPosition.x floatValue]) -
-                                        ([lastPosition.y floatValue] - tan( M_PI/2.0 - [lastHeading doubleValue] - [north floatValue]) * [lastPosition.x floatValue])
+                                        ([eachPosition.y floatValue] - tan( M_PI/2.0 - [accumulatedHeading doubleValue] - [north floatValue]) * [eachPosition.x floatValue]) -
+                                        ([lastPosition.y floatValue] - tan( M_PI/2.0 - [lastAccumulatedHeading doubleValue] - [north floatValue]) * [lastPosition.x floatValue])
                                         )
                                        /
                                        (
-                                        -tan(M_PI/2.0 - [eachHeading doubleValue] - [north floatValue]) +
-                                        tan(M_PI/2.0 - [lastHeading doubleValue] - [north floatValue])
+                                        -tan(M_PI/2.0 - [accumulatedHeading doubleValue] - [north floatValue]) +
+                                        tan(M_PI/2.0 - [lastAccumulatedHeading doubleValue] - [north floatValue])
                                         )
                                        )
                                       ];
                         solution.y = [NSNumber numberWithFloat:
                                       (
                                        (
-                                        ([lastPosition.y floatValue] - tan( M_PI/2.0 - [lastHeading doubleValue] - [north floatValue]) * [lastPosition.x floatValue]) *
-                                        (-tan( M_PI/2.0 - [eachHeading doubleValue] - [north floatValue])) -
-                                        ([eachPosition.y floatValue] - tan( M_PI/2.0 - [eachHeading doubleValue] - [north floatValue]) * [eachPosition.x floatValue]) *
-                                        (-tan( M_PI/2.0 - [lastHeading doubleValue] - [north floatValue]))
+                                        ([lastPosition.y floatValue] - tan( M_PI/2.0 - [lastAccumulatedHeading doubleValue] - [north floatValue]) * [lastPosition.x floatValue]) *
+                                        (-tan( M_PI/2.0 - [accumulatedHeading doubleValue] - [north floatValue])) -
+                                        ([eachPosition.y floatValue] - tan( M_PI/2.0 - [accumulatedHeading doubleValue] - [north floatValue]) * [eachPosition.x floatValue]) *
+                                        (-tan( M_PI/2.0 - [lastAccumulatedHeading doubleValue] - [north floatValue]))
                                         )
                                        /
                                        (
-                                        -tan(M_PI/2.0 - [eachHeading doubleValue] - [north floatValue]) +
-                                        tan(M_PI/2.0 - [lastHeading doubleValue] - [north floatValue])
+                                        -tan(M_PI/2.0 - [accumulatedHeading doubleValue] - [north floatValue]) +
+                                        tan(M_PI/2.0 - [lastAccumulatedHeading doubleValue] - [north floatValue])
                                         )
                                        )
                                       ];
+                        // ARC disposing
+                        lastPosition = nil;
+                        lastPosition = eachPosition;
                         
                         // TO DO: Z coordinate. Alberto J. 2019/09/24.
                         solution.z = [NSNumber numberWithFloat:0.0];
                         
                         NSLog(@"[INFO][TT] Solution %@", solution);
                         [solutions addObject:solution];
-                        
-                        // upload the first heading and position
-                        lastPosition = eachPosition;
-                        lastHeading = eachHeading;
-                        
                     }
                 }
                 

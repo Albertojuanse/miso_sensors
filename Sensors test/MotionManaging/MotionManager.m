@@ -1021,6 +1021,8 @@
                                       takenByUserDic:userDic
                            andWithCredentialsUserDic:credentialsUserDic];
             }
+            // This next line have been moved from "ViewControllerThetaThetaLocating", because the measure is generated in this case after stop measuring
+            [sharedData inSessionDataSetIdleUserWithUserDic:userDic andWithCredentialsUserDic:credentialsUserDic];
             
             // Ask to calculate the positions
             NSMutableDictionary * locatedPositions;
