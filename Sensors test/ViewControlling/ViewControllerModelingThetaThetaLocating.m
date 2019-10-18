@@ -230,14 +230,14 @@
                 itemTo = itemDic;
                 
                 // check if exists the arrays of references and its types
-                NSMutableArray * itemReferences = itemFrom[@"references"];
-                NSMutableArray * itemReferencesTypes = itemFrom[@"referencesTypes"];
+                SDPrintableMutableArray * itemReferences = itemFrom[@"references"];
+                SDPrintableMutableArray * itemReferencesTypes = itemFrom[@"referencesTypes"];
                 // Create them if not
                 if (!itemReferences) {
-                    itemFrom[@"references"] = [[NSMutableArray alloc] init];
+                    itemFrom[@"references"] = [[SDPrintableMutableArray alloc] init];
                 }
                 if (!itemReferencesTypes) {
-                    itemFrom[@"referencesTypes"] = [[NSMutableArray alloc] init];
+                    itemFrom[@"referencesTypes"] = [[SDPrintableMutableArray alloc] init];
                 }
                 // And create the reference
                 [itemReferences addObject:itemTo];

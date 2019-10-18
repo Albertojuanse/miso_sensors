@@ -11,6 +11,7 @@
 #import "ViewControllerThetaThetaLocating.h"
 #import "ViewControllerFinalModel.h"
 #import "Canvas.h"
+#import "SDPrintableMutableArray.h
 
 /*!
  @class ViewControllerModelingThetaThetaLocating

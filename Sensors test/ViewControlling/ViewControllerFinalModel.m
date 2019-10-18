@@ -128,35 +128,7 @@
  */
 - (IBAction)handleButonSubmit:(id)sender
 {
-    
-    
-    //              // MODEL DATA //
-    //
-    // The schema of modelData collection is is
-    //
-    //  [{ "name": name1;                                        //  modelDic
-    //     "components": [
-    //         { "position": (RDPosition *)position1;            //  componentDic
-    //           "type": (MDType *)type1;
-    //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
-    //           "references": [
-    //               { "position": (RDPosition *)positionA;      //  componentDic
-    //                 "type": (MDType *)typeA;
-    //                 "sourceItem": (NSMutableDictionary *)itemDicA;
-    //               },
-    //           ];
-    //         { "position": (RDPosition *)positionB;
-    //           (···)
-    //         },
-    //         (···)
-    //     ];
-    //   },
-    //   { "name": name2;                                        //  modelDic
-    //     (···)
-    //   },
-    //  ]
-    //
-    
+    // TO DO: Model must be a COPY of the items and the references must be removed. Alberto J. 2019/10/18
     
     // Check if name exists
     NSString * name = [self.nameText text];
