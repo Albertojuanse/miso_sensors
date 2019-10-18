@@ -38,6 +38,9 @@
     
     // Variables
     locatedPositionUUID = [[NSUUID UUID] UUIDString];
+    flagReference = false;
+    itemFrom = nil;
+    itemTo = nil;
     
     // Ask canvas to initialize
     [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic andCredentialsUserDic:credentialsUserDic];
@@ -158,6 +161,11 @@
  */
 - (IBAction)handleModifyButton:(id)sender
 {
+    flagReference = false;
+    itemFrom = nil;
+    itemTo = nil;
+    [self.labelStatus setText:@"Please, finish the model process."];
+    
     // Database could not be accessed.
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
@@ -205,8 +213,45 @@
                                                                                     andCredentialsUserDic:credentialsUserDic];
         MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
                                                                     andCredentialsUserDic:credentialsUserDic];
-        if (itemDic && type) {
-            itemDic[@"type"] = type;
+        // If is the first time tapped
+        if (!flagReference) {
+            if (itemDic) {
+                itemFrom = itemDic;
+                flagReference = true;
+                [self.labelStatus setText:@"Please, select the item for referencing to."];
+            } else {
+                [self.labelStatus setText:@"Error, an item for referencing from must be selected and, then, another item AND a type."];
+                itemFrom = nil;
+                itemTo = nil;
+                flagReference = false;
+            }
+        } else { // The second
+            if (itemDic && type) {
+                itemTo = itemDic;
+                
+                // check if exists the arrays of references and its types
+                NSMutableArray * itemReferences = itemFrom[@"references"];
+                NSMutableArray * itemReferencesTypes = itemFrom[@"referencesTypes"];
+                // Create them if not
+                if (!itemReferences) {
+                    itemFrom[@"references"] = [[NSMutableArray alloc] init];
+                }
+                if (!itemReferencesTypes) {
+                    itemFrom[@"referencesTypes"] = [[NSMutableArray alloc] init];
+                }
+                // And create the reference
+                [itemReferences addObject:itemTo];
+                [itemReferencesTypes addObject:type];
+                
+                // reset
+                [self.labelStatus setText:@"Reference saved."];
+            } else {
+                [self.labelStatus setText:@"Error, an item for referencing from must be selected and, then, another item AND a type."];
+            }
+            // reset
+            itemFrom = nil;
+            itemTo = nil;
+            flagReference = false;
         }
         
         [self.canvas setNeedsDisplay];
