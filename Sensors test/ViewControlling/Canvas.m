@@ -266,7 +266,8 @@
     //     "state": (NSString *)state1;
     //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
     //     "itemsChosenByUser": (NSMutableArray *)items1;
-    //     "typeChosenByUser": (MDType *)type1
+    //     "typeChosenByUser": (MDType *)type1;
+    //     "referencesByUser": (NSMutableArray *)references1
     //   },
     //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
     //     (···)
@@ -338,17 +339,15 @@
     //         { "position": (RDPosition *)position1;            //  componentDic
     //           "type": (MDType *)type1;
     //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
-    //           "references": [
-    //               { "position": (RDPosition *)positionA;      //  componentDic
-    //                 "type": (MDType *)typeA;
-    //                 "sourceItem": (NSMutableDictionary *)itemDicA;
-    //               },
-    //           ];
     //         { "position": (RDPosition *)positionB;
     //           (···)
     //         },
     //         (···)
     //     ];
+    //     "references": [
+    //         (MDReference *)reference1,
+    //         (···)
+    //     ]
     //   },
     //   { "name": name2;                                        //  modelDic
     //     (···)
