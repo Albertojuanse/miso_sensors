@@ -16,6 +16,7 @@
 		422798932271F37800E07C39 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798922271F37800E07C39 /* main.m */; };
 		4227989B2271F60700E07C39 /* MotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227989A2271F60700E07C39 /* MotionManager.m */; };
 		42300BDB2330E03000E2385F /* VCPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 42300BDA2330E03000E2385F /* VCPosition.m */; };
+		42364B27236AE0BA00C387E5 /* MDReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 42364B26236AE0BA00C387E5 /* MDReference.m */; };
 		4242F6C122CB99BF00C4B0B7 /* Threshold.m in Sources */ = {isa = PBXBuildFile; fileRef = 4242F6C022CB99BF00C4B0B7 /* Threshold.m */; };
 		4242F6C422CB9EC200C4B0B7 /* Buffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4242F6C322CB9EC200C4B0B7 /* Buffer.m */; };
 		4242F6C722CBA7C600C4B0B7 /* Adder.m in Sources */ = {isa = PBXBuildFile; fileRef = 4242F6C622CBA7C600C4B0B7 /* Adder.m */; };
@@ -58,6 +59,8 @@
 		4227989A2271F60700E07C39 /* MotionManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MotionManager.m; sourceTree = "<group>"; };
 		42300BD92330DF6D00E2385F /* VCPosition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCPosition.h; sourceTree = "<group>"; };
 		42300BDA2330E03000E2385F /* VCPosition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCPosition.m; sourceTree = "<group>"; };
+		42364B25236AE09D00C387E5 /* MDReference.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDReference.h; sourceTree = "<group>"; };
+		42364B26236AE0BA00C387E5 /* MDReference.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDReference.m; sourceTree = "<group>"; };
 		4242F6BF22CB999900C4B0B7 /* Threshold.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Threshold.h; sourceTree = "<group>"; };
 		4242F6C022CB99BF00C4B0B7 /* Threshold.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Threshold.m; sourceTree = "<group>"; };
 		4242F6C222CB9E5200C4B0B7 /* Buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Buffer.h; sourceTree = "<group>"; };
@@ -222,6 +225,8 @@
 			children = (
 				42867F5722EA1C9A00927FEE /* MDType.h */,
 				429FA65E22EB19DB00F3D415 /* MDType.m */,
+				42364B25236AE09D00C387E5 /* MDReference.h */,
+				42364B26236AE0BA00C387E5 /* MDReference.m */,
 			);
 			path = Modeling;
 			sourceTree = "<group>";
@@ -342,6 +347,7 @@
 				42F07CD32359CB6200134FFA /* NSMutableArray+Printable.m in Sources */,
 				4276127422C0EE91007BDED8 /* SharedData.m in Sources */,
 				42CEBE2E234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m in Sources */,
+				42364B27236AE0BA00C387E5 /* MDReference.m in Sources */,
 				42300BDB2330E03000E2385F /* VCPosition.m in Sources */,
 				426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */,
 				4242F6CB22CBACAB00C4B0B7 /* Averager.m in Sources */,

@@ -2,7 +2,7 @@
 //  MDType.m
 //  Sensors test
 //
-//  Created by MISO on 26/7/19.
+//  Created by Alberto J. on 26/7/19.
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
@@ -101,7 +101,7 @@
 
 /*!
  @method isEqualToMDType
- @discussion This method compares two RDPosition objects.
+ @discussion This method compares two MDType objects.
  */
 - (BOOL)isEqualToMDType:(MDType *)type {
     if (type == self) {
