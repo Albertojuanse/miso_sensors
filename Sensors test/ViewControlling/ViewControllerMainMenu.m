@@ -51,7 +51,8 @@
     //     "state": (NSString *)state1;
     //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
     //     "itemsChosenByUser": (NSMutableArray *)items1;
-    //     "typeChosenByUser": (MDType *)type1
+    //     "typeChosenByUser": (MDType *)type1;
+    //     "referencesByUser": (NSMutableArray *)references1
     //   },
     //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
     //     (···)
