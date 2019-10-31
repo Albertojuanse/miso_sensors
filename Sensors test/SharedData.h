@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "RDPosition.h"
 #import "MDType.h"
+#import "MDReference.h"
 #import "NSMutableArray+Printable.h"
 
 /*!
@@ -104,6 +105,8 @@
                                               withCredentialsUserName:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)fromSessionDataGetPositionsOfItemsChosenByUserName:(NSString *)givenUserName
                                                withCredentialsUserName:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray*) fromSessionDataGetReferencesByUserDic:(NSMutableDictionary *)givenUserDic
+                                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific items data getters
 - (NSMutableArray *)fromItemDataGetItemsWithSort:(NSString *)sort
@@ -281,6 +284,9 @@
 - (BOOL) inSessionDataSetAsNotChosenItem:(NSMutableDictionary *)givenItemDic
                       toUserWithUserName:(NSString *)userName
                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL) inSessionDataAddReference:(MDReference *)givenReference
+                 toUserWithUserDic:(NSMutableDictionary *)givenUserDic
+            withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific items data setters
 - (BOOL) inItemDataAddItemDic:(NSMutableDictionary *)givenItemDic
@@ -310,6 +316,7 @@
 // Specific model data specific setters
 - (BOOL) inModelDataAddModelWithName:(NSString *)name
                           components:(NSMutableArray *)components
+                          references:(NSMutableArray *)references
            andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific user data specific removers

@@ -36,7 +36,8 @@
 //     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
 //     "itemsChosenByUser": (NSMutableArray *)items1;
-//     "typeChosenByUser": (MDType *)type1
+//     "typeChosenByUser": (MDType *)type1;
+//     "referencesByUser": (NSMutableArray *)references1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
 //     (···)
@@ -108,21 +109,15 @@
 //         { "position": (RDPosition *)position1;            //  componentDic
 //           "type": (MDType *)type1;
 //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
-//           "references": [
-//               { "position": (RDPosition *)positionA;      //  componentDic
-//                 "type": (MDType *)typeA;
-//                 "sourceItem": (NSMutableDictionary *)itemDicA;
-//               },
-//           ];
-//           "referencesTypes":  [
-//               (MDType *)typeReference1,
-//               (···)
-//           ];
 //         { "position": (RDPosition *)positionB;
 //           (···)
 //         },
 //         (···)
 //     ];
+//     "references": [
+//         (MDReference *)reference1,
+//         (···)
+//     ]
 //   },
 //   { "name": name2;                                        //  modelDic
 //     (···)
@@ -506,7 +501,9 @@
 //     "mode": (NSString *)mode1;
 //     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
-//     "typeChosenByUser": (MDType *)type1
+//     "itemsChosenByUser": (NSMutableArray *)items1;
+//     "typeChosenByUser": (MDType *)type1;
+//     "referencesByUser": (NSMutableArray *)references1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
 //     (···)
@@ -936,24 +933,62 @@
 - (NSMutableArray *)fromSessionDataGetPositionsOfItemsChosenByUserName:(NSString *)givenUserName
                                             withCredentialsUserName:(NSMutableDictionary *)credentialsUserDic
 {
-    // Get the chosen items by the given user...
-    NSMutableArray * itemsChosenByUser = [self fromSessionDataGetItemsChosenByUserName:givenUserName
-                                                                 andCredentialsUserDic:credentialsUserDic];
-    
-    // ...and get its positions
-    NSMutableArray * positions = [[NSMutableArray alloc] init];
-    for (itemDic in itemsChosenByUser) {
-        RDPosition * itemPosition = itemDic[@"position"];
-        if (itemDic) {
-            RDPosition * newPosition = [[RDPosition alloc] init];
-            newPosition.x = itemPosition.x;
-            newPosition.y = itemPosition.y;
-            newPosition.z = itemPosition.z;
-            [positions addObject:newPosition];
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        // Get the chosen items by the given user...
+        NSMutableArray * itemsChosenByUser = [self fromSessionDataGetItemsChosenByUserName:givenUserName
+                                                                     andCredentialsUserDic:credentialsUserDic];
+        
+        // ...and get its positions
+        NSMutableArray * positions = [[NSMutableArray alloc] init];
+        for (itemDic in itemsChosenByUser) {
+            RDPosition * itemPosition = itemDic[@"position"];
+            if (itemDic) {
+                RDPosition * newPosition = [[RDPosition alloc] init];
+                newPosition.x = itemPosition.x;
+                newPosition.y = itemPosition.y;
+                newPosition.z = itemPosition.z;
+                [positions addObject:newPosition];
+            }
         }
+        
+        return positions;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
     }
-    
-    return positions;
+}
+
+/*!
+ @method fromSessionDataGetReferencesByUserDic:withCredentialsUserDic:
+ @discussion This method returns the 'NSMutableArray' collection with the references of items set by the user given its user dic; if is not found, NO is return; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray*) fromSessionDataGetReferencesByUserDic:(NSMutableDictionary *)givenUserDic
+                                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * referencesByUser;
+        
+        // Search for the user in session data...
+        for (sessionDic in sessionData) {
+            NSMutableDictionary * userDic = sessionDic[@"user"];
+            if ([userDic isEqualToDictionary:givenUserDic]) {
+                
+                // ...and get the references array.
+                referencesByUser = sessionDic[@"referencesByUser"];
+            }
+        }
+        
+        if (referencesByUser) {
+            return referencesByUser;
+        } else {
+            return nil;
+        }
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
 }
 
 #pragma mark - Item data specific getters
@@ -2132,21 +2167,15 @@
 //         { "position": (RDPosition *)position1;            //  componentDic
 //           "type": (MDType *)type1;
 //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
-//           "references": [
-//               { "position": (RDPosition *)positionA;      //  componentDic
-//                 "type": (MDType *)typeA;
-//                 "sourceItem": (NSMutableDictionary *)itemDicA;
-//               },
-//           ];
-//           "referencesTypes":  [
-//               (MDType *)typeReference1,
-//               (···)
-//           ];
 //         { "position": (RDPosition *)positionB;
 //           (···)
 //         },
 //         (···)
 //     ];
+//     "references": [
+//         (MDReference *)reference1,
+//         (···)
+//     ]
 //   },
 //   { "name": name2;                                        //  modelDic
 //     (···)
@@ -2294,7 +2323,9 @@
 //     "mode": (NSString *)mode1;
 //     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
-//     "typeChosenByUser": (MDType *)type1
+//     "itemsChosenByUser": (NSMutableArray *)items1;
+//     "typeChosenByUser": (MDType *)type1;
+//     "referencesByUser": (NSMutableArray *)references1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
 //     (···)
@@ -2747,6 +2778,50 @@
     }
 }
 
+/*!
+ @method inSessionDataAddReference:toUserWithUserDic:withCredentialsUserDic:
+ @discussion This method adds a reference 'MDReference' object to the given user; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL) inSessionDataAddReference:(MDReference *)givenReference
+                 toUserWithUserDic:(NSMutableDictionary *)givenUserDic
+            withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        // For the user in session...
+        BOOL isUserDicFound = NO;
+        NSMutableDictionary * userDicFound;
+        NSMutableDictionary * sessionDicFound;
+        for (sessionDic in sessionData) {
+            NSMutableDictionary * userDic = sessionDic[@"user"];
+            if ([userDic isEqualToDictionary:givenUserDic]) {
+                userDicFound = userDic;
+                sessionDicFound = sessionDic;
+                isUserDicFound = YES;
+            }
+        }
+        if (!isUserDicFound) {
+            NSLog(@"[ERROR][SD] User did not found when triying to set an item as chosen to it.");
+            return NO;
+        }
+        
+        // Initializate the collection in the user if it does not exist
+        if (!sessionDicFound[@"referencesByUser"]) {
+            sessionDicFound[@"referencesByUser"] = [[NSMutableArray alloc] init];
+        }
+        
+        // ...and update it
+        NSMutableArray * referencesByUser = sessionDicFound[@"referencesByUser"];
+        [referencesByUser addObject:givenReference];
+        
+        // Everything OK
+        return YES;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return NO;
+    }
+
 #pragma mark - Item data specific setters
 //             // ITEMS DATA //
 //
@@ -3035,21 +3110,15 @@
 //         { "position": (RDPosition *)position1;            //  componentDic
 //           "type": (MDType *)type1;
 //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
-//           "references": [
-//               { "position": (RDPosition *)positionA;      //  componentDic
-//                 "type": (MDType *)typeA;
-//                 "sourceItem": (NSMutableDictionary *)itemDicA;
-//               },
-//           ];
-//           "referencesTypes":  [
-//               (MDType *)typeReference1,
-//               (···)
-//           ];
 //         { "position": (RDPosition *)positionB;
 //           (···)
 //         },
 //         (···)
 //     ];
+//     "references": [
+//         (MDReference *)reference1,
+//         (···)
+//     ]
 //   },
 //   { "name": name2;                                        //  modelDic
 //     (···)
@@ -3058,11 +3127,12 @@
 //
 
 /*!
- @method inModelDataAddModelWithName:components:andWithCredentialsUserDic:
+ @method inModelDataAddModelWithName:components:references:andWithCredentialsUserDic:
  @discussion This method saves in the model collection data a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL) inModelDataAddModelWithName:(NSString *)name
                           components:(NSMutableArray *)components
+                          references:(NSMutableArray *)references
            andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
@@ -3075,6 +3145,7 @@
             NSString * savedName = modelDic[@"name"];
             if ([name isEqualToString:savedName]) { // Name already exists
                 modelDic[@"components"] = components;
+                modelDic[@"references"] = references;
                 modelFound = YES;
             } else {
                 // Do not upload the model
@@ -3091,6 +3162,7 @@
             modelDic[@"name"] = name;
             modelDic[@"sort"] = @"model";
             modelDic[@"components"] = components;
+            modelDic[@"references"] = references;
             
             // Set it into locatedDic
             [modelData addObject:modelDic];
