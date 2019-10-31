@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "RDPosition.h"
 #import "MDType.h"
+#import "NSMutableArray+Printable.h"
 
 /*!
  @class SharedData

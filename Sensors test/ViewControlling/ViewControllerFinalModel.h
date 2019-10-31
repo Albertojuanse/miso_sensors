@@ -12,6 +12,7 @@
 #import "LocationManagerDelegate.h"
 #import "SharedData.h"
 #import "ViewControllerMainMenu.h"
+#import "NSMutableArray+Printable.h"
 
 /*!
  @class ViewControllerFinalModel

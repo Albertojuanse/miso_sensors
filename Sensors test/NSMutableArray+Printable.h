@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSMutableArray (SDPrintableMutableArray) {
-    
-}
+@interface NSMutableArray (Printable)
+-(NSString *)description;
+-(NSString *)stringValue;
 @end
