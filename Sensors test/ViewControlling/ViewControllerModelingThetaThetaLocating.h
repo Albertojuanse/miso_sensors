@@ -24,8 +24,8 @@
     LocationManagerDelegate * location;
     
     // Reference; this flag is set 'true' when the user has chosen the item from refenrece from.
-    NSMutableDictionary * itemFrom;
-    NSMutableDictionary * itemTo;
+    NSMutableDictionary * sourceItem;
+    NSMutableDictionary * targetItem;
     BOOL flagReference;
     
     // Session and user context

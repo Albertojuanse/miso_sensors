@@ -2821,6 +2821,7 @@
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
+}
 
 #pragma mark - Item data specific setters
 //             // ITEMS DATA //

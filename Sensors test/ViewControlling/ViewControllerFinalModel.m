@@ -164,12 +164,18 @@
         [components addObject:locatedDic];
     }
     
+    // Retrieve the model references
+    NSMutableArray * references = [sharedData fromSessionDataGetReferencesByUserDic:userDic
+                                                             withCredentialsUserDic:credentialsUserDic];
+
+    
     // Make a new name for saving
     NSString * savingName = [NSString stringWithFormat:@"%@@miso.uam.es", name];
     
     // Save the model
     [sharedData inModelDataAddModelWithName:savingName
                                  components:components
+                                 references:references
                   andWithCredentialsUserDic:credentialsUserDic];
     
     // Show the model
