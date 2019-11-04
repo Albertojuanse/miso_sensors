@@ -124,17 +124,15 @@
     //         { "position": (RDPosition *)position1;            //  componentDic
     //           "type": (MDType *)type1;
     //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
-    //           "references": [
-    //               { "position": (RDPosition *)positionA;      //  componentDic
-    //                 "type": (MDType *)typeA;
-    //                 "sourceItem": (NSMutableDictionary *)itemDicA;
-    //               },
-    //           ];
     //         { "position": (RDPosition *)positionB;
     //           (···)
     //         },
     //         (···)
     //     ];
+    //     "references": [
+    //         (MDReference *)reference1,
+    //         (···)
+    //     ]
     //   },
     //   { "name": name2;                                        //  modelDic
     //     (···)

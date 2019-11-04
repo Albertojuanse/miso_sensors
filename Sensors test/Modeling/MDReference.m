@@ -157,7 +157,7 @@
     NSString * description = @"";
     description = [description stringByAppendingString:sourceItemId];
     description = [description stringByAppendingString:@" -> "];
-    NSString * typeString = [[NSString alloc] initWithFormat:@"<%@>", type];
+    NSString * typeString = [[NSString alloc] initWithFormat:@"%@", type];
     description = [description stringByAppendingString:typeString];
     description = [description stringByAppendingString:@" -> "];
     description = [description stringByAppendingString:targetItemId];

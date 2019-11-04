@@ -216,30 +216,28 @@
         // If is the first time tapped
         if (!flagReference) {
             if (itemDic) {
+                // Save the item that will be the source item of the reference
                 sourceItem = itemDic;
                 flagReference = true;
                 [self.labelStatus setText:@"Please, select the item for referencing to."];
             } else {
                 [self.labelStatus setText:@"Error, an item for referencing from must be selected and, then, another item AND a type."];
+                // Erase the item that would be the source item of the reference and the target one
                 sourceItem = nil;
                 targetItem = nil;
                 flagReference = false;
             }
         } else { // The second
             if (itemDic && type) {
+                // Save the item that will be the target item of the reference
                 targetItem = itemDic;
-                // check if exists the arrays of references and its types
-                NSMutableArray * itemReferences = sourceItem[@"references"];
-                // Create them if not
-                if (!itemReferences) {
-                    sourceItem[@"references"] = [[NSMutableArray alloc] init];
-                }
-                // And create the reference
+                // And create and add the reference
                 MDReference * reference = [[MDReference alloc] initWithType:type
                                                                sourceItemId:sourceItem[@"identifier"]
                                                             andTargetItemId:targetItem[@"identifier"]
                                            ];
-                [itemReferences addObject:reference];
+                NSLog(@"[INFO][VCMTTL] Created reference %@", reference);
+                [sharedData inSessionDataAddReference:reference toUserWithUserDic:userDic withCredentialsUserDic:credentialsUserDic];
                 
                 // reset
                 [self.labelStatus setText:@"Reference saved."];

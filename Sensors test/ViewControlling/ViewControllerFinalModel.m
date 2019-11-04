@@ -163,11 +163,19 @@
     for (NSMutableDictionary * locatedDic in locations) {
         [components addObject:locatedDic];
     }
+    NSLog(@"[INFO][VCFM] Model composing with components");
+    for (NSMutableDictionary * comp in components) {
+        NSLog(@"[INFO][VCFM] -> %@", comp);
+    }
     
     // Retrieve the model references
     NSMutableArray * references = [sharedData fromSessionDataGetReferencesByUserDic:userDic
                                                              withCredentialsUserDic:credentialsUserDic];
-
+    
+    NSLog(@"[INFO][VCFM] and references");
+    for (MDReference * ref in references) {
+        NSLog(@"[INFO][VCFM] -> %@", ref);
+    }
     
     // Make a new name for saving
     NSString * savingName = [NSString stringWithFormat:@"%@@miso.uam.es", name];

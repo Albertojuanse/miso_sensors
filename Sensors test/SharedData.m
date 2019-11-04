@@ -3149,7 +3149,9 @@
                 modelDic[@"references"] = references;
                 modelFound = YES;
             } else {
-                // Do not upload the model
+                // Do not upload the model.
+                // TO DO: Now I am working loading a model, modifiying it and saving it; upload is not necesary since it is previuosly loaded.
+                //        Add uploading and merging models. Alberto J. 2019/11/04
             }
             
         }
