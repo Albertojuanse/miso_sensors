@@ -521,13 +521,15 @@
         
         // ...get the source and target position
         NSString * sourceItemId = [reference getSourceItemId];
-        RDPosition * sourcePosition = [[sharedData fromItemDataGetItemsWithIdentifier:sourceItemId
-                                                                andCredentialsUserDic:credentialsUserDic]
-                                       objectAtIndex:0];
+        NSMutableDictionary * sourceItem = [[sharedData fromItemDataGetItemsWithIdentifier:sourceItemId
+                                                                     andCredentialsUserDic:credentialsUserDic]
+                                            objectAtIndex:0];
+        RDPosition * sourcePosition = sourceItem[@"position"];
         NSString * targetItemId = [reference getTargetItemId];
-        RDPosition * targetPosition = [[sharedData fromItemDataGetItemsWithIdentifier:targetItemId
-                                                                andCredentialsUserDic:credentialsUserDic]
-                                       objectAtIndex:0];
+        NSMutableDictionary * targetItem = [[sharedData fromItemDataGetItemsWithIdentifier:targetItemId
+                                                                     andCredentialsUserDic:credentialsUserDic]
+                                            objectAtIndex:0];
+        RDPosition * targetPosition = targetItem[@"position"];
         // ...and show the reference between them if they both exist.
         if (targetPosition && sourcePosition) {
           
@@ -537,17 +539,16 @@
             NSLog(@"[INFO][CA] Drawing canvas located reference between %@ and %@", canvasSourcePosition, canvasTargetPosition);
             
             // ..., the reference type, ...
-            
             MDType * referenceType = [reference getType];
             
             // ...and draw it.
             if (!referenceType) {
-                [self drawReferenceFromSourcePosition:targetPosition
-                                     toTargetPosition:sourcePosition
+                [self drawReferenceFromSourcePosition:canvasSourcePosition
+                                     toTargetPosition:canvasTargetPosition
                  ];
             } else {
-                [self drawReferenceFromSourcePosition:targetPosition
-                                     toTargetPosition:sourcePosition
+                [self drawReferenceFromSourcePosition:canvasSourcePosition
+                                     toTargetPosition:canvasTargetPosition
                                               andType:referenceType
                  ];
             }
@@ -824,8 +825,8 @@
     // ...and draw it
     CATextLayer *typeTextLayer = [CATextLayer layer];
     typeTextLayer.position = middlePoint;
-    typeTextLayer.frame = CGRectMake(middlePoint.x + 5.0,
-                                     middlePoint.y - 10.0,
+    typeTextLayer.frame = CGRectMake(middlePoint.x,
+                                     middlePoint.y,
                                      100,
                                      20);
     typeTextLayer.string = [NSString stringWithFormat:@"%@", referenceType];
