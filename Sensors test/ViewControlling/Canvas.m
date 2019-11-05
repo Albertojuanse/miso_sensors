@@ -733,6 +733,111 @@
     [[self layer] addSublayer:typeTextLayer];
 }
 
+/*!
+ @method drawReferenceFromSourcePosition:toTargetPosition:
+ @discussion This method displays a reference between two positions using its coordinates in the canvas.
+ */
+- (void) drawReferenceFromSourcePosition:(RDPosition *)targetPosition
+                        toTargetPosition:(RDPosition *)sourcePosition
+{
+    
+    // Given the two points, a line is required not between them but two points near them and separated some distance; if not, the line starts inside them and is not visual.
+    // Given two points, the distance between them is
+    NSNumber * distance = [NSNumber numberWithDouble:
+                           sqrt(
+                                ([targetPosition.x doubleValue] - [sourcePosition.x doubleValue]) *
+                                ([targetPosition.x doubleValue] - [sourcePosition.x doubleValue]) +
+                                ([targetPosition.y doubleValue] - [sourcePosition.y doubleValue]) *
+                                ([targetPosition.y doubleValue] - [sourcePosition.y doubleValue])
+                                )
+                           ];
+    // and the desired distance is 20 (pixels)
+    NSNumber * desired_distance = [NSNumber numberWithDouble:[distance floatValue] - 20];
+    // so the ratio is
+    NSNumber * ratio = [NSNumber numberWithFloat:[desired_distance floatValue]/[distance floatValue]];
+    // and the two points are
+    NSNumber * sourcePointX = [NSNumber numberWithFloat:
+                               (1 - [ratio floatValue]) * [sourcePosition.x floatValue] +
+                               [ratio floatValue] * [targetPosition.x floatValue]
+                               ];
+    NSNumber * sourcePointY = [NSNumber numberWithFloat:
+                               (1 - [ratio floatValue]) * [sourcePosition.y floatValue] +
+                               [ratio floatValue] * [targetPosition.y floatValue]
+                               ];
+    CGPoint sourcePoint = CGPointMake([sourcePointX floatValue],[sourcePointY floatValue]);
+    NSNumber * targetPointX = [NSNumber numberWithFloat:
+                               (1 - [ratio floatValue]) * [targetPosition.x floatValue] +
+                               [ratio floatValue] * [sourcePosition.x floatValue]
+                               ];
+    NSNumber * targetPointY = [NSNumber numberWithFloat:
+                               (1 - [ratio floatValue]) * [targetPosition.y floatValue] +
+                               [ratio floatValue] * [sourcePosition.y floatValue]
+                               ];
+    CGPoint targetPoint = CGPointMake([targetPointX floatValue],[targetPointY floatValue]);
+    
+    // Compose the line between them
+    UIBezierPath * referenceBezierPath = [UIBezierPath bezierPath];
+    [referenceBezierPath moveToPoint:sourcePoint];
+    [referenceBezierPath addLineToPoint:targetPoint];
+    
+    CAShapeLayer *referenceLayer = [[CAShapeLayer alloc] init];
+    [referenceLayer setPath:referenceBezierPath.CGPath];
+    [referenceLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
+    [referenceLayer setFillColor:[UIColor clearColor].CGColor];
+    [[self layer] addSublayer:referenceLayer];
+    
+    return;
+}
+
+/*!
+ @method drawReferenceFromSourcePosition:toTargetPosition:andType:
+ @discussion This method displays a reference between two positions using its coordinates in the canvas and the type assigned to it.
+ */
+- (void) drawReferenceFromSourcePosition:(RDPosition *)targetPosition
+                        toTargetPosition:(RDPosition *)sourcePosition
+                                 andType:(MDType *)referenceType
+{
+    
+    [self drawReferenceFromSourcePosition:targetPosition toTargetPosition:sourcePosition];
+    
+    // Draw the type
+    // Get its color...
+    NSUInteger typeIndex = 5;
+    NSMutableArray * types = [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic];
+    for (MDType * eachType in types) {
+        typeIndex++;
+        if ([eachType isEqualToMDType:referenceType]) {
+            break;
+        }
+    }
+    UIColor * color = [self getColorForIndex:typeIndex];
+    
+    // ...the middle point...
+    NSNumber * middleX = [NSNumber numberWithFloat:
+                          ([targetPosition.x floatValue] + [sourcePosition.x floatValue])/2.0
+                          ];
+    NSNumber * middleY = [NSNumber numberWithFloat:
+                          ([targetPosition.y floatValue] + [sourcePosition.y floatValue])/2.0
+                          ];
+    CGPoint middlePoint = CGPointMake([middleX floatValue],[middleY floatValue]);
+    
+    // ...and draw it
+    CATextLayer *typeTextLayer = [CATextLayer layer];
+    typeTextLayer.position = middlePoint;
+    typeTextLayer.frame = CGRectMake(middlePoint.x + 5.0,
+                                     middlePoint.y - 10.0,
+                                     100,
+                                     20);
+    typeTextLayer.string = [NSString stringWithFormat:@"%@", referenceType];
+    typeTextLayer.fontSize = 12;
+    typeTextLayer.alignmentMode = kCAAlignmentCenter;
+    typeTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+    typeTextLayer.foregroundColor = [color CGColor];
+    [[self layer] addSublayer:typeTextLayer];
+    
+    return;
+}
+
 /*
 
 - (void) drawLocatedPositionIfItSharesUUIDWith:(NSString *)uuid

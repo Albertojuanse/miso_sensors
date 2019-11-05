@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "VCPosition.h"
-#import "VCType.h"
 #import <CoreLocation/CoreLocation.h>
 #import "RDPosition.h"
 #import "SharedData.h"
