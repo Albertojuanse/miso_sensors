@@ -409,6 +409,8 @@
         // UUID centrados en ellas
         // Medidas centrados en ellas
     
+    
+    //              // ITEMS POSITION //
     // Show the chosen items by the user; the items used for locations like positions or beacons if known.
     // For every item position...
     for (RDPosition * realItemPosition in itemsPositions) {
@@ -459,6 +461,7 @@
         
     }
     
+    //              // LOCATED POSITION //
     // Show the located positions, the ones located with the radiolocation systems.
     // For every located position...
     for (RDPosition * realLocatedPosition in locatedPositions) {
@@ -505,6 +508,53 @@
             NSLog(@"[ERROR][CA] No located position's UUID found in item while its showing.");
         }
         
+    }
+    
+    //              // REFERENCES //
+    // Show the references.
+    // Reatrrieve the references...
+    NSMutableArray * references = [sharedData fromSessionDataGetReferencesByUserDic:userDic
+                                                             withCredentialsUserDic:credentialsUserDic];
+    // ... show them.
+    // For every reference...
+    for (MDReference * reference in references) {
+        
+        // ...get the source and target position
+        NSString * sourceItemId = [reference getSourceItemId];
+        RDPosition * sourcePosition = [[sharedData fromItemDataGetItemsWithIdentifier:sourceItemId
+                                                                andCredentialsUserDic:credentialsUserDic]
+                                       objectAtIndex:0];
+        NSString * targetItemId = [reference getTargetItemId];
+        RDPosition * targetPosition = [[sharedData fromItemDataGetItemsWithIdentifier:targetItemId
+                                                                andCredentialsUserDic:credentialsUserDic]
+                                       objectAtIndex:0];
+        // ...and show the reference between them if they both exist.
+        if (targetPosition && sourcePosition) {
+          
+            // Get the transformed position...
+            RDPosition * canvasSourcePosition = [self transformSingleRealPointToCanvasPoint:sourcePosition];
+            RDPosition * canvasTargetPosition = [self transformSingleRealPointToCanvasPoint:targetPosition];
+            NSLog(@"[INFO][CA] Drawing canvas located reference between %@ and %@", canvasSourcePosition, canvasTargetPosition);
+            
+            // ..., the reference type, ...
+            
+            MDType * referenceType = [reference getType];
+            
+            // ...and draw it.
+            if (!referenceType) {
+                [self drawReferenceFromSourcePosition:targetPosition
+                                     toTargetPosition:sourcePosition
+                 ];
+            } else {
+                [self drawReferenceFromSourcePosition:targetPosition
+                                     toTargetPosition:sourcePosition
+                                              andType:referenceType
+                 ];
+            }
+            
+        } else { // Error, some position does not exist
+            NSLog(@"[ERROR][CA] Some reference position, target, spurce or both, do not exist.");
+        }
     }
     
     // For every (canvas) position where measures were taken...

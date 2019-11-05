@@ -14,6 +14,7 @@
 #import "RDPosition.h"
 #import "SharedData.h"
 #import <float.h>
+#import "MDReference.h"
 
 /*!
  @class Canvas
