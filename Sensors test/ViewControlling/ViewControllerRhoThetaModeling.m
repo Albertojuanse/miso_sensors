@@ -311,12 +311,7 @@
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
-            NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                                       andCredentialsUserDic:credentialsUserDic] count];
-            NSInteger itemsLocatedCount = [[sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                                   andCredentialsUserDic:credentialsUserDic] count];
-            NSInteger itemsCount = itemsChosenCount + itemsLocatedCount;
-            return itemsCount;
+            return [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
         } else { // Type not found
             [self alertUserWithTitle:@"Items won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
@@ -356,28 +351,11 @@
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
             
-            // Select the source of items; both chosen and located items are shown
-            NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                                       andCredentialsUserDic:credentialsUserDic] count];
-            NSInteger itemsLocatedCount = [[sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                                   andCredentialsUserDic:credentialsUserDic] count];
-            
-            // Load the item depending of the source
-            NSMutableDictionary * itemDic = nil;
-            if (indexPath.row < itemsChosenCount) {
-                itemDic = [
-                           [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic]
-                           objectAtIndex:indexPath.row
-                           ];
-            }
-            if (indexPath.row >= itemsChosenCount && indexPath.row < itemsChosenCount + itemsLocatedCount) {
-                itemDic = [
-                           [sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                   andCredentialsUserDic:credentialsUserDic]
-                           objectAtIndex:indexPath.row - itemsChosenCount
-                           ];
-            }
+            // Select the source of items
+            NSMutableDictionary * itemDic = [
+                                             [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                                             objectAtIndex:indexPath.row
+                                             ];
             cell.textLabel.numberOfLines = 0; // Means any number
             
             // If it is a beacon
@@ -518,6 +496,19 @@
             NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while loading cells' item.");
         }
     }
+    
+    // Configure individual cells
+    if (tableView == self.tableTypes) {
+        MDType * type = [
+                         [sharedData fromMetamodelDataGetTypesWithCredentialsUserDic:credentialsUserDic]
+                         objectAtIndex:indexPath.row
+                         ];
+        cell.textLabel.numberOfLines = 0; // Means any number
+        
+        cell.textLabel.text = [NSString stringWithFormat:@"%@", [type getName]];
+        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+    }
+    
     return cell;
 }
 
@@ -531,28 +522,12 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
-            // Select the source of items; both chosen and located items are shown
-            NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                                       andCredentialsUserDic:credentialsUserDic] count];
-            NSInteger itemsLocatedCount = [[sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                                   andCredentialsUserDic:credentialsUserDic] count];
-            
             // Load the item depending of the source
             NSMutableDictionary * itemSelected = nil;
-            if (indexPath.row < itemsChosenCount) {
-                itemSelected = [
-                                [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                             andCredentialsUserDic:credentialsUserDic]
-                                objectAtIndex:indexPath.row
-                                ];
-            }
-            if (indexPath.row >= itemsChosenCount && indexPath.row < itemsChosenCount + itemsLocatedCount) {
-                itemSelected = [
-                                [sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                        andCredentialsUserDic:credentialsUserDic]
-                                objectAtIndex:indexPath.row - itemsChosenCount
-                                ];
-            }
+            itemSelected = [
+                                                  [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                                                  objectAtIndex:indexPath.row
+                                                  ];
             
             // Only beacons can be aimed, positions were marked
             if ([@"position" isEqualToString:itemSelected[@"sort"]] && ([@"NO" isEqualToString:itemSelected[@"located"]] || !itemSelected[@"located"]))
