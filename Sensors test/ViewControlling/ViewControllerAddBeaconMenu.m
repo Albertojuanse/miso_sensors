@@ -561,7 +561,6 @@
             )
         {
             self.textType.text = @"";
-            return;
         } else { // Shared data not acessible
             [self alertUserWithTitle:@"Type won't be registered."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again."]
