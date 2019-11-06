@@ -6,7 +6,7 @@
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
-#import "ViewControllerRhoThetaModeling.h"
+#import "ViewControllerMainMenu.h"
 
 @implementation ViewControllerRhoThetaModeling
 
@@ -189,7 +189,7 @@
  */
 - (IBAction)handleBackButton:(id)sender
 {
-    [self performSegueWithIdentifier:@"fromRHO_THETA_MODELINGToMain" sender:sender];
+    [self performSegueWithIdentifier:@"fromRHO_THETA_MODELINGToSelectPosition" sender:sender];
 }
 
 /*!
@@ -225,24 +225,24 @@
     NSLog(@"[INFO][VCRTM] Asked segue %@", [segue identifier]);
     
     // If main menu is going to be displayed, any variable can be returned here
-    if ([[segue identifier] isEqualToString:@"fromRHO_THETA_MODELINGToMain"]) {
+    if ([[segue identifier] isEqualToString:@"fromRHO_THETA_MODELINGToSelectPosition"]) {
         
         // Get destination view
-        ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
+        ViewControllerSelectPositions * viewControllerSelectPositions = [segue destinationViewController];
         // Set the variables
-        [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
-        [viewControllerMainMenu setUserDic:userDic];
-        [viewControllerMainMenu setSharedData:sharedData];
-        [viewControllerMainMenu setMotionManager:motion];
-        [viewControllerMainMenu setLocationManager:location];
+        [viewControllerSelectPositions setCredentialsUserDic:credentialsUserDic];
+        [viewControllerSelectPositions setUserDic:userDic];
+        [viewControllerSelectPositions setSharedData:sharedData];
+        [viewControllerSelectPositions setMotionManager:motion];
+        [viewControllerSelectPositions setLocationManager:location];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"stopLocationMeasuring\" posted.");
+        NSLog(@"[NOTI][VCTTL] Notification \"stopLocationMeasuring\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"reset\" posted.");
+        NSLog(@"[NOTI][VCTTL] Notification \"reset\" posted.");
         return;
     }
 }

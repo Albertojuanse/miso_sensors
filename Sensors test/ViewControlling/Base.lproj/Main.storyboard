@@ -958,7 +958,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="115" y="25"/>
+            <point key="canvasLocation" x="34" y="23"/>
         </scene>
         <!--View Controller Select Positions-->
         <scene sceneID="x5T-83-M4m">
@@ -1041,11 +1041,12 @@
                         <outlet property="tableItems" destination="zil-AZ-XAM" id="AoX-da-XFj"/>
                         <segue destination="lVP-jp-YaV" kind="show" identifier="fromSelectPositionsToMain" id="OWJ-G0-Y79"/>
                         <segue destination="iCa-UJ-9hQ" kind="show" identifier="fromSelectPositionsToTHETA_THETA_LOCATING" id="QxI-WS-XJS"/>
+                        <segue destination="1M1-iA-J20" kind="show" identifier="fromSelectPositionsToTHETA_THETA_MODELING" id="A3y-43-nSw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ewG-5j-Hqc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2141" y="794"/>
+            <point key="canvasLocation" x="1045" y="794"/>
         </scene>
         <!--View Controller Rho Theta Modeling-->
         <scene sceneID="J6u-go-mjX">
@@ -1059,22 +1060,16 @@
                                 <rect key="frame" x="0.0" y="20" width="768" height="1004"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UNj-vu-DXA">
-                                        <rect key="frame" x="677" y="942" width="59" height="30"/>
-                                        <state key="normal" title="Measure"/>
-                                        <connections>
-                                            <action selector="handleButtonMeasure:" destination="1M1-iA-J20" eventType="touchUpInside" id="JQM-Dq-cwq"/>
-                                        </connections>
+                                        <rect key="frame" x="702" y="942" width="34" height="30"/>
+                                        <state key="normal" title="Back"/>
                                     </button>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3YZ-89-cXu" userLabel="Canvas" customClass="Canvas">
                                         <rect key="frame" x="32" y="32" width="704" height="634"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UqA-Dx-2wr">
-                                        <rect key="frame" x="702" y="880" width="34" height="30"/>
-                                        <state key="normal" title="Back"/>
-                                        <connections>
-                                            <action selector="handleBackButton:" destination="1M1-iA-J20" eventType="touchUpInside" id="Ehl-N3-VHp"/>
-                                        </connections>
+                                        <rect key="frame" x="693" y="880" width="43" height="30"/>
+                                        <state key="normal" title="Model"/>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aFh-h7-dil" userLabel="Label Status">
                                         <rect key="frame" x="32" y="698" width="50" height="21"/>
@@ -1083,10 +1078,10 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="xnz-BZ-Dex">
-                                        <rect key="frame" x="32" y="772" width="613" height="200"/>
+                                        <rect key="frame" x="32" y="772" width="302.5" height="200"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="200" id="ZgS-yE-Sdd"/>
+                                            <constraint firstAttribute="height" constant="200" id="lFZ-yX-65F"/>
                                         </constraints>
                                     </tableView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please, choose the iBeacon device source aimed before measure" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="344-oY-N3b">
@@ -1095,24 +1090,51 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="0wa-2x-dpD">
+                                        <rect key="frame" x="342.5" y="772" width="302.5" height="200"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </tableView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FGM-9K-KQC">
+                                        <rect key="frame" x="704" y="818" width="32" height="30"/>
+                                        <state key="normal" title="Next"/>
+                                        <connections>
+                                            <action selector="handleButtonNext:" destination="iCa-UJ-9hQ" eventType="touchUpInside" id="TTL-2Q-Vdi"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lJO-4v-L96">
+                                        <rect key="frame" x="677" y="756" width="59" height="30"/>
+                                        <state key="normal" title="Measure"/>
+                                        <connections>
+                                            <action selector="handleButtonMeasure:" destination="iCa-UJ-9hQ" eventType="touchUpInside" id="wvv-US-Zjb"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="xnz-BZ-Dex" secondAttribute="bottom" constant="32" id="4fW-9r-bIs"/>
-                                    <constraint firstItem="xnz-BZ-Dex" firstAttribute="top" secondItem="344-oY-N3b" secondAttribute="bottom" constant="16" id="DLc-SB-8Ef"/>
+                                    <constraint firstItem="FGM-9K-KQC" firstAttribute="top" secondItem="lJO-4v-L96" secondAttribute="bottom" constant="32" id="6Vv-Lp-Drw"/>
+                                    <constraint firstItem="0wa-2x-dpD" firstAttribute="width" secondItem="xnz-BZ-Dex" secondAttribute="width" id="7x7-ko-VuP"/>
+                                    <constraint firstAttribute="trailing" secondItem="lJO-4v-L96" secondAttribute="trailing" constant="32" id="9B6-EH-RVR"/>
+                                    <constraint firstAttribute="bottom" secondItem="xnz-BZ-Dex" secondAttribute="bottom" constant="32" id="A10-hN-wOx"/>
+                                    <constraint firstItem="lJO-4v-L96" firstAttribute="leading" secondItem="0wa-2x-dpD" secondAttribute="trailing" constant="32" id="AHL-ev-g7T"/>
+                                    <constraint firstItem="xnz-BZ-Dex" firstAttribute="top" secondItem="344-oY-N3b" secondAttribute="bottom" constant="16" id="Efs-JL-JFU"/>
+                                    <constraint firstItem="UNj-vu-DXA" firstAttribute="top" secondItem="UqA-Dx-2wr" secondAttribute="bottom" constant="32" id="Fim-9T-W3u"/>
                                     <constraint firstItem="3YZ-89-cXu" firstAttribute="leading" secondItem="T71-HV-Sty" secondAttribute="leading" constant="32" id="FnP-C9-cnf"/>
-                                    <constraint firstAttribute="bottom" secondItem="UNj-vu-DXA" secondAttribute="bottom" constant="32" id="I7z-MA-b93"/>
+                                    <constraint firstItem="UqA-Dx-2wr" firstAttribute="top" secondItem="FGM-9K-KQC" secondAttribute="bottom" constant="32" id="KMe-wB-HXX"/>
                                     <constraint firstAttribute="trailing" secondItem="3YZ-89-cXu" secondAttribute="trailing" constant="32" id="KeT-pf-4Bf"/>
-                                    <constraint firstAttribute="trailing" secondItem="UNj-vu-DXA" secondAttribute="trailing" constant="32" id="MLS-yG-nmq"/>
+                                    <constraint firstItem="0wa-2x-dpD" firstAttribute="leading" secondItem="xnz-BZ-Dex" secondAttribute="trailing" constant="8" id="Meo-Wd-rqv"/>
+                                    <constraint firstAttribute="trailing" secondItem="FGM-9K-KQC" secondAttribute="trailing" constant="32" id="RKw-JD-5Sb"/>
+                                    <constraint firstAttribute="bottom" secondItem="UNj-vu-DXA" secondAttribute="bottom" constant="32" id="SRa-Z1-ukt"/>
+                                    <constraint firstItem="0wa-2x-dpD" firstAttribute="height" secondItem="xnz-BZ-Dex" secondAttribute="height" id="VYe-xW-cQ4"/>
                                     <constraint firstItem="aFh-h7-dil" firstAttribute="leading" secondItem="T71-HV-Sty" secondAttribute="leading" constant="32" id="WWY-uY-jh2"/>
                                     <constraint firstItem="344-oY-N3b" firstAttribute="top" secondItem="aFh-h7-dil" secondAttribute="bottom" constant="16" id="Wfg-lR-MBo"/>
-                                    <constraint firstItem="UNj-vu-DXA" firstAttribute="leading" secondItem="xnz-BZ-Dex" secondAttribute="trailing" constant="32" id="baj-pz-GQJ"/>
                                     <constraint firstItem="3YZ-89-cXu" firstAttribute="top" secondItem="T71-HV-Sty" secondAttribute="top" constant="32" id="fTy-M9-E91"/>
-                                    <constraint firstItem="UNj-vu-DXA" firstAttribute="top" secondItem="UqA-Dx-2wr" secondAttribute="bottom" constant="32" id="lMF-Zv-sl1"/>
+                                    <constraint firstAttribute="trailing" secondItem="UNj-vu-DXA" secondAttribute="trailing" constant="32" id="gb9-3U-Jek"/>
                                     <constraint firstItem="344-oY-N3b" firstAttribute="leading" secondItem="T71-HV-Sty" secondAttribute="leading" constant="32" id="oMe-Re-mKs"/>
                                     <constraint firstItem="aFh-h7-dil" firstAttribute="top" secondItem="3YZ-89-cXu" secondAttribute="bottom" constant="32" id="pXO-au-Ev7"/>
-                                    <constraint firstAttribute="trailing" secondItem="UqA-Dx-2wr" secondAttribute="trailing" constant="32" id="z0s-4R-Wjo"/>
-                                    <constraint firstItem="xnz-BZ-Dex" firstAttribute="leading" secondItem="T71-HV-Sty" secondAttribute="leading" constant="32" id="zHd-iv-JCa"/>
+                                    <constraint firstAttribute="bottom" secondItem="0wa-2x-dpD" secondAttribute="bottom" constant="32" id="qds-Ru-cYm"/>
+                                    <constraint firstItem="0wa-2x-dpD" firstAttribute="top" secondItem="344-oY-N3b" secondAttribute="bottom" constant="16" id="vX1-jh-dPb"/>
+                                    <constraint firstAttribute="trailing" secondItem="UqA-Dx-2wr" secondAttribute="trailing" constant="32" id="zPs-ET-PGb"/>
+                                    <constraint firstItem="xnz-BZ-Dex" firstAttribute="leading" secondItem="T71-HV-Sty" secondAttribute="leading" constant="32" id="zbs-2e-woW"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -1126,16 +1148,18 @@
                         <viewLayoutGuide key="safeArea" id="12l-HA-q3s"/>
                     </view>
                     <connections>
-                        <outlet property="buttonMeasure" destination="UNj-vu-DXA" id="9oh-mw-BZ7"/>
+                        <outlet property="buttonMeasure" destination="lJO-4v-L96" id="WfL-X4-EA6"/>
                         <outlet property="canvas" destination="3YZ-89-cXu" id="4xh-5W-Yr4"/>
                         <outlet property="labelStatus" destination="aFh-h7-dil" id="SeA-1a-jwB"/>
-                        <outlet property="tableItems" destination="xnz-BZ-Dex" id="Zib-uL-h5v"/>
-                        <segue destination="lVP-jp-YaV" kind="show" identifier="fromRHO_THETA_MODELINGToMain" id="kiJ-cW-9Gg"/>
+                        <outlet property="tableItems" destination="xnz-BZ-Dex" id="94N-JU-YWh"/>
+                        <outlet property="tableTypes" destination="0wa-2x-dpD" id="moV-2U-eMv"/>
+                        <segue destination="zBC-hA-n0a" kind="show" identifier="fromRHO_THETA_MODELINGToSelectPosition" id="ARI-Cn-mJV"/>
+                        <segue destination="fiB-CG-Opu" kind="show" identifier="fromRHO_THETA_MODELINGToModelingTHETA_THETA_LOCATING" id="wLB-nb-URa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AZT-QR-dYO" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1046" y="25"/>
+            <point key="canvasLocation" x="1045.3125" y="24.609375"/>
         </scene>
         <!--View Controller Theta Theta Locating-->
         <scene sceneID="5uU-BV-Rg5">
@@ -1453,12 +1477,14 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YrL-1w-GUs" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2141" y="-717"/>
+            <point key="canvasLocation" x="1045" y="-733"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
+        <segue reference="wLB-nb-URa"/>
         <segue reference="NKP-hK-ln4"/>
-        <segue reference="2AF-RI-iGH"/>
-        <segue reference="kiJ-cW-9Gg"/>
+        <segue reference="A3y-43-nSw"/>
+        <segue reference="ARI-Cn-mJV"/>
+        <segue reference="OWJ-G0-Y79"/>
     </inferredMetricsTieBreakers>
 </document>

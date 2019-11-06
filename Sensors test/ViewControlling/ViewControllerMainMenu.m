@@ -482,7 +482,7 @@
                 [sharedData inSessionDataSetMode:@"RHO_THETA_MODELING"
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:credentialsUserDic];
-                [self performSegueWithIdentifier:@"fromMainToRHO_THETA_MODELING" sender:sender];
+                [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
             if ([chosenMode isEqualToString:[modes objectAtIndex:2]]) { // RHO_THETA_MODELING
                 return;

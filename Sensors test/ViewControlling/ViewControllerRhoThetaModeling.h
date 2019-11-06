@@ -35,6 +35,7 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;
 @property (weak, nonatomic) IBOutlet UITableView *tableItems;
+@property (weak, nonatomic) IBOutlet UITableView *tableTypes;
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 
