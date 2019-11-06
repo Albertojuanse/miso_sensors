@@ -146,13 +146,13 @@
     {
         
     } else {
-        [self alertUserWithTitle:@"Travel won't be started."
+        [self alertUserWithTitle:@"Measure won't be started."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting travel.");
+        NSLog(@"[ERROR][VCTTL] Shared data could not be accessed while starting travel.");
         return;
     }
     
@@ -375,29 +375,25 @@
                     if (itemDic[@"type"]) {
                         
                         RDPosition * position = itemDic[@"position"];
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: %@",
                                                itemDic[@"identifier"],
                                                itemDic[@"type"],
                                                itemDic[@"uuid"],
                                                itemDic[@"major"],
                                                itemDic[@"minor"],
-                                               [position.x floatValue],
-                                               [position.y floatValue],
-                                               [position.z floatValue]
+                                               position
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                         
                     } else {
                         
                         RDPosition * position = itemDic[@"position"];
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: %@",
                                                itemDic[@"identifier"],
                                                itemDic[@"uuid"],
                                                itemDic[@"major"],
                                                itemDic[@"minor"],
-                                               [position.x floatValue],
-                                               [position.y floatValue],
-                                               [position.z floatValue]
+                                               position
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                         
@@ -434,21 +430,17 @@
                 RDPosition * position = itemDic[@"position"];
                 if (itemDic[@"type"]) {
                     
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%.2f, %.2f, %.2f)",
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: %@",
                                            itemDic[@"identifier"],
                                            itemDic[@"type"],
-                                           [position.x floatValue],
-                                           [position.y floatValue],
-                                           [position.z floatValue]
+                                           position
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                 } else {
                     
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%.2f, %.2f, %.2f)",
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: %@",
                                            itemDic[@"identifier"],
-                                           [position.x floatValue],
-                                           [position.y floatValue],
-                                           [position.z floatValue]
+                                           position
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                 }
@@ -462,12 +454,10 @@
                 if (itemDic[@"type"]) {
                     
                     if (position) {
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%.2f, %.2f, %.2f)",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: %@",
                                                itemDic[@"identifier"],
                                                itemDic[@"type"],
-                                               [position.x floatValue],
-                                               [position.y floatValue],
-                                               [position.z floatValue]
+                                               position
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                     } else {
@@ -481,11 +471,9 @@
                 } else {
                     
                      if (position) {
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%.2f, %.2f, %.2f)",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: %@",
                                                itemDic[@"identifier"],
-                                               [position.x floatValue],
-                                               [position.y floatValue],
-                                               [position.z floatValue]
+                                               position
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                      } else {
@@ -571,6 +559,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             } else {
                 [tableView deselectRowAtIndexPath:indexPath animated:NO];
             }
+            
         } else {
             [self alertUserWithTitle:@"Items won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]

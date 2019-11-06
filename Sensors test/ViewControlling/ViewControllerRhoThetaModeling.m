@@ -36,6 +36,31 @@
     [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                           andWithCredentialsUserDic:credentialsUserDic];
     
+    // Get chosen item and set as device position
+    NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                           andCredentialsUserDic:credentialsUserDic];
+    NSMutableDictionary * itemChosenByUserAsDevicePosition;
+    if (itemsChosenByUser.count == 0) {
+        NSLog(@"[ERROR][VCRTM] The collection with the items chosen by user is empty; no device position provided");
+    } else {
+        itemChosenByUserAsDevicePosition = [itemsChosenByUser objectAtIndex:0];
+        if (itemsChosenByUser.count > 1) {
+            NSLog(@"[ERROR][VCRTM] The collection with the items chosen by user have more than one item; the first one is set as device position");
+        }
+    }
+    if (itemChosenByUserAsDevicePosition) {
+        RDPosition * position = itemChosenByUserAsDevicePosition[@"position"];
+        if (!position) {
+            NSLog(@"[ERROR][VCRTM] No position was found in the item chosen by user as device position; (0,0,0) is set");
+            position = [[RDPosition alloc] init];
+            position.x = [NSNumber numberWithFloat:0.0];
+            position.y = [NSNumber numberWithFloat:0.0];
+            position.z = [NSNumber numberWithFloat:0.0];
+        }
+        [motion setPosition:position];
+        [location setPosition:position];
+    }
+    
     // Ask canvas to initialize
     [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic andCredentialsUserDic:credentialsUserDic];
     
@@ -45,9 +70,12 @@
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableItems.delegate = self;
+    self.tableTypes.delegate = self;
     self.tableItems.dataSource = self;
+    self.tableTypes.dataSource = self;
     
     [self.tableItems reloadData];
+    [self.tableTypes reloadData];
 }
 
 /*!
@@ -140,13 +168,13 @@
     {
         
     } else {
-        [self alertUserWithTitle:@"Travel won't be started."
+        [self alertUserWithTitle:@"Measure won't be started."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting travel.");
+        NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while starting travel.");
         return;
     }
     
@@ -190,6 +218,14 @@
 - (IBAction)handleBackButton:(id)sender
 {
     [self performSegueWithIdentifier:@"fromRHO_THETA_MODELINGToSelectPosition" sender:sender];
+}
+
+/*!
+ @method handleButtonModel:
+ @discussion This method is called when user is prepared for modeling.
+ */
+- (IBAction)handleModelButton:(id)sender {
+    [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING" sender:sender];
 }
 
 /*!
@@ -239,10 +275,23 @@
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopLocationMeasuring\" posted.");
+        NSLog(@"[NOTI][VCRTM] Notification \"stopLocationMeasuring\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
                                                             object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"reset\" posted.");
+        NSLog(@"[NOTI][VCRTM] Notification \"reset\" posted.");
+        return;
+    }
+    
+    if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING"]) {
+        
+        // Get destination view
+        ViewControllerModelingThetaThetaLocating * viewControllerModelingThetaThetaLocating = [segue destinationViewController];
+        // Set the variables
+        [viewControllerModelingThetaThetaLocating setCredentialsUserDic:credentialsUserDic];
+        [viewControllerModelingThetaThetaLocating setUserDic:userDic];
+        [viewControllerModelingThetaThetaLocating setSharedData:sharedData];
+        [viewControllerModelingThetaThetaLocating setMotionManager:motion];
+        [viewControllerModelingThetaThetaLocating setLocationManager:location];
         return;
     }
 }
@@ -262,7 +311,12 @@
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
-            return [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+            NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                                       andCredentialsUserDic:credentialsUserDic] count];
+            NSInteger itemsLocatedCount = [[sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                                   andCredentialsUserDic:credentialsUserDic] count];
+            NSInteger itemsCount = itemsChosenCount + itemsLocatedCount;
+            return itemsCount;
         } else { // Type not found
             [self alertUserWithTitle:@"Items won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
@@ -272,6 +326,9 @@
              ];
             NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while loading items.");
         }
+    }
+    if (tableView == self.tableTypes) {
+        return [[sharedData fromMetamodelDataGetTypesWithCredentialsUserDic:credentialsUserDic] count];
     }
     return 0;
 }
@@ -299,11 +356,28 @@
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
             
-            // Load the item
-            NSMutableDictionary * itemDic = [
-                                               [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
-                                               objectAtIndex:indexPath.row
-                                               ];
+            // Select the source of items; both chosen and located items are shown
+            NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                                       andCredentialsUserDic:credentialsUserDic] count];
+            NSInteger itemsLocatedCount = [[sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                                   andCredentialsUserDic:credentialsUserDic] count];
+            
+            // Load the item depending of the source
+            NSMutableDictionary * itemDic = nil;
+            if (indexPath.row < itemsChosenCount) {
+                itemDic = [
+                           [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                        andCredentialsUserDic:credentialsUserDic]
+                           objectAtIndex:indexPath.row
+                           ];
+            }
+            if (indexPath.row >= itemsChosenCount && indexPath.row < itemsChosenCount + itemsLocatedCount) {
+                itemDic = [
+                           [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                   andCredentialsUserDic:credentialsUserDic]
+                           objectAtIndex:indexPath.row - itemsChosenCount
+                           ];
+            }
             cell.textLabel.numberOfLines = 0; // Means any number
             
             // If it is a beacon
@@ -314,29 +388,25 @@
                     if (itemDic[@"type"]) {
                         
                         RDPosition * position = itemDic[@"position"];
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: %@",
                                                itemDic[@"identifier"],
                                                itemDic[@"type"],
                                                itemDic[@"uuid"],
                                                itemDic[@"major"],
                                                itemDic[@"minor"],
-                                               [position.x floatValue],
-                                               [position.y floatValue],
-                                               [position.z floatValue]
+                                               position
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                         
                     } else {
                         
                         RDPosition * position = itemDic[@"position"];
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: %@",
                                                itemDic[@"identifier"],
                                                itemDic[@"uuid"],
                                                itemDic[@"major"],
                                                itemDic[@"minor"],
-                                               [position.x floatValue],
-                                               [position.y floatValue],
-                                               [position.z floatValue]
+                                               position
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                         
@@ -368,28 +438,68 @@
             }
             
             // And if it is a position
-            if ([@"position" isEqualToString:itemDic[@"sort"]]) {
+            if ([@"position" isEqualToString:itemDic[@"sort"]] && ([@"NO" isEqualToString:itemDic[@"located"]] || !itemDic[@"located"])) {
                 // If its type is set
                 RDPosition * position = itemDic[@"position"];
                 if (itemDic[@"type"]) {
                     
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%.2f, %.2f, %.2f)",
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: %@",
                                            itemDic[@"identifier"],
                                            itemDic[@"type"],
-                                           [position.x floatValue],
-                                           [position.y floatValue],
-                                           [position.z floatValue]
+                                           position
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                 } else {
                     
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%.2f, %.2f, %.2f)",
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: %@",
                                            itemDic[@"identifier"],
-                                           [position.x floatValue],
-                                           [position.y floatValue],
-                                           [position.z floatValue]
+                                           position
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                }
+                
+                // In this mode, only beacons can be aimed, and so, positions are marked
+                [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
+                [cell setTintColor:[UIColor redColor]];
+                
+            }
+            
+            // And if it is a location
+            if ([@"position" isEqualToString:itemDic[@"sort"]] && [@"YES" isEqualToString:itemDic[@"located"]]) {
+                // If its type is set
+                RDPosition * position = itemDic[@"position"];
+                if (itemDic[@"type"]) {
+                    
+                    if (position) {
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: %@",
+                                               itemDic[@"identifier"],
+                                               itemDic[@"type"],
+                                               position
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    } else {
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n",
+                                               itemDic[@"identifier"],
+                                               itemDic[@"type"]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    }
+                    
+                } else {
+                    
+                    if (position) {
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: %@",
+                                               itemDic[@"identifier"],
+                                               position
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    } else {
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n",
+                                               itemDic[@"identifier"],
+                                               itemDic[@"type"]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    }
                 }
                 
                 // In this mode, only beacons can be aimed, and so, positions are marked
@@ -421,18 +531,31 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
-            // No item chosen by user
-            [sharedData inSessionDataSetItemChosenByUser:nil
-                                       toUserWithUserDic:userDic
-                                   andCredentialsUserDic:credentialsUserDic];
+            // Select the source of items; both chosen and located items are shown
+            NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                                       andCredentialsUserDic:credentialsUserDic] count];
+            NSInteger itemsLocatedCount = [[sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                                   andCredentialsUserDic:credentialsUserDic] count];
             
-            NSMutableDictionary * itemSelected = [
-                                                  [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
-                                                  objectAtIndex:indexPath.row
-                                                  ];
+            // Load the item depending of the source
+            NSMutableDictionary * itemSelected = nil;
+            if (indexPath.row < itemsChosenCount) {
+                itemSelected = [
+                                [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic]
+                                objectAtIndex:indexPath.row
+                                ];
+            }
+            if (indexPath.row >= itemsChosenCount && indexPath.row < itemsChosenCount + itemsLocatedCount) {
+                itemSelected = [
+                                [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                        andCredentialsUserDic:credentialsUserDic]
+                                objectAtIndex:indexPath.row - itemsChosenCount
+                                ];
+            }
             
             // Only beacons can be aimed, positions were marked
-            if ([@"position" isEqualToString:itemSelected[@"sort"]])
+            if ([@"position" isEqualToString:itemSelected[@"sort"]] && ([@"NO" isEqualToString:itemSelected[@"located"]] || !itemSelected[@"located"]))
             {
                 [tableView deselectRowAtIndexPath:indexPath animated:NO];
             } else {
@@ -451,7 +574,15 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while loading cells' item.");
         }
     }
+    if (tableView == self.tableTypes) {
+        MDType * typeSelected = [
+                                 [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                                 objectAtIndex:indexPath.row
+                                 ];
+        [sharedData inSessionDataSetTypeChosenByUser:typeSelected
+                                   toUserWithUserDic:userDic
+                               andCredentialsUserDic:credentialsUserDic];
+    }
 }
 
 @end
-

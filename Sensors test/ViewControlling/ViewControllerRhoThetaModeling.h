@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "ViewControllerMainMenu.h"
+#import "ViewControllerModelingThetaThetaLocating.h"
 #import "Canvas.h"
 
 /*!
