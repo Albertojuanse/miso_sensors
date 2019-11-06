@@ -159,12 +159,17 @@
         // This button can segue with different views depending on the mode chosen by the user in the main menu
         if ([mode isEqualToString:@"RHO_RHO_LOCATING"]) {
             // NSLog(@"[INFO][VCSP] Chosen mode is RHO_RHO_LOCATING.");
-            // [self performSegueWithIdentifier:@"fromAddPositionsToRHO_RHO_LOCATING" sender:sender];
+            // [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_RHO_LOCATING" sender:sender];
             return;
         }
         if ([mode isEqualToString:@"RHO_THETA_LOCATING"]) {
             // NSLog(@"[INFO][VCSP] Chosen mode is RHO_THETA_LOCATING.");
-            // [self performSegueWithIdentifier:@"fromAddPositionsToRHO_THETA_LOCATING" sender:sender];
+            // [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_THETA_LOCATING" sender:sender];
+            return;
+        }
+        if ([mode isEqualToString:@"RHO_THETA_MODELING"]) {
+            NSLog(@"[INFO][VCSP] Chosen mode is RHO_THETA_RHO_THETA_MODELING.");
+            [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_THETA_MODELING" sender:sender];
             return;
         }
         if ([mode isEqualToString:@"THETA_THETA_LOCATING"]) {
@@ -217,37 +222,6 @@
     NSLog(@"[INFO][VCSP] Asked segue %@", [segue identifier]);
     
     // This view can segue with different views depending on the mode chosen by the user in the main menu
-
-    /*
-    if ([[segue identifier] isEqualToString:@"fromAddPositionsToRHO_RHO_LOCATING"]) {
-     
-        // Get destination view
-        ViewControllerRhoRhoLocating * viewControllerRhoRhoLocating = [segue destinationViewController];
-         // Set the variables
-         [viewControllerRhoRhoLocating setCredentialsUserDic:credentialsUserDic];
-         [viewControllerRhoRhoLocating setUserDic:userDic];
-         [viewControllerRhoRhoLocating setSharedData:sharedData];
-         [viewControllerRhoRhoLocating setMotionManager:motion];
-         [viewControllerRhoRhoLocating setLocationManager:location];
-     
-    }
-     return;
-     */
-        
-    /*
-    if ([[segue identifier] isEqualToString:@"fromAddPositionsToRHO_THETA_LOCATING"]) {
-     
-        // Get destination view
-        ViewControllerRhoThetaLocating * viewControllerRhoThetaLocating = [segue destinationViewController];
-         // Set the variables
-         [viewControllerRhoThetaLocating setCredentialsUserDic:credentialsUserDic];
-         [viewControllerRhoThetaLocating setSharedData:sharedData];
-         [viewControllerRhoThetaLocating setMotionManager:motion];
-         [viewControllerRhoThetaLocating setLocationManager:location];
-     
-    }
-     return;
-    */
         
     if ([[segue identifier] isEqualToString:@"fromSelectPositionsToTHETA_THETA_LOCATING"]) {
         
@@ -259,6 +233,18 @@
         [viewControllerThetaThetaLocating setSharedData:sharedData];
         [viewControllerThetaThetaLocating setMotionManager:motion];
         [viewControllerThetaThetaLocating setLocationManager:location];
+        
+    }
+    if ([[segue identifier] isEqualToString:@"fromSelectPositionsToRHO_THETA_MODELING"]) {
+        
+        // Get destination view
+        ViewControllerRhoThetaModeling * viewControllerRhoThetaModeling = [segue destinationViewController];
+        // Set the variables
+        [viewControllerRhoThetaModeling setCredentialsUserDic:credentialsUserDic];
+        [viewControllerRhoThetaModeling setUserDic:userDic];
+        [viewControllerRhoThetaModeling setSharedData:sharedData];
+        [viewControllerRhoThetaModeling setMotionManager:motion];
+        [viewControllerRhoThetaModeling setLocationManager:location];
         
     }
     if ([[segue identifier] isEqualToString:@"fromSelectPositionsToMain"]) {

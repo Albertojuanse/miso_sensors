@@ -225,7 +225,7 @@
  @discussion This method is called when user is prepared for modeling.
  */
 - (IBAction)handleModelButton:(id)sender {
-    [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING" sender:sender];
+    [self performSegueWithIdentifier:@"fromRHO_THETA_MODELINGToModelingTHETA_THETA_LOCATING" sender:sender];
 }
 
 /*!

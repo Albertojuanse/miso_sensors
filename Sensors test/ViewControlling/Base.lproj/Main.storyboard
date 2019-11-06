@@ -1041,7 +1041,7 @@
                         <outlet property="tableItems" destination="zil-AZ-XAM" id="AoX-da-XFj"/>
                         <segue destination="lVP-jp-YaV" kind="show" identifier="fromSelectPositionsToMain" id="OWJ-G0-Y79"/>
                         <segue destination="iCa-UJ-9hQ" kind="show" identifier="fromSelectPositionsToTHETA_THETA_LOCATING" id="QxI-WS-XJS"/>
-                        <segue destination="1M1-iA-J20" kind="show" identifier="fromSelectPositionsToTHETA_THETA_MODELING" id="A3y-43-nSw"/>
+                        <segue destination="1M1-iA-J20" kind="show" identifier="fromSelectPositionsToRHO_THETA_MODELING" id="A3y-43-nSw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ewG-5j-Hqc" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1489,7 +1489,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="wLB-nb-URa"/>
-        <segue reference="NKP-hK-ln4"/>
+        <segue reference="QxI-WS-XJS"/>
         <segue reference="A3y-43-nSw"/>
         <segue reference="ARI-Cn-mJV"/>
         <segue reference="OWJ-G0-Y79"/>
