@@ -233,6 +233,20 @@
     if ([sharedData isItemsDataEmptyWithCredentialsUserDic:credentialsUserDic]) {
         
         // The item's setter ask for identifier and sort but the copies everything else from a NSMutableDitionary with the same values and keys.
+        NSMutableDictionary * infoDic0 = [[NSMutableDictionary alloc] init];
+        RDPosition * position0 = [[RDPosition alloc] init];
+        position0.x = [NSNumber numberWithFloat:0.0];
+        position0.y = [NSNumber numberWithFloat:0.0];
+        position0.z = [NSNumber numberWithFloat:0.0];
+        [infoDic0 setValue:position0 forKey:@"position"];
+        [infoDic0 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDic0 setValue:deviceType forKey:@"type"];
+        
+        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
+                                                                  withIdentifier:@"device@miso.uam.es"
+                                                                     withInfoDic:infoDic0
+                                                       andWithCredentialsUserDic:credentialsUserDic];
+        
         NSMutableDictionary * infoDic1 = [[NSMutableDictionary alloc] init];
         RDPosition * position1 = [[RDPosition alloc] init];
         position1.x = [NSNumber numberWithFloat:0.0];
