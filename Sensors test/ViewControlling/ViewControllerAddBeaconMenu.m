@@ -237,16 +237,18 @@
                  
                  for (NSMutableDictionary * itemDic in itemsData) {
                      if ([@"position" isEqualToString:itemDic[@"sort"]]) {
+                         if ([itemDic[@"uuid"] isEqualToString:itemChosenByUser[@"uuid"]]) {
                          
-                         if (itemDic[@"type"]){
-                             self.textType.text = [NSString stringWithFormat:@"%@", [itemDic[@"type"] stringValue]];
-                         }
-                         
-                         if (itemDic[@"position"]) {
-                             RDPosition * position = itemDic[@"position"];
-                             self.textPositionX.text = [NSString stringWithFormat:@"%.2f", [position.x floatValue]];
-                             self.textPositionY.text = [NSString stringWithFormat:@"%.2f", [position.y floatValue]];
-                             self.textPositionZ.text = [NSString stringWithFormat:@"%.2f", [position.z floatValue]];
+                             if (itemDic[@"type"]){
+                                 self.textType.text = [NSString stringWithFormat:@"%@", [itemDic[@"type"] stringValue]];
+                             }
+                             
+                             if (itemDic[@"position"]) {
+                                 RDPosition * position = itemDic[@"position"];
+                                 self.textPositionX.text = [NSString stringWithFormat:@"%.2f", [position.x floatValue]];
+                                 self.textPositionY.text = [NSString stringWithFormat:@"%.2f", [position.y floatValue]];
+                                 self.textPositionZ.text = [NSString stringWithFormat:@"%.2f", [position.z floatValue]];
+                             }
                          }
                      }
                  }
