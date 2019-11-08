@@ -424,6 +424,7 @@
         // ...,its type and UUID, ...
         NSMutableArray * itemsInRealItemPosition = [sharedData fromItemDataGetItemsWithPosition:realItemPosition
                                                                           andCredentialsUserDic:credentialsUserDic];
+        NSLog(@"->[HOLA] %@", itemsInRealItemPosition);
         MDType * itemType;
         NSString * itemUUID;
         if (itemsInRealItemPosition) {
@@ -435,6 +436,9 @@
                 } else {  // More than one items found
                     NSLog(@"[ERROR][CA] Too items types found when getting types for some item's position; using first one.");
                     // TO DO: Manage this. Alberto J. 2019/10/1.
+                    NSMutableDictionary * itemDicSelected = [itemsInRealItemPosition objectAtIndex:0];
+                    itemType = itemDicSelected[@"type"];
+                    itemUUID = itemDicSelected[@"uuid"];
                 }
             } else {  // Items not found
                 NSLog(@"[ERROR][CA] No items found when getting types for some item's position; empty array returned.");
