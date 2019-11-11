@@ -114,8 +114,11 @@
     // Different behaviour depending on location mode
     NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                       andCredentialsUserDic:credentialsUserDic];
+    NSLog(@"->[HOLA][RT] mode: %@", mode);
 
     if ([mode isEqualToString:@"RHO_THETA_MODELING"]) {
+        
+        NSLog(@"->[HOLA][RT] Rho theta system calculation starts");
         
         // In a modeling mode the items must be located using the measures taken by the device or devices from items and the headings aginst them. That implies that, each UUID groups the measures taken from a certain beacon and so, for every one of them a RDPosition would be found.
         
@@ -127,7 +130,7 @@
         // And thus, for every beacon that must be located with its unique UUID, get the measures that come from this UUID or that aim it.
         for (NSString * UUIDtoLocate in everyUUID) {
             
-            NSString * uuid;
+            NSString * uuid = UUIDtoLocate;
             
             // Measures are only feasible if measures have both heading and rssi types.
             BOOL isHeadingMeasure = NO;
@@ -152,6 +155,8 @@
                                                                              withCredentialsUserDic:credentialsUserDic];
                 // ...and for every measure calculate its mean average.
                 // TO DO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
+                NSLog(@"[INFO]][RT] rssiMeasures.count %.2f", [[NSNumber numberWithInteger:rssiMeasures.count] floatValue]);
+                NSLog(@"[INFO]][RT] headingMeasures.count %.2f", [[NSNumber numberWithInteger:headingMeasures.count] floatValue]);
                 if (!(rssiMeasures.count == 0) && !(headingMeasures.count == 0)) {
                     NSNumber * measuresRSSIAcumulation = [NSNumber numberWithFloat:0.0];
                     NSInteger measureRSSIIndex = 0;
@@ -204,8 +209,8 @@
                             
                     // Final calculus is only performed if there are both RSSI and heading measures
                     // (x_item, y_item) = (x_device, y_device) + (RSSI * cos(heading), RSSI * sen(heading)) in radians and meters
-                    // NSLog(isRSSIMeasure ? @"[INFO][RT] isRSSIMeasure = YES" : @"[INFO][RT] isRSSIMeasure = NO");
-                    // NSLog(isHeadingMeasure ? @"[INFO][RT] isHeadingMeasure = YES" : @"[INFO][RT] isHeadingMeasure = NO");
+                    NSLog(isRSSIMeasure ? @"[INFO][RT] isRSSIMeasure = YES" : @"[INFO][RT] isRSSIMeasure = NO");
+                    NSLog(isHeadingMeasure ? @"[INFO][RT] isHeadingMeasure = YES" : @"[INFO][RT] isHeadingMeasure = NO");
                     if (isRSSIMeasure && isHeadingMeasure) {
                         RDPosition * locatedPosition = [[RDPosition alloc] init];
                         locatedPosition.x = [NSNumber numberWithFloat:[measurePosition.x floatValue] +
@@ -218,10 +223,12 @@
                                              ];
                         locatedPosition.z = measurePosition.z;
                         
-                        // NSLog(@"[INFO][RT] locatedPosition.x: %.2f", [locatedPosition.x floatValue]);
-                        // NSLog(@"[INFO][RT] locatedPosition.y: %.2f", [locatedPosition.y floatValue]);
-                        // NSLog(@"[INFO][RT] locatedPosition.z: %.2f", [locatedPosition.z floatValue]);
+                        NSLog(@"[INFO][RT] locatedPosition.x: %.2f", [locatedPosition.x floatValue]);
+                        NSLog(@"[INFO][RT] locatedPosition.y: %.2f", [locatedPosition.y floatValue]);
+                        NSLog(@"[INFO][RT] locatedPosition.z: %.2f", [locatedPosition.z floatValue]);
                         
+                        NSLog(@"[INFO][RT] locatedPosition: %@", locatedPosition);
+                        NSLog(@"[INFO][RT] uuid: %@", uuid);
                         [locatedPositions setObject:locatedPosition forKey:uuid];
                     }
                     
