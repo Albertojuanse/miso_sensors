@@ -28,11 +28,13 @@
  @method viewDidAppear:
  @discussion This method notifies the view controller that its view was added to a view hierarchy.
  */
-- (void)viewDidAppear:(BOOL)animated {
-    // TO DO: Check for stored user data. Alberto J. 2019/09/05.
+- (void)viewDidAppear:(BOOL)animated
+{
+    // Check if in this device exists any user
+    BOOL areUsers = [self isAnyUserRegistered];
     
     // Alert the user that must create an user if no other is found
-    if (credentialsUserDicArray.count == 0){
+    if (!areUsers){
         UIAlertController * alertUsersNotFound = [UIAlertController
                                                   alertControllerWithTitle:@"No user found"
                                                   message:@"No user credentials were found. Please, sign in as a new user."
@@ -191,14 +193,61 @@
 }
 
 /*!
+ @method isAnyUserRegistered
+ @discussion This method checks if there is any user registered.
+ */
+- (BOOL)isAnyUserRegistered
+{
+    // Checks the saved data
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    NSData * data = [userDefaults objectForKey:@"security/credentials/areUsers"];
+    NSString * areUsers = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    if (areUsers) {
+        if ([areUsers isEqualToString:@"NO"]) {
+            NSLog(@"[INFO][VCL] No users saved found.");
+            return NO;
+        } else {
+            NSLog(@"[INFO][VCL] Users saved found.");
+            return YES;
+        }
+    } else {
+        NSLog(@"[INFO][VCL] No users saved found.");
+        return NO;
+    }
+}
+
+/*!
  @method validateCredentialsUserDic:
  @discussion This method verifies the name and password of the user.
  */
 - (BOOL)validateCredentialsUserDic:(NSMutableDictionary *)userDic
 {
-    // TO DO: Validation. Alberto J. 2019/09/05.
-    return YES;
+    if ([self isAnyUserRegistered]) {
+        // Generate the key in which this user is saved
+        NSLog(@"[INFO][VCL] Validating user named %@", userDic[@"user"]);
+        // Retrieve its data
+        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+        NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"user"]];
+        NSData * loadedUserData = [userDefaults objectForKey:key];
+        if (loadedUserData) {
+            NSMutableDictionary * loadedUserDic = [NSKeyedUnarchiver unarchiveObjectWithData:loadedUserData];
+            if ([userDic isEqualToDictionary:loadedUserDic]) {
+                NSLog(@"[INFO][VCL] Entry granted to user named %@", userDic[@"user"]);
+                return YES;
+            } else { // Pass not correct
+                NSLog(@"[INFO][VCL] Entry not granted to user named %@", userDic[@"user"]);
+                return NO;
+            }
+        } else { // User does not exists
+            NSLog(@"[INFO][VCL] Unknown user named %@", userDic[@"user"]);
+            return NO;
+        }
+    } else {
+        return NO;
+    }
 }
+
+
 
 /*!
  @method validateCredentialsUserDic:
@@ -206,8 +255,21 @@
  */
 - (BOOL)validateNewCredentialsUserDic:(NSMutableDictionary *)userDic
 {
-    // TO DO: Validation. Alberto J. 2019/09/05.
-    return YES;
+    // Check if it exists
+    // Generate the key in which this user is saved
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    NSLog(@"[INFO][VCL] Validating new user named %@", userDic[@"user"]);
+    // Retrieve its data
+    NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"user"]];
+    NSData * loadedUserData = [userDefaults objectForKey:key];
+    if (loadedUserData) {
+        // It exists
+        NSLog(@"[INFO][VCL] Already exists a user named %@", userDic[@"user"]);
+        return NO;
+    } else {
+        // It does not exist
+        return YES;
+    }
 }
 
 /*!
@@ -216,7 +278,18 @@
  */
 - (BOOL)registerNewUserWithCredentialsUserDic:(NSMutableDictionary *)userDic
 {
-    // TO DO: Registration. Alberto J. 2019/09/05.
+    // User name was validated before
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"user"]];
+    NSMutableDictionary * saveDic = [[NSMutableDictionary alloc] init];
+    saveDic[@"name"] = userDic[@"name"];
+    saveDic[@"pass"] = userDic[@"pass"];
+    NSData * dataSave = [NSKeyedArchiver archivedDataWithRootObject:saveDic];
+    [userDefaults setObject:dataSave forKey:key];
+    // And set users avalible
+    dataSave = nil;
+    dataSave = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+    [userDefaults setObject:dataSave forKey:@"security/credentials/areUsers"];
     return YES;
 }
 
