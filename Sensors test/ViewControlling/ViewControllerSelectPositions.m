@@ -168,7 +168,7 @@
             return;
         }
         if ([mode isEqualToString:@"RHO_THETA_MODELING"]) {
-            NSLog(@"[INFO][VCSP] Chosen mode is RHO_THETA_RHO_THETA_MODELING.");
+            NSLog(@"[INFO][VCSP] Chosen mode is RHO_THETA_MODELING.");
             [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_THETA_MODELING" sender:sender];
             return;
         }

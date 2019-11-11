@@ -424,7 +424,6 @@
         // ...,its type and UUID, ...
         NSMutableArray * itemsInRealItemPosition = [sharedData fromItemDataGetItemsWithPosition:realItemPosition
                                                                           andCredentialsUserDic:credentialsUserDic];
-        NSLog(@"->[HOLA] %@", itemsInRealItemPosition);
         MDType * itemType;
         NSString * itemUUID;
         if (itemsInRealItemPosition) {

@@ -29,7 +29,6 @@
  @discussion This method creates an NSString object for showing and loggin purposes; equivalent to 'toString()'.
  */
 - (NSString *)stringValue {
-    NSLog(@"[HOLA] stringValue called.");
     return [self description];
 }
 

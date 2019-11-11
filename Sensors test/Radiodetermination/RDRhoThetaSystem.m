@@ -31,6 +31,7 @@
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self init];
+    sharedData = initSharedData;
     credentialsUserDic = initCredentialsUserDic;
     userDic = initUserDic;
     deviceUUID = initDeviceUUID;
@@ -104,14 +105,15 @@
         )
     {
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-        NSLog(@"[ERROR][RT] Shared data could not be accessed while loading cells' item.");
+        NSLog(@"[ERROR][RT] Shared data could not be accessed while location method.");
     }
     
     // Declare collections
     NSMutableDictionary * locatedPositions = [[NSMutableDictionary alloc] init];
     
     // Different behaviour depending on location mode
-    NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
+    NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                      andCredentialsUserDic:credentialsUserDic];
 
     if ([mode isEqualToString:@"RHO_THETA_MODELING"]) {
         

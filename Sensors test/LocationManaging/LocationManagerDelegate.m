@@ -313,7 +313,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         // Get the measuring mode
         NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                           andCredentialsUserDic:credentialsUserDic];
-        
         // If a rho type system which needs ranging
         if (
             [mode isEqualToString:@"RHO_RHO_MODELING"] ||

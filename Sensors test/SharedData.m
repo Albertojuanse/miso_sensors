@@ -479,6 +479,7 @@
 - (BOOL) validateCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if ([userData count] == 0) {
+        NSLog(@"[ERROR][SD] User data collection is empty.");
         return nil;
     }
     for (NSMutableDictionary * userDic in userData) {
@@ -558,9 +559,9 @@
  @method fromSessionDataGetKey:fromUserWithUserDic:andCredentialsUserDic:
  @discussion This method returns the object with the info determined by the dictionary key from the session data collection given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (id)fromSessionDataGetKey:(NSString *)key
-        fromUserWithUserDic:(NSMutableDictionary *)givenUserDic
-      andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+- (id)   fromSessionDataGetKey:(NSString *)key
+           fromUserWithUserDic:(NSMutableDictionary *)givenUserDic
+         andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         NSMutableDictionary * sessionDic = [self fromSessionDataGetSessionWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];

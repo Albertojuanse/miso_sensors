@@ -30,6 +30,7 @@
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self init];
+    sharedData = initSharedData;
     credentialsUserDic = initCredentialsUserDic;
     userDic = initUserDic;
     deviceUUID = initDeviceUUID;

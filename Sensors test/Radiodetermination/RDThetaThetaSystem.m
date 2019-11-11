@@ -413,12 +413,6 @@
                                                                                     andOfDeviceUUID:eachDeviceUUID
                                                                                              ofSort:@"heading"
                                                                              withCredentialsUserDic:credentialsUserDic];
-                NSLog(@"->[HOLA][TT] For UUID eachItemUUID %@ ", eachItemUUID);
-                NSLog(@"->[HOLA][TT] -> and for eachDeviceUUID  %@ ", eachDeviceUUID);
-                NSLog(@"->[HOLA][TT] -> got the measures:");
-                for (NSMutableDictionary * measureDic in headingMeasures) {
-                    NSLog(@"->[HOLA][TT] -> %@", measureDic);
-                }
                 
                 // ...and calculate its mean average.
                 // TO DO Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
@@ -465,7 +459,6 @@
                 
                 // Ordering
                 NSNumber * lastSavedMin = [NSNumber numberWithFloat:-FLT_MAX];
-                NSLog(@"->[HOLA][TT] Data collection %@", data);
                 // As many times as elements to be ordered...
                 for (NSUInteger i = 0; i < [data count]; i++) {
                     NSNumber * min = [NSNumber numberWithFloat:FLT_MAX];

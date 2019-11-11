@@ -19,15 +19,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    // Register the current mode
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        [sharedData inSessionDataSetMode:@"RHO_THETA_MODELING"
-                       toUserWithUserDic:userDic
-                   andCredentialsUserDic:credentialsUserDic];
+        
     } else {
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
     }
@@ -38,7 +34,7 @@
     
     // Get chosen item and set as device position
     NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                           andCredentialsUserDic:credentialsUserDic];
+                                                                      andCredentialsUserDic:credentialsUserDic];
     NSMutableDictionary * itemChosenByUserAsDevicePosition;
     if (itemsChosenByUser.count == 0) {
         NSLog(@"[ERROR][VCRTM] The collection with the items chosen by user is empty; no device position provided");
