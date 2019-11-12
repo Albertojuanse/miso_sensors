@@ -29,6 +29,8 @@
     if (!sharedData) {
         sharedData = [[SharedData alloc] initWithCredentialsUserDic:credentialsUserDic];
     }
+    // Shared data scheme; for information porpuses
+    //
     //                // USER DATA //
     //
     // The schema of the userData collection is:
@@ -220,132 +222,166 @@
     }
     
     // Register something in the shared data collection if it is empty for exampling and showing porpuses
+    // Search for current items saved in system; if not, register them as usually
     BOOL registerCorrect = YES;
-    // Register some types
-    MDType * noType = [[MDType alloc] initWithName:@"<No type>"];
-    MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
-    MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
-    MDType * wallType = [[MDType alloc] initWithName:@"Wall"];
-    if ([sharedData isMetamodelDataEmptyWithCredentialsUserDic:credentialsUserDic]) {
-        registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:noType withCredentialsUserDic:credentialsUserDic];
-        registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:cornerType withCredentialsUserDic:credentialsUserDic];
-        registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:deviceType withCredentialsUserDic:credentialsUserDic];
-        registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:wallType withCredentialsUserDic:credentialsUserDic];
-    }
-    
-    // Register some items
-    if ([sharedData isItemsDataEmptyWithCredentialsUserDic:credentialsUserDic]) {
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    NSData * itemsData = [userDefaults objectForKey:@"data/items/areItems"];
+    if (itemsData) {
+        // Previous saved data
         
-        // The item's setter ask for identifier and sort but the copies everything else from a NSMutableDitionary with the same values and keys.
-        NSMutableDictionary * infoDic0 = [[NSMutableDictionary alloc] init];
-        RDPosition * position0 = [[RDPosition alloc] init];
-        position0.x = [NSNumber numberWithFloat:0.0];
-        position0.y = [NSNumber numberWithFloat:0.0];
-        position0.z = [NSNumber numberWithFloat:0.0];
-        [infoDic0 setValue:position0 forKey:@"position"];
-        [infoDic0 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic0 setValue:deviceType forKey:@"type"];
+        /*
+        NSData * areUsersData = [userDefaults objectForKey:@"security/credentials/areUsers"];
+        if (areUsersData) {
+            [userDefaults removeObjectForKey:@"security/credentials/areUsers"];
+            
+        }
+        NSData * areUsersDataNew = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+        [userDefaults setObject:areUsersDataNew forKey:@"security/credentials/areUsers"];
         
-        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
-                                                                  withIdentifier:@"device@miso.uam.es"
-                                                                     withInfoDic:infoDic0
-                                                       andWithCredentialsUserDic:credentialsUserDic];
+        NSData * numberOfUsersData = [userDefaults objectForKey:@"security/credentials/numberOfUsers"];
+        NSString * numberOfUsersString;
+        if (numberOfUsersData) {
+            numberOfUsersString = [NSKeyedUnarchiver unarchiveObjectWithData:numberOfUsersData];
+            NSInteger  numberOfUsers = [numberOfUsersString integerValue];
+            numberOfUsers++;
+            numberOfUsersString = [[NSNumber numberWithInteger:numberOfUsers] stringValue];
+        } else {
+            numberOfUsersString = [[NSNumber numberWithInteger:1] stringValue];
+        }
+        NSData * numberOfUsersDataNew = [NSKeyedArchiver archivedDataWithRootObject:numberOfUsersString];
+        [userDefaults setObject:numberOfUsersDataNew forKey:@"security/credentials/numberOfUsers"];
+         */
         
-        NSMutableDictionary * infoDic1 = [[NSMutableDictionary alloc] init];
-        RDPosition * position1 = [[RDPosition alloc] init];
-        position1.x = [NSNumber numberWithFloat:0.0];
-        position1.y = [NSNumber numberWithFloat:0.0];
-        position1.z = [NSNumber numberWithFloat:0.0];
-        [infoDic1 setValue:position1 forKey:@"position"];
-        [infoDic1 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic1 setValue:cornerType forKey:@"type"];
+    } else {
+        // No saved data
         
-        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
-                                                                  withIdentifier:@"position1@miso.uam.es"
-                                                                     withInfoDic:infoDic1
-                                                       andWithCredentialsUserDic:credentialsUserDic];
+        // Register some types
+        MDType * noType = [[MDType alloc] initWithName:@"<No type>"];
+        MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
+        MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
+        MDType * wallType = [[MDType alloc] initWithName:@"Wall"];
+        if ([sharedData isMetamodelDataEmptyWithCredentialsUserDic:credentialsUserDic]) {
+            registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:noType withCredentialsUserDic:credentialsUserDic];
+            registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:cornerType withCredentialsUserDic:credentialsUserDic];
+            registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:deviceType withCredentialsUserDic:credentialsUserDic];
+            registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:wallType withCredentialsUserDic:credentialsUserDic];
+        }
         
-        NSMutableDictionary * infoDic2 = [[NSMutableDictionary alloc] init];
-        RDPosition * position2 = [[RDPosition alloc] init];
-        position2.x = [NSNumber numberWithFloat:3.5];
-        position2.y = [NSNumber numberWithFloat:0.0];
-        position2.z = [NSNumber numberWithFloat:0.0];
-        [infoDic2 setValue:position2 forKey:@"position"];
-        [infoDic2 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic2 setValue:cornerType forKey:@"type"];
+        // Register some items
+        if ([sharedData isItemsDataEmptyWithCredentialsUserDic:credentialsUserDic]) {
+            
+            // The item's setter ask for identifier and sort but the copies everything else from a NSMutableDitionary with the same values and keys.
+            NSMutableDictionary * infoDic0 = [[NSMutableDictionary alloc] init];
+            RDPosition * position0 = [[RDPosition alloc] init];
+            position0.x = [NSNumber numberWithFloat:0.0];
+            position0.y = [NSNumber numberWithFloat:0.0];
+            position0.z = [NSNumber numberWithFloat:0.0];
+            [infoDic0 setValue:position0 forKey:@"position"];
+            [infoDic0 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+            [infoDic0 setValue:deviceType forKey:@"type"];
+            
+            registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
+                                                                      withIdentifier:@"device@miso.uam.es"
+                                                                         withInfoDic:infoDic0
+                                                           andWithCredentialsUserDic:credentialsUserDic];
+            
+            NSMutableDictionary * infoDic1 = [[NSMutableDictionary alloc] init];
+            RDPosition * position1 = [[RDPosition alloc] init];
+            position1.x = [NSNumber numberWithFloat:0.0];
+            position1.y = [NSNumber numberWithFloat:0.0];
+            position1.z = [NSNumber numberWithFloat:0.0];
+            [infoDic1 setValue:position1 forKey:@"position"];
+            [infoDic1 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+            [infoDic1 setValue:cornerType forKey:@"type"];
+            
+            registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
+                                                                      withIdentifier:@"position1@miso.uam.es"
+                                                                         withInfoDic:infoDic1
+                                                           andWithCredentialsUserDic:credentialsUserDic];
+            
+            NSMutableDictionary * infoDic2 = [[NSMutableDictionary alloc] init];
+            RDPosition * position2 = [[RDPosition alloc] init];
+            position2.x = [NSNumber numberWithFloat:3.5];
+            position2.y = [NSNumber numberWithFloat:0.0];
+            position2.z = [NSNumber numberWithFloat:0.0];
+            [infoDic2 setValue:position2 forKey:@"position"];
+            [infoDic2 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+            [infoDic2 setValue:cornerType forKey:@"type"];
+            
+            registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
+                                                                      withIdentifier:@"position2@miso.uam.es"
+                                                                         withInfoDic:infoDic2
+                                                           andWithCredentialsUserDic:credentialsUserDic];
+            
+            NSMutableDictionary * infoDic3 = [[NSMutableDictionary alloc] init];
+            RDPosition * position3 = [[RDPosition alloc] init];
+            position3.x = [NSNumber numberWithFloat:3.5];
+            position3.y = [NSNumber numberWithFloat:-13.0];
+            position3.z = [NSNumber numberWithFloat:0.0];
+            [infoDic3 setValue:position3 forKey:@"position"];
+            [infoDic3 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+            [infoDic3 setValue:cornerType forKey:@"type"];
+            
+            registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
+                                                                      withIdentifier:@"position3@miso.uam.es"
+                                                                         withInfoDic:infoDic3
+                                                           andWithCredentialsUserDic:credentialsUserDic];
+            
+            NSMutableDictionary * infoDic4 = [[NSMutableDictionary alloc] init];
+            RDPosition * position4 = [[RDPosition alloc] init];
+            position4.x = [NSNumber numberWithFloat:0.0];
+            position4.y = [NSNumber numberWithFloat:-13.0];
+            position4.z = [NSNumber numberWithFloat:0.0];
+            [infoDic4 setValue:position4 forKey:@"position"];
+            [infoDic4 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+            [infoDic4 setValue:cornerType forKey:@"type"];
+            
+            registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
+                                                                      withIdentifier:@"position4@miso.uam.es"
+                                                                         withInfoDic:infoDic4
+                                                           andWithCredentialsUserDic:credentialsUserDic];
+            
+            NSMutableDictionary * infoRegionRaspiDic = [[NSMutableDictionary alloc] init];
+            [infoRegionRaspiDic setValue:@"25DC8A73-F3C9-4111-A7DD-C39CD4B828C7" forKey:@"uuid"];
+            [infoRegionRaspiDic setValue:@"1" forKey:@"major"];
+            [infoRegionRaspiDic setValue:@"0" forKey:@"minor"];
+            
+            registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
+                                                                      withIdentifier:@"raspi@miso.uam.es"
+                                                                         withInfoDic:infoRegionRaspiDic
+                                                           andWithCredentialsUserDic:credentialsUserDic];
+            
+            NSMutableDictionary * infoItemBeacon1Dic = [[NSMutableDictionary alloc] init];
+            [infoItemBeacon1Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825" forKey:@"uuid"];
+            [infoItemBeacon1Dic setValue:@"1" forKey:@"major"];
+            [infoItemBeacon1Dic setValue:@"1" forKey:@"minor"];
+            
+            registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
+                                                                      withIdentifier:@"beacon1@miso.uam.es"
+                                                                         withInfoDic:infoItemBeacon1Dic
+                                                           andWithCredentialsUserDic:credentialsUserDic];
+            
+            NSMutableDictionary * infoItemBeacon2Dic = [[NSMutableDictionary alloc] init];
+            [infoItemBeacon2Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824" forKey:@"uuid"];
+            [infoItemBeacon2Dic setValue:@"1" forKey:@"major"];
+            [infoItemBeacon2Dic setValue:@"1" forKey:@"minor"];
+            
+            registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
+                                                                      withIdentifier:@"beacon2@miso.uam.es"
+                                                                         withInfoDic:infoItemBeacon2Dic
+                                                           andWithCredentialsUserDic:credentialsUserDic];
+            
+            NSMutableDictionary * infoItemBeacon3Dic = [[NSMutableDictionary alloc] init];
+            [infoItemBeacon3Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823" forKey:@"uuid"];
+            [infoItemBeacon3Dic setValue:@"1" forKey:@"major"];
+            [infoItemBeacon3Dic setValue:@"1" forKey:@"minor"];
+            
+            registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
+                                                                      withIdentifier:@"beacon3@miso.uam.es"
+                                                                         withInfoDic:infoItemBeacon3Dic
+                                                           andWithCredentialsUserDic:credentialsUserDic];
+        }
         
-        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
-                                                                  withIdentifier:@"position2@miso.uam.es"
-                                                                     withInfoDic:infoDic2
-                                                       andWithCredentialsUserDic:credentialsUserDic];
-        
-        NSMutableDictionary * infoDic3 = [[NSMutableDictionary alloc] init];
-        RDPosition * position3 = [[RDPosition alloc] init];
-        position3.x = [NSNumber numberWithFloat:3.5];
-        position3.y = [NSNumber numberWithFloat:-13.0];
-        position3.z = [NSNumber numberWithFloat:0.0];
-        [infoDic3 setValue:position3 forKey:@"position"];
-        [infoDic3 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic3 setValue:cornerType forKey:@"type"];
-        
-        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
-                                                                  withIdentifier:@"position3@miso.uam.es"
-                                                                     withInfoDic:infoDic3
-                                                       andWithCredentialsUserDic:credentialsUserDic];
-        
-        NSMutableDictionary * infoDic4 = [[NSMutableDictionary alloc] init];
-        RDPosition * position4 = [[RDPosition alloc] init];
-        position4.x = [NSNumber numberWithFloat:0.0];
-        position4.y = [NSNumber numberWithFloat:-13.0];
-        position4.z = [NSNumber numberWithFloat:0.0];
-        [infoDic4 setValue:position4 forKey:@"position"];
-        [infoDic4 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic4 setValue:cornerType forKey:@"type"];
-        
-        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
-                                                                  withIdentifier:@"position4@miso.uam.es"
-                                                                     withInfoDic:infoDic4
-                                                       andWithCredentialsUserDic:credentialsUserDic];
-        
-        NSMutableDictionary * infoRegionRaspiDic = [[NSMutableDictionary alloc] init];
-        [infoRegionRaspiDic setValue:@"25DC8A73-F3C9-4111-A7DD-C39CD4B828C7" forKey:@"uuid"];
-        [infoRegionRaspiDic setValue:@"1" forKey:@"major"];
-        [infoRegionRaspiDic setValue:@"0" forKey:@"minor"];
-        
-        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
-                                                                  withIdentifier:@"raspi@miso.uam.es"
-                                                                     withInfoDic:infoRegionRaspiDic
-                                                       andWithCredentialsUserDic:credentialsUserDic];
-        
-        NSMutableDictionary * infoItemBeacon1Dic = [[NSMutableDictionary alloc] init];
-        [infoItemBeacon1Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825" forKey:@"uuid"];
-        [infoItemBeacon1Dic setValue:@"1" forKey:@"major"];
-        [infoItemBeacon1Dic setValue:@"1" forKey:@"minor"];
-        
-        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
-                                                                  withIdentifier:@"beacon1@miso.uam.es"
-                                                                     withInfoDic:infoItemBeacon1Dic
-                                                       andWithCredentialsUserDic:credentialsUserDic];
-        
-        NSMutableDictionary * infoItemBeacon2Dic = [[NSMutableDictionary alloc] init];
-        [infoItemBeacon2Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824" forKey:@"uuid"];
-        [infoItemBeacon2Dic setValue:@"1" forKey:@"major"];
-        [infoItemBeacon2Dic setValue:@"1" forKey:@"minor"];
-        
-        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
-                                                                  withIdentifier:@"beacon2@miso.uam.es"
-                                                                     withInfoDic:infoItemBeacon2Dic
-                                                       andWithCredentialsUserDic:credentialsUserDic];
-        
-        NSMutableDictionary * infoItemBeacon3Dic = [[NSMutableDictionary alloc] init];
-        [infoItemBeacon3Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823" forKey:@"uuid"];
-        [infoItemBeacon3Dic setValue:@"1" forKey:@"major"];
-        [infoItemBeacon3Dic setValue:@"1" forKey:@"minor"];
-        
-        registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
-                                                                  withIdentifier:@"beacon3@miso.uam.es"
-                                                                     withInfoDic:infoItemBeacon3Dic
-                                                       andWithCredentialsUserDic:credentialsUserDic];
     }
     
     if (!registerCorrect) {
