@@ -32,7 +32,7 @@
  @class MDType
  @discussion Definition of any type that can be used for modeling
  */
-@interface MDType: NSObject <MDType> {
+@interface MDType: NSObject <MDType, NSCoding> {
     
     NSString * name;
     NSMutableArray * attributes;

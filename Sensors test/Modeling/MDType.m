@@ -54,6 +54,22 @@
 }
 
 /*!
+ @method initWithCoder:
+ @discussion Constructor called when an object must be initiated with the data stored, shared... with a coding way.
+ */
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    name = [decoder decodeObjectForKey:@"name"];
+    attributes = [decoder decodeObjectForKey:@"attributes"];
+    
+    return self;
+}
+
+/*!
  @method getName
  @discussion Getter of the 'name' attribute.
  */
@@ -117,6 +133,15 @@
 }
 
 /*!
+ @method encodeWithCoder:
+ @discussion This method is called when this object must be coded as a data object for storing, sharing...
+ */
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [encoder encodeObject:name forKey:@"name"];
+    [encoder encodeObject:attributes forKey:@"attributes"];
+}
+
+/*!
  @method description
  @discussion This method creates an NSString object for showing and loggin purposes; equivalent to 'toString()'.
  */
@@ -131,6 +156,5 @@
 - (NSString *)stringValue {
     return [self description];
 }
-
 
 @end
