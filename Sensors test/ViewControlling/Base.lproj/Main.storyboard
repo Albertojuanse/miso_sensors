@@ -157,6 +157,20 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UMS-xX-nJw">
+                                        <rect key="frame" x="684" y="8" width="52" height="30"/>
+                                        <state key="normal" title="Log out"/>
+                                        <connections>
+                                            <action selector="handleButtonLogOut:" destination="lVP-jp-YaV" eventType="touchUpInside" id="ZYA-TU-kaf"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PxJ-qY-PCa">
+                                        <rect key="frame" x="611" y="8" width="57" height="30"/>
+                                        <state key="normal" title="Sign out"/>
+                                        <connections>
+                                            <action selector="handleButtonSingOut:" destination="lVP-jp-YaV" eventType="touchUpInside" id="xDY-AJ-axK"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -164,17 +178,21 @@
                                     <constraint firstItem="RbC-qr-Qzv" firstAttribute="top" secondItem="Zp0-zM-RWh" secondAttribute="bottom" constant="16" id="0NV-tr-uSG"/>
                                     <constraint firstItem="zaA-aE-9CS" firstAttribute="leading" secondItem="Nro-qx-VM6" secondAttribute="leading" constant="32" id="2Fo-0z-4K8"/>
                                     <constraint firstAttribute="trailing" secondItem="Zp0-zM-RWh" secondAttribute="trailing" constant="32" id="5ke-BY-6Uv"/>
+                                    <constraint firstAttribute="trailing" secondItem="UMS-xX-nJw" secondAttribute="trailing" constant="32" id="6AR-eR-pxg"/>
                                     <constraint firstItem="pMp-QA-YHA" firstAttribute="top" secondItem="Nro-qx-VM6" secondAttribute="top" constant="55" id="BTa-to-rrl"/>
+                                    <constraint firstItem="PxJ-qY-PCa" firstAttribute="top" secondItem="Nro-qx-VM6" secondAttribute="top" constant="8" id="Gk5-dV-Uyc"/>
                                     <constraint firstItem="RbC-qr-Qzv" firstAttribute="top" secondItem="XAd-5l-cgu" secondAttribute="bottom" constant="16" id="SKc-cm-30z"/>
                                     <constraint firstAttribute="trailing" secondItem="YnX-CR-lc7" secondAttribute="trailing" constant="32" id="bem-hK-3y0"/>
                                     <constraint firstItem="YnX-CR-lc7" firstAttribute="leading" secondItem="Nro-qx-VM6" secondAttribute="leading" constant="32" id="c7A-bu-lcG"/>
                                     <constraint firstItem="zaA-aE-9CS" firstAttribute="top" secondItem="Nro-qx-VM6" secondAttribute="top" constant="64" id="fv4-fy-eX6"/>
                                     <constraint firstItem="XAd-5l-cgu" firstAttribute="leading" secondItem="Nro-qx-VM6" secondAttribute="leading" constant="32" id="gbe-UM-jsa"/>
                                     <constraint firstAttribute="bottom" secondItem="RbC-qr-Qzv" secondAttribute="bottom" constant="32" id="gtJ-6g-1Cl"/>
+                                    <constraint firstItem="UMS-xX-nJw" firstAttribute="top" secondItem="Nro-qx-VM6" secondAttribute="top" constant="8" id="hst-i8-M2S"/>
                                     <constraint firstItem="YnX-CR-lc7" firstAttribute="top" secondItem="pMp-QA-YHA" secondAttribute="bottom" constant="16" id="i0C-6b-fS2"/>
                                     <constraint firstAttribute="trailing" secondItem="Zp0-zM-RWh" secondAttribute="trailing" constant="32" id="iLY-8b-PzL"/>
                                     <constraint firstAttribute="trailing" secondItem="RbC-qr-Qzv" secondAttribute="trailing" constant="32" id="iVE-zB-ahW"/>
                                     <constraint firstItem="YnX-CR-lc7" firstAttribute="top" secondItem="zaA-aE-9CS" secondAttribute="bottom" constant="16" id="iaQ-pY-2f4"/>
+                                    <constraint firstItem="UMS-xX-nJw" firstAttribute="leading" secondItem="PxJ-qY-PCa" secondAttribute="trailing" constant="16" id="pvg-S5-97F"/>
                                     <constraint firstAttribute="trailing" secondItem="pMp-QA-YHA" secondAttribute="trailing" constant="32" id="sKQ-j6-fzQ"/>
                                     <constraint firstItem="XAd-5l-cgu" firstAttribute="top" secondItem="dwG-Vz-UA7" secondAttribute="bottom" constant="8" id="tIo-N6-iiQ"/>
                                     <constraint firstItem="dwG-Vz-UA7" firstAttribute="leading" secondItem="Nro-qx-VM6" secondAttribute="leading" constant="32" id="tVS-PF-VRP"/>
@@ -198,6 +216,7 @@
                         <segue destination="BYZ-38-t0r" kind="show" identifier="fromMainToRHO_RHO_MODELING" id="N3R-vg-jtW"/>
                         <segue destination="1M1-iA-J20" kind="show" identifier="fromMainToRHO_THETA_MODELING" id="ZVX-zW-HeN"/>
                         <segue destination="zBC-hA-n0a" kind="show" identifier="fromMainToSelectPositions" id="DJm-0E-zOi"/>
+                        <segue destination="QfP-rI-9YT" kind="show" identifier="fromMainToLogin" id="R4c-cp-jPI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WTd-at-ldf" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1490,8 +1509,8 @@
     <inferredMetricsTieBreakers>
         <segue reference="wLB-nb-URa"/>
         <segue reference="QxI-WS-XJS"/>
-        <segue reference="A3y-43-nSw"/>
-        <segue reference="ARI-Cn-mJV"/>
-        <segue reference="OWJ-G0-Y79"/>
+        <segue reference="ZVX-zW-HeN"/>
+        <segue reference="DJm-0E-zOi"/>
+        <segue reference="jUo-Ud-pm0"/>
     </inferredMetricsTieBreakers>
 </document>

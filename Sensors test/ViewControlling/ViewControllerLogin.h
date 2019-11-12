@@ -22,6 +22,9 @@
     
     NSMutableArray * credentialsUserDicArray;
     
+    BOOL userDidAskLogOut;
+    BOOL userDidAskSignOut;
+    
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *userText;
@@ -32,6 +35,8 @@
 
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
+- (void) setUserDidAskLogOut:(BOOL)givenUserDidAskLogOut;
+- (void) setUserDidAskSignOut:(BOOL)givenUserDidAskSignOut;
 
 @end
 

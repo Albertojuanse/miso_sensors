@@ -468,6 +468,24 @@
 #pragma mark - Butons event handle
 
 /*!
+ @method handleButtonSingOut:
+ @discussion This method handles the Sing Out button action and ask Login View to delete user; 'prepareForSegue:sender:' method is called before.
+ */
+- (IBAction)handleButtonSingOut:(id)sender {
+    userDidAskSignOut = YES;
+    [self performSegueWithIdentifier:@"fromMainToLogin" sender:sender];
+}
+
+/*!
+ @method handleButtonLogOut:
+ @discussion This method handles the Sing Out button action and ask Login View to delete credentials dictionaries; 'prepareForSegue:sender:' method is called before.
+ */
+- (IBAction)handleButtonLogOut:(id)sender {
+    userDidAskLogOut = YES;
+    [self performSegueWithIdentifier:@"fromMainToLogin" sender:sender];
+}
+
+/*!
  @method handleButtonAdd:
  @discussion This method handles the Add button action and ask the add view to show; 'prepareForSegue:sender:' method is called before.
  */
@@ -557,6 +575,24 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     NSLog(@"[INFO][VCMM] Asked segue %@", [segue identifier]);
+    
+    if ([[segue identifier] isEqualToString:@"fromMainToLogin"]) {
+        
+        // Get destination view
+        ViewControllerLogin * viewControllerLogin = [segue destinationViewController];
+        // Set the variables and components
+        [viewControllerLogin setCredentialsUserDic:credentialsUserDic];
+        [viewControllerLogin setUserDic:userDic];
+        if (userDidAskSignOut) {
+            [viewControllerLogin setUserDidAskSignOut:YES];
+        }
+        if (userDidAskLogOut) {
+            [viewControllerLogin setUserDidAskLogOut:YES];
+        } else {
+            NSLog(@"[ERROR][VCMM] Asked log in view to show without log out or sign out.")
+        }
+        
+    }
     
     // If add menu is going to be displayed, pass it the beaconsAndPositionsRegistered array
     if ([[segue identifier] isEqualToString:@"fromMainToAdd"]) {

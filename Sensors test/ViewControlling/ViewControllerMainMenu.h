@@ -14,6 +14,7 @@
 #import "RDRhoThetaSystem.h"
 #import "RDThetaThetaSystem.h"
 #import "SharedData.h"
+#import "ViewControllerLogin.h"
 #import "ViewControllerAddBeaconMenu.h"
 #import "ViewControllerSelectPositions.h"
 #import "ViewControllerRhoRhoModeling.h"
@@ -45,6 +46,10 @@
     // Beacons' region identifiers
     NSNumber * itemBeaconIdNumber;
     NSNumber * itemPositionIdNumber;
+    
+    // Login
+    BOOL userDidAskLogOut;
+    BOOL userDidAskSignOut;
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *tableModes;

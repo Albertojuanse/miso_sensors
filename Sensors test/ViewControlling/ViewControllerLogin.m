@@ -19,9 +19,22 @@
  */
 - (void)viewDidLoad
 {
-    
+    if (userDidAskSignOut) {
+        NSLog(@"[INFO][VCL] User did asked to sign out.");
+        if ([self deleteUserWithCredentialsUserDic:userDic]) {
+            NSLog(@"[INFO][VCL] User did sign out.");
+        } else {
+            NSLog(@"[ERROR][VCL] User could not sign out.");
+        }
+        userDic = nil;
+        credentialsUserDic = nil;
+    }
+    if (userDidAskLogOut) {
+        NSLog(@"[INFO][VCL] User did log out.");
+        userDic = nil;
+        credentialsUserDic = nil;
+    }
     credentialsUserDicArray = [[NSMutableArray alloc] init];
-    
 }
 
 /*!
@@ -30,6 +43,7 @@
  */
 - (void)viewDidAppear:(BOOL)animated
 {
+    
     // Check if in this device exists any user
     BOOL areUsers = [self isAnyUserRegistered];
     
@@ -80,6 +94,24 @@
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic
 {
     userDic = givenUserDic;
+}
+
+/*!
+ @method setUserDidAskLogOut:
+ @discussion This method sets the BOOL flag 'didUserAskLogOut'.
+ */
+- (void) setUserDidAskLogOut:(BOOL)givenUserDidAskLogOut
+{
+    userDidAskLogOut = givenUserDidAskLogOut;
+}
+
+/*!
+ @method setUserDidAskSignOut:
+ @discussion This method sets the BOOL flag 'didUserAskSignOut'.
+ */
+- (void) setUserDidAskSignOut:(BOOL)givenUserDidAskSignOut
+{
+    userDidAskSignOut = givenUserDidAskSignOut;
 }
 
 #pragma mark - Button events handlers
