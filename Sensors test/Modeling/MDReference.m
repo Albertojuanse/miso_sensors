@@ -59,6 +59,22 @@
 }
 
 /*!
+ @method initWithCoder:
+ @discussion Constructor called when an object must be initiated with the data stored, shared... with a coding way.
+ */
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    sourceItemId = [decoder decodeObjectForKey:@"sourceItemId"];
+    targetItemId = [decoder decodeObjectForKey:@"targetItemId"];
+    type = [decoder decodeObjectForKey:@"type"];
+    
+    return self;
+}
+
+/*!
  @method getType
  @discussion Getter of the 'type' attribute.
  */
@@ -97,7 +113,7 @@
  @method setTargetItemId:
  @discussion Setter of the 'targetItemId' NSString object.
  */
-- (void)setTargetItem:(NSString *)givenId
+- (void)setTargetItemId:(NSString *)givenId
 {
     targetItemId = nil;
     targetItemId = givenId;
@@ -146,6 +162,16 @@
         return NO;
     }
     return YES;
+}
+
+/*!
+ @method encodeWithCoder:
+ @discussion This method is called when this object must be coded as a data object for storing, sharing...
+ */
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [encoder encodeObject:sourceItemId forKey:@"sourceItemId"];
+    [encoder encodeObject:targetItemId forKey:@"targetItemId"];
+    [encoder encodeObject:type forKey:@"type"];
 }
 
 /*!

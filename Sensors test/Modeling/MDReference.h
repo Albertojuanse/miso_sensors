@@ -35,7 +35,7 @@
  @class MDReference
  @discussion Definition of any reference from an item to another that can be used for modeling
  */
-@interface MDReference: NSObject <MDReference> {
+@interface MDReference: NSObject <MDReference, NSCoding> {
     
     NSString * sourceItemId;
     NSString * targetItemId;
