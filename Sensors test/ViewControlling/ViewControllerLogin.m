@@ -243,22 +243,22 @@
 {
     if ([self isAnyUserRegistered]) {
         // Generate the key in which this user is saved
-        NSLog(@"[INFO][VCL] Validating user named %@", userDic[@"user"]);
+        NSLog(@"[INFO][VCL] Validating user named %@", userDic[@"name"]);
         // Retrieve its data
         NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-        NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"user"]];
+        NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"name"]];
         NSData * loadedUserData = [userDefaults objectForKey:key];
         if (loadedUserData) {
             NSMutableDictionary * loadedUserDic = [NSKeyedUnarchiver unarchiveObjectWithData:loadedUserData];
             if ([userDic isEqualToDictionary:loadedUserDic]) {
-                NSLog(@"[INFO][VCL] Entry granted to user named %@", userDic[@"user"]);
+                NSLog(@"[INFO][VCL] Entry granted to user named %@", userDic[@"name"]);
                 return YES;
             } else { // Pass not correct
-                NSLog(@"[INFO][VCL] Entry not granted to user named %@", userDic[@"user"]);
+                NSLog(@"[INFO][VCL] Entry not granted to user named %@", userDic[@"name"]);
                 return NO;
             }
         } else { // User does not exists
-            NSLog(@"[INFO][VCL] Unknown user named %@", userDic[@"user"]);
+            NSLog(@"[INFO][VCL] Unknown user named %@", userDic[@"name"]);
             return NO;
         }
     } else {
@@ -277,13 +277,13 @@
     // Check if it exists
     // Generate the key in which this user is saved
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    NSLog(@"[INFO][VCL] Validating new user named %@", userDic[@"user"]);
+    NSLog(@"[INFO][VCL] Validating new user named %@", userDic[@"name"]);
     // Retrieve its data
-    NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"user"]];
+    NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"name"]];
     NSData * loadedUserData = [userDefaults objectForKey:key];
     if (loadedUserData) {
         // It exists
-        NSLog(@"[INFO][VCL] Already exists a user named %@", userDic[@"user"]);
+        NSLog(@"[INFO][VCL] Already exists a user named %@", userDic[@"name"]);
         return NO;
     } else {
         // It does not exist
@@ -300,7 +300,7 @@
     // User name was validated before and registration is allowed
     // Prepare the data to save...
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"user"]];
+    NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"name"]];
     NSMutableDictionary * saveDic = [[NSMutableDictionary alloc] init];
     saveDic[@"name"] = userDic[@"name"];
     saveDic[@"pass"] = userDic[@"pass"];
@@ -341,7 +341,7 @@
 {
     // Search for data to delete...
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"user"]];
+    NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"name"]];
     NSData * dataSaveDic = [userDefaults objectForKey:key];
     if (dataSaveDic) {
         // It exists, delete it
