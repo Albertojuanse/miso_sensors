@@ -217,6 +217,25 @@
 }
 
 /*!
+ @method numberOfUserRegistered
+ @discussion This method returns the number of users registered.
+ */
+- (NSInteger)numberOfUserRegistered
+{
+    // Checks the saved data
+    NSInteger numberOfUsers = 0;
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    NSData * loadedUserData = [userDefaults objectForKey:@"security/credentials/numberOfUsers"];
+    if (loadedUserData) {
+        NSString * numberOfUsersString = [NSKeyedUnarchiver unarchiveObjectWithData:loadedUserData];
+        numberOfUsers = [numberOfUsersString integerValue];
+    } else {
+        NSLog(@"[INFO][VCL] No users saved found.");
+    }
+    return numberOfUsers;
+}
+
+/*!
  @method validateCredentialsUserDic:
  @discussion This method verifies the name and password of the user.
  */
@@ -278,19 +297,98 @@
  */
 - (BOOL)registerNewUserWithCredentialsUserDic:(NSMutableDictionary *)userDic
 {
-    // User name was validated before
+    // User name was validated before and registration is allowed
+    // Prepare the data to save...
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
     NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"user"]];
     NSMutableDictionary * saveDic = [[NSMutableDictionary alloc] init];
     saveDic[@"name"] = userDic[@"name"];
     saveDic[@"pass"] = userDic[@"pass"];
-    NSData * dataSave = [NSKeyedArchiver archivedDataWithRootObject:saveDic];
-    [userDefaults setObject:dataSave forKey:key];
-    // And set users avalible
-    dataSave = nil;
-    dataSave = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-    [userDefaults setObject:dataSave forKey:@"security/credentials/areUsers"];
+    NSData * dataSaveDic = [NSKeyedArchiver archivedDataWithRootObject:saveDic];
+    // ...save it...
+    [userDefaults setObject:dataSaveDic forKey:key];
+    // ...and set users avalible and the number of them
+    NSData * areUsersData = [userDefaults objectForKey:@"security/credentials/areUsers"];
+    if (areUsersData) {
+        [userDefaults removeObjectForKey:@"security/credentials/areUsers"];
+        
+    }
+    NSData * areUsersDataNew = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+    [userDefaults setObject:areUsersDataNew forKey:@"security/credentials/areUsers"];
+    
+    NSData * numberOfUsersData = [userDefaults objectForKey:@"security/credentials/numberOfUsers"];
+    NSString * numberOfUsersString;
+    if (numberOfUsersData) {
+        numberOfUsersString = [NSKeyedUnarchiver unarchiveObjectWithData:numberOfUsersData];
+        NSInteger  numberOfUsers = [numberOfUsersString integerValue];
+        numberOfUsers++;
+        numberOfUsersString = [[NSNumber numberWithInteger:numberOfUsers] stringValue];
+    } else {
+        numberOfUsersString = [[NSNumber numberWithInteger:1] stringValue];
+    }
+    NSData * numberOfUsersDataNew = [NSKeyedArchiver archivedDataWithRootObject:numberOfUsersString];
+    [userDefaults setObject:numberOfUsersDataNew forKey:@"security/credentials/numberOfUsers"];
+    
+    NSLog(@"[INFO][VCL] New user registered.");
     return YES;
+}
+
+/*!
+ @method deleteUserWithCredentialsUserDic:
+ @discussion This method deletes the name and password of the user if it exists.
+ */
+- (BOOL)deleteUserWithCredentialsUserDic:(NSMutableDictionary *)userDic
+{
+    // Search for data to delete...
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"user"]];
+    NSData * dataSaveDic = [userDefaults objectForKey:key];
+    if (dataSaveDic) {
+        // It exists, delete it
+        
+        [userDefaults removeObjectForKey:key];
+        
+        // ...and set users avalible and the number of them
+        
+        NSData * numberOfUsersData = [userDefaults objectForKey:@"security/credentials/numberOfUsers"];
+        NSString * numberOfUsersString;
+        NSInteger numberOfUsers;
+        if (numberOfUsersData) {
+            numberOfUsersString = [NSKeyedUnarchiver unarchiveObjectWithData:numberOfUsersData];
+            numberOfUsers = [numberOfUsersString integerValue];
+            numberOfUsers--;
+            numberOfUsersString = [[NSNumber numberWithInteger:numberOfUsers] stringValue];
+        } else {
+            numberOfUsersString = [[NSNumber numberWithInteger:0] stringValue];
+            numberOfUsers = 0;
+        }
+        NSData * numberOfUsersDataNew = [NSKeyedArchiver archivedDataWithRootObject:numberOfUsersString];
+        [userDefaults setObject:numberOfUsersDataNew forKey:@"security/credentials/numberOfUsers"];
+        
+        if (numberOfUsers == 0) {
+            NSData * areUsersData = [userDefaults objectForKey:@"security/credentials/areUsers"];
+            if (areUsersData) {
+                [userDefaults removeObjectForKey:@"security/credentials/areUsers"];
+            }
+            NSData * areUsersDataNew = [NSKeyedArchiver archivedDataWithRootObject:@"NO"];
+            [userDefaults setObject:areUsersDataNew forKey:@"security/credentials/areUsers"];
+            NSLog(@"[INFO][VCL] User deleted; no users left in the system.");
+        } else {
+            NSData * areUsersData = [userDefaults objectForKey:@"security/credentials/areUsers"];
+            if (areUsersData) {
+                [userDefaults removeObjectForKey:@"security/credentials/areUsers"];
+            }
+            NSData * areUsersDataNew = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+            [userDefaults setObject:areUsersDataNew forKey:@"security/credentials/areUsers"];
+            NSLog(@"[INFO][VCL] User deleted; there are some users left in the system.");
+        }
+        return YES;
+        
+    } else {
+        // It does not exists
+        NSLog(@"[INFO][VCL] User %@ not found when deleting it.", userDic[@"name"]);
+        return NO;
+    }
 }
 
 /*!
