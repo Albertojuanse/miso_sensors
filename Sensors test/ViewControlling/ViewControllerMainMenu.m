@@ -20,6 +20,10 @@
 {
     [super viewDidLoad];
     
+    // Visualization
+    self.loginText.text = [self.loginText.text stringByAppendingString:@" "];
+    self.loginText.text = [self.loginText.text stringByAppendingString:userDic[@"name"]];
+    
     // Other components; only inizialated if they didn't be so
     // Init the shared data collection with the credentials of the device user.
     if (!sharedData) {
@@ -589,7 +593,7 @@
         if (userDidAskLogOut) {
             [viewControllerLogin setUserDidAskLogOut:YES];
         } else {
-            NSLog(@"[ERROR][VCMM] Asked log in view to show without log out or sign out.")
+            NSLog(@"[ERROR][VCMM] Asked log in view to show without log out or sign out.");
         }
         
     }

@@ -54,6 +54,7 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *tableModes;
 @property (weak, nonatomic) IBOutlet UITableView *tableItems;
+@property (weak, nonatomic) IBOutlet UILabel *loginText;
 
 
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;

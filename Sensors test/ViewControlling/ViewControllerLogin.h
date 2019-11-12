@@ -31,7 +31,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *passText;
 @property (weak, nonatomic) IBOutlet UIButton *buttonLogin;
 @property (weak, nonatomic) IBOutlet UIButton *buttonSignin;
-@property (weak, nonatomic) IBOutlet UILabel *labelStatus;
+@property (weak, nonatomic) IBOutlet UILabel *loginText;
 
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;

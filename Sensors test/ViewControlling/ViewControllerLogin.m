@@ -19,6 +19,7 @@
  */
 - (void)viewDidLoad
 {
+    self.loginText.text = @"Please, enter your credentials.";
     if (userDidAskSignOut) {
         NSLog(@"[INFO][VCL] User did asked to sign out.");
         if ([self deleteUserWithCredentialsUserDic:userDic]) {
@@ -26,11 +27,13 @@
         } else {
             NSLog(@"[ERROR][VCL] User could not sign out.");
         }
+        self.loginText.text = @"User deleted. Please, enter your credentials.";
         userDic = nil;
         credentialsUserDic = nil;
     }
     if (userDidAskLogOut) {
         NSLog(@"[INFO][VCL] User did log out.");
+        self.loginText.text = @"User logged out. Please, enter your credentials.";
         userDic = nil;
         credentialsUserDic = nil;
     }
@@ -128,7 +131,7 @@
     if ([userTest evaluateWithObject:[self.userText text]]){
         //Matches
     } else {
-        self.labelStatus.text = @"Error. User not valid. Please, only accepted a-z, A-Z, 0-9, \"_\" and \"-\".";
+        self.loginText.text = @"Error. User not valid. Please, only accepted a-z, A-Z, 0-9, \"_\" and \"-\".";
         return;
     }
     
@@ -137,7 +140,7 @@
     if ([passTest evaluateWithObject:[self.passText text]]){
         //Matches
     } else {
-        self.labelStatus.text = @"Error. Password not valid; minimum length 8 characters: a-z, A-Z, 0-9, \"_\" and \"-\".";
+        self.loginText.text = @"Error. Password not valid; minimum length 8 characters: a-z, A-Z, 0-9, \"_\" and \"-\".";
         return;
     }
     
@@ -152,11 +155,17 @@
     credentialsUserDic[@"name"] = [self.userText text];
     credentialsUserDic[@"pass"] = [self.passText text];
     
+    if(!userDic) {
+        userDic = [[NSMutableDictionary alloc] init];
+    }
+    userDic[@"name"] = [self.userText text];
+    userDic[@"pass"] = [self.passText text];
+    
     // Validate if the user have access granted.
     if ([self validateCredentialsUserDic:credentialsUserDic]) {
         [self performSegueWithIdentifier:@"loginFromLoginToMain" sender:sender];
     } else {
-        self.labelStatus.text = @"Error. Invalid user name or password.";
+        self.loginText.text = @"Error. Invalid user name or password.";
         return;
     }
     
@@ -175,7 +184,7 @@
     if ([userTest evaluateWithObject:[self.userText text]]){
         //Matches
     } else {
-        self.labelStatus.text = @"Error. User not valid. Please, only accepted a-z, A-Z, 0-9, \"_\" and \"-\".";
+        self.loginText.text = @"Error. User not valid. Please, only accepted a-z, A-Z, 0-9, \"_\" and \"-\".";
         return;
     }
     
@@ -184,7 +193,7 @@
     if ([passTest evaluateWithObject:[self.passText text]]){
         //Matches
     } else {
-        self.labelStatus.text = @"Error. Password not valid; minimum length 8 characters: a-z, A-Z, 0-9, \"_\" and \"-\".";
+        self.loginText.text = @"Error. Password not valid; minimum length 8 characters: a-z, A-Z, 0-9, \"_\" and \"-\".";
         return;
     }
     
@@ -212,12 +221,12 @@
         if ([self registerNewUserWithCredentialsUserDic:credentialsUserDic]) {
             [self performSegueWithIdentifier:@"loginFromLoginToMain" sender:sender];
         } else {
-            self.labelStatus.text = @"Error. An error occurred while registering. Please, wait a moment and try again.";
+            self.loginText.text = @"Error. An error occurred while registering. Please, wait a moment and try again.";
             return;
         }
         
     } else {
-        self.labelStatus.text = @"Error. Invalid user name or password.";
+        self.loginText.text = @"Error. Invalid user name or password, or existing name.";
         return;
     }
     
