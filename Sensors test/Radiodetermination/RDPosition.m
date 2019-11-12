@@ -26,6 +26,22 @@
 }
 
 /*!
+ @method initWithCoder:
+ @discussion Constructor called when an object must be initiated with the data stored, shared... with a coding way.
+ */
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    self.x = [decoder decodeObjectForKey:@"x"];
+    self.y = [decoder decodeObjectForKey:@"y"];
+    self.z = [decoder decodeObjectForKey:@"z"];
+    
+    return self;
+}
+
+/*!
  @method euclideanDistance1Dfrom:to:
  @discussion This method perfoms the calculus of the abssolute value of two NSNumbers.
  */
@@ -104,6 +120,16 @@
         return YES;
     }
     return NO;
+}
+
+/*!
+ @method encodeWithCoder:
+ @discussion This method is called when this object must be coded as a data object for storing, sharing...
+ */
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [encoder encodeObject:self.x forKey:@"x"];
+    [encoder encodeObject:self.y forKey:@"y"];
+    [encoder encodeObject:self.z forKey:@"z"];
 }
 
 /*!

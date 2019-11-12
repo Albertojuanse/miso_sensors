@@ -13,7 +13,7 @@
  @class RDPosition
  @discussion This class defines a position in space with its cartesian coordinates.
  */
-@interface RDPosition: NSObject {
+@interface RDPosition: NSObject <NSCoding> {
     
 }
 
