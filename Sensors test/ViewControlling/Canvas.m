@@ -100,7 +100,7 @@
 - (void) refreshCanvas:(NSNotification *) notification
 {
     if ([[notification name] isEqualToString:@"refreshCanvas"]){
-        NSLog(@"[NOTI][VC] Notification \"refreshCanvas\" recived");
+        NSLog(@"[NOTI][VC] Notification \"refreshCanvas\" recived.");
         // TO DO. Logic. Alberto J. 2019/09/13.
     }
     [self setNeedsDisplay];

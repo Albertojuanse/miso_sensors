@@ -97,7 +97,7 @@
  */
 - (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithPrecisions:(NSDictionary *)precisions
 {
-    NSLog(@"[INFO][RT] Start Radiolocating beacons");
+    NSLog(@"[INFO][RT] Start Radiolocating beacons.");
     
     // Check the access to data shared collections
     if (
@@ -118,7 +118,7 @@
 
     if ([mode isEqualToString:@"RHO_THETA_MODELING"]) {
         
-        NSLog(@"->[HOLA][RT] Rho theta system calculation starts");
+        NSLog(@"->[HOLA][RT] Rho theta system calculation starts.");
         
         // In a modeling mode the items must be located using the measures taken by the device or devices from items and the headings aginst them. That implies that, each UUID groups the measures taken from a certain beacon and so, for every one of them a RDPosition would be found.
         
@@ -209,8 +209,8 @@
                             
                     // Final calculus is only performed if there are both RSSI and heading measures
                     // (x_item, y_item) = (x_device, y_device) + (RSSI * cos(heading), RSSI * sen(heading)) in radians and meters
-                    NSLog(isRSSIMeasure ? @"[INFO][RT] isRSSIMeasure = YES" : @"[INFO][RT] isRSSIMeasure = NO");
-                    NSLog(isHeadingMeasure ? @"[INFO][RT] isHeadingMeasure = YES" : @"[INFO][RT] isHeadingMeasure = NO");
+                    NSLog(isRSSIMeasure ? @"[INFO][RT] isRSSIMeasure = YES" : @"[INFO][RT] isRSSIMeasure = NO.");
+                    NSLog(isHeadingMeasure ? @"[INFO][RT] isHeadingMeasure = YES" : @"[INFO][RT] isHeadingMeasure = NO.");
                     if (isRSSIMeasure && isHeadingMeasure) {
                         RDPosition * locatedPosition = [[RDPosition alloc] init];
                         locatedPosition.x = [NSNumber numberWithFloat:[measurePosition.x floatValue] +
@@ -325,8 +325,8 @@
             
             // Final calculus is only performed if there are both RSSI and heading measures
             // (x_device, y_device) = (x_item, y_item) - (RSSI * cos(heading), RSSI * sen(heading)) in radians and meters
-            // NSLog(isRSSIMeasure ? @"[INFO][RT] isRSSIMeasure = YES" : @"[INFO][RT] isRSSIMeasure = NO");
-            // NSLog(isHeadingMeasure ? @"[INFO][RT] isHeadingMeasure = YES" : @"[INFO][RT] isHeadingMeasure = NO");
+            // NSLog(isRSSIMeasure ? @"[INFO][RT] isRSSIMeasure = YES" : @"[INFO][RT] isRSSIMeasure = NO.");
+            // NSLog(isHeadingMeasure ? @"[INFO][RT] isHeadingMeasure = YES" : @"[INFO][RT] isHeadingMeasure = NO.");
             if (isRSSIMeasure && isHeadingMeasure) {
                 // Get the item position using its UUID
                 NSMutableArray * itemsMeasured = [sharedData fromItemDataGetItemsWithUUID:UUIDusedToLocate
@@ -378,7 +378,7 @@
         NSLog(@"[ERROR][RT] Rho theta type system called when in an other mode.");
     }
     
-    NSLog(@"[INFO][RT] Finish Radiolocating beacons");
+    NSLog(@"[INFO][RT] Finish Radiolocating beacons.");
     return locatedPositions;
 }
 

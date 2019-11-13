@@ -221,56 +221,42 @@
         // TO DO: BASIC, ROUTING AND TRACKING modes. Alberto J. 2019/09/13.
     }
     
-    // Register something in the shared data collection if it is empty for exampling and showing porpuses
-    // Search for current items saved in system; if not, register them as usually
+    // Registers
+    // Search for current information saved in system; if not, register them as first time
     BOOL registerCorrect = YES;
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    NSData * itemsData = [userDefaults objectForKey:@"data/items/areItems"];
-    if (itemsData) {
-        // Previous saved data
+    NSData * areItemsData = [userDefaults objectForKey:@"data/items/areItems"];
+    NSData * areMetamodelData = [userDefaults objectForKey:@"data/metamodel/areMetamodel"];
+    NSData * areModelsData = [userDefaults objectForKey:@"data/models/areModels"];
+    NSString * areItems;
+    NSString * areMetamodel;
+    NSString * areModels;
+    if (areItemsData) {
+        areItems = [NSKeyedUnarchiver unarchiveObjectWithData:areItemsData];
+    }
+    if (areMetamodelData) {
+        areMetamodel = [NSKeyedUnarchiver unarchiveObjectWithData:areMetamodelData];
+    }
+    if (areModelsData) {
+        areModels = [NSKeyedUnarchiver unarchiveObjectWithData:areModelsData];
+    }
+    
+    // Retrieve or create each category of information
+    if (areItemsData && areItems && [areItems isEqualToString:@"YES"]) {
+        // Existing saved data
         
-        /*
-        NSData * areUsersData = [userDefaults objectForKey:@"security/credentials/areUsers"];
-        if (areUsersData) {
-            [userDefaults removeObjectForKey:@"security/credentials/areUsers"];
-            
-        }
-        NSData * areUsersDataNew = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-        [userDefaults setObject:areUsersDataNew forKey:@"security/credentials/areUsers"];
-        
-        NSData * numberOfUsersData = [userDefaults objectForKey:@"security/credentials/numberOfUsers"];
-        NSString * numberOfUsersString;
-        if (numberOfUsersData) {
-            numberOfUsersString = [NSKeyedUnarchiver unarchiveObjectWithData:numberOfUsersData];
-            NSInteger  numberOfUsers = [numberOfUsersString integerValue];
-            numberOfUsers++;
-            numberOfUsersString = [[NSNumber numberWithInteger:numberOfUsers] stringValue];
-        } else {
-            numberOfUsersString = [[NSNumber numberWithInteger:1] stringValue];
-        }
-        NSData * numberOfUsersDataNew = [NSKeyedArchiver archivedDataWithRootObject:numberOfUsersString];
-        [userDefaults setObject:numberOfUsersDataNew forKey:@"security/credentials/numberOfUsers"];
-         */
-        
+        // NSLog(@"[INFO][VCMM] %tu items found in device.", types.count);
     } else {
         // No saved data
-        
-        // Register some types
-        MDType * noType = [[MDType alloc] initWithName:@"<No type>"];
-        MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
-        MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
-        MDType * wallType = [[MDType alloc] initWithName:@"Wall"];
-        if ([sharedData isMetamodelDataEmptyWithCredentialsUserDic:credentialsUserDic]) {
-            registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:noType withCredentialsUserDic:credentialsUserDic];
-            registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:cornerType withCredentialsUserDic:credentialsUserDic];
-            registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:deviceType withCredentialsUserDic:credentialsUserDic];
-            registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:wallType withCredentialsUserDic:credentialsUserDic];
-        }
         
         // Register some items
         if ([sharedData isItemsDataEmptyWithCredentialsUserDic:credentialsUserDic]) {
             
-            // The item's setter ask for identifier and sort but the copies everything else from a NSMutableDitionary with the same values and keys.
+            // Create types for items
+            MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
+            MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
+            
+            // Create the items and add them to shared data collections
             NSMutableDictionary * infoDic0 = [[NSMutableDictionary alloc] init];
             RDPosition * position0 = [[RDPosition alloc] init];
             position0.x = [NSNumber numberWithFloat:0.0];
@@ -380,12 +366,70 @@
                                                                       withIdentifier:@"beacon3@miso.uam.es"
                                                                          withInfoDic:infoItemBeacon3Dic
                                                            andWithCredentialsUserDic:credentialsUserDic];
+            
+            // Save them in device
+            NSLog(@"[INFO][VCMM] No items found in device; demo metamodel saved.");
         }
         
     }
+    if (areMetamodelData && areMetamodel && [areMetamodel isEqualToString:@"YES"]) {
+        // Existing saved data
+        
+        // Retrieve the metamodel array
+        NSData * metamodelData = [userDefaults objectForKey:@"data/metamodel/metamodel"];
+        NSMutableArray * types = [NSKeyedUnarchiver unarchiveObjectWithData:metamodelData];
+        
+        // Add them in shared data
+        for (MDType * type in types) {
+            registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:type withCredentialsUserDic:credentialsUserDic];
+        }
+        
+        NSLog(@"[INFO][VCMM] %tu metamodel types found in device.", types.count);
+    } else {
+        // No saved data
+        
+        // Create the types
+        MDType * noType = [[MDType alloc] initWithName:@"<No type>"];
+        MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
+        MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
+        MDType * wallType = [[MDType alloc] initWithName:@"Wall"];
+        
+        // Add them in shared data
+        if ([sharedData isMetamodelDataEmptyWithCredentialsUserDic:credentialsUserDic]) {
+            registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:noType withCredentialsUserDic:credentialsUserDic];
+            registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:cornerType withCredentialsUserDic:credentialsUserDic];
+            registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:deviceType withCredentialsUserDic:credentialsUserDic];
+            registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:wallType withCredentialsUserDic:credentialsUserDic];
+        }
+        
+        // Save them in persistent memory
+        areMetamodelData = nil; // ARC disposing
+        areMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+        [userDefaults setObject:areMetamodelData forKey:@"data/metamodel/areMetamodel"];
+        
+        NSMutableArray * types = [[NSMutableArray alloc] init];
+        [types addObject:noType];
+        [types addObject:cornerType];
+        [types addObject:deviceType];
+        [types addObject:wallType];
+        NSData * metamodelData = [NSKeyedArchiver archivedDataWithRootObject:types];
+        [userDefaults setObject:areMetamodelData forKey:@"data/metamodel/metamodel"];
+        
+        NSLog(@"[INFO][VCMM] No metamodel found in device; demo metamodel saved.");
+    }
+    if (areModelsData && areModels && [areModels isEqualToString:@"YES"]) {
+        // Existing saved data
+        
+        
+        // NSLog(@"[INFO][VCMM] %tu model found in device.", types.count);
+    } else {
+        // No saved data
+        
+        NSLog(@"[INFO][VCMM] No model found in device.");
+    }
     
     if (!registerCorrect) {
-        NSLog(@"[ERROR][VCMM] Register of items incorrect; user credentials granted?");
+        NSLog(@"[ERROR][VCMM] Register of items incorrect; user credentials granted?.");
     }
     
     // Variables
@@ -856,7 +900,7 @@
                 }
             } else {
                 // The itemDic variable is null or NO
-                NSLog(@"[VCMM][ERROR] No items found for showing");
+                NSLog(@"[VCMM][ERROR] No items found for showing.");
                 if (indexPath.row == 0) {
                     cell.textLabel.text = @"No items found.";
                     cell.textLabel.textColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:0.2];

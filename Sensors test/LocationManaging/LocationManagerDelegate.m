@@ -94,7 +94,7 @@
                                                      name:@"reset"
                                                    object:nil];
         
-        NSLog(@"[INFO][LM] LocationManager prepared");
+        NSLog(@"[INFO][LM] LocationManager prepared.");
     }
     return self;
 }
@@ -262,7 +262,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
     // Start ranging
     [manager startRangingBeaconsInRegion:region];
     
-    NSLog(@"[INFO][LM] Device ranged a region:");
+    NSLog(@"[INFO][LM] Device ranged a region:.");
     NSLog(@"[INFO][LM] -> %@", [[region proximityUUID] UUIDString]);
     //NSLog([NSString stringWithFormat:@"[INFO] Device ranged a region: %@", [[region proximityUUID] UUIDString]]);
 }
@@ -274,7 +274,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 - (void)locationManager:(CLLocationManager *)manager
 rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
               withError:(NSError *)error {
-    NSLog(@"[ERROR][LM] Device failed in raging a region:");
+    NSLog(@"[ERROR][LM] Device failed in raging a region:.");
     NSLog(@"[ERROR][LM] -> %@", [[region proximityUUID] UUIDString]);
 }
 
@@ -445,12 +445,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                                     withInfoDic:infoDic
                                       andWithCredentialsUserDic:credentialsUserDic];
                         }
-                        NSLog(@"[INFO][LM] Generated locations:");
+                        NSLog(@"[INFO][LM] Generated locations:.");
                         NSLog(@"[INFO][LM]  -> %@",  [sharedData fromItemDataGetLocatedItemsByUser:userDic
                                                                              andCredentialsUserDic:credentialsUserDic]);
                         
                     }
-                    NSLog(@"[INFO][LM] Generated measures:");
+                    NSLog(@"[INFO][LM] Generated measures:.");
                     NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
                     
                 }
@@ -637,10 +637,10 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                           andWithCredentialsUserDic:credentialsUserDic];
             }
             
-            NSLog(@"[INFO][LM] Generated locations:");
+            NSLog(@"[INFO][LM] Generated locations:.");
             NSLog(@"[INFO][LM]  -> %@", [sharedData fromItemDataGetLocatedItemsByUser:userDic
                                                                 andCredentialsUserDic:credentialsUserDic]);
-            NSLog(@"[INFO][LM] Generated measures:");
+            NSLog(@"[INFO][LM] Generated measures:.");
             NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
             
         }
@@ -793,7 +793,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                         [monitoredRegions addObject:region];
                         
                         [locationManager startRangingBeaconsInRegion:region];
-                        NSLog(@"[INFO][LM] Device monitorizes a region:");
+                        NSLog(@"[INFO][LM] Device monitorizes a region:.");
                         NSLog(@"[INFO][LM] -> %@", [[region proximityUUID] UUIDString]);
                         
                         // But if its position is loaded, the user wants to use it to locate itself against them

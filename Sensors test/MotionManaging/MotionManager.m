@@ -180,7 +180,7 @@
                                                      name:@"stopGyroscopes"
                                                    object:nil];
         
-        NSLog(@"[INFO][MM] MotionManager prepared");
+        NSLog(@"[INFO][MM] MotionManager prepared.");
         }
     return self;
 }
@@ -285,7 +285,7 @@
     NSLog(@"[INFO][MM] Notification \"startAccelerometers\" recived.");
     // Make sure the accelerometer hardware is available.
     if (self.isAccelerometerAvailable) {
-        NSLog(@"[INFO][MM] Accelerometer avalible");
+        NSLog(@"[INFO][MM] Accelerometer avalible.");
         self.accelerometerUpdateInterval = [t doubleValue];
         [self startAccelerometerUpdates];
         if (self.tr == nil){
@@ -301,9 +301,9 @@
             [[NSRunLoop currentRunLoop] addTimer:self.tr forMode:NSDefaultRunLoopMode];
         }
     } else {
-        NSLog(@"[ERROR][MM] Accelerometer not avalible");
+        NSLog(@"[ERROR][MM] Accelerometer not avalible.");
     }
-    NSLog(@"[INFO][MM] Accelerometer started");
+    NSLog(@"[INFO][MM] Accelerometer started.");
 }
 
 /*!
@@ -316,7 +316,7 @@
     [self.tr invalidate];
     self.tr = nil;
     [self stopAccelerometerUpdates];
-    NSLog(@"[INFO][MM] Accelerometer stopped");
+    NSLog(@"[INFO][MM] Accelerometer stopped.");
 }
 
 /*!
@@ -328,7 +328,7 @@
     NSLog(@"[INFO][MM] Notification \"startGyroscopes\" recived.");
     // Make sure the gyroscope hardware is available.
     if (self.isGyroAvailable) {
-        NSLog(@"[INFO][MM] Gyroscope avalible");
+        NSLog(@"[INFO][MM] Gyroscope avalible.");
         self.gyroUpdateInterval = [t doubleValue];
         [self startGyroUpdates];
         
@@ -345,9 +345,9 @@
             [[NSRunLoop currentRunLoop] addTimer:self.tr forMode:NSDefaultRunLoopMode];
         }
     } else {
-        NSLog(@"[ERROR][MM] Gyroscope not avalible");
+        NSLog(@"[ERROR][MM] Gyroscope not avalible.");
     }
-    NSLog(@"[INFO][MM] Gyroscope started");
+    NSLog(@"[INFO][MM] Gyroscope started.");
 }
 
 /*!
@@ -360,7 +360,7 @@
     [self.tr invalidate];
     self.tr = nil;
     [self stopGyroUpdates];
-    NSLog(@"[INFO] Gyroscope stopped");
+    NSLog(@"[INFO] Gyroscope stopped.");
 }
 
 /*!
@@ -1061,10 +1061,10 @@
                           andWithCredentialsUserDic:credentialsUserDic];
             }
             
-            NSLog(@"[INFO][MM] Generated locations:");
+            NSLog(@"[INFO][MM] Generated locations:.");
             NSLog(@"[INFO][MM]  -> %@", [sharedData fromItemDataGetLocatedItemsByUser:userDic
                                                                 andCredentialsUserDic:credentialsUserDic]);
-            NSLog(@"[INFO][MM] Generated measures:");
+            NSLog(@"[INFO][MM] Generated measures:.");
             NSLog(@"[INFO][MM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
             
             // Ask view controller to refresh the canvas

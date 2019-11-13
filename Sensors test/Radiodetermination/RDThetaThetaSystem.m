@@ -96,7 +96,7 @@
  */
 - (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithPrecisions:(NSDictionary *)precisions
 {
-    NSLog(@"[INFO][TT] Start locating positions");
+    NSLog(@"[INFO][TT] Start locating positions.");
     if (!sharedData) {
     }
     // Check the access to data shared collections
@@ -214,7 +214,7 @@
             // Finally, calculus for this UUID is only performed if there are more than two heading measures
             if (measuredHeadings.count > 2) {
                 
-                NSLog(@"[INFO][TT] Final calculus");
+                NSLog(@"[INFO][TT] Final calculus.");
                 // In this aproximate calculus, one of the trigonometrical equation got from the measures is solved with another one, this second with aother third, etc., in pairs, and then calculated the barycenter of the results. The selection criteria of this first, second, third... equations is to order from the lowest to the higest, and thus the dilution of precision is minimized; convergence problems appears if not.
                 
                 // Order the measures; search for the min of the set, save it and search for the min of the rest that are greater than the saved one, and so on.
@@ -445,7 +445,7 @@
             // Finally, calculus is only performed if there are more than two UUID, positions and measures.
             if (itemsUUIDwithMeasuresOfThisDeviceUUID > 2) {
                 
-                NSLog(@"[INFO][TT] Final calculus");
+                NSLog(@"[INFO][TT] Final calculus.");
                 // In this aproximate calculus, one of the trigonometrical equation got from the measures is solved with another one, this second with aother third, etc., in pairs, and then calculated the barycenter of the results. The selection criteria of this first, second, third... equations is to order from the lowest to the higest, and thus the dilution of precision is minimized; convergence problems appears if not.
                 
                 // Order the measures; search for the min of the set, save it and search for the min of the rest that are greater than the saved one, and so on.
@@ -592,7 +592,7 @@
             NSLog(@"[ERROR][TT] Theta theta type system called when in a theta theta mode.");
         }
         
-        NSLog(@"[INFO][TT] Finish Radiolocating beacons");
+        NSLog(@"[INFO][TT] Finish Radiolocating beacons.");
     }
     
     return locatedPositions;

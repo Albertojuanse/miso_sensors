@@ -37,17 +37,17 @@
                                                                       andCredentialsUserDic:credentialsUserDic];
     NSMutableDictionary * itemChosenByUserAsDevicePosition;
     if (itemsChosenByUser.count == 0) {
-        NSLog(@"[ERROR][VCRTM] The collection with the items chosen by user is empty; no device position provided");
+        NSLog(@"[ERROR][VCRTM] The collection with the items chosen by user is empty; no device position provided.");
     } else {
         itemChosenByUserAsDevicePosition = [itemsChosenByUser objectAtIndex:0];
         if (itemsChosenByUser.count > 1) {
-            NSLog(@"[ERROR][VCRTM] The collection with the items chosen by user have more than one item; the first one is set as device position");
+            NSLog(@"[ERROR][VCRTM] The collection with the items chosen by user have more than one item; the first one is set as device position.");
         }
     }
     if (itemChosenByUserAsDevicePosition) {
         RDPosition * position = itemChosenByUserAsDevicePosition[@"position"];
         if (!position) {
-            NSLog(@"[ERROR][VCRTM] No position was found in the item chosen by user as device position; (0,0,0) is set");
+            NSLog(@"[ERROR][VCRTM] No position was found in the item chosen by user as device position; (0,0,0) is set.");
             position = [[RDPosition alloc] init];
             position.x = [NSNumber numberWithFloat:0.0];
             position.y = [NSNumber numberWithFloat:0.0];

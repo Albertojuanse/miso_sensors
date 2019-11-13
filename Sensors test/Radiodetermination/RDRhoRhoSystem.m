@@ -209,7 +209,7 @@
  */
 - (NSMutableDictionary *) getLocationsUsingGridAproximationWithPrecisions:(NSDictionary *)precisions
 {
-    NSLog(@"[INFO][RR] Start radiolocating items");
+    NSLog(@"[INFO][RR] Start radiolocating items.");
     
     // Check the access to data shared collections
     if (
@@ -499,7 +499,7 @@
         NSLog(@"[ERROR][RR] Theta type system called when in a rho rho mode.");
     }
    
-    NSLog(@"[INFO][RR] Finish Radiolocating beacons");
+    NSLog(@"[INFO][RR] Finish Radiolocating beacons.");
     return locatedPositions;
 }
 

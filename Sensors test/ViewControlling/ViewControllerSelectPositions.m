@@ -419,7 +419,7 @@
             
         } else {
             // The itemDic variable is null or NO
-            NSLog(@"[VCMM][ERROR] No items found for showing");
+            NSLog(@"[VCMM][ERROR] No items found for showing.");
             if (indexPath.row == 0) {
                 cell.textLabel.text = @"No items found.";
                 cell.textLabel.textColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:0.2];
