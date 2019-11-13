@@ -562,7 +562,34 @@
             [sharedData inMetamodelDataAddType:newType withCredentialsUserDic:credentialsUserDic]
             )
         {
+            
+            // Once registered in shared data, save it in the device persistant memory
+            // Upload 'areMetamodel'
+            NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+            NSData * areMetamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodel/areMetamodel"];
+            if (areMetamodelData) {
+                [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodel/areMetamodel"];
+            }
+            areMetamodelData = nil; // ARC disposing
+            areMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+            [userDefaults setObject:areMetamodelData forKey:@"es.uam.miso/data/metamodel/areMetamodel"];
+            // Save the type
+            NSData * metamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodel/metamodel"];
+            NSMutableArray * types;
+            if (metamodelData) {
+                types = [NSKeyedUnarchiver unarchiveObjectWithData:metamodelData];
+                NSLog(@"[INFO][VCAB] Metamodel types were found in the device.");
+            } else {
+                NSLog(@"[INFO][VCAB] No metamodel type was found in the device.");
+                types = [[NSMutableArray alloc] init];
+            }
+            [types addObject:newType];
+            metamodelData = nil;  // ARC disposing
+            NSData * newMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:types];
+            [userDefaults setObject:newMetamodelData forKey:@"es.uam.miso/data/metamodel/metamodel"];
+            
             self.textType.text = @"";
+            NSLog(@"[INFO][VCAB] Type created, added to shared data collections and saved in device.");
         } else { // Shared data not acessible
             [self alertUserWithTitle:@"Type won't be registered."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again."]
@@ -623,7 +650,48 @@
             [sharedData inMetamodelDataRemoveItemWithName:typeToRemoveName andCredentialsUserDic:credentialsUserDic]
             )
         {
+            // Once removed in shared data, remove it from the device persistant memory
+            NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+            NSData * metamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodel/metamodel"];
+            NSMutableArray * types;
+            if (metamodelData) {
+                types = [NSKeyedUnarchiver unarchiveObjectWithData:metamodelData];
+                NSLog(@"[INFO][VCAB] Metamodel types were found in the device.");
+            } else {
+                NSLog(@"[ERROR][VCAB] No metamodel type was found in the device.");
+            }
+            
+            // [1] Upload 'areMetamodel'
+            NSData * areMetamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodel/areMetamodel"];
+            if (areMetamodelData) {
+                [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodel/areMetamodel"];
+            }
+            // [2] Remove old metamodel and save the new one
+            areMetamodelData = nil; // ARC disposing
+            if (types) {
+                // [2] Remove old metamodel and save the new one
+                [types removeObject:typeToRemove];
+                metamodelData = nil;  // ARC disposing
+                NSData * newMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:types];
+                [userDefaults setObject:newMetamodelData forKey:@"es.uam.miso/data/metamodel/metamodel"];
+                
+                // [1] Upload 'areMetamodel'
+                if (types.count == 0) {
+                    areMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:@"NO"];
+                } else {
+                    areMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+                }
+            } else {
+                // [1] Upload 'areMetamodel'
+                areMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:@"NO"];
+            }
+            // [1] Upload 'areMetamodel'
+            [userDefaults setObject:areMetamodelData forKey:@"es.uam.miso/data/metamodel/areMetamodel"];
+            
+            
+            
             self.textType.text = @"";
+            NSLog(@"[INFO][VCAB] Type removed from shared data collections and from device.");
         } else { // Type not found
             [self alertUserWithTitle:@"Type won't be removed."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again."]
