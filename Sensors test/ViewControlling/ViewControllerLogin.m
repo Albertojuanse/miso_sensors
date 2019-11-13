@@ -241,7 +241,7 @@
 {
     // Checks the saved data
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    NSData * data = [userDefaults objectForKey:@"security/credentials/areUsers"];
+    NSData * data = [userDefaults objectForKey:@"es.uam.miso/security/credentials/areUsers"];
     NSString * areUsers = [NSKeyedUnarchiver unarchiveObjectWithData:data];
     if (areUsers) {
         if ([areUsers isEqualToString:@"NO"]) {
@@ -266,7 +266,7 @@
     // Checks the saved data
     NSInteger numberOfUsers = 0;
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    NSData * loadedUserData = [userDefaults objectForKey:@"security/credentials/numberOfUsers"];
+    NSData * loadedUserData = [userDefaults objectForKey:@"es.uam.miso/security/credentials/numberOfUsers"];
     if (loadedUserData) {
         NSString * numberOfUsersString = [NSKeyedUnarchiver unarchiveObjectWithData:loadedUserData];
         numberOfUsers = [numberOfUsersString integerValue];
@@ -287,7 +287,7 @@
         NSLog(@"[INFO][VCL] Validating user named %@", userDic[@"name"]);
         // Retrieve its data
         NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-        NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"name"]];
+        NSString * key = [@"es.uam.miso/security/credentials/users/" stringByAppendingString:userDic[@"name"]];
         NSData * loadedUserData = [userDefaults objectForKey:key];
         if (loadedUserData) {
             NSMutableDictionary * loadedUserDic = [NSKeyedUnarchiver unarchiveObjectWithData:loadedUserData];
@@ -320,7 +320,7 @@
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
     NSLog(@"[INFO][VCL] Validating new user named %@", userDic[@"name"]);
     // Retrieve its data
-    NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"name"]];
+    NSString * key = [@"es.uam.miso/security/credentials/users/" stringByAppendingString:userDic[@"name"]];
     NSData * loadedUserData = [userDefaults objectForKey:key];
     if (loadedUserData) {
         // It exists
@@ -341,7 +341,7 @@
     // User name was validated before and registration is allowed
     // Prepare the data to save...
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"name"]];
+    NSString * key = [@"es.uam.miso/security/credentials/users/" stringByAppendingString:userDic[@"name"]];
     NSMutableDictionary * saveDic = [[NSMutableDictionary alloc] init];
     saveDic[@"name"] = userDic[@"name"];
     saveDic[@"pass"] = userDic[@"pass"];
@@ -349,15 +349,15 @@
     // ...save it...
     [userDefaults setObject:dataSaveDic forKey:key];
     // ...and set users avalible and the number of them
-    NSData * areUsersData = [userDefaults objectForKey:@"security/credentials/areUsers"];
+    NSData * areUsersData = [userDefaults objectForKey:@"es.uam.miso/security/credentials/areUsers"];
     if (areUsersData) {
-        [userDefaults removeObjectForKey:@"security/credentials/areUsers"];
+        [userDefaults removeObjectForKey:@"es.uam.miso/security/credentials/areUsers"];
         
     }
     NSData * areUsersDataNew = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-    [userDefaults setObject:areUsersDataNew forKey:@"security/credentials/areUsers"];
+    [userDefaults setObject:areUsersDataNew forKey:@"es.uam.miso/security/credentials/areUsers"];
     
-    NSData * numberOfUsersData = [userDefaults objectForKey:@"security/credentials/numberOfUsers"];
+    NSData * numberOfUsersData = [userDefaults objectForKey:@"es.uam.miso/security/credentials/numberOfUsers"];
     NSString * numberOfUsersString;
     if (numberOfUsersData) {
         numberOfUsersString = [NSKeyedUnarchiver unarchiveObjectWithData:numberOfUsersData];
@@ -368,7 +368,7 @@
         numberOfUsersString = [[NSNumber numberWithInteger:1] stringValue];
     }
     NSData * numberOfUsersDataNew = [NSKeyedArchiver archivedDataWithRootObject:numberOfUsersString];
-    [userDefaults setObject:numberOfUsersDataNew forKey:@"security/credentials/numberOfUsers"];
+    [userDefaults setObject:numberOfUsersDataNew forKey:@"es.uam.miso/security/credentials/numberOfUsers"];
     
     NSLog(@"[INFO][VCL] New user registered.");
     return YES;
@@ -382,7 +382,7 @@
 {
     // Search for data to delete...
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    NSString * key = [@"security/credentials/users/" stringByAppendingString:userDic[@"name"]];
+    NSString * key = [@"es.uam.miso/security/credentials/users/" stringByAppendingString:userDic[@"name"]];
     NSData * dataSaveDic = [userDefaults objectForKey:key];
     if (dataSaveDic) {
         // It exists, delete it
@@ -391,7 +391,7 @@
         
         // ...and set users avalible and the number of them
         
-        NSData * numberOfUsersData = [userDefaults objectForKey:@"security/credentials/numberOfUsers"];
+        NSData * numberOfUsersData = [userDefaults objectForKey:@"es.uam.miso/security/credentials/numberOfUsers"];
         NSString * numberOfUsersString;
         NSInteger numberOfUsers;
         if (numberOfUsersData) {
@@ -404,23 +404,23 @@
             numberOfUsers = 0;
         }
         NSData * numberOfUsersDataNew = [NSKeyedArchiver archivedDataWithRootObject:numberOfUsersString];
-        [userDefaults setObject:numberOfUsersDataNew forKey:@"security/credentials/numberOfUsers"];
+        [userDefaults setObject:numberOfUsersDataNew forKey:@"es.uam.miso/security/credentials/numberOfUsers"];
         
         if (numberOfUsers == 0) {
-            NSData * areUsersData = [userDefaults objectForKey:@"security/credentials/areUsers"];
+            NSData * areUsersData = [userDefaults objectForKey:@"es.uam.miso/security/credentials/areUsers"];
             if (areUsersData) {
-                [userDefaults removeObjectForKey:@"security/credentials/areUsers"];
+                [userDefaults removeObjectForKey:@"es.uam.miso/security/credentials/areUsers"];
             }
             NSData * areUsersDataNew = [NSKeyedArchiver archivedDataWithRootObject:@"NO"];
-            [userDefaults setObject:areUsersDataNew forKey:@"security/credentials/areUsers"];
+            [userDefaults setObject:areUsersDataNew forKey:@"es.uam.miso/security/credentials/areUsers"];
             NSLog(@"[INFO][VCL] User deleted; no users left in the system.");
         } else {
-            NSData * areUsersData = [userDefaults objectForKey:@"security/credentials/areUsers"];
+            NSData * areUsersData = [userDefaults objectForKey:@"es.uam.miso/security/credentials/areUsers"];
             if (areUsersData) {
-                [userDefaults removeObjectForKey:@"security/credentials/areUsers"];
+                [userDefaults removeObjectForKey:@"es.uam.miso/security/credentials/areUsers"];
             }
             NSData * areUsersDataNew = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-            [userDefaults setObject:areUsersDataNew forKey:@"security/credentials/areUsers"];
+            [userDefaults setObject:areUsersDataNew forKey:@"es.uam.miso/security/credentials/areUsers"];
             NSLog(@"[INFO][VCL] User deleted; there are some users left in the system.");
         }
         return YES;
