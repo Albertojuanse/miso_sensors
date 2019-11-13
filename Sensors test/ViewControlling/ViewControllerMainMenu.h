@@ -50,6 +50,7 @@
     // Login
     BOOL userDidAskLogOut;
     BOOL userDidAskSignOut;
+    BOOL userDidLogIn;
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *tableModes;
