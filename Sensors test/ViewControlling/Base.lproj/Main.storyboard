@@ -179,6 +179,13 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rcc-iK-FNe">
+                                        <rect key="frame" x="620" y="523" width="62" height="30"/>
+                                        <state key="normal" title="Calibrate"/>
+                                        <connections>
+                                            <action selector="handleButonCalibrate:" destination="lVP-jp-YaV" eventType="touchUpInside" id="6vz-4i-e79"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -189,6 +196,7 @@
                                     <constraint firstAttribute="trailing" secondItem="Zp0-zM-RWh" secondAttribute="trailing" constant="32" id="5ke-BY-6Uv"/>
                                     <constraint firstAttribute="trailing" secondItem="UMS-xX-nJw" secondAttribute="trailing" constant="32" id="6AR-eR-pxg"/>
                                     <constraint firstItem="pMp-QA-YHA" firstAttribute="top" secondItem="Nro-qx-VM6" secondAttribute="top" constant="55" id="BTa-to-rrl"/>
+                                    <constraint firstItem="Zp0-zM-RWh" firstAttribute="centerY" secondItem="rcc-iK-FNe" secondAttribute="centerY" id="CGE-aG-k03"/>
                                     <constraint firstItem="PxJ-qY-PCa" firstAttribute="top" secondItem="Nro-qx-VM6" secondAttribute="top" constant="8" id="Gk5-dV-Uyc"/>
                                     <constraint firstItem="RbC-qr-Qzv" firstAttribute="top" secondItem="XAd-5l-cgu" secondAttribute="bottom" constant="16" id="SKc-cm-30z"/>
                                     <constraint firstItem="qvM-wf-f09" firstAttribute="top" secondItem="Nro-qx-VM6" secondAttribute="top" constant="8" id="aq3-W1-6TQ"/>
@@ -207,6 +215,7 @@
                                     <constraint firstItem="XAd-5l-cgu" firstAttribute="top" secondItem="dwG-Vz-UA7" secondAttribute="bottom" constant="8" id="tIo-N6-iiQ"/>
                                     <constraint firstItem="dwG-Vz-UA7" firstAttribute="leading" secondItem="Nro-qx-VM6" secondAttribute="leading" constant="32" id="tVS-PF-VRP"/>
                                     <constraint firstItem="RbC-qr-Qzv" firstAttribute="leading" secondItem="Nro-qx-VM6" secondAttribute="leading" constant="32" id="uv9-0o-dq9" userLabel="Table Beacons.leading = Main.leading + 32"/>
+                                    <constraint firstItem="Zp0-zM-RWh" firstAttribute="leading" secondItem="rcc-iK-FNe" secondAttribute="trailing" constant="32" id="zXV-uO-Vsz"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -220,6 +229,7 @@
                         <viewLayoutGuide key="safeArea" id="55H-Nm-isb"/>
                     </view>
                     <connections>
+                        <outlet property="calibrateButton" destination="rcc-iK-FNe" id="Da5-nI-dlS"/>
                         <outlet property="loginText" destination="qvM-wf-f09" id="jku-NG-MkC"/>
                         <outlet property="tableItems" destination="RbC-qr-Qzv" id="aHP-09-xlO"/>
                         <outlet property="tableModes" destination="YnX-CR-lc7" id="ysR-ld-hYb"/>

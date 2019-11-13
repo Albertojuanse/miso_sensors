@@ -56,6 +56,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableModes;
 @property (weak, nonatomic) IBOutlet UITableView *tableItems;
 @property (weak, nonatomic) IBOutlet UILabel *loginText;
+@property (weak, nonatomic) IBOutlet UIButton *calibrateButton;
 
 
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;

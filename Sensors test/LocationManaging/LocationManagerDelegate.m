@@ -93,6 +93,10 @@
                                                  selector:@selector(reset:)
                                                      name:@"reset"
                                                    object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(calibration:)
+                                                     name:@"calibration"
+                                                   object:nil];
         
         NSLog(@"[INFO][LM] LocationManager prepared.");
     }
@@ -932,6 +936,21 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         
         // Components
         [sharedData resetWithCredentialsUserDic:credentialsUserDic];
+    }
+}
+
+/*!
+ @method calibration:
+ @discussion Setter of current position of the device using observer pattern.
+ */
+- (void) calibration:(NSNotification *) notification
+{
+    if ([[notification name] isEqualToString:@"calibration"]){
+        NSLog(@"[NOTI][LM] Notification \"calibration\" recived.");
+        
+        NSDictionary * data = notification.userInfo;
+        NSString * calibrationUUID = data[@"uuid"];
+        NSLog(@"The user asked to calibrate the iBeacon %@", calibrationUUID);
     }
 }
 

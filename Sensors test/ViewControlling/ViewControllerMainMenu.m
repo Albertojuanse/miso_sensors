@@ -447,6 +447,12 @@
         itemPositionIdNumber = [NSNumber numberWithInteger:5];
     }
     
+    // This object must listen to this events
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(calibrationFinished:)
+                                                 name:@"calibrationFinished"
+                                               object:nil];
+    
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableModes.delegate = self;
     self.tableModes.dataSource = self;
@@ -582,6 +588,56 @@
 - (IBAction)handleButonAdd:(id)sender
 {
     [self performSegueWithIdentifier:@"fromMainToAdd" sender:sender];
+}
+
+/*!
+ @method handleButtonCalibrate:
+ @discussion This method handles the Calibrate button action and ask the Location Manager to do so.
+ */
+- (IBAction)handleButonCalibrate:(id)sender
+{
+    // Register the current mode
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // Get the item chosen by user; only beacons can be calibrated
+        NSMutableDictionary * itemChosenByUser = [sharedData
+                                                  fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                  andCredentialsUserDic:credentialsUserDic
+                                                  ];
+        if (itemChosenByUser) {
+            
+            NSString * sort = itemChosenByUser[@"sort"];
+            if([sort isEqualToString:@"beacon"]) {
+                // Ask Location manager to calibrate the beacon
+                NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+                // Create a copy of the current position for sending it; concurrence issues prevented
+                NSString * uuidToCalibrate = itemChosenByUser[@"uuid"];
+                [data setObject:uuidToCalibrate forKey:@"currentPosition"];
+                // And send the notification
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"calibration"
+                                                                    object:nil
+                                                                  userInfo:data];
+                NSLog(@"[NOTI][LM] Notification \"calibration\" posted.");
+                [self.calibrateButton setEnabled:NO];
+            }
+            
+        } else {
+            return;
+        }
+        
+    } else {
+        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+    }
+}
+
+/*!
+ @method calibrationFinished
+ @discussion This method handles the event that notifies that the calibration is done; sets the calibration button enabled.
+ */
+- (void)calibrationFinished:(NSNotification *) notification {
+    [self.calibrateButton setEnabled:YES];
 }
 
 - (IBAction)handleButonStart:(id)sender
