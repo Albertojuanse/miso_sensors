@@ -614,7 +614,7 @@
                 NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
                 // Create a copy of the current position for sending it; concurrence issues prevented
                 NSString * uuidToCalibrate = itemChosenByUser[@"uuid"];
-                [data setObject:uuidToCalibrate forKey:@"currentPosition"];
+                [data setObject:uuidToCalibrate forKey:@"uuid"];
                 // And send the notification
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"calibration"
                                                                     object:nil

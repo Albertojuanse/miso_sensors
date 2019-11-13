@@ -36,6 +36,10 @@
     RDPosition * position;  // Current position of device
     NSNumber * lastHeadingPosition;
     BOOL isItemChosenByUserRanged;
+    BOOL calibrating;
+    NSInteger calibrationStep;
+    NSNumber * calibrationYvalue;
+    NSNumber * calibrationYvalueAccumulation;
     
     // Data store
     NSMutableArray * monitoredRegions;

@@ -266,7 +266,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
     // Start ranging
     [manager startRangingBeaconsInRegion:region];
     
-    NSLog(@"[INFO][LM] Device ranged a region:.");
+    NSLog(@"[INFO][LM] Device ranged a region:");
     NSLog(@"[INFO][LM] -> %@", [[region proximityUUID] UUIDString]);
     //NSLog([NSString stringWithFormat:@"[INFO] Device ranged a region: %@", [[region proximityUUID] UUIDString]]);
 }
@@ -278,7 +278,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 - (void)locationManager:(CLLocationManager *)manager
 rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
               withError:(NSError *)error {
-    NSLog(@"[ERROR][LM] Device failed in raging a region:.");
+    NSLog(@"[ERROR][LM] Device failed in raging a region:");
     NSLog(@"[ERROR][LM] -> %@", [[region proximityUUID] UUIDString]);
 }
 
@@ -310,6 +310,87 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         return;
     }
     
+    if (beacons.count > 0) {
+        // If in calibration routine
+        if (calibrating) {
+            
+            NSLog(@"[INFO][LM] Calibrating.");
+            NSNumber * targetValue = [NSNumber numberWithFloat:1.0];
+            NSInteger numberOfSteps = 20;
+            
+            if (calibrationStep > numberOfSteps) {
+                calibrating = NO;
+                calibrationStep = 0;
+                calibrationYvalue = nil;
+                calibrationYvalueAccumulation = nil;
+                
+                // Do something with them or it will be saved in some Ipad's buffering queue and appear later.
+                for (CLBeacon *beacon in beacons) {
+                    NSString * uuid = [[beacon proximityUUID] UUIDString];
+                    uuid = nil; // ARC dispose
+                    NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
+                    rssi = nil;
+                }
+                
+                // Instance variables
+                isItemChosenByUserRanged = NO;
+                // Delete registered regions and heading updates
+                for(CLBeaconRegion * region in  locationManager.monitoredRegions){
+                    [locationManager stopMonitoringForRegion:region];
+                    [locationManager stopRangingBeaconsInRegion:region];
+                }
+                [locationManager stopUpdatingHeading];
+                monitoredRegions = nil; // For ARC disposing
+                // Notify menu that calibration is finished.
+                NSLog(@"[NOTI][LM] Notification \"calibrationFinished\" posted.");
+                [[NSNotificationCenter defaultCenter]
+                 postNotificationName:@"calibrationFinished"
+                 object:nil];
+                
+            } else {
+                // Calibrate
+                if (beacons.count > 1) {
+                    NSLog(@"[ERROR][LM] Calibrating more tha one beacon.");
+                }
+                CLBeacon * beacon = [beacons objectAtIndex:0];
+                NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
+                NSNumber * rawRSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue]];
+                NSNumber * RSSIdistance = [NSNumber numberWithFloat:[rawRSSIdistance floatValue] * [calibrationYvalue floatValue]];
+                
+                // Set a threshold for near to zero measures
+                if ([rawRSSIdistance floatValue] > 0.2) {
+                    NSLog(@"[INFO][LM] Calibrating RSSI value %.3f", [rssi floatValue]);
+                    NSLog(@"[INFO][LM] -> from raw distance: %.3f", [rawRSSIdistance floatValue]);
+                    NSLog(@"[INFO][LM] -> to distance: %.3f", [RSSIdistance floatValue]);
+                    NSLog(@"[INFO][LM] -> with calibration ratio: %.3f", [calibrationYvalue floatValue]);
+                    
+                    // If the value is greater than the target one, reduce it; if not, increase it
+                    if ([RSSIdistance floatValue] > [targetValue floatValue]) {
+                        
+                        // optimization -> error = ( measured_value ) / ( desired_value )
+                        NSNumber * diff = [NSNumber numberWithFloat:[RSSIdistance floatValue] - [targetValue floatValue]];
+                        NSNumber * relative_error = [NSNumber numberWithFloat:[targetValue floatValue]/[diff floatValue]];
+                        calibrationYvalueAccumulation = [NSNumber numberWithFloat:[calibrationYvalueAccumulation floatValue]
+                                                         + [relative_error floatValue]];
+                        NSNumber * calibrationStepFloat = [NSNumber numberWithInteger:calibrationStep];
+                        calibrationYvalue = [NSNumber numberWithFloat:
+                                             [calibrationYvalueAccumulation floatValue] / [calibrationStepFloat floatValue]
+                                             ];
+                    } else {
+                        NSNumber * diff = [NSNumber numberWithFloat:[targetValue floatValue] - [RSSIdistance floatValue]];
+                        calibrationYvalue = [NSNumber numberWithFloat:
+                                             ([targetValue floatValue])
+                                             /
+                                             ([RSSIdistance floatValue] - [diff floatValue]/2.0)
+                                             ];
+                    }
+                    calibrationStep++;
+                }
+            }
+            return;
+        }
+    }
+    
     // Different behave depending on the current state
     // If app is measuring the device user
     if ([sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic]) {
@@ -338,8 +419,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     measurePosition.z = position.z;
                     
                     // TO DO. Calibration. Alberto J.
-                    NSInteger calibration = -30;
-                    NSNumber * RSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue] + calibration];
+                    NSNumber * rawRSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue]];
+                    NSNumber * RSSIdistance = [NSNumber numberWithFloat:[rawRSSIdistance floatValue] * [calibrationYvalue floatValue]];
                     
                     NSMutableDictionary * locatedPositions;
                     
@@ -449,12 +530,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                                     withInfoDic:infoDic
                                       andWithCredentialsUserDic:credentialsUserDic];
                         }
-                        NSLog(@"[INFO][LM] Generated locations:.");
+                        NSLog(@"[INFO][LM] Generated locations:");
                         NSLog(@"[INFO][LM]  -> %@",  [sharedData fromItemDataGetLocatedItemsByUser:userDic
                                                                              andCredentialsUserDic:credentialsUserDic]);
                         
                     }
-                    NSLog(@"[INFO][LM] Generated measures:.");
+                    NSLog(@"[INFO][LM] Generated measures:");
                     NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
                     
                 }
@@ -641,10 +722,10 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                           andWithCredentialsUserDic:credentialsUserDic];
             }
             
-            NSLog(@"[INFO][LM] Generated locations:.");
+            NSLog(@"[INFO][LM] Generated locations:");
             NSLog(@"[INFO][LM]  -> %@", [sharedData fromItemDataGetLocatedItemsByUser:userDic
                                                                 andCredentialsUserDic:credentialsUserDic]);
-            NSLog(@"[INFO][LM] Generated measures:.");
+            NSLog(@"[INFO][LM] Generated measures:");
             NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
             
         }
@@ -797,7 +878,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                         [monitoredRegions addObject:region];
                         
                         [locationManager startRangingBeaconsInRegion:region];
-                        NSLog(@"[INFO][LM] Device monitorizes a region:.");
+                        NSLog(@"[INFO][LM] Device monitorizes a region:");
                         NSLog(@"[INFO][LM] -> %@", [[region proximityUUID] UUIDString]);
                         
                         // But if its position is loaded, the user wants to use it to locate itself against them
@@ -951,7 +1032,183 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         NSDictionary * data = notification.userInfo;
         NSString * calibrationUUID = data[@"uuid"];
         NSLog(@"The user asked to calibrate the iBeacon %@", calibrationUUID);
+        
+        // Register them if it is posible.
+        switch (CLLocationManager.authorizationStatus) {
+            case kCLAuthorizationStatusNotDetermined:
+                // Request authorization initially
+                NSLog(@"[ERROR][LM] Authorization is still not known.");
+                
+            case kCLAuthorizationStatusRestricted:
+                // Disable location features
+                NSLog(@"[ERROR][LM] User still restricts localization services.");
+                break;
+                
+            case kCLAuthorizationStatusDenied:
+                // Disable location features
+                NSLog(@"[ERROR][LM] User still doesn't allow localization services.");
+                break;
+                
+            case kCLAuthorizationStatusAuthorizedAlways:
+                // Enable location features
+                NSLog(@"[INFO][LM] User still allows 'always' localization services.");
+                break;
+                
+            case kCLAuthorizationStatusAuthorizedWhenInUse:
+                // Enable location features
+                NSLog(@"[INFO][LM] User still allows 'when-in-use' localization services.");
+                break;
+                
+            default:
+                break;
+        }
+        
+        // Error managment
+        if ([CLLocationManager locationServicesEnabled]) {
+            NSLog(@"[INFO][LM] Location services still enabled.");
+        }else{
+            NSLog(@"[ERROR][LM] Location services still not enabled.");
+        }
+        
+        if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]]) {
+            NSLog(@"[INFO][LM] Monitoring still avalible for class CLBeaconRegion.");
+        }else{
+            NSLog(@"[ERROR][LM] Monitoring still not avalible for class CLBeaconRegion.");
+        }
+        
+        if ([CLLocationManager isRangingAvailable]) {
+            NSLog(@"[INFO][LM] Ranging still avalible.");
+        }else{
+            NSLog(@"[ERROR][LM] Ranging still not avalible.");
+        }
+        
+        if ([CLLocationManager headingAvailable]) {
+            NSLog(@"[INFO][LM] Heading avalible.");
+        }else{
+            NSLog(@"[ERROR][LM] Heading not avalible.");
+        }
+        
+        // Validate the access to the data shared collection
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            
+        } else {
+            /*
+             [self alertUserWithTitle:@"Beacon ranged won't be procesed."
+             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
+             andHandler:^(UIAlertAction * action) {
+             // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+             }
+             ];
+             */
+            NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting measuring.");
+            return;
+        }
+        
+        // Search for the item that the user wants to calibrate
+        NSMutableArray * itemsToCalibrate = [sharedData fromItemDataGetItemsWithUUID:calibrationUUID
+                                                               andCredentialsUserDic:credentialsUserDic];
+        if (itemsToCalibrate.count == 0) {
+            NSLog(@"[ERROR][LM] No item found for UUID %@ when calibrating.", calibrationUUID);
+            // Instance variables
+            isItemChosenByUserRanged = NO;
+            
+            // Delete registered regions and heading updates
+            for(CLBeaconRegion * region in  locationManager.monitoredRegions){
+                [locationManager stopMonitoringForRegion:region];
+                [locationManager stopRangingBeaconsInRegion:region];
+            }
+            [locationManager stopUpdatingHeading];
+            monitoredRegions = nil; // For ARC disposing
+            // Notify menu that calibration is finished.
+            NSLog(@"[NOTI][LM] Notification \"calibrationFinished\" posted.");
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"calibrationFinished"
+             object:nil];
+            return;
+        }
+        if (itemsToCalibrate.count > 1) {
+            NSLog(@"[ERROR][LM] More than one item found with UUID %@ when calibrating.", calibrationUUID);
+        }
+        
+        NSMutableDictionary * itemToCalibrate = [itemsToCalibrate objectAtIndex:0];
+        monitoredRegions = [[NSMutableArray alloc] init];
+        
+        // If using location services is allowed
+        if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
+           CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
+            
+            // Resgiter the region to be calibrated
+            
+            // Could be a position or a beacon
+            if ([@"beacon" isEqualToString:itemToCalibrate[@"sort"]]) {
+                NSInteger major = [itemToCalibrate[@"major"] integerValue];
+                NSInteger minor = [itemToCalibrate[@"minor"] integerValue];
+                NSString * identifier = itemToCalibrate[@"identifier"];
+                
+                // Create a NSUUID with proximity UUID of the broadcasting beacons
+                NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:calibrationUUID];
+                
+                // Setup searching region with proximity UUID as the broadcasting beacon
+                CLBeaconRegion * region = [[CLBeaconRegion alloc] initWithProximityUUID:uuid major:major minor:minor identifier:identifier];
+                [monitoredRegions addObject:region];
+                
+                [locationManager startRangingBeaconsInRegion:region];
+                
+                calibrating = YES;
+                calibrationStep = 0;
+                calibrationYvalue = [NSNumber numberWithFloat:1.0];
+                calibrationYvalueAccumulation = [NSNumber numberWithFloat:0.0];
+                
+                NSLog(@"[INFO][LM] Device calibrating with the iBeacon:");
+                NSLog(@"[INFO][LM] -> %@", [[region proximityUUID] UUIDString]);
+            }
+        } else {
+            NSLog(@"[ERROR][LM] Trying to calibrate not a beacon.");
+            // Notify menu that calibration is finished.
+            // Instance variables
+            isItemChosenByUserRanged = NO;
+            
+            // Delete registered regions and heading updates
+            for(CLBeaconRegion * region in  locationManager.monitoredRegions){
+                [locationManager stopMonitoringForRegion:region];
+                [locationManager stopRangingBeaconsInRegion:region];
+            }
+            [locationManager stopUpdatingHeading];
+            monitoredRegions = nil; // For ARC disposing
+            NSLog(@"[NOTI][LM] Notification \"calibrationFinished\" posted.");
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"calibrationFinished"
+             object:nil];
+            return;
+        }
+        NSLog(@"[INFO][LM] Start calibrating with UUID %@", calibrationUUID);
+        
+    }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied ||
+              CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted){
+        // If is not allowed to use location services, delete registered regions and heading updates
+        for(CLBeaconRegion * region in  locationManager.monitoredRegions){
+            [locationManager stopMonitoringForRegion:region];
+            [locationManager stopRangingBeaconsInRegion:region];
+        }
+        [locationManager stopUpdatingHeading];
+        monitoredRegions = nil; // For ARC disposing
     }
 }
 
+- (void) stopLocatingRoutine {
+    // Instance variables
+    isItemChosenByUserRanged = NO;
+    
+    // Delete registered regions and heading updates
+    for(CLBeaconRegion * region in  locationManager.monitoredRegions){
+        [locationManager stopMonitoringForRegion:region];
+        [locationManager stopRangingBeaconsInRegion:region];
+    }
+    [locationManager stopUpdatingHeading];
+    monitoredRegions = nil; // For ARC disposing
+    monitoredPositions = nil;
+}
 @end
