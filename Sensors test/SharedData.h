@@ -228,6 +228,10 @@
 - (BOOL)fromModelDataIsModelWithName:(NSString *)name
               withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
+// General setters
+- (BOOL)setItemsData:(NSMutableArray *)givenItemsData
+withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+
 // Specific user data setters
 - (BOOL) inUserDataSetUsedDic:(NSMutableDictionary *)givenUserDic
        withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;

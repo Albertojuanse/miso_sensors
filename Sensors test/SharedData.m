@@ -2243,6 +2243,30 @@
     }
 }
 
+#pragma mark - General setters
+/*
+ @method setItemsData:withCredentialsUserDic:
+ @discussion This method sets the user data collection if it is empty and return YES if so; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+*/
+- (BOOL)setItemsData:(NSMutableArray *)givenItemsData
+withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        if (itemsData.count == 0) {
+            itemsData = nil; // ARC disposal
+            itemsData = givenItemsData;
+            return YES;
+        } else {
+            return NO;
+        }
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
+}
+
+
 #pragma mark - User data specific setters
 //                // USER DATA //
 //

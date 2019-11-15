@@ -246,8 +246,24 @@
         // Retrieve or create each category of information
         if (areItemsData && areItems && [areItems isEqualToString:@"YES"]) {
             // Existing saved data
+            // Retrieve the items using the index and save them in shared data
             
-            // NSLog(@"[INFO][VCMM] %tu items found in device.", types.count);
+            // Get the index...
+            NSData * itemsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/items/index"];
+            NSMutableArray * itemsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:itemsIndexData];
+            // ...and retrieve each item
+            NSMutableArray * items = [[NSMutableArray alloc] init];
+            for (NSString * itemIdentifier in itemsIndex) {
+                NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
+                NSData * itemData = [userDefaults objectForKey:itemKey];
+                NSMutableDictionary * itemDic = [NSKeyedUnarchiver unarchiveObjectWithData:itemData];
+                [items addObject:itemDic];
+            }
+        
+            // Set them as items data in data shared
+            [sharedData setItemsData:items withCredentialsUserDic:credentialsUserDic];
+            
+            NSLog(@"[INFO][VCMM] %tu items found in device.", items.count);
         } else {
             // No saved data
             
@@ -370,26 +386,38 @@
                                                                andWithCredentialsUserDic:credentialsUserDic];
                 
                 // Save them in persistent memory
+                // TO DO: Assign items by user. Alberto J. 15/11/2019.
+                // Now there are items
                 areItemsData = nil; // ARC disposing
                 areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
                 [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
                 
-                NSMutableArray * allSavedItems = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
-                NSData * itemsData = [NSKeyedArchiver archivedDataWithRootObject:allSavedItems];
-                for (NSMutableDictionary * item in allSavedItems) {
-                    
-                    
-                }
-                    
-                    
-                [userDefaults setObject:itemsData forKey:@"es.uam.miso/data/items/items/"];
+                // Create de index in which names if items will be saved for retrieve them later
+                NSMutableArray * itemsIndex = [[NSMutableArray alloc] init];
                 
-                NSLog(@"[INFO][VCMM] No metamodel found in device; demo metamodel saved.");
+                NSMutableArray * allSavedItems = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
+                // For every item saved, create a NSData for it, save it using its name and save the name in the index...
+                for (NSMutableDictionary * item in allSavedItems) {
+                    // Item's name
+                    NSString * itemIdentifier = item[@"identifier"];
+                    // Save the name in the index
+                    [itemsIndex addObject:itemIdentifier];
+                    // Create the item's data and archive it
+                    NSData * itemData = [NSKeyedArchiver archivedDataWithRootObject:item];
+                    NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
+                    [userDefaults setObject:itemData forKey:itemKey];
+                }
+                // ...and save the key
+                NSData * itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
+                [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
+                
                 NSLog(@"[INFO][VCMM] No items found in device; demo items saved.");
             }
             
         }
         if (areMetamodelData && areMetamodel && [areMetamodel isEqualToString:@"YES"]) {
+            // TO DO: Save the types using its name and no in an array. Alberto J. 15/11/2019.
+            // TO DO: Save several metamodels and no only one. Alberto J. 15/11/2019.
             // Existing saved data
             
             // Retrieve the metamodel array
