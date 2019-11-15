@@ -185,6 +185,7 @@
                                  components:components
                                  references:references
                   andWithCredentialsUserDic:credentialsUserDic];
+    NSUserDefaults * userDefaults = ;
     
     // Show the model
     NSMutableArray * model = [sharedData fromModelDataGetModelDicWithName:savingName

@@ -566,15 +566,15 @@
             // Once registered in shared data, save it in the device persistant memory
             // Upload 'areMetamodel'
             NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-            NSData * areMetamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodel/areMetamodel"];
+            NSData * areMetamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/areMetamodels"];
             if (areMetamodelData) {
-                [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodel/areMetamodel"];
+                [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodels/areMetamodels"];
             }
             areMetamodelData = nil; // ARC disposing
             areMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-            [userDefaults setObject:areMetamodelData forKey:@"es.uam.miso/data/metamodel/areMetamodel"];
+            [userDefaults setObject:areMetamodelData forKey:@"es.uam.miso/data/metamodels/areMetamodels"];
             // Save the type
-            NSData * metamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodel/metamodel"];
+            NSData * metamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/metamodel"];
             NSMutableArray * types;
             if (metamodelData) {
                 types = [NSKeyedUnarchiver unarchiveObjectWithData:metamodelData];
@@ -586,7 +586,7 @@
             [types addObject:newType];
             metamodelData = nil;  // ARC disposing
             NSData * newMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:types];
-            [userDefaults setObject:newMetamodelData forKey:@"es.uam.miso/data/metamodel/metamodel"];
+            [userDefaults setObject:newMetamodelData forKey:@"es.uam.miso/data/metamodels/metamodel"];
             
             self.textType.text = @"";
             NSLog(@"[INFO][VCAB] Type created, added to shared data collections and saved in device.");
@@ -652,7 +652,7 @@
         {
             // Once removed in shared data, remove it from the device persistant memory
             NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-            NSData * metamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodel/metamodel"];
+            NSData * metamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/metamodel"];
             NSMutableArray * types;
             if (metamodelData) {
                 types = [NSKeyedUnarchiver unarchiveObjectWithData:metamodelData];
@@ -662,9 +662,9 @@
             }
             
             // [1] Upload 'areMetamodel'
-            NSData * areMetamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodel/areMetamodel"];
+            NSData * areMetamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/areMetamodels"];
             if (areMetamodelData) {
-                [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodel/areMetamodel"];
+                [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodels/areMetamodels"];
             }
             // [2] Remove old metamodel and save the new one
             areMetamodelData = nil; // ARC disposing
@@ -673,7 +673,7 @@
                 [types removeObject:typeToRemove];
                 metamodelData = nil;  // ARC disposing
                 NSData * newMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:types];
-                [userDefaults setObject:newMetamodelData forKey:@"es.uam.miso/data/metamodel/metamodel"];
+                [userDefaults setObject:newMetamodelData forKey:@"es.uam.miso/data/metamodels/metamodel"];
                 
                 // [1] Upload 'areMetamodel'
                 if (types.count == 0) {
@@ -686,7 +686,7 @@
                 areMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:@"NO"];
             }
             // [1] Upload 'areMetamodel'
-            [userDefaults setObject:areMetamodelData forKey:@"es.uam.miso/data/metamodel/areMetamodel"];
+            [userDefaults setObject:areMetamodelData forKey:@"es.uam.miso/data/metamodels/areMetamodels"];
             
             
             

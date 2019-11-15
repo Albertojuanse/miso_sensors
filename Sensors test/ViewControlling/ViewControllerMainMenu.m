@@ -228,7 +228,7 @@
         BOOL registerCorrect = YES;
         NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
         NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
-        NSData * areMetamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodel/areMetamodel"];
+        NSData * areMetamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/areMetamodels"];
         NSData * areModelsData = [userDefaults objectForKey:@"es.uam.miso/data/models/areModels"];
         NSString * areItems;
         NSString * areMetamodel;
@@ -369,7 +369,22 @@
                                                                              withInfoDic:infoItemBeacon3Dic
                                                                andWithCredentialsUserDic:credentialsUserDic];
                 
-                // Save them in device
+                // Save them in persistent memory
+                areItemsData = nil; // ARC disposing
+                areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+                [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
+                
+                NSMutableArray * allSavedItems = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
+                NSData * itemsData = [NSKeyedArchiver archivedDataWithRootObject:allSavedItems];
+                for (NSMutableDictionary * item in allSavedItems) {
+                    
+                    
+                }
+                    
+                    
+                [userDefaults setObject:itemsData forKey:@"es.uam.miso/data/items/items/"];
+                
+                NSLog(@"[INFO][VCMM] No metamodel found in device; demo metamodel saved.");
                 NSLog(@"[INFO][VCMM] No items found in device; demo items saved.");
             }
             
@@ -378,7 +393,7 @@
             // Existing saved data
             
             // Retrieve the metamodel array
-            NSData * metamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodel/metamodel"];
+            NSData * metamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/metamodel"];
             NSMutableArray * types = [NSKeyedUnarchiver unarchiveObjectWithData:metamodelData];
             
             // Add them in shared data
@@ -407,7 +422,7 @@
             // Save them in persistent memory
             areMetamodelData = nil; // ARC disposing
             areMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-            [userDefaults setObject:areMetamodelData forKey:@"es.uam.miso/data/metamodel/areMetamodel"];
+            [userDefaults setObject:areMetamodelData forKey:@"es.uam.miso/data/metamodels/areMetamodels"];
             
             NSMutableArray * types = [[NSMutableArray alloc] init];
             [types addObject:noType];
@@ -415,7 +430,7 @@
             [types addObject:deviceType];
             [types addObject:wallType];
             NSData * metamodelData = [NSKeyedArchiver archivedDataWithRootObject:types];
-            [userDefaults setObject:metamodelData forKey:@"es.uam.miso/data/metamodel/metamodel"];
+            [userDefaults setObject:metamodelData forKey:@"es.uam.miso/data/metamodels/metamodel"];
             
             NSLog(@"[INFO][VCMM] No metamodel found in device; demo metamodel saved.");
         }
