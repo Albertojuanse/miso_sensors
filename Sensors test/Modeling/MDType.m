@@ -4,7 +4,7 @@
 //
 //  Created by Alberto J. on 26/7/19.
 //  Copyright © 2019 MISO. All rights reserved.
-//
+//  TO DO: MDMetamodel for save more than one
 
 #import "MDType.h"
 
