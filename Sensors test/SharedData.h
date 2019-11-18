@@ -231,6 +231,8 @@
 // General setters
 - (BOOL)setItemsData:(NSMutableArray *)givenItemsData
 withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL)setModelsData:(NSMutableArray *)givenModelsData
+withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific user data setters
 - (BOOL) inUserDataSetUsedDic:(NSMutableDictionary *)givenUserDic

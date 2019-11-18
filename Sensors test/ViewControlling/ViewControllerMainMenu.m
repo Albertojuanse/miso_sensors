@@ -465,9 +465,24 @@
         }
         if (areModelsData && areModels && [areModels isEqualToString:@"YES"]) {
             // Existing saved data
+            // Retrieve the models using the index and save them in shared data
             
+            // Get the index...
+            NSData * modelsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/models/index"];
+            NSMutableArray * modelsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:modelsIndexData];
+            // ...and retrieve each model
+            NSMutableArray * models = [[NSMutableArray alloc] init];
+            for (NSString * modelIdentifier in modelsIndex) {
+                NSString * modelKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:modelIdentifier];
+                NSData * modelData = [userDefaults objectForKey:modelKey];
+                NSMutableDictionary * modelDic = [NSKeyedUnarchiver unarchiveObjectWithData:modelData];
+                [models addObject:modelDic];
+            }
             
-            // NSLog(@"[INFO][VCMM] %tu model found in device.", types.count);
+            // Set them as items data in data shared
+            [sharedData setModelsData:models withCredentialsUserDic:credentialsUserDic];
+            
+            NSLog(@"[INFO][VCMM] %tu models found in device.", models.count);
         } else {
             // No saved data
             
