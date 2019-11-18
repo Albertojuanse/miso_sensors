@@ -13,6 +13,7 @@
 #import "RDRhoThetaSystem.h"
 #import "RDThetaThetaSystem.h"
 #import "SharedData.h"
+#import <math.h>
 
 /*!
  @class LocationManagerDelegate

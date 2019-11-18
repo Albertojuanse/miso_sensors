@@ -3212,9 +3212,9 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 #pragma mark - Items data specific removers
 /*!
  @method inItemDataRemoveItemWithInfoDic:withCredentialsUserDic:
- @discussion This method removes in the items collection data the one whose data is equals to the information dictionary provided (sort and uuid keys are required); it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ @discussion This method removes in the items collection data the one whose data is equals to the information dictionary provided (sort and uuid keys are required); it is necesary to give a valid user credentials user dictionary for grant the acces and nil is returned if not.
  */
-- (BOOL) inItemDataRemoveItemWithInfoDic:(NSMutableDictionary *)infoDic
+- (NSMutableDictionary*) inItemDataRemoveItemWithInfoDic:(NSMutableDictionary *)infoDic
                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
@@ -3236,7 +3236,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
             // Do nothing
         } else {
             NSLog(@"[ERROR][SD] Information provided for deleting an item had not \"sort\" or \"uuid\" keys.");
-            return NO;
+            return nil;
         }
         
         // Search for the item
@@ -3273,14 +3273,14 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
         // If not found, return; if found, remove it
         if (itemFound) {
             [itemsData removeObject:itemToRemove];
-            return YES;
+            return itemToRemove;
         } else {
-            return NO;
+            return nil;
         }
         
     } else {
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
-        return NO;
+        return nil;
     }
 }
 

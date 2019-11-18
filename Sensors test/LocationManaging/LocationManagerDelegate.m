@@ -354,7 +354,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 }
                 CLBeacon * beacon = [beacons objectAtIndex:0];
                 NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
-                NSNumber * rawRSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue]];
+                //NSNumber * rawRSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue]];
+                // TO DO: Get the 1 meter RSSI from CLBeacon. 2019/11/14.
+                NSNumber * rawRSSIdistance = [NSNumber numberWithDouble:
+                                              pow(10.0,((-77.0 - (double)[rssi integerValue])/10.0))
+                                              ];
+                NSLog(@"[INFO][LM] Raw distance: %.3f", [rawRSSIdistance floatValue]);
                 NSNumber * RSSIdistance = [NSNumber numberWithFloat:[rawRSSIdistance floatValue] * [calibrationYvalue floatValue]];
                 
                 // Set a threshold for near to zero measures
@@ -525,10 +530,65 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                                        [positionKey length] - 4]
                                                       ];
                             infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
-                            [sharedData inItemDataAddItemOfSort:@"position"
-                                                       withUUID:positionKey
-                                                    withInfoDic:infoDic
-                                      andWithCredentialsUserDic:credentialsUserDic];
+                            BOOL savedItem = [sharedData inItemDataAddItemOfSort:@"position"
+                                                                        withUUID:positionKey
+                                                                     withInfoDic:infoDic
+                                                       andWithCredentialsUserDic:credentialsUserDic];
+                            if (savedItem) {
+                                // PERSISTENT: SAVE ITEM
+                                // Save them in persistent memory
+                                NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+                                // TO DO: Assign items by user. Alberto J. 15/11/2019.
+                                // Now there are items
+                                NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
+                                if (areItemsData) {
+                                    [userDefaults removeObjectForKey:@"es.uam.miso/data/items/areItems"];
+                                }
+                                areItemsData = nil; // ARC disposing
+                                areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+                                [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
+                                
+                                // Get the index in which names of items are saved for retrieve them later
+                                NSData * itemsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/items/index"];
+                                NSMutableArray * itemsIndex;
+                                if (itemsIndexData) {
+                                    itemsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:itemsIndexData];
+                                    [userDefaults removeObjectForKey:@"es.uam.miso/data/items/index"];
+                                } else {
+                                    itemsIndex = [[NSMutableArray alloc] init];
+                                }
+                                
+                                // Get the item as it was saved in shared data
+                                NSMutableArray * itemDics = [sharedData fromItemDataGetItemsWithIdentifier:infoDic[@"identifier"]
+                                                                                     andCredentialsUserDic:credentialsUserDic];
+                                if (itemDics.count == 0) {
+                                    NSLog(@"[ERROR][LM] Saved item %@ could not be retieved from shared data.", infoDic[@"identifier"]);
+                                    break;
+                                } else {
+                                    if (itemDics.count > 1) {
+                                        NSLog(@"[ERROR][LM] More than one saved item with identifier %@.", infoDic[@"identifier"]);
+                                        break;
+                                    }
+                                }
+                                NSMutableDictionary * itemDic = [itemDics objectAtIndex:0];
+                                
+                                // Create a NSData for the item and save it using its name
+                                // Item's name
+                                NSString * itemIdentifier = itemDic[@"identifier"];
+                                // Save the name in the index
+                                [itemsIndex addObject:itemIdentifier];
+                                // Create the item's data and archive it
+                                NSData * itemData = [NSKeyedArchiver archivedDataWithRootObject:itemDic];
+                                NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
+                                [userDefaults setObject:itemData forKey:itemKey];
+                                // And save the new index
+                                itemsIndexData = nil; // ARC disposing
+                                itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
+                                [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
+                                // END PERSISTENT: SAVE ITEM
+                            } else {
+                                NSLog(@"[ERROR][LM] Located position %@ could not be stored as an item.", infoDic[@"position"]);
+                            }
                         }
                         NSLog(@"[INFO][LM] Generated locations:");
                         NSLog(@"[INFO][LM]  -> %@",  [sharedData fromItemDataGetLocatedItemsByUser:userDic
@@ -716,10 +776,63 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 if(type) {
                     infoDic[@"type"] = type;
                 }
-                [sharedData inItemDataAddItemOfSort:@"position"
-                                           withUUID:positionKey
-                                        withInfoDic:infoDic
-                          andWithCredentialsUserDic:credentialsUserDic];
+                BOOL savedItem = [sharedData inItemDataAddItemOfSort:@"position"
+                                                            withUUID:positionKey
+                                                         withInfoDic:infoDic
+                                           andWithCredentialsUserDic:credentialsUserDic];
+                if (savedItem) {
+                    // PERSISTENT: SAVE ITEM
+                    // Save them in persistent memory
+                    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+                    // TO DO: Assign items by user. Alberto J. 15/11/2019.
+                    // Now there are items
+                    NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
+                    if (areItemsData) {
+                        [userDefaults removeObjectForKey:@"es.uam.miso/data/items/areItems"];
+                    }
+                    areItemsData = nil; // ARC disposing
+                    areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+                    [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
+                    
+                    // Get the index in which names of items are saved for retrieve them later
+                    NSData * itemsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/items/index"];
+                    NSMutableArray * itemsIndex;
+                    if (itemsIndexData) {
+                        itemsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:itemsIndexData];
+                        [userDefaults removeObjectForKey:@"es.uam.miso/data/items/index"];
+                    } else {
+                        itemsIndex = [[NSMutableArray alloc] init];
+                    }
+                    
+                    // Get the item as it was saved in shared data
+                    NSMutableArray * itemDics = [sharedData fromItemDataGetItemsWithIdentifier:infoDic[@"identifier"]
+                                                                         andCredentialsUserDic:credentialsUserDic];
+                    if (itemDics.count == 0) {
+                        NSLog(@"[ERROR][LM] Saved item %@ could not be retieved from shared data.", infoDic[@"identifier"]);
+                    } else {
+                        if (itemDics.count > 1) {
+                            NSLog(@"[ERROR][LM] More than one saved item with identifier %@.", infoDic[@"identifier"]);
+                        }
+                    }
+                    NSMutableDictionary * itemDic = [itemDics objectAtIndex:0];
+                    
+                    // Create a NSData for the item and save it using its name
+                    // Item's name
+                    NSString * itemIdentifier = itemDic[@"identifier"];
+                    // Save the name in the index
+                    [itemsIndex addObject:itemIdentifier];
+                    // Create the item's data and archive it
+                    NSData * itemData = [NSKeyedArchiver archivedDataWithRootObject:itemDic];
+                    NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
+                    [userDefaults setObject:itemData forKey:itemKey];
+                    // And save the new index
+                    itemsIndexData = nil; // ARC disposing
+                    itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
+                    [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
+                    // END PERSISTENT: SAVE ITEM
+                } else {
+                    NSLog(@"[ERROR][LM] Located position %@ could not be stored as an item.", infoDic[@"position"]);
+                }
             }
             
             NSLog(@"[INFO][LM] Generated locations:");

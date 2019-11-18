@@ -362,19 +362,60 @@
     {
         
         // It can be not found
-        if (
-            [sharedData inItemDataRemoveItemWithInfoDic:infoDic withCredentialsUserDic:credentialsUserDic]
-            )
-        {
+        NSMutableDictionary * itemToRemove = [sharedData inItemDataRemoveItemWithInfoDic:infoDic
+                                                                  withCredentialsUserDic:credentialsUserDic];
+        if (itemToRemove) {
+            
+            // PERSISTENT: REMOVE ITEM
+            // Remove it from the persistent memory
+            NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+            // TO DO: Assign items by user. Alberto J. 15/11/2019.
+            
+            // Create a NSData for the item and save it using its name
+            // Item's name
+            NSString * itemIdentifier = itemToRemove[@"identifier"];
+            // Create the item's data tu unarchive it
+            NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
+            [userDefaults removeObjectForKey:itemKey];
+            
+            // And upload index and 'areItems'
+            // Get the index in which names of items are saved for retrieve them later
+            NSData * itemsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/items/index"];
+            NSMutableArray * itemsIndex;
+            if (itemsIndexData) {
+                itemsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:itemsIndexData];
+                [userDefaults removeObjectForKey:@"es.uam.miso/data/items/index"];
+            } else {
+                NSLog(@"[ERROR][VCAB] The index in persistent memory is empty; removed from shared data only.");
+            }
+            [itemsIndex removeObject:itemKey];
+            itemsIndexData = nil; // ARC disposing
+            itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
+            [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
+            
+            NSUInteger savedIntemsNumber = itemsIndex.count;
+            NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
+            if (areItemsData) {
+                [userDefaults removeObjectForKey:@"es.uam.miso/data/items/areItems"];
+            }
+            areItemsData = nil; // ARC disposing
+            if (savedIntemsNumber == 0) {
+                areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"NO"];
+            } else {
+                areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+            }
+            [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
+            // END PERSISTENT: REMOVE ITEM
+            
             [self performSegueWithIdentifier:@"backFromAddToMain" sender:sender];
         } else { // Not found
-            [self alertUserWithTitle:@"Type won't be removed."
+            [self alertUserWithTitle:@"Item won't be removed."
                              message:[NSString stringWithFormat:@"Type could not be found; please, try again or check for multiuser interferences."]
                           andHandler:^(UIAlertAction * action) {
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCAB] Type could not be removed.");
+            NSLog(@"[ERROR][VCAB] Item could not be removed.");
         }
         
     } else { // Type not found
@@ -527,10 +568,63 @@
     }
     
     // Add the item
-    [sharedData inItemDataAddItemOfSort:infoDic[@"sort"]
-                               withUUID:infoDic[@"uuid"]
-                            withInfoDic:infoDic
-              andWithCredentialsUserDic:credentialsUserDic];
+    BOOL savedItem = [sharedData inItemDataAddItemOfSort:infoDic[@"sort"]
+                                                withUUID:infoDic[@"uuid"]
+                                             withInfoDic:infoDic
+                               andWithCredentialsUserDic:credentialsUserDic];
+    if (savedItem) {
+        // PERSISTENT: SAVE ITEM
+        // Save them in persistent memory
+        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+        // TO DO: Assign items by user. Alberto J. 15/11/2019.
+        // Now there are items
+        NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
+        if (areItemsData) {
+            [userDefaults removeObjectForKey:@"es.uam.miso/data/items/areItems"];
+        }
+        areItemsData = nil; // ARC disposing
+        areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+        [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
+        
+        // Get the index in which names of items are saved for retrieve them later
+        NSData * itemsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/items/index"];
+        NSMutableArray * itemsIndex;
+        if (itemsIndexData) {
+            itemsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:itemsIndexData];
+            [userDefaults removeObjectForKey:@"es.uam.miso/data/items/index"];
+        } else {
+            itemsIndex = [[NSMutableArray alloc] init];
+        }
+        
+        // Get the item as it was saved in shared data
+        NSMutableArray * itemDics = [sharedData fromItemDataGetItemsWithIdentifier:infoDic[@"identifier"]
+                                                             andCredentialsUserDic:credentialsUserDic];
+        if (itemDics.count == 0) {
+            NSLog(@"[ERROR][VCAB] Saved item %@ could not be retieved from shared data.", infoDic[@"identifier"]);
+        } else {
+            if (itemDics.count > 1) {
+                NSLog(@"[ERROR][VCAB] More than one saved item with identifier %@.", infoDic[@"identifier"]);
+            }
+        }
+        NSMutableDictionary * itemDic = [itemDics objectAtIndex:0];
+        
+        // Create a NSData for the item and save it using its name
+        // Item's name
+        NSString * itemIdentifier = itemDic[@"identifier"];
+        // Save the name in the index
+        [itemsIndex addObject:itemIdentifier];
+        // Create the item's data and archive it
+        NSData * itemData = [NSKeyedArchiver archivedDataWithRootObject:itemDic];
+        NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
+        [userDefaults setObject:itemData forKey:itemKey];
+        // And save the new index
+        itemsIndexData = nil; // ARC disposing
+        itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
+        [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
+        // END PERSISTENT: SAVE ITEM
+    } else {
+        NSLog(@"[ERROR][VCAB] Item %@ could not be stored as an item.", infoDic[@"identifier"]);
+    }
 
     [self performSegueWithIdentifier:@"submitFromAddToMain" sender:sender];
 }
@@ -563,7 +657,7 @@
             )
         {
             
-            // Once registered in shared data, save it in the device persistant memory
+            // Once registered in shared data, save it in the device persistent memory
             // Upload 'areMetamodel'
             NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
             NSData * areMetamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/areMetamodels"];
@@ -650,7 +744,7 @@
             [sharedData inMetamodelDataRemoveItemWithName:typeToRemoveName andCredentialsUserDic:credentialsUserDic]
             )
         {
-            // Once removed in shared data, remove it from the device persistant memory
+            // Once removed in shared data, remove it from the device persistent memory
             NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
             NSData * metamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/metamodel"];
             NSMutableArray * types;

@@ -384,7 +384,7 @@
                                                                           withIdentifier:@"beacon3@miso.uam.es"
                                                                              withInfoDic:infoItemBeacon3Dic
                                                                andWithCredentialsUserDic:credentialsUserDic];
-                
+                // PERSISTENT: SAVE ITEM
                 // Save them in persistent memory
                 // TO DO: Assign items by user. Alberto J. 15/11/2019.
                 // Now there are items
@@ -410,6 +410,7 @@
                 // ...and save the key
                 NSData * itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
                 [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
+                // END PERSISTENT: SAVE ITEM
                 
                 NSLog(@"[INFO][VCMM] No items found in device; demo items saved.");
             }
