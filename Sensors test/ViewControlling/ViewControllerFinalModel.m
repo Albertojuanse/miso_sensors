@@ -181,10 +181,64 @@
     NSString * savingName = [NSString stringWithFormat:@"%@@miso.uam.es", name];
     
     // Save the model
-    [sharedData inModelDataAddModelWithName:savingName
-                                 components:components
-                                 references:references
-                  andWithCredentialsUserDic:credentialsUserDic];
+    BOOL savedModel = [sharedData inModelDataAddModelWithName:savingName
+                                                   components:components
+                                                   references:references
+                                    andWithCredentialsUserDic:credentialsUserDic];
+    if (savedModel) {
+        // PERSISTENT: SAVE MODEL
+        // Save it in persistent memory
+        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+        // TO DO: Assign items by user. Alberto J. 15/11/2019.
+        // Now there are models
+        NSData * areModelsData = [userDefaults objectForKey:@"es.uam.miso/data/models/areModels"];
+        if (areModelsData) {
+            [userDefaults removeObjectForKey:@"es.uam.miso/data/models/areModels"];
+        }
+        areModelsData = nil; // ARC disposing
+        areModelsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+        [userDefaults setObject:areModelsData forKey:@"es.uam.miso/data/models/areModels"];
+        
+        // Get the index in which names of models are saved for retrieve them later
+        NSData * modelsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/models/index"];
+        NSMutableArray * modelsIndex;
+        if (modelsIndexData) {
+            modelsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:modelsIndexData];
+            [userDefaults removeObjectForKey:@"es.uam.miso/data/models/index"];
+        } else {
+            modelsIndex = [[NSMutableArray alloc] init];
+        }
+        
+        // Get the model as it was saved in shared data
+        NSMutableArray * modelDics = [sharedData fromModelDataGetModelDicWithName:savingName
+                                                           withCredentialsUserDic:credentialsUserDic];
+        if (modelDics.count == 0) {
+            NSLog(@"[ERROR][VCFM] Saved model %@ could not be retieved from shared data.", savingName);
+        } else {
+            if (modelDics.count > 1) {
+                NSLog(@"[ERROR][VCFM] More than one saved model with identifier %@.", savingName);
+            }
+        }
+        NSMutableDictionary * modelDic = [modelDics objectAtIndex:0];
+        
+        // Create a NSData for the model and save it using its name
+        // Item's name
+        NSString * modelIdentifier = savingName;
+        // Save the name in the index
+        [modelsIndex addObject:modelIdentifier];
+        // Create the model's data and archive it
+        NSData * modelData = [NSKeyedArchiver archivedDataWithRootObject:modelDic];
+        NSString * modelKey = [@"es.uam.miso/data/models/models/" stringByAppendingString:savingName];
+        [userDefaults setObject:modelData forKey:modelKey];
+        // And save the new index
+        modelsIndexData = nil; // ARC disposing
+        modelsIndexData = [NSKeyedArchiver archivedDataWithRootObject:modelsIndex];
+        [userDefaults setObject:modelsIndexData forKey:@"es.uam.miso/data/models/index"];
+        NSLog(@"[INFO][VCAB] Model saved in device memory.");
+        // END PERSISTENT: SAVE MODEL
+    } else {
+        NSLog(@"[ERROR][VCFM] Model %@ could not be saved in device memory.", savingName);
+    }
     
     // Show the model
     NSMutableArray * model = [sharedData fromModelDataGetModelDicWithName:savingName

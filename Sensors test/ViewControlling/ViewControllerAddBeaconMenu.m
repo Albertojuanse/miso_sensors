@@ -625,7 +625,7 @@
         NSLog(@"[INFO][VCAB] Item saved in device memory.");
         // END PERSISTENT: SAVE ITEM
     } else {
-        NSLog(@"[ERROR][VCAB] Item %@ could not be stored as an item.", infoDic[@"identifier"]);
+        NSLog(@"[ERROR][VCAB] Item %@ could not be saved in device memory.", infoDic[@"identifier"]);
     }
 
     [self performSegueWithIdentifier:@"submitFromAddToMain" sender:sender];
