@@ -540,6 +540,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                             itemsIndexData = nil; // ARC disposing
                             itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
                             [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
+                            NSLog(@"[INFO][VCAB] Item saved in device memory.");
                             // END PERSISTENT: SAVE ITEM
                         } else {
                             NSLog(@"[ERROR][VCSP] Item from model %@ could not be stored as an item.", eachComponent[@"position"]);

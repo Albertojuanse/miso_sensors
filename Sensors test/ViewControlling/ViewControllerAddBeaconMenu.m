@@ -405,6 +405,7 @@
                 areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
             }
             [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
+            NSLog(@"[INFO][VCAB] Item removed from device memory");
             // END PERSISTENT: REMOVE ITEM
             
             [self performSegueWithIdentifier:@"backFromAddToMain" sender:sender];
@@ -621,6 +622,7 @@
         itemsIndexData = nil; // ARC disposing
         itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
         [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
+        NSLog(@"[INFO][VCAB] Item saved in device memory.");
         // END PERSISTENT: SAVE ITEM
     } else {
         NSLog(@"[ERROR][VCAB] Item %@ could not be stored as an item.", infoDic[@"identifier"]);
