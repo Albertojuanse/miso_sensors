@@ -473,7 +473,7 @@
             // ...and retrieve each model
             NSMutableArray * models = [[NSMutableArray alloc] init];
             for (NSString * modelIdentifier in modelsIndex) {
-                NSString * modelKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:modelIdentifier];
+                NSString * modelKey = [@"es.uam.miso/data/models/models/" stringByAppendingString:modelIdentifier];
                 NSData * modelData = [userDefaults objectForKey:modelKey];
                 NSMutableDictionary * modelDic = [NSKeyedUnarchiver unarchiveObjectWithData:modelData];
                 [models addObject:modelDic];
