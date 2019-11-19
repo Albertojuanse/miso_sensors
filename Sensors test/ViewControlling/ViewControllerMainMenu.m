@@ -277,8 +277,8 @@
                 // Create the items and add them to shared data collections
                 NSMutableDictionary * infoDic0 = [[NSMutableDictionary alloc] init];
                 RDPosition * position0 = [[RDPosition alloc] init];
-                position0.x = [NSNumber numberWithFloat:0.0];
-                position0.y = [NSNumber numberWithFloat:0.0];
+                position0.x = [NSNumber numberWithFloat:1.0];
+                position0.y = [NSNumber numberWithFloat:1.0];
                 position0.z = [NSNumber numberWithFloat:0.0];
                 [infoDic0 setValue:position0 forKey:@"position"];
                 [infoDic0 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
