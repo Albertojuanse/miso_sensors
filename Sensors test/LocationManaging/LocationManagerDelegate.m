@@ -316,7 +316,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             
             NSLog(@"[INFO][LM] Calibrating.");
             NSNumber * targetValue = [NSNumber numberWithFloat:1.0];
-            NSInteger numberOfSteps = 20;
+            NSInteger numberOfSteps = 30;
             
             if (calibrationStep > numberOfSteps) {
                 calibrating = NO;
@@ -356,16 +356,18 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
                 //NSNumber * rawRSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue]];
                 // TO DO: Get the 1 meter RSSI from CLBeacon. 2019/11/14.
-                NSNumber * rawRSSIdistance = [NSNumber numberWithDouble:
-                                              pow(10.0,((-77.0 - (double)[rssi integerValue])/10.0))
-                                              ];
-                NSLog(@"[INFO][LM] Raw distance: %.3f", [rawRSSIdistance floatValue]);
-                NSNumber * RSSIdistance = [NSNumber numberWithFloat:[rawRSSIdistance floatValue] * [calibrationYvalue floatValue]];
+                // Absolute values of speed of light, frecuency, and antenna's join gain
+                float C = 299792458.0;
+                float F = 2440000000.0; // 2400 - 2480 MHz
+                float G = 1.0; // typically 2.16 dBi
+                // Calculate the distance
+                NSNumber * rawRSSIdistance = [[NSNumber alloc] initWithFloat:( (C / (4.0 * M_PI * F)) * sqrt(G * pow(10.0, -[rssi floatValue]/ 10.0)) )];
+                NSNumber * RSSIdistance = [[NSNumber alloc] initWithFloat:( (C  * [calibrationYvalue floatValue] / (4.0 * M_PI * F)) * sqrt(G * pow(10.0, -[rssi floatValue]/ 10.0)) )];
+                NSLog(@"[INFO][LM] Calibrating RSSI value %.3f", [rssi floatValue]);
+                NSLog(@"[INFO][LM] -> from raw distance: %.3f", [rawRSSIdistance floatValue]);
                 
                 // Set a threshold for near to zero measures
                 if ([rawRSSIdistance floatValue] > 0.2) {
-                    NSLog(@"[INFO][LM] Calibrating RSSI value %.3f", [rssi floatValue]);
-                    NSLog(@"[INFO][LM] -> from raw distance: %.3f", [rawRSSIdistance floatValue]);
                     NSLog(@"[INFO][LM] -> to distance: %.3f", [RSSIdistance floatValue]);
                     NSLog(@"[INFO][LM] -> with calibration ratio: %.3f", [calibrationYvalue floatValue]);
                     
@@ -374,19 +376,23 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                         
                         // optimization -> error = ( measured_value ) / ( desired_value )
                         NSNumber * diff = [NSNumber numberWithFloat:[RSSIdistance floatValue] - [targetValue floatValue]];
-                        NSNumber * relative_error = [NSNumber numberWithFloat:[targetValue floatValue]/[diff floatValue]];
+                        NSNumber * relative_error = [NSNumber numberWithFloat:[diff floatValue]/[targetValue floatValue]];
                         calibrationYvalueAccumulation = [NSNumber numberWithFloat:[calibrationYvalueAccumulation floatValue]
                                                          + [relative_error floatValue]];
                         NSNumber * calibrationStepFloat = [NSNumber numberWithInteger:calibrationStep];
                         calibrationYvalue = [NSNumber numberWithFloat:
-                                             [calibrationYvalueAccumulation floatValue] / [calibrationStepFloat floatValue]
+                                             [calibrationStepFloat floatValue]/[calibrationYvalueAccumulation floatValue]
                                              ];
                     } else {
-                        NSNumber * diff = [NSNumber numberWithFloat:[targetValue floatValue] - [RSSIdistance floatValue]];
+                        
+                        // optimization -> error = ( measured_value ) / ( desired_value )
+                        NSNumber * diff = [NSNumber numberWithFloat:[RSSIdistance floatValue] - [targetValue floatValue]];
+                        NSNumber * relative_error = [NSNumber numberWithFloat:[diff floatValue]/[targetValue floatValue]];
+                        calibrationYvalueAccumulation = [NSNumber numberWithFloat:[calibrationYvalueAccumulation floatValue]
+                                                         + [relative_error floatValue]];
+                        NSNumber * calibrationStepFloat = [NSNumber numberWithInteger:calibrationStep];
                         calibrationYvalue = [NSNumber numberWithFloat:
-                                             ([targetValue floatValue])
-                                             /
-                                             ([RSSIdistance floatValue] - [diff floatValue]/2.0)
+                                             [calibrationStepFloat floatValue]/[calibrationYvalueAccumulation floatValue]
                                              ];
                     }
                     calibrationStep++;
@@ -1046,7 +1052,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         
         NSDictionary * data = notification.userInfo;
         NSString * calibrationUUID = data[@"uuid"];
-        NSLog(@"The user asked to calibrate the iBeacon %@", calibrationUUID);
+        NSLog(@"[INFO][LM] The user asked to calibrate the iBeacon %@", calibrationUUID);
         
         // Register them if it is posible.
         switch (CLLocationManager.authorizationStatus) {
