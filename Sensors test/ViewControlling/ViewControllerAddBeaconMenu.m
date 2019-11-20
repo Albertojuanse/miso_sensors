@@ -454,7 +454,8 @@
         infoDic[@"uuid"] = [self.textUUID text];
         infoDic[@"major"] = [self.textMajor text];
         infoDic[@"minor"] = [self.textMinor text];
-        NSString * beaconId = [@"beacon" stringByAppendingString:[itemPositionIdNumber stringValue]];
+        NSString * beaconId = [@"beacon" stringByAppendingString:[itemBeaconIdNumber stringValue]];
+        itemBeaconIdNumber = [NSNumber numberWithInteger:[itemBeaconIdNumber integerValue] + 1];
         beaconId = [beaconId stringByAppendingString:@"@miso.uam.es"];
         infoDic[@"identifier"] = beaconId;
     }
@@ -462,6 +463,7 @@
         infoDic[@"sort"] = @"position";
         infoDic[@"uuid"] = [[NSUUID UUID] UUIDString];
         NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
+        itemPositionIdNumber = [NSNumber numberWithInteger:[itemPositionIdNumber integerValue] + 1];
         positionId = [positionId stringByAppendingString:@"@miso.uam.es"];
         infoDic[@"identifier"] = positionId;
     }
@@ -575,57 +577,57 @@
                                andWithCredentialsUserDic:credentialsUserDic];
     if (savedItem) {
         // PERSISTENT: SAVE ITEM
-        // Save them in persistent memory
-        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-        // TO DO: Assign items by user. Alberto J. 15/11/2019.
-        // Now there are items
-        NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
-        if (areItemsData) {
-            [userDefaults removeObjectForKey:@"es.uam.miso/data/items/areItems"];
-        }
-        areItemsData = nil; // ARC disposing
-        areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-        [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
-        
-        // Get the index in which names of items are saved for retrieve them later
-        NSData * itemsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/items/index"];
-        NSMutableArray * itemsIndex;
-        if (itemsIndexData) {
-            itemsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:itemsIndexData];
-            [userDefaults removeObjectForKey:@"es.uam.miso/data/items/index"];
+        // Retrieve the item; saved data could be different from the request
+        NSMutableArray * savedItems = [sharedData fromItemDataGetItemsWithUUID:infoDic[@"uuid"]
+                                                         andCredentialsUserDic:credentialsUserDic];
+        if (savedItems.count == 0) {
+            NSLog(@"[ERROR][VCAB] No saved item found with identifier %@.", infoDic[@"uuid"]);
         } else {
-            itemsIndex = [[NSMutableArray alloc] init];
-        }
-        
-        // Get the item as it was saved in shared data
-        NSMutableArray * itemDics = [sharedData fromItemDataGetItemsWithIdentifier:infoDic[@"identifier"]
-                                                             andCredentialsUserDic:credentialsUserDic];
-        if (itemDics.count == 0) {
-            NSLog(@"[ERROR][VCAB] Saved item %@ could not be retieved from shared data.", infoDic[@"identifier"]);
-        } else {
-            if (itemDics.count > 1) {
-                NSLog(@"[ERROR][VCAB] More than one saved item with identifier %@.", infoDic[@"identifier"]);
+            if (savedItems.count > 1) {
+                NSLog(@"[ERROR][VCAB] More than one saved items found with identifier %@.", infoDic[@"uuid"]);
             }
+            NSMutableDictionary * itemDic = [savedItems objectAtIndex:0];
+            
+            // Save them in persistent memory
+            NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+            // TO DO: Assign items by user. Alberto J. 15/11/2019.
+            // Now there are items
+            NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
+            if (areItemsData) {
+                [userDefaults removeObjectForKey:@"es.uam.miso/data/items/areItems"];
+            }
+            areItemsData = nil; // ARC disposing
+            areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+            [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
+            
+            // Get the index in which names of items are saved for retrieve them later
+            NSData * itemsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/items/index"];
+            NSMutableArray * itemsIndex;
+            if (itemsIndexData) {
+                itemsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:itemsIndexData];
+                [userDefaults removeObjectForKey:@"es.uam.miso/data/items/index"];
+            } else {
+                itemsIndex = [[NSMutableArray alloc] init];
+            }
+            
+            // Create a NSData for the item and save it using its name
+            // Item's name
+            NSString * itemIdentifier = itemDic[@"identifier"];
+            // Save the name in the index
+            [itemsIndex addObject:itemIdentifier];
+            // Create the item's data and archive it
+            NSData * itemData = [NSKeyedArchiver archivedDataWithRootObject:itemDic];
+            NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
+            [userDefaults setObject:itemData forKey:itemKey];
+            // And save the new index
+            itemsIndexData = nil; // ARC disposing
+            itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
+            [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
+            NSLog(@"[INFO][VCAB] Item saved in device memory.");
         }
-        NSMutableDictionary * itemDic = [itemDics objectAtIndex:0];
-        
-        // Create a NSData for the item and save it using its name
-        // Item's name
-        NSString * itemIdentifier = itemDic[@"identifier"];
-        // Save the name in the index
-        [itemsIndex addObject:itemIdentifier];
-        // Create the item's data and archive it
-        NSData * itemData = [NSKeyedArchiver archivedDataWithRootObject:itemDic];
-        NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
-        [userDefaults setObject:itemData forKey:itemKey];
-        // And save the new index
-        itemsIndexData = nil; // ARC disposing
-        itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
-        [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
-        NSLog(@"[INFO][VCAB] Item saved in device memory.");
         // END PERSISTENT: SAVE ITEM
     } else {
-        NSLog(@"[ERROR][VCAB] Item %@ could not be saved in device memory.", infoDic[@"identifier"]);
+        NSLog(@"[ERROR][VCAB] Item %@ could not be saved in device memory.", infoDic[@"UUID"]);
     }
 
     [self performSegueWithIdentifier:@"submitFromAddToMain" sender:sender];

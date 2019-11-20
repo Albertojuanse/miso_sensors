@@ -2999,7 +2999,9 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
                 // Retrieve the information
                 NSArray * infoDicKeys = [infoDic allKeys];
                 for (id key in infoDicKeys) {
-                    itemDic[key] = infoDic[key];
+                    if (![@"identifier" isEqualToString:key]) {
+                        itemDic[key] = infoDic[key];
+                    }
                 }
             
             } else {
