@@ -19,6 +19,8 @@
     self = [super init];
     if (self) {
         
+        // TO DO: Calibration. Alberto J. 2019/11/20
+        calibrationYvalue = [NSNumber numberWithFloat:0.01];
         // Components
         sharedData = initSharedData;
         
@@ -100,6 +102,7 @@
         
         NSLog(@"[INFO][LM] LocationManager prepared.");
     }
+    
     return self;
 }
 
@@ -290,6 +293,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
        didRangeBeacons:(NSArray *)beacons
               inRegion:(CLBeaconRegion *)region
 {
+    // TO DO: Calibration. Alberto J. 2019/11/20
+    calibrationYvalue = [NSNumber numberWithFloat:0.01];
     // First, validate the access to the data shared collection
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
@@ -430,8 +435,14 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     measurePosition.z = position.z;
                     
                     // TO DO. Calibration. Alberto J.
-                    NSNumber * rawRSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue]];
-                    NSNumber * RSSIdistance = [NSNumber numberWithFloat:[rawRSSIdistance floatValue] * [calibrationYvalue floatValue]];
+                    //NSNumber * rawRSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue]];
+                    // TO DO: Get the 1 meter RSSI from CLBeacon. 2019/11/14.
+                    // Absolute values of speed of light, frecuency, and antenna's join gain
+                    float C = 299792458.0;
+                    float F = 2440000000.0; // 2400 - 2480 MHz
+                    float G = 1.0; // typically 2.16 dBi
+                    // Calculate the distance
+                    NSNumber * RSSIdistance = [[NSNumber alloc] initWithFloat:( (C  * [calibrationYvalue floatValue] / (4.0 * M_PI * F)) * sqrt(G * pow(10.0, -[rssi floatValue]/ 10.0)) )];
                     
                     NSMutableDictionary * locatedPositions;
                     
@@ -864,6 +875,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             return;
         }
         
+        // TO DO: Calibration. Alberto J. 2019/11/20
+        calibrationYvalue = [NSNumber numberWithFloat:0.01];
         // Get the measuring mode
         NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                           andCredentialsUserDic:credentialsUserDic];
@@ -1180,7 +1193,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 
                 calibrating = YES;
                 calibrationStep = 0;
-                calibrationYvalue = [NSNumber numberWithFloat:1.0];
+                calibrationYvalue = [NSNumber numberWithFloat:0.01];
                 calibrationYvalueAccumulation = [NSNumber numberWithFloat:0.0];
                 
                 NSLog(@"[INFO][LM] Device calibrating with the iBeacon:");

@@ -171,12 +171,12 @@
             [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
             
             // And send the notification
-            // [[NSNotificationCenter defaultCenter] postNotificationName:@"startLocationMeasuring" object:nil];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
-            NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopes\" posted.");
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring"
-                                                                object:nil];
-            NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopeHeadingMeasuring\" posted.");
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"startLocationMeasuring" object:nil];
+            NSLog(@"[NOTI][VCTTL] Notification \"startLocationMeasuring\" posted.");
+            //[[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
+            //NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopes\" posted.");
+            //[[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring" object:nil];
+            //NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopeHeadingMeasuring\" posted.");
             return;
         } else {
             return;
