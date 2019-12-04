@@ -76,6 +76,14 @@
         
         // This object must listen to this events
         [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(startUpdatingLocation:)
+                                                     name:@"startUpdatingLocation"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(stopUpdatingLocation:)
+                                                     name:@"stopUpdatingLocation"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(startLocationMeasuring:)
                                                      name:@"startLocationMeasuring"
                                                    object:nil];
@@ -193,7 +201,7 @@
     position.z = [NSNumber numberWithFloat:[givenPosition.z floatValue]];
 }
 
-#pragma mark - Location manager delegated methods
+#pragma mark - Location manager delegated methods - iBeacons
 
 /*!
  @method locationManager:didChangeAuthorizationStatus:
@@ -600,6 +608,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     }
 }
 
+#pragma mark - Location manager delegated methods - Compass
+
 /*!
  @method locationManager:didUpdateHeading:
  @discussion This method is called when the device wants to deliver a data about its heading.
@@ -788,7 +798,44 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     else return NO; // All is good. Compass is precise enough.
 }
 
+#pragma mark - Location manager delegated methods - GPS
+
+- (void)locationManager:(CLLocationManager *)manager
+     didUpdateLocations:(NSArray<CLLocation *> *)locations
+{
+    NSLog(@"[INFO][LM] Device did update locations:");
+    for (CLLocation * location in locations) {
+        CLLocationCoordinate2D coordinates = [location coordinate];
+        CLLocationDegrees latitude = coordinates.latitude;
+        CLLocationDegrees longitude = coordinates.longitude;
+        CLLocationAccuracy horizontalAccuracy = location.horizontalAccuracy;
+        NSLog(@"[INFO][LM] -> (%.10f,%.10f) ± %.3f", latitude, longitude, horizontalAccuracy);
+    }
+}
+
 #pragma mark - Notification event handles
+
+/*!
+ @method startUpdatingLocation:
+ @discussion This method asks the Location Manager to start positioning the device using GPS.
+ */
+- (void) startUpdatingLocation:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"startUpdatingLocation"]){
+        NSLog(@"[NOTI][VCMM] Notification \"startUpdatingLocation\" recived.");
+        [locationManager startUpdatingLocation];
+    }
+}
+
+/*!
+ @method stopUpdatingLocation:
+ @discussion This method asks the Location Manager to stop positioning the device using GPS.
+ */
+- (void) stopUpdatingLocation:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"stopUpdatingLocation"]){
+        NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingLocation\" recived.");
+        [locationManager stopUpdatingLocation];
+    }
+}
 
 /*!
  @method startLocationMeasuring

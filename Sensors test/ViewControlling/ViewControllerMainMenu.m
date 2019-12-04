@@ -219,6 +219,7 @@
         [modes addObject:@"RHO_RHO_LOCATING"];
         [modes addObject:@"RHO_THETA_LOCATING"];
         [modes addObject:@"THETA_THETA_LOCATING"];
+        [modes addObject:@"GPS_SELF_LOCATING"];
         // TO DO: BASIC, ROUTING AND TRACKING modes. Alberto J. 2019/09/13.
     }
     
@@ -678,7 +679,7 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"calibration"
                                                                     object:nil
                                                                   userInfo:data];
-                NSLog(@"[NOTI][LM] Notification \"calibration\" posted.");
+                NSLog(@"[NOTI][VCMM] Notification \"calibration\" posted.");
                 [self.calibrateButton setEnabled:NO];
             }
             
@@ -738,6 +739,35 @@
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+            }
+            if ([chosenMode isEqualToString:[modes objectAtIndex:6]]) { // GPS_SELF_LOCATING
+                NSString * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                                         andCredentialsUserDic:credentialsUserDic];
+                if (currentMode) {
+                    if ([currentMode isEqualToString:@"GPS_SELF_LOCATING"]) {
+                        [sharedData inSessionDataSetMode:nil
+                                       toUserWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopUpdatingLocation"
+                                                                            object:nil];
+                        NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingLocation\" posted.");
+                    } else {
+                        [sharedData inSessionDataSetMode:@"GPS_SELF_LOCATING"
+                                       toUserWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingLocation"
+                                                                            object:nil];
+                        NSLog(@"[NOTI][VCMM] Notification \"startUpdatingLocation\" posted.");
+                    }
+                } else {
+                    [sharedData inSessionDataSetMode:@"GPS_SELF_LOCATING"
+                                   toUserWithUserDic:userDic
+                               andCredentialsUserDic:credentialsUserDic];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingLocation"
+                                                                        object:nil];
+                    NSLog(@"[NOTI][VCMM] Notification \"startUpdatingLocation\" posted.");
+                }
+                
             }
             
             return;
@@ -1049,6 +1079,9 @@
         }
         if([@"THETA_THETA_LOCATING" isEqualToString:mode]) {
             modeToShow = @"Self locate using compass";
+        }
+        if([@"GPS_SELF_LOCATING" isEqualToString:mode]) {
+            modeToShow = @"Self locate using GPS";
         }
         if (modeToShow) {
             cell.textLabel.text = modeToShow;
