@@ -778,24 +778,24 @@
                         [sharedData inSessionDataSetMode:nil
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopUpdatingLocation"
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopUpdatingHeading"
                                                                             object:nil];
-                        NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingLocation\" posted.");
+                        NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingHeading\" posted.");
                     } else {
                         [sharedData inSessionDataSetMode:@"COMPASS_SELF_LOCATING"
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingLocation"
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingHeading"
                                                                             object:nil];
-                        NSLog(@"[NOTI][VCMM] Notification \"startUpdatingLocation\" posted.");
+                        NSLog(@"[NOTI][VCMM] Notification \"startUpdatingHeading\" posted.");
                     }
                 } else {
                     [sharedData inSessionDataSetMode:@"COMPASS_SELF_LOCATING"
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingLocation"
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingHeading"
                                                                         object:nil];
-                    NSLog(@"[NOTI][VCMM] Notification \"startUpdatingLocation\" posted.");
+                    NSLog(@"[NOTI][VCMM] Notification \"startUpdatingHeading\" posted.");
                 }
                 
             }

@@ -84,6 +84,14 @@
                                                      name:@"stopUpdatingLocation"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(startUpdatingHeading:)
+                                                     name:@"startUpdatingHeading"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(stopUpdatingHeading:)
+                                                     name:@"stopUpdatingHeading"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(startLocationMeasuring:)
                                                      name:@"startLocationMeasuring"
                                                    object:nil];
@@ -319,7 +327,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          ];
          */
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-        NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting travel.");
+        NSLog(@"[ERROR][LM] Shared data could not be accessed while starting travel.");
         return;
     }
     
@@ -632,7 +640,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          }
          ];
          */
-        NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting travel.");
+        NSLog(@"[ERROR][LM] Shared data could not be accessed while starting travel.");
         return;
     }
     
@@ -770,13 +778,34 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             NSLog(@"[INFO][LM] Generated measures:");
             NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
             
-        }
+            // Ask view controller to refresh the canvas
+            NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"refreshCanvas"
+             object:nil];
             
-        // Ask view controller to refresh the canvas
-        NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"refreshCanvas"
-         object:nil];
+        }
+        
+        if (
+            [mode isEqualToString:@"COMPASS_SELF_LOCATING"]
+            )
+        {
+            
+            NSString * itemUUID = [[NSUUID UUID] UUIDString];
+            [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithDouble:[newHeading trueHeading]*M_PI/180.0]
+                                          ofSort:@"deviceheading"
+                                    withItemUUID:itemUUID
+                                  withDeviceUUID:deviceUUID
+                                      atPosition:nil
+                                  takenByUserDic:userDic
+                       andWithCredentialsUserDic:credentialsUserDic];
+            NSLog(@"[INFO][LM] Device did update its heading:");
+            NSLog(@"[INFO][LM] ->  %.3f", [newHeading trueHeading]*M_PI/180.0);
+            
+            [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic];
+            NSLog(@"[INFO][LM] Generated measures:");
+            NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
+        }
         
     } else { // If is idle...
         // Do nothing
@@ -812,14 +841,14 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         NSLog(@"[INFO][LM] -> (%.10f,%.10f) ± %.3f", latitude, longitude, horizontalAccuracy);
         NSString * itemUUID = [[NSUUID UUID] UUIDString];
         [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithDouble:latitude]
-                                      ofSort:@"latitude"
+                                      ofSort:@"devicelatitude"
                                 withItemUUID:itemUUID
                               withDeviceUUID:deviceUUID
                                   atPosition:nil
                               takenByUserDic:userDic
                    andWithCredentialsUserDic:credentialsUserDic];
         [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithDouble:longitude]
-                                      ofSort:@"longitude"
+                                      ofSort:@"devicelongitude"
                                 withItemUUID:itemUUID
                               withDeviceUUID:deviceUUID
                                   atPosition:nil
@@ -844,7 +873,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                    andWithCredentialsUserDic:credentialsUserDic];
         
-    
+        
         // Start locating if it is posible.
         switch (CLLocationManager.authorizationStatus) {
             case kCLAuthorizationStatusNotDetermined:
@@ -915,17 +944,17 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
              }
              ];
              */
-            NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting measuring.");
+            NSLog(@"[ERROR][LM] Shared data could not be accessed while starting measuring.");
             return;
         }
         NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
-                                                      andCredentialsUserDic:credentialsUserDic];
+                                                          andCredentialsUserDic:credentialsUserDic];
         // If using location services is allowed
         if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
            CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
             
             if (
-                [mode isEqualToString:@"COMPASS_SELF_LOCATE"]
+                [mode isEqualToString:@"GPS_SELF_LOCATING"]
                 ) {
                 
                 [locationManager startUpdatingLocation];
@@ -951,9 +980,134 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingLocation\" recived.");
         // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
-                                   andWithCredentialsUserDic:credentialsUserDic];
+                              andWithCredentialsUserDic:credentialsUserDic];
         [locationManager stopUpdatingLocation];
         NSLog(@"[INFO][LM] Stop updating GPS location.");
+    }
+}
+
+/*!
+ @method startUpdatingHeading:
+ @discussion This method asks the Location Manager to start positioning the device using its compass.
+ */
+- (void) startUpdatingHeading:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"startUpdatingHeading"]){
+        NSLog(@"[NOTI][VCMM] Notification \"startUpdatingHeading\" recived.");
+        // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
+        [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
+                                   andWithCredentialsUserDic:credentialsUserDic];
+        
+        
+        // Start locating if it is posible.
+        switch (CLLocationManager.authorizationStatus) {
+            case kCLAuthorizationStatusNotDetermined:
+                // Request authorization initially
+                NSLog(@"[ERROR][LM] Authorization is still not known.");
+                
+            case kCLAuthorizationStatusRestricted:
+                // Disable location features
+                NSLog(@"[ERROR][LM] User still restricts localization services.");
+                break;
+                
+            case kCLAuthorizationStatusDenied:
+                // Disable location features
+                NSLog(@"[ERROR][LM] User still doesn't allow localization services.");
+                break;
+                
+            case kCLAuthorizationStatusAuthorizedAlways:
+                // Enable location features
+                NSLog(@"[INFO][LM] User still allows 'always' localization services.");
+                break;
+                
+            case kCLAuthorizationStatusAuthorizedWhenInUse:
+                // Enable location features
+                NSLog(@"[INFO][LM] User still allows 'when-in-use' localization services.");
+                break;
+                
+            default:
+                break;
+        }
+        
+        // Error managment
+        if ([CLLocationManager locationServicesEnabled]) {
+            NSLog(@"[INFO][LM] Location services still enabled.");
+        }else{
+            NSLog(@"[ERROR][LM] Location services still not enabled.");
+        }
+        
+        if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]]) {
+            NSLog(@"[INFO][LM] Monitoring still avalible for class CLBeaconRegion.");
+        }else{
+            NSLog(@"[ERROR][LM] Monitoring still not avalible for class CLBeaconRegion.");
+        }
+        
+        if ([CLLocationManager isRangingAvailable]) {
+            NSLog(@"[INFO][LM] Ranging still avalible.");
+        }else{
+            NSLog(@"[ERROR][LM] Ranging still not avalible.");
+        }
+        
+        if ([CLLocationManager headingAvailable]) {
+            NSLog(@"[INFO][LM] Heading avalible.");
+        }else{
+            NSLog(@"[ERROR][LM] Heading not avalible.");
+            return;
+        }
+        
+        // Validate the access to the data shared collection
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            
+        } else {
+            /*
+             [self alertUserWithTitle:@"Beacon ranged won't be procesed."
+             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
+             andHandler:^(UIAlertAction * action) {
+             // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+             }
+             ];
+             */
+            NSLog(@"[ERROR][LM] Shared data could not be accessed while starting measuring.");
+            return;
+        }
+        NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                          andCredentialsUserDic:credentialsUserDic];
+        // If using location services is allowed
+        if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
+           CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
+            
+            if (
+                [mode isEqualToString:@"COMPASS_SELF_LOCATING"]
+                ) {
+                
+                [locationManager startUpdatingHeading];
+                NSLog(@"[INFO][LM] Start updating device heading.");
+            }
+            
+        }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied ||
+                  CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted){
+            [locationManager stopUpdatingHeading];
+            [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                                  andWithCredentialsUserDic:credentialsUserDic];
+            NSLog(@"[ERROR][LM] Location services not allowed; stop updating device heading.");
+        }
+    }
+}
+
+/*!
+ @method stopUpdatingHeading:
+ @discussion This method asks the Location Manager to stop positioning the device using its compass.
+ */
+- (void) stopUpdatingHeading:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"stopUpdatingHeading"]){
+        NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingHeading\" recived.");
+        // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                              andWithCredentialsUserDic:credentialsUserDic];
+        [locationManager stopUpdatingHeading];
+        NSLog(@"[INFO][LM] Stop updating device heading.");
     }
 }
 
@@ -1038,7 +1192,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
              }
              ];
              */
-            NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting measuring.");
+            NSLog(@"[ERROR][LM] Shared data could not be accessed while starting measuring.");
             return;
         }
         
@@ -1304,7 +1458,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
              }
              ];
              */
-            NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting measuring.");
+            NSLog(@"[ERROR][LM] Shared data could not be accessed while starting measuring.");
             return;
         }
         
