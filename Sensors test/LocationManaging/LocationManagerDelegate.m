@@ -843,7 +843,102 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                    andWithCredentialsUserDic:credentialsUserDic];
-        [locationManager startUpdatingLocation];
+        
+    
+        // Start locating if it is posible.
+        switch (CLLocationManager.authorizationStatus) {
+            case kCLAuthorizationStatusNotDetermined:
+                // Request authorization initially
+                NSLog(@"[ERROR][LM] Authorization is still not known.");
+                
+            case kCLAuthorizationStatusRestricted:
+                // Disable location features
+                NSLog(@"[ERROR][LM] User still restricts localization services.");
+                break;
+                
+            case kCLAuthorizationStatusDenied:
+                // Disable location features
+                NSLog(@"[ERROR][LM] User still doesn't allow localization services.");
+                break;
+                
+            case kCLAuthorizationStatusAuthorizedAlways:
+                // Enable location features
+                NSLog(@"[INFO][LM] User still allows 'always' localization services.");
+                break;
+                
+            case kCLAuthorizationStatusAuthorizedWhenInUse:
+                // Enable location features
+                NSLog(@"[INFO][LM] User still allows 'when-in-use' localization services.");
+                break;
+                
+            default:
+                break;
+        }
+        
+        // Error managment
+        if ([CLLocationManager locationServicesEnabled]) {
+            NSLog(@"[INFO][LM] Location services still enabled.");
+        }else{
+            NSLog(@"[ERROR][LM] Location services still not enabled.");
+        }
+        
+        if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]]) {
+            NSLog(@"[INFO][LM] Monitoring still avalible for class CLBeaconRegion.");
+        }else{
+            NSLog(@"[ERROR][LM] Monitoring still not avalible for class CLBeaconRegion.");
+        }
+        
+        if ([CLLocationManager isRangingAvailable]) {
+            NSLog(@"[INFO][LM] Ranging still avalible.");
+        }else{
+            NSLog(@"[ERROR][LM] Ranging still not avalible.");
+        }
+        
+        if ([CLLocationManager headingAvailable]) {
+            NSLog(@"[INFO][LM] Heading avalible.");
+        }else{
+            NSLog(@"[ERROR][LM] Heading not avalible.");
+        }
+        
+        // Validate the access to the data shared collection
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            
+        } else {
+            /*
+             [self alertUserWithTitle:@"Beacon ranged won't be procesed."
+             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
+             andHandler:^(UIAlertAction * action) {
+             // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+             }
+             ];
+             */
+            NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting measuring.");
+            return;
+        }
+        NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                      andCredentialsUserDic:credentialsUserDic];
+        // If using location services is allowed
+        if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
+           CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
+            
+            if (
+                [mode isEqualToString:@"COMPASS_SELF_LOCATE"]
+                ) {
+                
+                [locationManager startUpdatingLocation];
+                NSLog(@"[INFO][LM] Start updating GPS location.");
+            }
+            
+        }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied ||
+                  CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted){
+            [locationManager stopUpdatingLocation];
+            [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                                  andWithCredentialsUserDic:credentialsUserDic];
+            NSLog(@"[ERROR][LM] Location services not allowed; stop updating GPS location.");
+        }
     }
 }
 
@@ -858,6 +953,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                                    andWithCredentialsUserDic:credentialsUserDic];
         [locationManager stopUpdatingLocation];
+        NSLog(@"[INFO][LM] Stop updating GPS location.");
     }
 }
 
