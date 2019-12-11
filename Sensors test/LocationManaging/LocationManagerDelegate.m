@@ -810,6 +810,24 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         CLLocationDegrees longitude = coordinates.longitude;
         CLLocationAccuracy horizontalAccuracy = location.horizontalAccuracy;
         NSLog(@"[INFO][LM] -> (%.10f,%.10f) ± %.3f", latitude, longitude, horizontalAccuracy);
+        NSString * itemUUID = [[NSUUID UUID] UUIDString];
+        [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithDouble:latitude]
+                                      ofSort:@"latitude"
+                                withItemUUID:itemUUID
+                              withDeviceUUID:deviceUUID
+                                  atPosition:nil
+                              takenByUserDic:userDic
+                   andWithCredentialsUserDic:credentialsUserDic];
+        [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithDouble:longitude]
+                                      ofSort:@"longitude"
+                                withItemUUID:itemUUID
+                              withDeviceUUID:deviceUUID
+                                  atPosition:nil
+                              takenByUserDic:userDic
+                   andWithCredentialsUserDic:credentialsUserDic];
+        [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic];
+        NSLog(@"[INFO][LM] Generated measures:");
+        NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
     }
 }
 
@@ -822,6 +840,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 - (void) startUpdatingLocation:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"startUpdatingLocation"]){
         NSLog(@"[NOTI][VCMM] Notification \"startUpdatingLocation\" recived.");
+        // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
+        [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
+                                   andWithCredentialsUserDic:credentialsUserDic];
         [locationManager startUpdatingLocation];
     }
 }
@@ -833,6 +854,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 - (void) stopUpdatingLocation:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"stopUpdatingLocation"]){
         NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingLocation\" recived.");
+        // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                                   andWithCredentialsUserDic:credentialsUserDic];
         [locationManager stopUpdatingLocation];
     }
 }
