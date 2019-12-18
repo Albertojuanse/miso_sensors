@@ -2082,7 +2082,29 @@
 }
 
 /*!
- @method fromMeasuresDataGetPositionDicsWithCredentialsUserDic:
+ @method fromMeasuresDataGetMeasuresOfSort:withCredentialsUserDic:
+ @discussion This method returns the measures of certain sort; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *) fromMeasuresDataGetMeasuresOfSort:(NSString *)sort
+                                withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        NSMutableArray * measuresTaken = [self getMeasuresDataWithCredentialsUserDic:credentialsUserDic];
+        for (NSMutableDictionary * measureDic in measuresTaken) {
+            NSString * eachSort = measureDic[@"sort"];
+            if ([eachSort isEqualToString:sort]) {
+                [measuresTaken addObject:measureDic];
+            }
+        }
+        return measuresTaken;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetMaxMeasureOfSort:withCredentialsUserDic:
  @discussion This method returns the maximum 'NSNumber' value of the measures taken; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
 
@@ -2090,15 +2112,40 @@
                             withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
-        NSMutableArray * measuresTaken = [self getMeasuresDataWithCredentialsUserDic:credentialsUserDic];
+        NSMutableArray * measuresTaken = [self fromMeasuresDataGetMeasuresOfSort:sort
+                                                          withCredentialsUserDic:credentialsUserDic];
         NSNumber * max = [NSNumber numberWithFloat:FLT_MIN];
-        for (NSNumber * measure in measuresTaken) {
-            if ([measure floatValue] > [max floatValue]) {
+        for (NSMutableDictionary * measureDic in measuresTaken) {
+            NSNumber * eachMeasure = measureDic[@"measure"];
+            if ([eachMeasure floatValue] > [max floatValue]) {
                 max = nil;
-                max = [NSNumber numberWithFloat:[measure floatValue]];
+                max = [NSNumber numberWithFloat:[eachMeasure floatValue]];
             }
         }
-        return max;        
+        return max;
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetMeanMeasureOfSort:withCredentialsUserDic:
+ @discussion This method returns the mean 'NSNumber' value of the measures taken; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+
+- (NSNumber *) fromMeasuresDataGetMeanMeasureOfSort:(NSString *)sort
+                             withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        NSMutableArray * measuresTaken = [self fromMeasuresDataGetMeasuresOfSort:sort
+                                                          withCredentialsUserDic:credentialsUserDic];
+        NSNumber * acc = 0;
+        for (NSMutableDictionary * measureDic in measuresTaken) {
+            NSNumber * eachMeasure = measureDic[@"measure"];
+            acc = [NSNumber numberWithFloat:[acc floatValue] + [eachMeasure floatValue]];
+        }
+        return [NSNumber numberWithFloat:[acc floatValue]/measuresTaken.count];
     } else {
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;

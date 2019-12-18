@@ -213,8 +213,12 @@
                                                   ofSort:(NSString *)sort
                                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
+- (NSMutableArray *) fromMeasuresDataGetMeasuresOfSort:(NSString *)sort
+                                withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSNumber *) fromMeasuresDataGetMaxMeasureOfSort:(NSString *)sort
                             withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSNumber *) fromMeasuresDataGetMeanMeasureOfSort:(NSString *)sort
+                             withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific metamodel data specific getters
 - (NSMutableArray *)fromMetamodelDataGetTypesWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
