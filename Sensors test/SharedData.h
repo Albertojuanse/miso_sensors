@@ -324,7 +324,24 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
                           components:(NSMutableArray *)components
                           references:(NSMutableArray *)references
            andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
-
+- (BOOL) inModelDataAddModelWithName:(NSString *)name
+                          components:(NSMutableArray *)components
+                          references:(NSMutableArray *)references
+                            latitude:(NSNumber *)latitude
+                           longitude:(NSNumber *)longitude
+           andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL) inModelDataAddModelWithName:(NSString *)name
+                          components:(NSMutableArray *)components
+                          references:(NSMutableArray *)references
+                             heading:(NSNumber *)heading
+           andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL) inModelDataAddModelWithName:(NSString *)name
+                          components:(NSMutableArray *)components
+                          references:(NSMutableArray *)references
+                            latitude:(NSNumber *)latitude
+                           longitude:(NSNumber *)longitude
+                             heading:(NSNumber *)heading
+           andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 // Specific user data specific removers
 
 // Specific session data specific removers

@@ -3228,6 +3228,183 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
     }
 }
 
+/*!
+ @method inModelDataAddModelWithName:components:references:latitude:longitude:andWithCredentialsUserDic:
+ @discussion This method saves in the model collection data a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL) inModelDataAddModelWithName:(NSString *)name
+                          components:(NSMutableArray *)components
+                          references:(NSMutableArray *)references
+                            latitude:(NSNumber *)latitude
+                           longitude:(NSNumber *)longitude
+           andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        // If name exists, model is actualized; if name does not exist, the whole dictionary is created.
+        // For each model already saved...
+        BOOL modelFound = NO;
+        for (modelDic in modelData) {
+            // ...check if the current name already exists comparing it with the saved ones.
+            
+            NSString * savedName = modelDic[@"name"];
+            if ([name isEqualToString:savedName]) { // Name already exists
+                modelDic[@"components"] = components;
+                modelDic[@"references"] = references;
+                modelDic[@"latitude"] = latitude;
+                modelDic[@"longitude"] = longitude;
+                modelFound = YES;
+            } else {
+                // Do not upload the model.
+                // TO DO: Now I am working loading a model, modifiying it and saving it; upload is not necesary since it is previuosly loaded.
+                //        Add uploading and merging models. Alberto J. 2019/11/04
+            }
+            
+        }
+        
+        // If name did not be found, create its dictionary
+        if (!modelFound) {
+            
+            // Compose the dictionary from the innermost to the outermost
+            // Wrap components collection in a dictionary with its name
+            modelDic = [[NSMutableDictionary alloc] init];
+            modelDic[@"name"] = name;
+            modelDic[@"sort"] = @"model";
+            modelDic[@"components"] = components;
+            modelDic[@"references"] = references;
+            modelDic[@"latitude"] = latitude;
+            modelDic[@"longitude"] = longitude;
+            
+            // Set it into locatedDic
+            [modelData addObject:modelDic];
+        }
+        
+        // Everything OK
+        return YES;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return NO;
+    }
+}
+
+/*!
+ @method inModelDataAddModelWithName:components:references:heading:andWithCredentialsUserDic:
+ @discussion This method saves in the model collection data a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL) inModelDataAddModelWithName:(NSString *)name
+                          components:(NSMutableArray *)components
+                          references:(NSMutableArray *)references
+                             heading:(NSNumber *)heading
+           andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        // If name exists, model is actualized; if name does not exist, the whole dictionary is created.
+        // For each model already saved...
+        BOOL modelFound = NO;
+        for (modelDic in modelData) {
+            // ...check if the current name already exists comparing it with the saved ones.
+            
+            NSString * savedName = modelDic[@"name"];
+            if ([name isEqualToString:savedName]) { // Name already exists
+                modelDic[@"components"] = components;
+                modelDic[@"references"] = references;
+                modelDic[@"heading"] = heading;
+                modelFound = YES;
+            } else {
+                // Do not upload the model.
+                // TO DO: Now I am working loading a model, modifiying it and saving it; upload is not necesary since it is previuosly loaded.
+                //        Add uploading and merging models. Alberto J. 2019/11/04
+            }
+            
+        }
+        
+        // If name did not be found, create its dictionary
+        if (!modelFound) {
+            
+            // Compose the dictionary from the innermost to the outermost
+            // Wrap components collection in a dictionary with its name
+            modelDic = [[NSMutableDictionary alloc] init];
+            modelDic[@"name"] = name;
+            modelDic[@"sort"] = @"model";
+            modelDic[@"components"] = components;
+            modelDic[@"references"] = references;
+            modelDic[@"heading"] = heading;
+            
+            // Set it into locatedDic
+            [modelData addObject:modelDic];
+        }
+        
+        // Everything OK
+        return YES;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return NO;
+    }
+}
+
+/*!
+ @method inModelDataAddModelWithName:components:references:latitude:longitude:heading:andWithCredentialsUserDic:
+ @discussion This method saves in the model collection data a new one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL) inModelDataAddModelWithName:(NSString *)name
+                          components:(NSMutableArray *)components
+                          references:(NSMutableArray *)references
+                            latitude:(NSNumber *)latitude
+                           longitude:(NSNumber *)longitude
+                             heading:(NSNumber *)heading
+           andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        // If name exists, model is actualized; if name does not exist, the whole dictionary is created.
+        // For each model already saved...
+        BOOL modelFound = NO;
+        for (modelDic in modelData) {
+            // ...check if the current name already exists comparing it with the saved ones.
+            
+            NSString * savedName = modelDic[@"name"];
+            if ([name isEqualToString:savedName]) { // Name already exists
+                modelDic[@"components"] = components;
+                modelDic[@"references"] = references;
+                modelDic[@"latitude"] = latitude;
+                modelDic[@"longitude"] = longitude;
+                modelDic[@"heading"] = heading;
+                modelFound = YES;
+            } else {
+                // Do not upload the model.
+                // TO DO: Now I am working loading a model, modifiying it and saving it; upload is not necesary since it is previuosly loaded.
+                //        Add uploading and merging models. Alberto J. 2019/11/04
+            }
+            
+        }
+        
+        // If name did not be found, create its dictionary
+        if (!modelFound) {
+            
+            // Compose the dictionary from the innermost to the outermost
+            // Wrap components collection in a dictionary with its name
+            modelDic = [[NSMutableDictionary alloc] init];
+            modelDic[@"name"] = name;
+            modelDic[@"sort"] = @"model";
+            modelDic[@"components"] = components;
+            modelDic[@"references"] = references;
+            modelDic[@"latitude"] = latitude;
+            modelDic[@"longitude"] = longitude;
+            modelDic[@"heading"] = heading;
+            
+            // Set it into locatedDic
+            [modelData addObject:modelDic];
+        }
+        
+        // Everything OK
+        return YES;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return NO;
+    }
+}
+
 #pragma mark - User data specific removers
 
 #pragma mark - Session data specific removers
