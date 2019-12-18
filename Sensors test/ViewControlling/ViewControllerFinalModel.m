@@ -177,6 +177,15 @@
         NSLog(@"[INFO][VCFM] -> %@", ref);
     }
     
+    // Check for coordinates
+    NSNumber * latitude = [sharedData fromMeasuresDataGetMeanMeasureOfSort:@"devicelatitude"
+                                                    withCredentialsUserDic:credentialsUserDic];
+    NSNumber * longitude = [sharedData fromMeasuresDataGetMeanMeasureOfSort:@"devicelongitude"
+                                                     withCredentialsUserDic:credentialsUserDic];
+    // Check for heading
+    NSNumber * heading = [sharedData fromMeasuresDataGetMeanMeasureOfSort:@"deviceheading"
+                                                   withCredentialsUserDic:credentialsUserDic];
+    
     // Make a new name for saving
     NSString * savingName = [NSString stringWithFormat:@"%@@miso.uam.es", name];
     
@@ -184,6 +193,9 @@
     BOOL savedModel = [sharedData inModelDataAddModelWithName:savingName
                                                    components:components
                                                    references:references
+                                                     latitude:latitude
+                                                    longitude:longitude
+                                                      heading:heading
                                     andWithCredentialsUserDic:credentialsUserDic];
     if (savedModel) {
         // PERSISTENT: SAVE MODEL
@@ -234,22 +246,25 @@
         modelsIndexData = nil; // ARC disposing
         modelsIndexData = [NSKeyedArchiver archivedDataWithRootObject:modelsIndex];
         [userDefaults setObject:modelsIndexData forKey:@"es.uam.miso/data/models/index"];
-        NSLog(@"[INFO][VCAB] Model saved in device memory.");
+        NSLog(@"[INFO][VCFM] Model saved in device memory.");
         // END PERSISTENT: SAVE MODEL
+        
+        // Show the model
+        NSMutableArray * model = [sharedData fromModelDataGetModelDicWithName:savingName
+                                                       withCredentialsUserDic:credentialsUserDic];
+        NSString * modelString = [NSString stringWithFormat:@"%@", [model objectAtIndex:0]];
+        self.modelText.text = modelString;
+        
+        // Reset the measures and location componentes
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
+                                                            object:nil];
+        NSLog(@"[NOTI][VCFM] Notification \"reset\" posted.");
+        
     } else {
         NSLog(@"[ERROR][VCFM] Model %@ could not be saved in device memory.", savingName);
+        self.modelText.text = @"Model could not be saved in device memory. Please, try again";
+        return;
     }
-    
-    // Show the model
-    NSMutableArray * model = [sharedData fromModelDataGetModelDicWithName:savingName
-                                                   withCredentialsUserDic:credentialsUserDic];
-    NSString * modelString = [NSString stringWithFormat:@"%@", [model objectAtIndex:0]];
-    self.modelText.text = modelString;
-    
-    // Reset the measures and location componentes
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
-                                                        object:nil];
-    NSLog(@"[NOTI][VCTTL] Notification \"reset\" posted.");
 }
 
 /*!

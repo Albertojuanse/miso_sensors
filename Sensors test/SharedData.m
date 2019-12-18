@@ -2114,15 +2114,19 @@
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         NSMutableArray * measuresTaken = [self fromMeasuresDataGetMeasuresOfSort:sort
                                                           withCredentialsUserDic:credentialsUserDic];
-        NSNumber * max = [NSNumber numberWithFloat:FLT_MIN];
-        for (NSMutableDictionary * measureDic in measuresTaken) {
-            NSNumber * eachMeasure = measureDic[@"measure"];
-            if ([eachMeasure floatValue] > [max floatValue]) {
-                max = nil;
-                max = [NSNumber numberWithFloat:[eachMeasure floatValue]];
+        if (measuresTaken.count > 0) {
+            NSNumber * max = [NSNumber numberWithFloat:FLT_MIN];
+            for (NSMutableDictionary * measureDic in measuresTaken) {
+                NSNumber * eachMeasure = measureDic[@"measure"];
+                if ([eachMeasure floatValue] > [max floatValue]) {
+                    max = nil;
+                    max = [NSNumber numberWithFloat:[eachMeasure floatValue]];
+                }
             }
+            return max;
+        } else {
+            return nil;
         }
-        return max;
     } else {
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
@@ -2140,12 +2144,16 @@
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         NSMutableArray * measuresTaken = [self fromMeasuresDataGetMeasuresOfSort:sort
                                                           withCredentialsUserDic:credentialsUserDic];
-        NSNumber * acc = 0;
-        for (NSMutableDictionary * measureDic in measuresTaken) {
-            NSNumber * eachMeasure = measureDic[@"measure"];
-            acc = [NSNumber numberWithFloat:[acc floatValue] + [eachMeasure floatValue]];
+        if (measuresTaken.count > 0) {
+            NSNumber * acc = 0;
+            for (NSMutableDictionary * measureDic in measuresTaken) {
+                NSNumber * eachMeasure = measureDic[@"measure"];
+                acc = [NSNumber numberWithFloat:[acc floatValue] + [eachMeasure floatValue]];
+            }
+            return [NSNumber numberWithFloat:[acc floatValue]/measuresTaken.count];
+        } else {
+            return nil;
         }
-        return [NSNumber numberWithFloat:[acc floatValue]/measuresTaken.count];
     } else {
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
