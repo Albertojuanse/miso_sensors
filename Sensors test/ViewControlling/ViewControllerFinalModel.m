@@ -213,7 +213,7 @@
         NSMutableArray * modelDics = [sharedData fromModelDataGetModelDicWithName:savingName
                                                            withCredentialsUserDic:credentialsUserDic];
         if (modelDics.count == 0) {
-            NSLog(@"[ERROR][VCFM] Saved model %@ could not be retieved from shared data.", savingName);
+            NSLog(@"[ERROR][VCFM] Saved model %@ could not be retrieved from shared data.", savingName);
         } else {
             if (modelDics.count > 1) {
                 NSLog(@"[ERROR][VCFM] More than one saved model with identifier %@.", savingName);

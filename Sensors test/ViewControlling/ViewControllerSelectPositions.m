@@ -517,7 +517,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                             NSMutableArray * itemDics = [sharedData fromItemDataGetItemsWithIdentifier:eachComponent[@"identifier"]
                                                                                  andCredentialsUserDic:credentialsUserDic];
                             if (itemDics.count == 0) {
-                                NSLog(@"[ERROR][VCSP] Saved item %@ could not be retieved from shared data.", eachComponent[@"identifier"]);
+                                NSLog(@"[ERROR][VCSP] Saved item %@ could not be retrieved from shared data.", eachComponent[@"identifier"]);
                                 break;
                             } else {
                                 if (itemDics.count > 1) {
