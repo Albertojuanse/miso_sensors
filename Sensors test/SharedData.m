@@ -2090,13 +2090,14 @@
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         NSMutableArray * measuresTaken = [self getMeasuresDataWithCredentialsUserDic:credentialsUserDic];
+        NSMutableArray * measuresTakenOfSort = [[NSMutableArray alloc] init];
         for (NSMutableDictionary * measureDic in measuresTaken) {
             NSString * eachSort = measureDic[@"sort"];
             if ([eachSort isEqualToString:sort]) {
-                [measuresTaken addObject:measureDic];
+                [measuresTakenOfSort addObject:measureDic];
             }
         }
-        return measuresTaken;
+        return measuresTakenOfSort;
     } else {
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;

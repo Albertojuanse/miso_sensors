@@ -185,6 +185,9 @@
     // Check for heading
     NSNumber * heading = [sharedData fromMeasuresDataGetMeanMeasureOfSort:@"deviceheading"
                                                    withCredentialsUserDic:credentialsUserDic];
+    if (heading) { // radians to degrees
+        heading = [NSNumber numberWithFloat:[heading floatValue]*180.0/M_PI];
+    }
     
     // Make a new name for saving
     NSString * savingName = [NSString stringWithFormat:@"%@@miso.uam.es", name];
