@@ -213,6 +213,7 @@
     // Variables; only inizialated if they didn't be so.
     if (!modes) {
         modes = [[NSMutableArray alloc] init];
+        [modes addObject:@"MONITORING"];
         [modes addObject:@"RHO_RHO_MODELING"];
         [modes addObject:@"RHO_THETA_MODELING"];
         [modes addObject:@"THETA_THETA_MODELING"];
@@ -711,37 +712,43 @@
         // If user did select a row in the table
         if (chosenMode) {
             
-            if ([chosenMode isEqualToString:[modes objectAtIndex:0]]) { // RHO_RHO_MODELING
+            if ([chosenMode isEqualToString:[modes objectAtIndex:0]]) { // MONITORING
+                [sharedData inSessionDataSetMode:@"MONITORING"
+                               toUserWithUserDic:userDic
+                           andCredentialsUserDic:userDic];
+                [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+            }
+            if ([chosenMode isEqualToString:[modes objectAtIndex:1]]) { // RHO_RHO_MODELING
                 [sharedData inSessionDataSetMode:@"RHO_RHO_MODELING"
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:userDic];
                 [self performSegueWithIdentifier:@"fromMainToRHO_RHO_MODELING" sender:sender];
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:1]]) { // RHO_THETA_MODELING
+            if ([chosenMode isEqualToString:[modes objectAtIndex:2]]) { // RHO_THETA_MODELING
                 [sharedData inSessionDataSetMode:@"RHO_THETA_MODELING"
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:2]]) { // RHO_THETA_MODELING
+            if ([chosenMode isEqualToString:[modes objectAtIndex:3]]) { // RHO_THETA_MODELING
                 return;
                 // [self performSegueWithIdentifier:@"fromMainToTHETA_THETA_MODELING" sender:sender];
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:3]]) { // RHO_RHO_LOCATING
+            if ([chosenMode isEqualToString:[modes objectAtIndex:4]]) { // RHO_RHO_LOCATING
                 return;
                 // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:4]]) { // RHO_THETA_LOCATING
+            if ([chosenMode isEqualToString:[modes objectAtIndex:5]]) { // RHO_THETA_LOCATING
                 return;
                 // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:5]]) { // THETA_THETA_LOCATING
+            if ([chosenMode isEqualToString:[modes objectAtIndex:6]]) { // THETA_THETA_LOCATING
                 [sharedData inSessionDataSetMode:@"THETA_THETA_LOCATING"
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:6]]) { // GPS_SELF_LOCATING
+            if ([chosenMode isEqualToString:[modes objectAtIndex:7]]) { // GPS_SELF_LOCATING
                 NSString * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                                          andCredentialsUserDic:credentialsUserDic];
                 if (currentMode) {
@@ -770,7 +777,7 @@
                 }
                 
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:7]]) { // COMPASS_SELF_LOCATING
+            if ([chosenMode isEqualToString:[modes objectAtIndex:8]]) { // COMPASS_SELF_LOCATING
                 NSString * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                                          andCredentialsUserDic:credentialsUserDic];
                 if (currentMode) {
@@ -1091,6 +1098,9 @@
     if (tableView == self.tableModes) {
         NSString * mode = [modes objectAtIndex:indexPath.row];
         NSString * modeToShow;
+        if([@"MONITORING" isEqualToString:mode]) {
+            modeToShow = @"Monitorig";
+        }
         if([@"RHO_RHO_MODELING" isEqualToString:mode]) {
             modeToShow = @"Locate others using iBeacon";
         }

@@ -998,7 +998,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="34" y="23"/>
+            <point key="canvasLocation" x="1104" y="23"/>
         </scene>
         <!--View Controller Select Positions-->
         <scene sceneID="x5T-83-M4m">
@@ -1206,7 +1206,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AZT-QR-dYO" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1045.3125" y="24.609375"/>
+            <point key="canvasLocation" x="1854" y="25"/>
         </scene>
         <!--View Controller Theta Theta Locating-->
         <scene sceneID="5uU-BV-Rg5">
@@ -1326,7 +1326,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="O8n-DL-srm" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2141" y="25"/>
+            <point key="canvasLocation" x="2516" y="25"/>
         </scene>
         <!--View Controller Final Model-->
         <scene sceneID="PLP-Je-2Ui">
@@ -1526,12 +1526,85 @@
             </objects>
             <point key="canvasLocation" x="1045" y="-733"/>
         </scene>
+        <!--View Controller Monitoring-->
+        <scene sceneID="T3N-HZ-T84">
+            <objects>
+                <viewController id="kSl-V8-bhM" customClass="ViewControllerMonitoring" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="fSN-xV-48R">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="In the next table will appear the located iBeacons." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ngi-hx-gdp">
+                                <rect key="frame" x="32" y="52" width="379" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="j3a-GT-JWI" customClass="ViewControllerMonitoring">
+                                <rect key="frame" x="32" y="138.5" width="704" height="795.5"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NCE-2c-0bB">
+                                <rect key="frame" x="695" y="966.5" width="41" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <state key="normal" title="Finish"/>
+                                <connections>
+                                    <action selector="handleButtonGo:" destination="kSl-V8-bhM" eventType="touchUpInside" id="djQ-6d-9Fr"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Once the registry is finished, please, tap the finish button." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ukQ-x6-mDX">
+                                <rect key="frame" x="32" y="971" width="441" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Push Back to abort the registry." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Rp-oK-ayA">
+                                <rect key="frame" x="32" y="81" width="241" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wnz-eL-WVG">
+                                <rect key="frame" x="686" y="76.5" width="50" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="daa-xA-nGL"/>
+                                </constraints>
+                                <state key="normal" title="Back"/>
+                                <connections>
+                                    <action selector="handleButtonBack:" destination="kSl-V8-bhM" eventType="touchUpInside" id="7Rm-TA-hvj"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="9Rp-oK-ayA" firstAttribute="top" secondItem="ngi-hx-gdp" secondAttribute="bottom" constant="8" id="3nY-N3-Tf8"/>
+                            <constraint firstItem="ukQ-x6-mDX" firstAttribute="leading" secondItem="azV-Cm-yQo" secondAttribute="leading" constant="32" id="80v-SE-vAW"/>
+                            <constraint firstItem="NCE-2c-0bB" firstAttribute="top" secondItem="j3a-GT-JWI" secondAttribute="bottom" constant="32" id="9vk-2X-Z18"/>
+                            <constraint firstItem="ngi-hx-gdp" firstAttribute="leading" secondItem="azV-Cm-yQo" secondAttribute="leading" constant="32" id="D3U-TZ-6Xa"/>
+                            <constraint firstItem="azV-Cm-yQo" firstAttribute="trailing" secondItem="wnz-eL-WVG" secondAttribute="trailing" constant="32" id="HE6-Ga-9fn"/>
+                            <constraint firstItem="azV-Cm-yQo" firstAttribute="bottom" secondItem="ukQ-x6-mDX" secondAttribute="bottom" constant="32" id="Jam-Lz-NdR"/>
+                            <constraint firstItem="azV-Cm-yQo" firstAttribute="trailing" secondItem="NCE-2c-0bB" secondAttribute="trailing" constant="32" id="TFF-Og-MHn"/>
+                            <constraint firstItem="NCE-2c-0bB" firstAttribute="centerY" secondItem="ukQ-x6-mDX" secondAttribute="centerY" id="aQ5-7w-dXf"/>
+                            <constraint firstItem="ngi-hx-gdp" firstAttribute="top" secondItem="azV-Cm-yQo" secondAttribute="top" constant="32" id="fg7-8b-PtS"/>
+                            <constraint firstItem="azV-Cm-yQo" firstAttribute="trailing" secondItem="j3a-GT-JWI" secondAttribute="trailing" constant="32" id="hHZ-Ir-Ilk"/>
+                            <constraint firstItem="9Rp-oK-ayA" firstAttribute="leading" secondItem="azV-Cm-yQo" secondAttribute="leading" constant="32" id="pDf-U4-v8E"/>
+                            <constraint firstItem="j3a-GT-JWI" firstAttribute="leading" secondItem="azV-Cm-yQo" secondAttribute="leading" constant="32" id="tb3-QO-qor"/>
+                            <constraint firstItem="j3a-GT-JWI" firstAttribute="top" secondItem="wnz-eL-WVG" secondAttribute="bottom" constant="32" id="uc1-j9-B2M"/>
+                            <constraint firstItem="wnz-eL-WVG" firstAttribute="centerY" secondItem="9Rp-oK-ayA" secondAttribute="centerY" id="wke-Zg-aom"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="azV-Cm-yQo"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="AAF-tR-vr4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="302" y="25"/>
+        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="wLB-nb-URa"/>
         <segue reference="QxI-WS-XJS"/>
-        <segue reference="ZVX-zW-HeN"/>
-        <segue reference="DJm-0E-zOi"/>
-        <segue reference="jUo-Ud-pm0"/>
+        <segue reference="A3y-43-nSw"/>
+        <segue reference="ARI-Cn-mJV"/>
+        <segue reference="OWJ-G0-Y79"/>
     </inferredMetricsTieBreakers>
 </document>
