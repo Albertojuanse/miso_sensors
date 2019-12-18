@@ -245,6 +245,11 @@
                                                    withCredentialsUserDic:credentialsUserDic];
     NSString * modelString = [NSString stringWithFormat:@"%@", [model objectAtIndex:0]];
     self.modelText.text = modelString;
+    
+    // Reset the measures and location componentes
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
+                                                        object:nil];
+    NSLog(@"[NOTI][VCTTL] Notification \"reset\" posted.");
 }
 
 /*!
