@@ -259,9 +259,9 @@
         self.modelText.text = modelString;
         
         // Reset the measures and location componentes
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
                                                             object:nil];
-        NSLog(@"[NOTI][VCFM] Notification \"reset\" posted.");
+        NSLog(@"[NOTI][VCFM] Notification \"resetLocationAndMeasures\" posted.");
         
     } else {
         NSLog(@"[ERROR][VCFM] Model %@ could not be saved in device memory.", savingName);

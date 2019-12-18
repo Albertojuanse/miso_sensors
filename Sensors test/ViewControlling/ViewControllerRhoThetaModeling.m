@@ -272,9 +272,9 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
                                                             object:nil];
         NSLog(@"[NOTI][VCRTM] Notification \"stopLocationMeasuring\" posted.");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"reset"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"reset\" posted.");
+        NSLog(@"[NOTI][VCRTM] Notification \"resetLocationAndMeasures\" posted.");
         return;
     }
     

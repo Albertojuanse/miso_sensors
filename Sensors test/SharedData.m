@@ -192,21 +192,36 @@
     
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         // Colections of data
-        userData = nil;
-        sessionData = nil;
-        itemsData = nil;
+        //userData = nil;
+        //sessionData = nil;
+        //itemsData = nil;
         measuresData = nil;
-        metamodelData = nil;
-        modelData = nil;
+        //metamodelData = nil;
+        //modelData = nil;
         
         // Colections of data
-        userData = [[NSMutableArray alloc] init];
-        [userData addObject:credentialsUserDic];
-        sessionData = [[NSMutableArray alloc] init];
-        itemsData = [[NSMutableArray alloc] init];
+        //userData = [[NSMutableArray alloc] init];
+        //[userData addObject:credentialsUserDic];
+        //sessionData = [[NSMutableArray alloc] init];
+        //itemsData = [[NSMutableArray alloc] init];
         measuresData = [[NSMutableArray alloc] init];
-        metamodelData = [[NSMutableArray alloc] init];
-        modelData = [[NSMutableArray alloc] init];
+        //metamodelData = [[NSMutableArray alloc] init];
+        //modelData = [[NSMutableArray alloc] init];
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+    }
+    return;
+}
+
+/*!
+ @method resetMeasuresWithCredentialsUserDic:
+ @discussion Set measures instance variable to null for ARC disposing and reallocate and init it.
+ */
+- (void) resetMeasuresWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic {
+    
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        measuresData = nil;
+        measuresData = [[NSMutableArray alloc] init];
     } else {
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
     }
@@ -303,6 +318,8 @@
 - (NSMutableArray *)getModelDataWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSLog(@"getModelDataWithCredentialsUserDic: credential user dic %@", credentialsUserDic);
         return modelData;
     } else {
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
