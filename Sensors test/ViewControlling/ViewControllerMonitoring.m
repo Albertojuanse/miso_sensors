@@ -32,9 +32,12 @@
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
     }
     
-    // Initial state
-    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
-                          andWithCredentialsUserDic:credentialsUserDic];
+    // Initial state measuring and init measures
+    [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
+                               andWithCredentialsUserDic:credentialsUserDic];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"startLocationMeasuring" object:nil];
+    NSLog(@"[NOTI][VCM] Notification \"startLocationMeasuring\" posted.");
+    
     
     // Variables
     locatedPositionUUID = [[NSUUID UUID] UUIDString];
@@ -137,7 +140,11 @@
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        
+        // Stop measuring
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                                   andWithCredentialsUserDic:credentialsUserDic];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring" object:nil];
+        NSLog(@"[NOTI][VCM] Notification \"stopLocationMeasuring\" posted.");
     } else {
         
     }

@@ -430,6 +430,53 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         // Get the measuring mode
         NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                           andCredentialsUserDic:credentialsUserDic];
+        
+        // If a monitoring type system; needs to save the UUID
+        if (
+            [mode isEqualToString:@"MONITORING"]
+            ) {
+            
+            // If there is any beacon in the event...
+            if (beacons.count > 0) {
+                
+                for (CLBeacon *beacon in beacons) {
+                    // ...get its information...
+                    NSString * uuid = [[beacon proximityUUID] UUIDString];
+                    
+                    // ...the monitoring item position...
+                    NSMutableArray * itemsPositions = [sharedData fromSessionDataGetPositionsOfItemsChosenByUserDic:credentialsUserDic
+                                                                                            withCredentialsUserName:credentialsUserDic];
+                    if (itemsPositions.count == 0) {
+                        NSLog(@"[ERROR][LM] User did not choose a monitoring item. Disposing measure.");
+                        return;
+                    }
+                    if (itemsPositions.count > 0) {
+                        NSLog(@"[ERROR][LM] User did choose more than one monitoring item. Using first one.");
+                    }
+                    
+                    RDPosition * itemPosition = [itemsPositions objectAtIndex:0];
+                        
+                    // ...and compose a measure with them.
+                    [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithFloat:0.0]
+                                                  ofSort:@"rssi"
+                                            withItemUUID:uuid
+                                          withDeviceUUID:deviceUUID
+                                              atPosition:itemPosition
+                                          takenByUserDic:userDic
+                               andWithCredentialsUserDic:credentialsUserDic];
+                }
+                    
+                // Ask view controller to refresh the canvas
+                if(beacons.count > 0) {
+                    NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
+                    [[NSNotificationCenter defaultCenter]
+                     postNotificationName:@"refreshCanvas"
+                     object:nil];
+                }
+            }
+            
+        }
+        
         // If a rho type system which needs ranging
         if (
             [mode isEqualToString:@"RHO_RHO_MODELING"] ||
@@ -592,7 +639,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 }
             }
         }
-            
+        
         // If a theta theta type system; it is supposed that in this case regions are ot registered, but just in case
         if (
             [mode isEqualToString:@"THETA_THETA_MODELING"] ||
