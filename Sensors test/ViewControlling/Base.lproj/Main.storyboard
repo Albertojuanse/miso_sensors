@@ -1082,6 +1082,7 @@
                         <segue destination="lVP-jp-YaV" kind="show" identifier="fromSelectPositionsToMain" id="OWJ-G0-Y79"/>
                         <segue destination="iCa-UJ-9hQ" kind="show" identifier="fromSelectPositionsToTHETA_THETA_LOCATING" id="QxI-WS-XJS"/>
                         <segue destination="1M1-iA-J20" kind="show" identifier="fromSelectPositionsToRHO_THETA_MODELING" id="A3y-43-nSw"/>
+                        <segue destination="kSl-V8-bhM" kind="show" identifier="fromTHETA_THETA_LOCATINGToSelectPosition" id="GqH-ez-bNl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ewG-5j-Hqc" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1572,6 +1573,7 @@
                                 <state key="normal" title="Back"/>
                                 <connections>
                                     <action selector="handleButtonBack:" destination="kSl-V8-bhM" eventType="touchUpInside" id="7Rm-TA-hvj"/>
+                                    <segue destination="zBC-hA-n0a" kind="show" identifier="fromMONITORINGToSelectPosition" id="UlT-NL-5Yu"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -1604,7 +1606,7 @@
         <segue reference="wLB-nb-URa"/>
         <segue reference="QxI-WS-XJS"/>
         <segue reference="A3y-43-nSw"/>
-        <segue reference="ARI-Cn-mJV"/>
+        <segue reference="UlT-NL-5Yu"/>
         <segue reference="OWJ-G0-Y79"/>
     </inferredMetricsTieBreakers>
 </document>

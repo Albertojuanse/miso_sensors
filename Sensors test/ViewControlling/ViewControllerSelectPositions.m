@@ -157,6 +157,11 @@
                                                           andCredentialsUserDic:credentialsUserDic];
         
         // This button can segue with different views depending on the mode chosen by the user in the main menu
+        if ([mode isEqualToString:@"MONITORING"]) {
+            // NSLog(@"[INFO][VCSP] Chosen mode is MONITORING.");
+            [self performSegueWithIdentifier:@"fromSelectPositionsToMONITORING" sender:sender];
+            return;
+        }
         if ([mode isEqualToString:@"RHO_RHO_LOCATING"]) {
             // NSLog(@"[INFO][VCSP] Chosen mode is RHO_RHO_LOCATING.");
             // [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_RHO_LOCATING" sender:sender];
@@ -222,7 +227,19 @@
     NSLog(@"[INFO][VCSP] Asked segue %@", [segue identifier]);
     
     // This view can segue with different views depending on the mode chosen by the user in the main menu
+    
+    if ([[segue identifier] isEqualToString:@"fromSelectPositionsToMONITORING"]) {
         
+        // Get destination view
+        ViewControllerMonitoring * viewControllerMonitoring = [segue destinationViewController];
+        // Set the variables
+        [viewControllerMonitoring setCredentialsUserDic:credentialsUserDic];
+        [viewControllerMonitoring setUserDic:userDic];
+        [viewControllerMonitoring setSharedData:sharedData];
+        [viewControllerMonitoring setMotionManager:motion];
+        [viewControllerMonitoring setLocationManager:location];
+        
+    }
     if ([[segue identifier] isEqualToString:@"fromSelectPositionsToTHETA_THETA_LOCATING"]) {
         
         // Get destination view

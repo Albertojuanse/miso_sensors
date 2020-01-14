@@ -211,6 +211,7 @@
     }
     
     // Variables; only inizialated if they didn't be so.
+    // TO DO: Pass this in every view and call the modes by index, not by string. Alberto J. 2020/01/14.
     if (!modes) {
         modes = [[NSMutableArray alloc] init];
         [modes addObject:@"MONITORING"];
