@@ -713,19 +713,19 @@
         if (chosenMode) {
             
             if ([chosenMode isEqualToString:[modes objectAtIndex:0]]) { // MONITORING
-                [sharedData inSessionDataSetMode:@"MONITORING"
+                [sharedData inSessionDataSetMode:[modes objectAtIndex:0]
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:userDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
             if ([chosenMode isEqualToString:[modes objectAtIndex:1]]) { // RHO_RHO_MODELING
-                [sharedData inSessionDataSetMode:@"RHO_RHO_MODELING"
+                [sharedData inSessionDataSetMode:[modes objectAtIndex:1]
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:userDic];
                 [self performSegueWithIdentifier:@"fromMainToRHO_RHO_MODELING" sender:sender];
             }
             if ([chosenMode isEqualToString:[modes objectAtIndex:2]]) { // RHO_THETA_MODELING
-                [sharedData inSessionDataSetMode:@"RHO_THETA_MODELING"
+                [sharedData inSessionDataSetMode:[modes objectAtIndex:2]
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
@@ -743,7 +743,7 @@
                 // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
             if ([chosenMode isEqualToString:[modes objectAtIndex:6]]) { // THETA_THETA_LOCATING
-                [sharedData inSessionDataSetMode:@"THETA_THETA_LOCATING"
+                [sharedData inSessionDataSetMode:[modes objectAtIndex:6]
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
@@ -752,7 +752,7 @@
                 NSString * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                                          andCredentialsUserDic:credentialsUserDic];
                 if (currentMode) {
-                    if ([currentMode isEqualToString:@"GPS_SELF_LOCATING"]) {
+                    if ([currentMode isEqualToString:[modes objectAtIndex:7]]) {
                         [sharedData inSessionDataSetMode:nil
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
@@ -760,7 +760,7 @@
                                                                             object:nil];
                         NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingLocation\" posted.");
                     } else {
-                        [sharedData inSessionDataSetMode:@"GPS_SELF_LOCATING"
+                        [sharedData inSessionDataSetMode:[modes objectAtIndex:7]
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingLocation"
@@ -781,7 +781,7 @@
                 NSString * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                                          andCredentialsUserDic:credentialsUserDic];
                 if (currentMode) {
-                    if ([currentMode isEqualToString:@"COMPASS_SELF_LOCATING"]) {
+                    if ([currentMode isEqualToString:[modes objectAtIndex:8]]) {
                         [sharedData inSessionDataSetMode:nil
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
@@ -789,7 +789,7 @@
                                                                             object:nil];
                         NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingHeading\" posted.");
                     } else {
-                        [sharedData inSessionDataSetMode:@"COMPASS_SELF_LOCATING"
+                        [sharedData inSessionDataSetMode:[modes objectAtIndex:8]
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingHeading"
@@ -797,7 +797,7 @@
                         NSLog(@"[NOTI][VCMM] Notification \"startUpdatingHeading\" posted.");
                     }
                 } else {
-                    [sharedData inSessionDataSetMode:@"COMPASS_SELF_LOCATING"
+                    [sharedData inSessionDataSetMode:[modes objectAtIndex:8]
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingHeading"
