@@ -1591,6 +1591,7 @@
                         <outlet property="buttonFinish" destination="NCE-2c-0bB" id="3xe-Tl-3qP"/>
                         <outlet property="canvas" destination="gg5-9y-kiJ" id="8vF-5y-VOZ"/>
                         <outlet property="tableRegister" destination="j3a-GT-JWI" id="C96-C3-Faq"/>
+                        <segue destination="Yt7-Vj-vjk" kind="show" identifier="fromMONITORINGToFinalModel" id="crr-mq-j8Q"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AAF-tR-vr4" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1599,7 +1600,8 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="wLB-nb-URa"/>
+        <segue reference="Ul9-9n-vjH"/>
+        <segue reference="crr-mq-j8Q"/>
         <segue reference="QxI-WS-XJS"/>
         <segue reference="A3y-43-nSw"/>
         <segue reference="UlT-NL-5Yu"/>

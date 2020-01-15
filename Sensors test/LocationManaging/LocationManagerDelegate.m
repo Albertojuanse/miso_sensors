@@ -462,11 +462,15 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 NSLog(@"[INFO][LM] Generated measures:");
                 NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
                     
-                // Ask view controller to refresh the canvas
+                // Ask view controller to refresh the canvas and table
                 if(beacons.count > 0) {
                     NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
                     [[NSNotificationCenter defaultCenter]
                      postNotificationName:@"refreshCanvas"
+                     object:nil];
+                    NSLog(@"[NOTI][LM] Notification \"refreshRegisterTable\" posted.");
+                    [[NSNotificationCenter defaultCenter]
+                     postNotificationName:@"refreshRegisterTable"
                      object:nil];
                 }
             }

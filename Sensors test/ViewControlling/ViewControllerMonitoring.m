@@ -59,6 +59,12 @@
     // Ask canvas to initialize
     [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic andCredentialsUserDic:credentialsUserDic];
     
+    // This object must listen to this events
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshRegisterTable:)
+                                                 name:@"refreshRegisterTable"
+                                               object:nil];
+    
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableRegister.delegate = self;
     self.tableRegister.dataSource = self;
@@ -80,6 +86,19 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Notifications events handlers
+/*!
+ @method refreshRegisterTable:
+ @discussion This method uploads the table with the ranged iBeacons; this method is called when someone submits the 'refreshCanvas' notification.
+ */
+- (void) refreshRegisterTable:(NSNotification *) notification
+{
+    if ([[notification name] isEqualToString:@"refreshRegisterTable"]){
+        NSLog(@"[NOTI][VC] Notification \"refreshRegisterTable\" recived.");
+    }
+    [self.tableRegister reloadData];
 }
 
 #pragma mark - Instance methods
@@ -165,6 +184,27 @@
                                    andWithCredentialsUserDic:credentialsUserDic];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring" object:nil];
         NSLog(@"[NOTI][VCM] Notification \"stopLocationMeasuring\" posted.");
+        
+        // Set registered items as located and reference with the registering item
+        MDType * type = [[MDType alloc] initWithName:@"Register"];
+        NSMutableArray * rangedUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
+                                                                 withCredentialsUserDic:credentialsUserDic];
+        for (NSString * uuid in rangedUUID) {
+            NSMutableDictionary * itemDic = [[sharedData fromItemDataGetItemsWithUUID:uuid
+                                                                andCredentialsUserDic:credentialsUserDic] objectAtIndex:0];
+            itemDic[@"located"] = @"YES";
+            
+            // Reference
+            MDReference * reference = [[MDReference alloc] initWithType:type
+                                                           sourceItemId:itemChosenByUserAsDevicePosition[@"identifier"]
+                                                        andTargetItemId:itemDic[@"identifier"]
+                                       ];
+            NSLog(@"[INFO][VCM] Created reference %@", reference);
+            [sharedData inSessionDataAddReference:reference
+                                toUserWithUserDic:userDic
+                           withCredentialsUserDic:credentialsUserDic];
+        }
+        [self performSegueWithIdentifier:@"fromMONITORINGToFinalModel" sender:sender];
     } else {
         
     }
@@ -234,16 +274,16 @@
         return;
     }
     
-    if ([[segue identifier] isEqualToString:@"fromMONITORINGToModelingMONITORING"]) {
+    if ([[segue identifier] isEqualToString:@"fromMONITORINGToFinalModel"]) {
         
         // Get destination view
-        //ViewControllerModelingThetaThetaLocating * viewControllerModelingThetaThetaLocating = [segue destinationViewController];
+        ViewControllerFinalModel * viewControllerFinalModel = [segue destinationViewController];
         // Set the variables
-        //[viewControllerModelingThetaThetaLocating setCredentialsUserDic:credentialsUserDic];
-        //[viewControllerModelingThetaThetaLocating setUserDic:userDic];
-        //[viewControllerModelingThetaThetaLocating setSharedData:sharedData];
-        //[viewControllerModelingThetaThetaLocating setMotionManager:motion];
-        //[viewControllerModelingThetaThetaLocating setLocationManager:location];
+        [viewControllerFinalModel setCredentialsUserDic:credentialsUserDic];
+        [viewControllerFinalModel setUserDic:userDic];
+        [viewControllerFinalModel setSharedData:sharedData];
+        [viewControllerFinalModel setMotionManager:motion];
+        [viewControllerFinalModel setLocationManager:location];
         return;
     }
 }
