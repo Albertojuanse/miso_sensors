@@ -318,8 +318,6 @@
 - (NSMutableArray *)getModelDataWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
-        
-        NSLog(@"getModelDataWithCredentialsUserDic: credential user dic %@", credentialsUserDic);
         return modelData;
     } else {
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
@@ -1352,13 +1350,12 @@
             RDPosition * storedPosition = measureDic[@"position"];
             if (storedPosition) {
                 RDPosition * newPosition = [[RDPosition alloc] init];
-                storedPosition.x = newPosition.x;
-                storedPosition.y = newPosition.y;
-                storedPosition.z = newPosition.z;
+                newPosition.x = storedPosition.x;
+                newPosition.y = storedPosition.y;
+                newPosition.z = storedPosition.z;
                 [positions addObject:newPosition];
             }
         }
-        
         return positions;
         
     } else {
@@ -3150,8 +3147,6 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
                    takenByUserDic:(NSMutableDictionary *)givenUserDic
         andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
-    // TO DO: Get measuring state directly from this database. Alberto J. 2019/07/31.
-    
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         
         // The 'measureDic', the innermost one, is always new.

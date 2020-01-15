@@ -114,11 +114,8 @@
     // Different behaviour depending on location mode
     NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                       andCredentialsUserDic:credentialsUserDic];
-    NSLog(@"->[HOLA][RT] mode: %@", mode);
 
     if ([mode isEqualToString:@"RHO_THETA_MODELING"]) {
-        
-        NSLog(@"->[HOLA][RT] Rho theta system calculation starts.");
         
         // In a modeling mode the items must be located using the measures taken by the device or devices from items and the headings aginst them. That implies that, each UUID groups the measures taken from a certain beacon and so, for every one of them a RDPosition would be found.
         

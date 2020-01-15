@@ -18,7 +18,7 @@
 {
     self = [super init];
     if (self) {
-        self.x = [[NSNumber alloc] initWithFloat:0.0];
+        self.x = [[NSNumber alloc] initWithFloat:32.0];
         self.y = [[NSNumber alloc] initWithFloat:0.0];
         self.z = [[NSNumber alloc] initWithFloat:0.0];        
     }

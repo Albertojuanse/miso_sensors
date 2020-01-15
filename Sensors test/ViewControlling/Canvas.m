@@ -415,8 +415,6 @@
     // For every item position...
     for (RDPosition * realItemPosition in itemsPositions) {
         
-        
-        
         // ...get the transformed position...
         RDPosition * canvasItemPosition = [self transformSingleRealPointToCanvasPoint:realItemPosition];
         NSLog(@"[INFO][CA] Drawing canvas item position %@", canvasItemPosition);

@@ -203,6 +203,7 @@
  @discussion This method sets the device's position.
  */
 - (void) setPosition:(RDPosition *)givenPosition{
+    position = nil; // ARC disposing
     position = [[RDPosition alloc] init];
     position.x = [NSNumber numberWithFloat:[givenPosition.x floatValue]];
     position.y = [NSNumber numberWithFloat:[givenPosition.y floatValue]];
@@ -442,29 +443,24 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 for (CLBeacon *beacon in beacons) {
                     // ...get its information...
                     NSString * uuid = [[beacon proximityUUID] UUIDString];
+                    NSLog(@"[INFO][LM] Beacon ranged %@; registering.", uuid);
                     
-                    // ...the monitoring item position...
-                    NSMutableArray * itemsPositions = [sharedData fromSessionDataGetPositionsOfItemsChosenByUserDic:credentialsUserDic
-                                                                                            withCredentialsUserName:credentialsUserDic];
-                    if (itemsPositions.count == 0) {
-                        NSLog(@"[ERROR][LM] User did not choose a monitoring item. Disposing measure.");
-                        return;
-                    }
-                    if (itemsPositions.count > 0) {
-                        NSLog(@"[ERROR][LM] User did choose more than one monitoring item. Using first one.");
-                    }
+                    RDPosition * registerPosition = [[RDPosition alloc] init];
+                    registerPosition.x = position.x;
+                    registerPosition.y = position.y;
+                    registerPosition.z = position.z;
                     
-                    RDPosition * itemPosition = [itemsPositions objectAtIndex:0];
-                        
                     // ...and compose a measure with them.
                     [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithFloat:0.0]
                                                   ofSort:@"rssi"
                                             withItemUUID:uuid
                                           withDeviceUUID:deviceUUID
-                                              atPosition:itemPosition
+                                              atPosition:registerPosition
                                           takenByUserDic:userDic
                                andWithCredentialsUserDic:credentialsUserDic];
                 }
+                NSLog(@"[INFO][LM] Generated measures:");
+                NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
                     
                 // Ask view controller to refresh the canvas
                 if(beacons.count > 0) {
@@ -1256,6 +1252,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
            CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
             
             if (
+                [mode isEqualToString:@"MONITORING"] ||
                 [mode isEqualToString:@"RHO_RHO_MODELING"] ||
                 [mode isEqualToString:@"RHO_THETA_MODELING"] ||
                 [mode isEqualToString:@"RHO_RHO_LOCATING"] ||

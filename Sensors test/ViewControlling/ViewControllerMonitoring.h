@@ -32,6 +32,10 @@
     NSNumber * itemPositionIdNumber;
     NSString * locatedPositionUUID; // This one changes when the user measures and generates a new position for the device.
     
+    // Variables
+    NSMutableDictionary * itemChosenByUserAsDevicePosition;
+    
+    
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *tableRegister;

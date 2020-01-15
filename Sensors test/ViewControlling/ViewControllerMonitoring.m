@@ -32,15 +32,29 @@
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
     }
     
-    // Initial state measuring and init measures
-    [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
-                               andWithCredentialsUserDic:credentialsUserDic];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"startLocationMeasuring" object:nil];
-    NSLog(@"[NOTI][VCM] Notification \"startLocationMeasuring\" posted.");
-    
-    
-    // Variables
-    locatedPositionUUID = [[NSUUID UUID] UUIDString];
+    // Get chosen item and set as device position
+    NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                                      andCredentialsUserDic:credentialsUserDic];
+    if (itemsChosenByUser.count == 0) {
+        NSLog(@"[ERROR][VCM] The collection with the items chosen by user is empty; no device position provided.");
+    } else {
+        itemChosenByUserAsDevicePosition = [itemsChosenByUser objectAtIndex:0];
+        if (itemsChosenByUser.count > 1) {
+            NSLog(@"[ERROR][VCM] The collection with the items chosen by user have more than one item; the first one is set as device position.");
+        }
+    }
+    if (itemChosenByUserAsDevicePosition) {
+        RDPosition * position = itemChosenByUserAsDevicePosition[@"position"];
+        if (!position) {
+            NSLog(@"[ERROR][VCM] No position was found in the item chosen by user as device position; (0,0,0) is set.");
+            position = [[RDPosition alloc] init];
+            position.x = [NSNumber numberWithFloat:0.0];
+            position.y = [NSNumber numberWithFloat:0.0];
+            position.z = [NSNumber numberWithFloat:0.0];
+        }
+        [motion setPosition:position];
+        [location setPosition:position];
+    }
     
     // Ask canvas to initialize
     [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic andCredentialsUserDic:credentialsUserDic];
@@ -50,6 +64,12 @@
     self.tableRegister.dataSource = self;
     
     [self.tableRegister reloadData];
+    
+    // Initial state measuring and init measures
+    [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
+                               andWithCredentialsUserDic:credentialsUserDic];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"startLocationMeasuring" object:nil];
+    NSLog(@"[NOTI][VCM] Notification \"startLocationMeasuring\" posted.");
 }
 
 /*!
@@ -239,7 +259,9 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableRegister) {
-        
+        NSMutableArray * rangedUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
+                                                                 withCredentialsUserDic:credentialsUserDic];
+        return rangedUUID.count;
     }
     return 0;
 }
@@ -262,6 +284,27 @@
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
+            
+            // Get the index ranged UUID...
+            NSMutableArray * rangedUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
+                                                                     withCredentialsUserDic:credentialsUserDic];
+            NSString * uuid = [rangedUUID objectAtIndex:indexPath.row];
+            NSMutableDictionary * itemDic = [[sharedData fromItemDataGetItemsWithUUID:uuid
+                                                                andCredentialsUserDic:credentialsUserDic] objectAtIndex:0];
+            
+            // and show it...
+            if (itemDic) {
+                cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nmajor: %@ ; minor: %@",
+                                       itemDic[@"identifier"],
+                                       itemDic[@"type"],
+                                       itemDic[@"uuid"],
+                                       itemDic[@"major"],
+                                       itemDic[@"minor"]
+                                       ];
+                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            } else {
+                NSLog(@"[ERROR][VCM] Regioned and ranged item not found: %@.", uuid);
+            }
             
         } else { // Database not acessible
             [self alertUserWithTitle:@"Items won't be loaded."
