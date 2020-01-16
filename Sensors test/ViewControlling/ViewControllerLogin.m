@@ -348,7 +348,7 @@
     NSData * dataSaveDic = [NSKeyedArchiver archivedDataWithRootObject:saveDic];
     // ...save it...
     [userDefaults setObject:dataSaveDic forKey:key];
-    // ...and set users avalible and the number of them
+    // ...and set users available and the number of them
     NSData * areUsersData = [userDefaults objectForKey:@"es.uam.miso/security/credentials/areUsers"];
     if (areUsersData) {
         [userDefaults removeObjectForKey:@"es.uam.miso/security/credentials/areUsers"];
@@ -389,7 +389,7 @@
         
         [userDefaults removeObjectForKey:key];
         
-        // ...and set users avalible and the number of them
+        // ...and set users available and the number of them
         
         NSData * numberOfUsersData = [userDefaults objectForKey:@"es.uam.miso/security/credentials/numberOfUsers"];
         NSString * numberOfUsersString;

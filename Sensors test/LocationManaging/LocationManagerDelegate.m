@@ -32,7 +32,7 @@
         position.z = [NSNumber numberWithFloat:0.0];
         
         isItemChosenByUserRanged = NO;
-        // Heading is not delivered unless new values avalible; when RSSI measures from the chosen UUID is saved, no heading is saved until user moves the device; thus, this location is saved if no heading measure is taken
+        // Heading is not delivered unless new values available; when RSSI measures from the chosen UUID is saved, no heading is saved until user moves the device; thus, this location is saved if no heading measure is taken
         lastHeadingPosition = [NSNumber numberWithFloat:0.0];
         
         // Initialize location manager and set this class as the delegate which implement the event response's methods
@@ -248,7 +248,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
             break;
     }
     
-    // Error managment
+    // Error management
     if ([CLLocationManager locationServicesEnabled]) {
         NSLog(@"[INFO][LM] Location services enabled.");
     }else{
@@ -256,21 +256,21 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
     }
     
     if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]]) {
-        NSLog(@"[INFO][LM] Monitoring avalible for class CLBeaconRegion.");
+        NSLog(@"[INFO][LM] Monitoring available for class CLBeaconRegion.");
     }else{
-        NSLog(@"[ERROR][LM] Monitoring not avalible for class CLBeaconRegion.");
+        NSLog(@"[ERROR][LM] Monitoring not available for class CLBeaconRegion.");
     }
     
     if ([CLLocationManager isRangingAvailable]) {
-        NSLog(@"[INFO][LM] Ranging avalible.");
+        NSLog(@"[INFO][LM] Ranging available.");
     }else{
-        NSLog(@"[ERROR][LM] Ranging not avalible.");
+        NSLog(@"[ERROR][LM] Ranging not available.");
     }
     
     if ([CLLocationManager headingAvailable]) {
-        NSLog(@"[INFO][LM] Heading avalible.");
+        NSLog(@"[INFO][LM] Heading available.");
     }else{
-        NSLog(@"[ERROR][LM] Heading not avalible.");
+        NSLog(@"[ERROR][LM] Heading not available.");
     }
 }
 
@@ -553,7 +553,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                     
                                     // Conditional clausule for an specific issue with Apple devices' heading measures:
                                     if (!isItemChosenByUserRanged) {
-                                        // Device does not deliver heading measures unless new values avalible; when RSSI measures from the chosen item is saved, can occur that no heading is saved until user moves the device. If it happens, the delegated method 'locationManager:didUpdateHeading:' is never called, and so, this method saves its value once. If 'isItemChosenByUserRanged' flag is false means this is the first time that this item is ranged, and thus, this heading is saved as a first heading measure to, at least, save one.
+                                        // Device does not deliver heading measures unless new values available; when RSSI measures from the chosen item is saved, can occur that no heading is saved until user moves the device. If it happens, the delegated method 'locationManager:didUpdateHeading:' is never called, and so, this method saves its value once. If 'isItemChosenByUserRanged' flag is false means this is the first time that this item is ranged, and thus, this heading is saved as a first heading measure to, at least, save one.
                                         [sharedData inMeasuresDataSetMeasure:lastHeadingPosition
                                                                       ofSort:@"heading"
                                                                 withItemUUID:itemUUID
@@ -951,7 +951,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 break;
         }
         
-        // Error managment
+        // Error management
         if ([CLLocationManager locationServicesEnabled]) {
             NSLog(@"[INFO][LM] Location services still enabled.");
         }else{
@@ -959,21 +959,21 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         }
         
         if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]]) {
-            NSLog(@"[INFO][LM] Monitoring still avalible for class CLBeaconRegion.");
+            NSLog(@"[INFO][LM] Monitoring still available for class CLBeaconRegion.");
         }else{
-            NSLog(@"[ERROR][LM] Monitoring still not avalible for class CLBeaconRegion.");
+            NSLog(@"[ERROR][LM] Monitoring still not available for class CLBeaconRegion.");
         }
         
         if ([CLLocationManager isRangingAvailable]) {
-            NSLog(@"[INFO][LM] Ranging still avalible.");
+            NSLog(@"[INFO][LM] Ranging still available.");
         }else{
-            NSLog(@"[ERROR][LM] Ranging still not avalible.");
+            NSLog(@"[ERROR][LM] Ranging still not available.");
         }
         
         if ([CLLocationManager headingAvailable]) {
-            NSLog(@"[INFO][LM] Heading avalible.");
+            NSLog(@"[INFO][LM] Heading available.");
         }else{
-            NSLog(@"[ERROR][LM] Heading not avalible.");
+            NSLog(@"[ERROR][LM] Heading not available.");
         }
         
         // Validate the access to the data shared collection
@@ -1075,7 +1075,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 break;
         }
         
-        // Error managment
+        // Error management
         if ([CLLocationManager locationServicesEnabled]) {
             NSLog(@"[INFO][LM] Location services still enabled.");
         }else{
@@ -1083,21 +1083,21 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         }
         
         if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]]) {
-            NSLog(@"[INFO][LM] Monitoring still avalible for class CLBeaconRegion.");
+            NSLog(@"[INFO][LM] Monitoring still available for class CLBeaconRegion.");
         }else{
-            NSLog(@"[ERROR][LM] Monitoring still not avalible for class CLBeaconRegion.");
+            NSLog(@"[ERROR][LM] Monitoring still not available for class CLBeaconRegion.");
         }
         
         if ([CLLocationManager isRangingAvailable]) {
-            NSLog(@"[INFO][LM] Ranging still avalible.");
+            NSLog(@"[INFO][LM] Ranging still available.");
         }else{
-            NSLog(@"[ERROR][LM] Ranging still not avalible.");
+            NSLog(@"[ERROR][LM] Ranging still not available.");
         }
         
         if ([CLLocationManager headingAvailable]) {
-            NSLog(@"[INFO][LM] Heading avalible.");
+            NSLog(@"[INFO][LM] Heading available.");
         }else{
-            NSLog(@"[ERROR][LM] Heading not avalible.");
+            NSLog(@"[ERROR][LM] Heading not available.");
             return;
         }
         
@@ -1199,7 +1199,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 break;
         }
         
-        // Error managment
+        // Error management
         if ([CLLocationManager locationServicesEnabled]) {
             NSLog(@"[INFO][LM] Location services still enabled.");
         }else{
@@ -1207,21 +1207,21 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         }
         
         if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]]) {
-            NSLog(@"[INFO][LM] Monitoring still avalible for class CLBeaconRegion.");
+            NSLog(@"[INFO][LM] Monitoring still available for class CLBeaconRegion.");
         }else{
-            NSLog(@"[ERROR][LM] Monitoring still not avalible for class CLBeaconRegion.");
+            NSLog(@"[ERROR][LM] Monitoring still not available for class CLBeaconRegion.");
         }
         
         if ([CLLocationManager isRangingAvailable]) {
-            NSLog(@"[INFO][LM] Ranging still avalible.");
+            NSLog(@"[INFO][LM] Ranging still available.");
         }else{
-            NSLog(@"[ERROR][LM] Ranging still not avalible.");
+            NSLog(@"[ERROR][LM] Ranging still not available.");
         }
         
         if ([CLLocationManager headingAvailable]) {
-            NSLog(@"[INFO][LM] Heading avalible.");
+            NSLog(@"[INFO][LM] Heading available.");
         }else{
-            NSLog(@"[ERROR][LM] Heading not avalible.");
+            NSLog(@"[ERROR][LM] Heading not available.");
         }
         
         // Validate the access to the data shared collection
@@ -1406,7 +1406,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         position.z = [NSNumber numberWithFloat:0.0];
         
         isItemChosenByUserRanged = NO;
-        // Heading is not delivered unless new values avalible; when RSSI measures from the chosen UUID is saved, no heading is saved until user moves the device; thus, this location is saved if no heading measure is taken
+        // Heading is not delivered unless new values available; when RSSI measures from the chosen UUID is saved, no heading is saved until user moves the device; thus, this location is saved if no heading measure is taken
         lastHeadingPosition = nil;
         
         // Delete registered regions and heading updates
@@ -1466,7 +1466,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 break;
         }
         
-        // Error managment
+        // Error management
         if ([CLLocationManager locationServicesEnabled]) {
             NSLog(@"[INFO][LM] Location services still enabled.");
         }else{
@@ -1474,21 +1474,21 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         }
         
         if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]]) {
-            NSLog(@"[INFO][LM] Monitoring still avalible for class CLBeaconRegion.");
+            NSLog(@"[INFO][LM] Monitoring still available for class CLBeaconRegion.");
         }else{
-            NSLog(@"[ERROR][LM] Monitoring still not avalible for class CLBeaconRegion.");
+            NSLog(@"[ERROR][LM] Monitoring still not available for class CLBeaconRegion.");
         }
         
         if ([CLLocationManager isRangingAvailable]) {
-            NSLog(@"[INFO][LM] Ranging still avalible.");
+            NSLog(@"[INFO][LM] Ranging still available.");
         }else{
-            NSLog(@"[ERROR][LM] Ranging still not avalible.");
+            NSLog(@"[ERROR][LM] Ranging still not available.");
         }
         
         if ([CLLocationManager headingAvailable]) {
-            NSLog(@"[INFO][LM] Heading avalible.");
+            NSLog(@"[INFO][LM] Heading available.");
         }else{
-            NSLog(@"[ERROR][LM] Heading not avalible.");
+            NSLog(@"[ERROR][LM] Heading not available.");
         }
         
         // Validate the access to the data shared collection

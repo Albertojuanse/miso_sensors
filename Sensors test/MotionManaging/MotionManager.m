@@ -285,7 +285,7 @@
     NSLog(@"[INFO][MM] Notification \"startAccelerometers\" recived.");
     // Make sure the accelerometer hardware is available.
     if (self.isAccelerometerAvailable) {
-        NSLog(@"[INFO][MM] Accelerometer avalible.");
+        NSLog(@"[INFO][MM] Accelerometer available.");
         self.accelerometerUpdateInterval = [t doubleValue];
         [self startAccelerometerUpdates];
         if (self.tr == nil){
@@ -301,7 +301,7 @@
             [[NSRunLoop currentRunLoop] addTimer:self.tr forMode:NSDefaultRunLoopMode];
         }
     } else {
-        NSLog(@"[ERROR][MM] Accelerometer not avalible.");
+        NSLog(@"[ERROR][MM] Accelerometer not available.");
     }
     NSLog(@"[INFO][MM] Accelerometer started.");
 }
@@ -328,7 +328,7 @@
     NSLog(@"[INFO][MM] Notification \"startGyroscopes\" recived.");
     // Make sure the gyroscope hardware is available.
     if (self.isGyroAvailable) {
-        NSLog(@"[INFO][MM] Gyroscope avalible.");
+        NSLog(@"[INFO][MM] Gyroscope available.");
         self.gyroUpdateInterval = [t doubleValue];
         [self startGyroUpdates];
         
@@ -345,7 +345,7 @@
             [[NSRunLoop currentRunLoop] addTimer:self.tr forMode:NSDefaultRunLoopMode];
         }
     } else {
-        NSLog(@"[ERROR][MM] Gyroscope not avalible.");
+        NSLog(@"[ERROR][MM] Gyroscope not available.");
     }
     NSLog(@"[INFO][MM] Gyroscope started.");
 }
