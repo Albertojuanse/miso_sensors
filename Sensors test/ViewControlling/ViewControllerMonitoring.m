@@ -32,6 +32,14 @@
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
     }
     
+    // Components
+    location = nil; // ARC disposal
+    NSString * deviceUUID = [[NSUUID UUID] UUIDString];
+    location = [[LocationManagerDelegateMonitoring alloc] initWithSharedData:sharedData
+                                                                     userDic:userDic
+                                                                  deviceUUID:deviceUUID
+                                                       andCredentialsUserDic:credentialsUserDic];
+    
     // Get chosen item and set as device position
     NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
                                                                       andCredentialsUserDic:credentialsUserDic];
@@ -143,7 +151,7 @@
  @method setLocationManager:
  @discussion This method sets the location manager.
  */
-- (void) setLocationManager:(LocationManagerDelegate *)givenLocation
+- (void) setLocationManager:(LocationManagerDelegateMonitoring *)givenLocation
 {
     location = givenLocation;
 }
@@ -262,7 +270,6 @@
         [viewControllerSelectPositions setUserDic:userDic];
         [viewControllerSelectPositions setSharedData:sharedData];
         [viewControllerSelectPositions setMotionManager:motion];
-        [viewControllerSelectPositions setLocationManager:location];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
@@ -283,7 +290,6 @@
         [viewControllerFinalModel setUserDic:userDic];
         [viewControllerFinalModel setSharedData:sharedData];
         [viewControllerFinalModel setMotionManager:motion];
-        [viewControllerFinalModel setLocationManager:location];
         return;
     }
 }

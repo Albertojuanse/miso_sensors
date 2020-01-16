@@ -1,25 +1,21 @@
 //
-//  LocationManagerDelegate.h
+//  LocationManagerDelegateMonitoring.h
 //  Sensors test
 //
-//  Created by Alberto J. on 23/4/19.
-//  Copyright © 2019 MISO. All rights reserved.
+//  Created by Alberto J. on 16/1/20.
+//  Copyright © 2020 MISO. All rights reserved.
 //
 
 #import <CoreLocation/CoreLocation.h>
 #import <CoreLocation/CLHeading.h>
 #import "RDPosition.h"
-#import "RDRhoRhoSystem.h"
-#import "RDRhoThetaSystem.h"
-#import "RDThetaThetaSystem.h"
 #import "SharedData.h"
-#import <math.h>
 
 /*!
- @class LocationManagerDelegate
- @discussion This class implements the protocol CLLocationManagerDelegate and so implements the methods to handle the events of location manager.
+ @class LocationManagerDelegateMonitoring
+ @discussion This class implements the protocol CLLocationManagerDelegate to handle the events of location manager in Monitoring mode.
  */
-@interface LocationManagerDelegate: NSObject<CLLocationManagerDelegate>{
+@interface LocationManagerDelegateMonitoring: NSObject<CLLocationManagerDelegate>{
     
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
@@ -28,19 +24,10 @@
     
     // Components
     SharedData * sharedData;
-    RDRhoRhoSystem * rhoRhoSystem;
-    RDRhoThetaSystem * rhoThetaSystem;
-    RDThetaThetaSystem * thetaThetaSystem;
     CLLocationManager * locationManager;
     
     // Variables
     RDPosition * position;  // Current position of device
-    NSNumber * lastHeadingPosition;
-    BOOL isItemChosenByUserRanged;
-    BOOL calibrating;
-    NSInteger calibrationStep;
-    NSNumber * calibrationYvalue;
-    NSNumber * calibrationYvalueAccumulation;
     
     // Data store
     NSMutableArray * monitoredRegions;
@@ -51,9 +38,6 @@
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
-                      rhoRhoSystem:(RDRhoRhoSystem *)initRhoRhoSystem
-                    rhoThetaSystem:(RDRhoThetaSystem *)initRhoThetaSystem
-                  thetaThetaSystem:(RDThetaThetaSystem *)initThetaThetaSystem
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
@@ -63,4 +47,3 @@
 - (RDPosition *)getPosition;
 
 @end
-

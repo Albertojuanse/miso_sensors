@@ -354,15 +354,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     rssi = nil;
                 }
                 
-                // Instance variables
-                isItemChosenByUserRanged = NO;
-                // Delete registered regions and heading updates
-                for(CLBeaconRegion * region in  locationManager.monitoredRegions){
-                    [locationManager stopMonitoringForRegion:region];
-                    [locationManager stopRangingBeaconsInRegion:region];
-                }
-                [locationManager stopUpdatingHeading];
-                monitoredRegions = nil; // For ARC disposing
+                [self stopRoutine];
+                
                 // Notify menu that calibration is finished.
                 NSLog(@"[NOTI][LM] Notification \"calibrationFinished\" posted.");
                 [[NSNotificationCenter defaultCenter]
@@ -422,242 +415,242 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             }
             return;
         }
-    }
     
-    // Different behave depending on the current state
-    // If app is measuring the device user
-    if ([sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic]) {
-        
-        // Get the measuring mode
-        NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
-                                                          andCredentialsUserDic:credentialsUserDic];
-        
-        // If a monitoring type system; needs to save the UUID
-        if (
-            [mode isEqualToString:@"MONITORING"]
-            ) {
+        // Different behave depending on the current state
+        // If app is measuring the device user
+        if ([sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic]) {
             
-            // If there is any beacon in the event...
-            if (beacons.count > 0) {
+            // Get the measuring mode
+            NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                              andCredentialsUserDic:credentialsUserDic];
+            
+            // If a monitoring type system; needs to save the UUID
+            if (
+                [mode isEqualToString:@"MONITORING"]
+                ) {
                 
-                for (CLBeacon *beacon in beacons) {
-                    // ...get its information...
-                    NSString * uuid = [[beacon proximityUUID] UUIDString];
-                    NSLog(@"[INFO][LM] Beacon ranged %@; registering.", uuid);
+                // If there is any beacon in the event...
+                if (beacons.count > 0) {
                     
-                    RDPosition * registerPosition = [[RDPosition alloc] init];
-                    registerPosition.x = position.x;
-                    registerPosition.y = position.y;
-                    registerPosition.z = position.z;
+                    for (CLBeacon *beacon in beacons) {
+                        // ...get its information...
+                        NSString * uuid = [[beacon proximityUUID] UUIDString];
+                        NSLog(@"[INFO][LM] Beacon ranged %@; registering.", uuid);
+                        
+                        RDPosition * registerPosition = [[RDPosition alloc] init];
+                        registerPosition.x = position.x;
+                        registerPosition.y = position.y;
+                        registerPosition.z = position.z;
+                        
+                        // ...and compose a measure with them.
+                        [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithFloat:0.0]
+                                                      ofSort:@"rssi"
+                                                withItemUUID:uuid
+                                              withDeviceUUID:deviceUUID
+                                                  atPosition:registerPosition
+                                              takenByUserDic:userDic
+                                   andWithCredentialsUserDic:credentialsUserDic];
+                    }
+                    NSLog(@"[INFO][LM] Generated measures:");
+                    NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
                     
-                    // ...and compose a measure with them.
-                    [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithFloat:0.0]
-                                                  ofSort:@"rssi"
-                                            withItemUUID:uuid
-                                          withDeviceUUID:deviceUUID
-                                              atPosition:registerPosition
-                                          takenByUserDic:userDic
-                               andWithCredentialsUserDic:credentialsUserDic];
+                    // Ask view controller to refresh the canvas and table
+                    if(beacons.count > 0) {
+                        NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
+                        [[NSNotificationCenter defaultCenter]
+                         postNotificationName:@"refreshCanvas"
+                         object:nil];
+                        NSLog(@"[NOTI][LM] Notification \"refreshRegisterTable\" posted.");
+                        [[NSNotificationCenter defaultCenter]
+                         postNotificationName:@"refreshRegisterTable"
+                         object:nil];
+                    }
                 }
-                NSLog(@"[INFO][LM] Generated measures:");
-                NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
-                    
-                // Ask view controller to refresh the canvas and table
-                if(beacons.count > 0) {
-                    NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
-                    [[NSNotificationCenter defaultCenter]
-                     postNotificationName:@"refreshCanvas"
-                     object:nil];
-                    NSLog(@"[NOTI][LM] Notification \"refreshRegisterTable\" posted.");
-                    [[NSNotificationCenter defaultCenter]
-                     postNotificationName:@"refreshRegisterTable"
-                     object:nil];
-                }
+                
             }
             
-        }
-        
-        // If a rho type system which needs ranging
-        if (
-            [mode isEqualToString:@"RHO_RHO_MODELING"] ||
-            [mode isEqualToString:@"RHO_THETA_MODELING"] ||
-            [mode isEqualToString:@"RHO_RHO_LOCATING"] ||
-            [mode isEqualToString:@"RHO_THETA_LOCATING"]
-            )
-        {
-            // If there is any beacon in the event...
-            if (beacons.count > 0) {
-                for (CLBeacon *beacon in beacons) {
-                    // ...get its information...
-                    NSString * uuid = [[beacon proximityUUID] UUIDString];
-                    NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
-                    
-                    RDPosition * measurePosition = [[RDPosition alloc] init];
-                    measurePosition.x = position.x;
-                    measurePosition.y = position.y;
-                    measurePosition.z = position.z;
-                    
-                    // TO DO. Calibration. Alberto J.
-                    //NSNumber * rawRSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue]];
-                    // TO DO: Get the 1 meter RSSI from CLBeacon. 2019/11/14.
-                    // Absolute values of speed of light, frecuency, and antenna's join gain
-                    float C = 299792458.0;
-                    float F = 2440000000.0; // 2400 - 2480 MHz
-                    float G = 1.0; // typically 2.16 dBi
-                    // Calculate the distance
-                    NSNumber * RSSIdistance = [[NSNumber alloc] initWithFloat:( (C  * [calibrationYvalue floatValue] / (4.0 * M_PI * F)) * sqrt(G * pow(10.0, -[rssi floatValue]/ 10.0)) )];
-                    
-                    NSMutableDictionary * locatedPositions;
-                    
-                    // Precision is arbitrary set to 10 cm
-                    // TO DO: Make this configurable. Alberto J. 2019/09/12.
-                    NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                 [NSNumber numberWithFloat:0.1], @"xPrecision",
-                                                 [NSNumber numberWithFloat:0.1], @"yPrecision",
-                                                 [NSNumber numberWithFloat:0.1], @"zPrecision",
-                                                 nil];
-                    
-                    // ...and save it in dictionary 'measuresDic'.
-                    // Minimum sensibility 5 cm; Ipad often gives unreal values near to cero
-                    // TO DO: Make this configurable. Alberto J. 2019/09/12.
-                    if ([RSSIdistance floatValue] > 0.05) {
+            // If a rho type system which needs ranging
+            if (
+                [mode isEqualToString:@"RHO_RHO_MODELING"] ||
+                [mode isEqualToString:@"RHO_THETA_MODELING"] ||
+                [mode isEqualToString:@"RHO_RHO_LOCATING"] ||
+                [mode isEqualToString:@"RHO_THETA_LOCATING"]
+                )
+            {
+                // If there is any beacon in the event...
+                if (beacons.count > 0) {
+                    for (CLBeacon *beacon in beacons) {
+                        // ...get its information...
+                        NSString * uuid = [[beacon proximityUUID] UUIDString];
+                        NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
                         
-                        // Different behave depending on the current mode
-                        if (
-                            [mode isEqualToString:@"RHO_THETA_MODELING"] ||
-                            [mode isEqualToString:@"RHO_THETA_LOCATING"]
-                            )
-                        {
+                        RDPosition * measurePosition = [[RDPosition alloc] init];
+                        measurePosition.x = position.x;
+                        measurePosition.y = position.y;
+                        measurePosition.z = position.z;
+                        
+                        // TO DO. Calibration. Alberto J.
+                        //NSNumber * rawRSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue]];
+                        // TO DO: Get the 1 meter RSSI from CLBeacon. 2019/11/14.
+                        // Absolute values of speed of light, frecuency, and antenna's join gain
+                        float C = 299792458.0;
+                        float F = 2440000000.0; // 2400 - 2480 MHz
+                        float G = 1.0; // typically 2.16 dBi
+                        // Calculate the distance
+                        NSNumber * RSSIdistance = [[NSNumber alloc] initWithFloat:( (C  * [calibrationYvalue floatValue] / (4.0 * M_PI * F)) * sqrt(G * pow(10.0, -[rssi floatValue]/ 10.0)) )];
+                        
+                        NSMutableDictionary * locatedPositions;
+                        
+                        // Precision is arbitrary set to 10 cm
+                        // TO DO: Make this configurable. Alberto J. 2019/09/12.
+                        NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                     [NSNumber numberWithFloat:0.1], @"xPrecision",
+                                                     [NSNumber numberWithFloat:0.1], @"yPrecision",
+                                                     [NSNumber numberWithFloat:0.1], @"zPrecision",
+                                                     nil];
+                        
+                        // ...and save it in dictionary 'measuresDic'.
+                        // Minimum sensibility 5 cm; Ipad often gives unreal values near to cero
+                        // TO DO: Make this configurable. Alberto J. 2019/09/12.
+                        if ([RSSIdistance floatValue] > 0.05) {
                             
-                            // In this modes, the user must select an item to measure, whose item dictionary is stored in session dictionary as 'itemChosenByUser'.
-                            NSMutableDictionary * itemChosenByUserDic = [sharedData
-                                                                         fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                                         andCredentialsUserDic:credentialsUserDic
-                                                                         ];
-                            // If its not null retrieve the information needed.
-                            NSString * itemUUID;
-                            if (itemChosenByUserDic) {
-                                itemUUID = itemChosenByUserDic[@"uuid"];
-                            }
-                            
-                            // If the UUID is not found, the measure cannot be saved
-                            if (!itemUUID) {
-                                NSLog(@"[ERROR][LM] Measure not saved since the item selected had no UUID.");
-                                return;
-                            } else {
+                            // Different behave depending on the current mode
+                            if (
+                                [mode isEqualToString:@"RHO_THETA_MODELING"] ||
+                                [mode isEqualToString:@"RHO_THETA_LOCATING"]
+                                )
+                            {
                                 
-                                // The measure is saved only if event's uuid and the chosen one are the same; also, the heading measures only will be saved if becons measures are saved, when 'isItemChosenByUserRanged' is true.
-                                if ([itemUUID isEqualToString:uuid]) {
+                                // In this modes, the user must select an item to measure, whose item dictionary is stored in session dictionary as 'itemChosenByUser'.
+                                NSMutableDictionary * itemChosenByUserDic = [sharedData
+                                                                             fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                                             andCredentialsUserDic:credentialsUserDic
+                                                                             ];
+                                // If its not null retrieve the information needed.
+                                NSString * itemUUID;
+                                if (itemChosenByUserDic) {
+                                    itemUUID = itemChosenByUserDic[@"uuid"];
+                                }
+                                
+                                // If the UUID is not found, the measure cannot be saved
+                                if (!itemUUID) {
+                                    NSLog(@"[ERROR][LM] Measure not saved since the item selected had no UUID.");
+                                    return;
+                                } else {
                                     
-                                    
-                                    
-                                    // Conditional clausule for an specific issue with Apple devices' heading measures:
-                                    if (!isItemChosenByUserRanged) {
-                                        // Device does not deliver heading measures unless new values available; when RSSI measures from the chosen item is saved, can occur that no heading is saved until user moves the device. If it happens, the delegated method 'locationManager:didUpdateHeading:' is never called, and so, this method saves its value once. If 'isItemChosenByUserRanged' flag is false means this is the first time that this item is ranged, and thus, this heading is saved as a first heading measure to, at least, save one.
-                                        [sharedData inMeasuresDataSetMeasure:lastHeadingPosition
-                                                                      ofSort:@"heading"
+                                    // The measure is saved only if event's uuid and the chosen one are the same; also, the heading measures only will be saved if becons measures are saved, when 'isItemChosenByUserRanged' is true.
+                                    if ([itemUUID isEqualToString:uuid]) {
+                                        
+                                        
+                                        
+                                        // Conditional clausule for an specific issue with Apple devices' heading measures:
+                                        if (!isItemChosenByUserRanged) {
+                                            // Device does not deliver heading measures unless new values available; when RSSI measures from the chosen item is saved, can occur that no heading is saved until user moves the device. If it happens, the delegated method 'locationManager:didUpdateHeading:' is never called, and so, this method saves its value once. If 'isItemChosenByUserRanged' flag is false means this is the first time that this item is ranged, and thus, this heading is saved as a first heading measure to, at least, save one.
+                                            [sharedData inMeasuresDataSetMeasure:lastHeadingPosition
+                                                                          ofSort:@"heading"
+                                                                    withItemUUID:itemUUID
+                                                                  withDeviceUUID:deviceUUID
+                                                                      atPosition:measurePosition
+                                                                  takenByUserDic:userDic
+                                                       andWithCredentialsUserDic:credentialsUserDic];
+                                        }
+                                        
+                                        
+                                        isItemChosenByUserRanged = YES;
+                                        // Save the measure
+                                        [sharedData inMeasuresDataSetMeasure:RSSIdistance
+                                                                      ofSort:@"rssi"
                                                                 withItemUUID:itemUUID
                                                               withDeviceUUID:deviceUUID
                                                                   atPosition:measurePosition
                                                               takenByUserDic:userDic
                                                    andWithCredentialsUserDic:credentialsUserDic];
+                                        
+                                        // Ask radiolocation of beacons if posible...
+                                        locatedPositions = [rhoThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
                                     }
-                                    
-                                    
-                                    isItemChosenByUserRanged = YES;
-                                    // Save the measure
-                                    [sharedData inMeasuresDataSetMeasure:RSSIdistance
-                                                                  ofSort:@"rssi"
-                                                            withItemUUID:itemUUID
-                                                          withDeviceUUID:deviceUUID
-                                                              atPosition:measurePosition
-                                                          takenByUserDic:userDic
-                                               andWithCredentialsUserDic:credentialsUserDic];
-                                    
-                                    // Ask radiolocation of beacons if posible...
-                                    locatedPositions = [rhoThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
                                 }
                             }
-                        }
-                        
-                        if (
-                            [mode isEqualToString:@"RHO_RHO_MODELING"] ||
-                            [mode isEqualToString:@"RHO_RHO_LOCATING"]
-                            )
-                        {
-                            // Save the measure
-                            [sharedData inMeasuresDataSetMeasure:RSSIdistance
-                                                          ofSort:@"rssi"
-                                                    withItemUUID:uuid
-                                                  withDeviceUUID:deviceUUID
-                                                      atPosition:measurePosition
-                                                  takenByUserDic:userDic
-                                       andWithCredentialsUserDic:credentialsUserDic];
                             
-                            // Ask radiolocation of beacons if posible...
-                            locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithPrecisions:precisions];
-                        }
-                        
-                        // ...and save it in dictionary 'locatedDic'.
-                        NSArray *positionKeys = [locatedPositions allKeys];
-                        for (id positionKey in positionKeys) {
-                            NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
-                            infoDic[@"located"] = @"YES";
-                            infoDic[@"sort"] = @"position";
-                            infoDic[@"identifier"] = [NSString
-                                                      stringWithFormat:@"location%@@miso.uam.es",
-                                                      [positionKey substringFromIndex:
-                                                       [positionKey length] - 4]
-                                                      ];
-                            infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
-                            BOOL savedItem = [sharedData inItemDataAddItemOfSort:@"position"
-                                                                        withUUID:positionKey
-                                                                     withInfoDic:infoDic
-                                                       andWithCredentialsUserDic:credentialsUserDic];
-                            if (savedItem) {
+                            if (
+                                [mode isEqualToString:@"RHO_RHO_MODELING"] ||
+                                [mode isEqualToString:@"RHO_RHO_LOCATING"]
+                                )
+                            {
+                                // Save the measure
+                                [sharedData inMeasuresDataSetMeasure:RSSIdistance
+                                                              ofSort:@"rssi"
+                                                        withItemUUID:uuid
+                                                      withDeviceUUID:deviceUUID
+                                                          atPosition:measurePosition
+                                                      takenByUserDic:userDic
+                                           andWithCredentialsUserDic:credentialsUserDic];
                                 
-                            } else {
-                                NSLog(@"[ERROR][LM] Located position %@ could not be stored as an item.", infoDic[@"position"]);
+                                // Ask radiolocation of beacons if posible...
+                                locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithPrecisions:precisions];
                             }
+                            
+                            // ...and save it in dictionary 'locatedDic'.
+                            NSArray *positionKeys = [locatedPositions allKeys];
+                            for (id positionKey in positionKeys) {
+                                NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
+                                infoDic[@"located"] = @"YES";
+                                infoDic[@"sort"] = @"position";
+                                infoDic[@"identifier"] = [NSString
+                                                          stringWithFormat:@"location%@@miso.uam.es",
+                                                          [positionKey substringFromIndex:
+                                                           [positionKey length] - 4]
+                                                          ];
+                                infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
+                                BOOL savedItem = [sharedData inItemDataAddItemOfSort:@"position"
+                                                                            withUUID:positionKey
+                                                                         withInfoDic:infoDic
+                                                           andWithCredentialsUserDic:credentialsUserDic];
+                                if (savedItem) {
+                                    
+                                } else {
+                                    NSLog(@"[ERROR][LM] Located position %@ could not be stored as an item.", infoDic[@"position"]);
+                                }
+                            }
+                            NSLog(@"[INFO][LM] Generated locations:");
+                            NSLog(@"[INFO][LM]  -> %@",  [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                                                 andCredentialsUserDic:credentialsUserDic]);
+                            
                         }
-                        NSLog(@"[INFO][LM] Generated locations:");
-                        NSLog(@"[INFO][LM]  -> %@",  [sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                                             andCredentialsUserDic:credentialsUserDic]);
+                        NSLog(@"[INFO][LM] Generated measures:");
+                        NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
                         
                     }
-                    NSLog(@"[INFO][LM] Generated measures:");
-                    NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
                     
-                }
-                
-                // Ask view controller to refresh the canvas
-                if(beacons.count > 0) {
-                    NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
-                    [[NSNotificationCenter defaultCenter]
-                     postNotificationName:@"refreshCanvas"
-                     object:nil];
+                    // Ask view controller to refresh the canvas
+                    if(beacons.count > 0) {
+                        NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
+                        [[NSNotificationCenter defaultCenter]
+                         postNotificationName:@"refreshCanvas"
+                         object:nil];
+                    }
                 }
             }
-        }
-        
-        // If a theta theta type system; it is supposed that in this case regions are ot registered, but just in case
-        if (
-            [mode isEqualToString:@"THETA_THETA_MODELING"] ||
-            [mode isEqualToString:@"THETA_THETA_LOCATING"]
-            ) {
-            // Do nothing
-            NSLog(@"[ERROR][LM] Beacons ranged in Theta Theta system based mode.");
-        }
             
-    } else { // If is idle or traveling...
-        // ...if there is any beacon in the event...
-        if (beacons.count > 0) {
-            // ...do something with them or it will be saved in some Ipad's buffering queue and appear later.
-            for (CLBeacon *beacon in beacons) {
-                NSString * uuid = [[beacon proximityUUID] UUIDString];
-                uuid = nil; // ARC dispose
-                NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
-                rssi = nil;
+            // If a theta theta type system; it is supposed that in this case regions are ot registered, but just in case
+            if (
+                [mode isEqualToString:@"THETA_THETA_MODELING"] ||
+                [mode isEqualToString:@"THETA_THETA_LOCATING"]
+                ) {
+                // Do nothing
+                NSLog(@"[ERROR][LM] Beacons ranged in Theta Theta system based mode.");
+            }
+            
+        } else { // If is idle or traveling...
+            // ...if there is any beacon in the event...
+            if (beacons.count > 0) {
+                // ...do something with them or it will be saved in some Ipad's buffering queue and appear later.
+                for (CLBeacon *beacon in beacons) {
+                    NSString * uuid = [[beacon proximityUUID] UUIDString];
+                    uuid = nil; // ARC dispose
+                    NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
+                    rssi = nil;
+                }
             }
         }
     }
@@ -1135,7 +1128,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             
         }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied ||
                   CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted){
-            [locationManager stopUpdatingHeading];
+            [self stopRoutine];
             [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                                   andWithCredentialsUserDic:credentialsUserDic];
             NSLog(@"[ERROR][LM] Location services not allowed; stop updating device heading.");
@@ -1314,13 +1307,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied ||
                   CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted){
             // If is not allowed to use location services, delete registered regions and heading updates
-            for(CLBeaconRegion * region in  locationManager.monitoredRegions){
-                [locationManager stopMonitoringForRegion:region];
-                [locationManager stopRangingBeaconsInRegion:region];
-            }
-            [locationManager stopUpdatingHeading];
-            monitoredRegions = nil; // For ARC disposing
-            monitoredPositions = nil;
+            [self stopRoutine];
         }
     }
 }
@@ -1337,13 +1324,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         isItemChosenByUserRanged = NO;
         
         // Delete registered regions and heading updates
-        for(CLBeaconRegion * region in  locationManager.monitoredRegions){
-            [locationManager stopMonitoringForRegion:region];
-            [locationManager stopRangingBeaconsInRegion:region];
-        }
-        [locationManager stopUpdatingHeading];
-        monitoredRegions = nil; // For ARC disposing
-        monitoredPositions = nil;
+        [self stopRoutine];
     }
 }
 
@@ -1410,13 +1391,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         lastHeadingPosition = nil;
         
         // Delete registered regions and heading updates
-        for(CLBeaconRegion * region in  locationManager.monitoredRegions){
-            [locationManager stopMonitoringForRegion:region];
-            [locationManager stopRangingBeaconsInRegion:region];
-        }
-        [locationManager stopUpdatingHeading];
-        monitoredRegions = nil; // For ARC disposing
-        monitoredPositions = nil;
+        [self stopRoutine];
         
         // Components
         [sharedData resetMeasuresWithCredentialsUserDic:credentialsUserDic];
@@ -1519,12 +1494,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             isItemChosenByUserRanged = NO;
             
             // Delete registered regions and heading updates
-            for(CLBeaconRegion * region in  locationManager.monitoredRegions){
-                [locationManager stopMonitoringForRegion:region];
-                [locationManager stopRangingBeaconsInRegion:region];
-            }
-            [locationManager stopUpdatingHeading];
-            monitoredRegions = nil; // For ARC disposing
+            [self stopRoutine];
             // Notify menu that calibration is finished.
             NSLog(@"[NOTI][LM] Notification \"calibrationFinished\" posted.");
             [[NSNotificationCenter defaultCenter]
@@ -1575,12 +1545,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             isItemChosenByUserRanged = NO;
             
             // Delete registered regions and heading updates
-            for(CLBeaconRegion * region in  locationManager.monitoredRegions){
-                [locationManager stopMonitoringForRegion:region];
-                [locationManager stopRangingBeaconsInRegion:region];
-            }
-            [locationManager stopUpdatingHeading];
-            monitoredRegions = nil; // For ARC disposing
+            [self stopRoutine];
+            
             NSLog(@"[NOTI][LM] Notification \"calibrationFinished\" posted.");
             [[NSNotificationCenter defaultCenter]
              postNotificationName:@"calibrationFinished"
@@ -1592,26 +1558,31 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied ||
               CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted){
         // If is not allowed to use location services, delete registered regions and heading updates
-        for(CLBeaconRegion * region in  locationManager.monitoredRegions){
-            [locationManager stopMonitoringForRegion:region];
-            [locationManager stopRangingBeaconsInRegion:region];
-        }
-        [locationManager stopUpdatingHeading];
-        monitoredRegions = nil; // For ARC disposing
+        [self stopRoutine];
     }
 }
 
-- (void) stopLocatingRoutine {
-    // Instance variables
-    isItemChosenByUserRanged = NO;
-    
+/*!
+ @method stopRoutine
+ @discussion Called when the location manager must stop measuring.
+ */
+- (void) stopRoutine {
     // Delete registered regions and heading updates
-    for(CLBeaconRegion * region in  locationManager.monitoredRegions){
-        [locationManager stopMonitoringForRegion:region];
-        [locationManager stopRangingBeaconsInRegion:region];
+    if (locationManager) {
+        if (locationManager.monitoredRegions) {
+            for(CLBeaconRegion * region in  locationManager.monitoredRegions){
+                [locationManager stopMonitoringForRegion:region];
+                [locationManager stopRangingBeaconsInRegion:region];
+            }
+        }
+        [locationManager stopUpdatingLocation];
+        [locationManager stopUpdatingHeading];
     }
-    [locationManager stopUpdatingHeading];
-    monitoredRegions = nil; // For ARC disposing
-    monitoredPositions = nil;
+    if (monitoredRegions) {
+        monitoredRegions = nil; // For ARC disposing
+    }
+    if (monitoredPositions) {
+        monitoredPositions = nil;
+    }
 }
 @end
