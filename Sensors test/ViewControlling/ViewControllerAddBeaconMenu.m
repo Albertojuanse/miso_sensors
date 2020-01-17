@@ -302,15 +302,6 @@
 }
 
 /*!
- @method setLocationManager:
- @discussion This method sets the location manager.
- */
-- (void) setLocationManager:(LocationManagerDelegate *)givenLocation
-{
-    location = givenLocation;
-}
-
-/*!
  @method setItemBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
@@ -989,7 +980,6 @@
         [viewControllerMainMenu setUserDic:userDic];
         [viewControllerMainMenu setSharedData:sharedData];
         [viewControllerMainMenu setMotionManager:motion];
-        [viewControllerMainMenu setLocationManager:location];
         
         [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
@@ -1004,7 +994,6 @@
         [viewControllerMainMenu setUserDic:userDic];
         [viewControllerMainMenu setSharedData:sharedData];
         [viewControllerMainMenu setMotionManager:motion];
-        [viewControllerMainMenu setLocationManager:location];
         
         [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];

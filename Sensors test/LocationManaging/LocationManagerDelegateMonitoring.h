@@ -8,6 +8,7 @@
 
 #import <CoreLocation/CoreLocation.h>
 #import <CoreLocation/CLHeading.h>
+#import "MDMode.h"
 #import "RDPosition.h"
 #import "SharedData.h"
 
@@ -27,6 +28,7 @@
     CLLocationManager * locationManager;
     
     // Variables
+    
     RDPosition * position;  // Current position of device
     
     // Data store

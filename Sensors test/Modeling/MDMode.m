@@ -62,7 +62,7 @@
  @method setMode
  @discussion Setter of the 'mode' attribute.
  */
-- (void)setMode:(MDModes)givenMode {
+- (void)setMode:(enum MDModes)givenMode {
     mode = givenMode;
 }
 
@@ -91,6 +91,18 @@
         return YES;
     }
     if (mode != [reference getMode]) {
+        return NO;
+    }
+    return YES;
+}
+
+/*!
+ @method isModeKey
+ @discussion This method compares a MDReference object to a MDModes key.
+ */
+- (BOOL)isModeKey:(MDModes)key
+{
+    if (mode != key) {
         return NO;
     }
     return YES;

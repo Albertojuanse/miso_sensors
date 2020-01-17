@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "MDMode.h"
 #import "ViewControllerMainMenu.h"
 #import "ViewControllerFinalModel.h"
 #import "Canvas.h"
@@ -36,7 +37,7 @@
     
     // Variables
     NSMutableDictionary * itemChosenByUserAsDevicePosition;
-    
+    MDMode * mode;
     
 }
 

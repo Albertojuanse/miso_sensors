@@ -21,11 +21,12 @@
     [super viewDidLoad];
     
     // Register the current mode
+    mode = [[MDMode alloc] initWithModeKey:kModeMonitoring];
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        [sharedData inSessionDataSetMode:@"MONITORING"
+        [sharedData inSessionDataSetMode:mode
                        toUserWithUserDic:userDic
                    andCredentialsUserDic:credentialsUserDic];
     } else {

@@ -31,7 +31,8 @@ typedef NS_ENUM(int, MDModes){
     kModeRhoThetaLocating,
     kModeThetaThetaLocating,
     kModeGPSSelfLocating,
-    kModeCompassSelfLocating
+    kModeCompassSelfLocating,
+    kModesCount                 // Must be the last one
 };
 
 /*!
@@ -41,5 +42,14 @@ typedef NS_ENUM(int, MDModes){
 @interface MDMode: NSObject <NSCoding> {
     int mode;
 }
+
+- (instancetype)init;
+- (instancetype)initWithModeKey:(MDModes)initMode;
+- (MDModes)getMode;
+- (void)setMode:(MDModes)givenMode;
+- (BOOL)isModeKey:(MDModes)key;
+- (BOOL)isEqual:(id)object;
+- (BOOL)isEqualToMDMode:(MDMode *)reference;
+- (NSString *)description;
 
 @end

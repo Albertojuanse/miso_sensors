@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "RDPosition.h"
 #import "MDType.h"
+#import "MDMode.h"
 #import "MDReference.h"
 #import "NSMutableArray+Printable.h"
 
@@ -70,9 +71,9 @@
                                                          andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserName:(NSString *)userName
                                                           andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
-- (NSString *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary *)userDic
+- (MDMode *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary *)userDic
                                   andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
-- (NSString *)fromSessionDataGetModeFromUserWithUserName:(NSString *)userName
+- (MDMode *)fromSessionDataGetModeFromUserWithUserName:(NSString *)userName
                                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSString *)fromSessionDataGetStateFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
                                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
@@ -247,10 +248,10 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
             andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific session data setters
-- (BOOL)inSessionDataSetMode:(NSString *)givenMode
+- (BOOL)inSessionDataSetMode:(MDMode *)givenMode
            toUserWithUserDic:(NSMutableDictionary *)userDic
        andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
-- (BOOL)inSessionDataSetMode:(NSString *)givenMode
+- (BOOL)inSessionDataSetMode:(MDMode *)givenMode
           toUserWithUserName:(NSString *)userName
        andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)inSessionDataSetState:(NSString *)givenState

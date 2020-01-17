@@ -620,8 +620,8 @@
  @method fromSessionDataGetModeFromUserWithUserDic:andCredentialsUserDic:
  @discussion This method returns the mode from the session data collection given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (NSString *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
-                                  andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+- (MDMode *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                                andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     return [self fromSessionDataGetKey:@"mode" fromUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
 }
@@ -630,8 +630,8 @@
  @method fromSessionDataGetModeFromUserWithUserName:andCredentialsUserDic:
  @discussion This method returns the mode from the session data collection given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (NSString *)fromSessionDataGetModeFromUserWithUserName:(NSString *)userName
-                                   andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+- (MDMode *)fromSessionDataGetModeFromUserWithUserName:(NSString *)userName
+                                 andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     return [self fromSessionDataGetKey:@"mode" fromUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
 }
@@ -2514,7 +2514,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
  @method inSessionDataSetMode:toUserWithUserDic:andCredentialsUserDic:
  @discussion This method sets in session data collection the user's mode given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (BOOL)inSessionDataSetMode:(NSString *)givenMode
+- (BOOL)inSessionDataSetMode:(MDMode *)givenMode
            toUserWithUserDic:(NSMutableDictionary *)userDic
        andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
@@ -2525,7 +2525,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
  @method inSessionDataSetMode:toUserWithUserName:andCredentialsUserDic:
  @discussion This method sets in session data collection the user's mode given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (BOOL)inSessionDataSetMode:(NSString *)givenMode
+- (BOOL)inSessionDataSetMode:(MDMode *)givenMode
           toUserWithUserName:(NSString *)userName
        andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {

@@ -153,31 +153,31 @@
         )
     {
         // Get the current mode
-        NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+        MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                           andCredentialsUserDic:credentialsUserDic];
         
         // This button can segue with different views depending on the mode chosen by the user in the main menu
-        if ([mode isEqualToString:@"MONITORING"]) {
+        if ([mode isModeKey:kModeMonitoring]) {
             // NSLog(@"[INFO][VCSP] Chosen mode is MONITORING.");
             [self performSegueWithIdentifier:@"fromSelectPositionsToMONITORING" sender:sender];
             return;
         }
-        if ([mode isEqualToString:@"RHO_RHO_LOCATING"]) {
+        if ([mode isModeKey:kModeRhoRhoLocating]) {
             // NSLog(@"[INFO][VCSP] Chosen mode is RHO_RHO_LOCATING.");
             // [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_RHO_LOCATING" sender:sender];
             return;
         }
-        if ([mode isEqualToString:@"RHO_THETA_LOCATING"]) {
+        if ([mode isModeKey:kModeRhoThetaLocating]) {
             // NSLog(@"[INFO][VCSP] Chosen mode is RHO_THETA_LOCATING.");
             // [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_THETA_LOCATING" sender:sender];
             return;
         }
-        if ([mode isEqualToString:@"RHO_THETA_MODELING"]) {
+        if ([mode isModeKey:kModeRhoThetaModelling]) {
             NSLog(@"[INFO][VCSP] Chosen mode is RHO_THETA_MODELING.");
             [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_THETA_MODELING" sender:sender];
             return;
         }
-        if ([mode isEqualToString:@"THETA_THETA_LOCATING"]) {
+        if ([mode isModeKey:kModeThetaThetaLocating]) {
             // Go is only allowed if the user did choose at least one position in the table
             NSLog(@"[INFO][VCSP] Chosen mode is THETA_THETA_LOCATING.");
             [self performSegueWithIdentifier:@"fromSelectPositionsToTHETA_THETA_LOCATING" sender:sender];
@@ -273,7 +273,6 @@
         [viewControllerMainMenu setUserDic:userDic];
         [viewControllerMainMenu setSharedData:sharedData];
         [viewControllerMainMenu setMotionManager:motion];
-        [viewControllerMainMenu setLocationManager:location];
     }
     return;
 }

@@ -320,7 +320,6 @@
         [viewControllerMainMenu setUserDic:userDic];
         [viewControllerMainMenu setSharedData:sharedData];
         [viewControllerMainMenu setMotionManager:motion];
-        [viewControllerMainMenu setLocationManager:location];
         
         [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];

@@ -29,7 +29,6 @@
     // Other components
     SharedData * sharedData;
     MotionManager * motion;
-    LocationManagerDelegate * location;
     RDRhoRhoSystem * rhoRhoSystem;
     RDRhoThetaSystem * rhoThetaSystem;
     RDThetaThetaSystem * thetaThetaSystem;
@@ -41,7 +40,7 @@
     
     // Modes
     NSMutableArray * modes;
-    NSString * chosenMode;
+    MDMode * chosenMode;
     
     // Beacons' region identifiers
     NSNumber * itemBeaconIdNumber;
@@ -63,8 +62,6 @@
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void) setSharedData:(SharedData *)givenSharedData;
 - (void) setMotionManager:(MotionManager *)givenMotion;
-- (void) setLocationManager:(LocationManagerDelegate *)givenLocation;
-
 
 - (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void) setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;

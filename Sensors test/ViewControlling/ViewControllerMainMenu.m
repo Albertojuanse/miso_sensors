@@ -158,7 +158,8 @@
         [[sharedData getSessionDataWithCredentialsUserDic:credentialsUserDic] addObject:sessionDic];
     }
     
-    
+    // TO DO: Move all this instantiations to views for strategy pattern. Alberto J. 2019/01/16.
+    // ****      MOVE       *****
     // Init the radiodetermination components
     NSString * deviceUUID = [[NSUUID UUID] UUIDString];
     if (!rhoRhoSystem) {
@@ -199,32 +200,10 @@
         motion.gyro_biasBuffer_capacity = [NSNumber numberWithInt:500];
     }
     
-    // Init the location manager, given the shared data component and the credentials of the device user.
-    if (!location) {
-        location = [[LocationManagerDelegate alloc] initWithSharedData:sharedData
-                                                               userDic:credentialsUserDic
-                                                          rhoRhoSystem:rhoRhoSystem
-                                                        rhoThetaSystem:rhoThetaSystem
-                                                      thetaThetaSystem:thetaThetaSystem
-                                                            deviceUUID:deviceUUID
-                                                 andCredentialsUserDic:credentialsUserDic];
-    }
+    // ****  END MOVE       *****
     
     // Variables; only inizialated if they didn't be so.
     // TO DO: Pass this in every view and call the modes by index, not by string. Alberto J. 2020/01/14.
-    if (!modes) {
-        modes = [[NSMutableArray alloc] init];
-        [modes addObject:@"MONITORING"];
-        [modes addObject:@"RHO_RHO_MODELING"];
-        [modes addObject:@"RHO_THETA_MODELING"];
-        [modes addObject:@"THETA_THETA_MODELING"];
-        [modes addObject:@"RHO_RHO_LOCATING"];
-        [modes addObject:@"RHO_THETA_LOCATING"];
-        [modes addObject:@"THETA_THETA_LOCATING"];
-        [modes addObject:@"GPS_SELF_LOCATING"];
-        [modes addObject:@"COMPASS_SELF_LOCATING"];
-        // TO DO: BASIC, ROUTING AND TRACKING modes. Alberto J. 2019/09/13.
-    }
     
     // Registers
     if (userDidLogIn) {
@@ -596,16 +575,6 @@
 {
     motion = givenMotion;
 }
-
-/*!
- @method setLocationManager:
- @discussion This method sets the location manager.
- */
-- (void) setLocationManager:(LocationManagerDelegate *)givenLocation
-{
-    location = givenLocation;
-}
-
 /*!
  @method setItemBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
@@ -713,47 +682,47 @@
         // If user did select a row in the table
         if (chosenMode) {
             
-            if ([chosenMode isEqualToString:[modes objectAtIndex:0]]) { // MONITORING
-                [sharedData inSessionDataSetMode:[modes objectAtIndex:0]
+            if ([chosenMode isModeKey:kModeMonitoring]) { // MONITORING
+                [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:userDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:1]]) { // RHO_RHO_MODELING
-                [sharedData inSessionDataSetMode:[modes objectAtIndex:1]
+            if ([chosenMode isModeKey:kModeRhoRhoModelling]) { // RHO_RHO_MODELING
+                [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:userDic];
                 [self performSegueWithIdentifier:@"fromMainToRHO_RHO_MODELING" sender:sender];
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:2]]) { // RHO_THETA_MODELING
-                [sharedData inSessionDataSetMode:[modes objectAtIndex:2]
+            if ([chosenMode isModeKey:kModeRhoThetaModelling]) { // RHO_THETA_MODELING
+                [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:3]]) { // RHO_THETA_MODELING
+            if ([chosenMode isModeKey:kModeThetaThetaModelling]) { // THETA_THETA_MODELING
                 return;
                 // [self performSegueWithIdentifier:@"fromMainToTHETA_THETA_MODELING" sender:sender];
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:4]]) { // RHO_RHO_LOCATING
+            if ([chosenMode isModeKey:kModeRhoRhoLocating]) { // RHO_RHO_LOCATING
                 return;
                 // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:5]]) { // RHO_THETA_LOCATING
+            if ([chosenMode isModeKey:kModeRhoThetaLocating]) { // RHO_THETA_LOCATING
                 return;
                 // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:6]]) { // THETA_THETA_LOCATING
-                [sharedData inSessionDataSetMode:[modes objectAtIndex:6]
+            if ([chosenMode isModeKey:kModeThetaThetaLocating]) { // THETA_THETA_LOCATING
+                [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:7]]) { // GPS_SELF_LOCATING
-                NSString * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+            if ([chosenMode isModeKey:kModeGPSSelfLocating]) { // GPS_SELF_LOCATING
+                MDMode * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                                          andCredentialsUserDic:credentialsUserDic];
                 if (currentMode) {
-                    if ([currentMode isEqualToString:[modes objectAtIndex:7]]) {
+                    if ([chosenMode isModeKey:kModeGPSSelfLocating]) {
                         [sharedData inSessionDataSetMode:nil
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
@@ -761,7 +730,7 @@
                                                                             object:nil];
                         NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingLocation\" posted.");
                     } else {
-                        [sharedData inSessionDataSetMode:[modes objectAtIndex:7]
+                        [sharedData inSessionDataSetMode:chosenMode
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingLocation"
@@ -769,7 +738,7 @@
                         NSLog(@"[NOTI][VCMM] Notification \"startUpdatingLocation\" posted.");
                     }
                 } else {
-                    [sharedData inSessionDataSetMode:@"GPS_SELF_LOCATING"
+                    [sharedData inSessionDataSetMode:chosenMode
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingLocation"
@@ -778,11 +747,11 @@
                 }
                 
             }
-            if ([chosenMode isEqualToString:[modes objectAtIndex:8]]) { // COMPASS_SELF_LOCATING
-                NSString * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
-                                                                         andCredentialsUserDic:credentialsUserDic];
+            if ([chosenMode isModeKey:kModeCompassSelfLocating]) { // COMPASS_SELF_LOCATING
+                MDMode * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                                       andCredentialsUserDic:credentialsUserDic];
                 if (currentMode) {
-                    if ([currentMode isEqualToString:[modes objectAtIndex:8]]) {
+                    if ([chosenMode isModeKey:kModeCompassSelfLocating]) {
                         [sharedData inSessionDataSetMode:nil
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
@@ -790,7 +759,7 @@
                                                                             object:nil];
                         NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingHeading\" posted.");
                     } else {
-                        [sharedData inSessionDataSetMode:[modes objectAtIndex:8]
+                        [sharedData inSessionDataSetMode:chosenMode
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingHeading"
@@ -798,7 +767,7 @@
                         NSLog(@"[NOTI][VCMM] Notification \"startUpdatingHeading\" posted.");
                     }
                 } else {
-                    [sharedData inSessionDataSetMode:[modes objectAtIndex:8]
+                    [sharedData inSessionDataSetMode:chosenMode
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingHeading"
@@ -876,7 +845,6 @@
         [viewControllerAddBeaconMenu setUserDic:userDic];
         [viewControllerAddBeaconMenu setSharedData:sharedData];
         [viewControllerAddBeaconMenu setMotionManager:motion];
-        [viewControllerAddBeaconMenu setLocationManager:location];
         
         [viewControllerAddBeaconMenu setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerAddBeaconMenu setItemPositionIdNumber:itemPositionIdNumber];
@@ -893,7 +861,6 @@
         [viewControllerRhoRhoModeling setUserDic:userDic];
         [viewControllerRhoRhoModeling setSharedData:sharedData];
         [viewControllerRhoRhoModeling setMotionManager:motion];
-        [viewControllerRhoRhoModeling setLocationManager:location];
         
     }
     
@@ -907,7 +874,6 @@
         [viewControllerRhoThetaModeling setUserDic:userDic];
         [viewControllerRhoThetaModeling setSharedData:sharedData];
         [viewControllerRhoThetaModeling setMotionManager:motion];
-        [viewControllerRhoThetaModeling setLocationManager:location];
         
     }
     
@@ -928,7 +894,6 @@
         [viewControllerSelectPositions setUserDic:userDic];
         [viewControllerSelectPositions setSharedData:sharedData];
         [viewControllerSelectPositions setMotionManager:motion];
-        [viewControllerSelectPositions setLocationManager:location];
         
     }
 }
@@ -949,7 +914,7 @@
         return itemsCount + modelCount;
     }
     if (tableView == self.tableModes) {
-        return [modes count];
+        return kModesCount;
     }
     return 0;
 }
@@ -1097,40 +1062,8 @@
         }
     }
     if (tableView == self.tableModes) {
-        NSString * mode = [modes objectAtIndex:indexPath.row];
-        NSString * modeToShow;
-        if([@"MONITORING" isEqualToString:mode]) {
-            modeToShow = @"Monitorig";
-        }
-        if([@"RHO_RHO_MODELING" isEqualToString:mode]) {
-            modeToShow = @"Locate others using iBeacon";
-        }
-        if([@"RHO_THETA_MODELING" isEqualToString:mode]) {
-            modeToShow = @"Locate others using iBeacon and brújula";
-        }
-        if([@"THETA_THETA_MODELING" isEqualToString:mode]) {
-            modeToShow = @"Locate others using compass";
-        }
-        if([@"RHO_RHO_LOCATING" isEqualToString:mode]) {
-            modeToShow = @"Self locate using iBeacon";
-        }
-        if([@"RHO_THETA_LOCATING" isEqualToString:mode]) {
-            modeToShow = @"Self locate using iBeacon and brújula";
-        }
-        if([@"THETA_THETA_LOCATING" isEqualToString:mode]) {
-            modeToShow = @"Self locate using compass";
-        }
-        if([@"GPS_SELF_LOCATING" isEqualToString:mode]) {
-            modeToShow = @"Self locate using GPS";
-        }
-        if([@"COMPASS_SELF_LOCATING" isEqualToString:mode]) {
-            modeToShow = @"Self heading using compass";
-        }
-        if (modeToShow) {
-            cell.textLabel.text = modeToShow;
-        } else{
-            cell.textLabel.text = @"MODE_NAME_NOT_AVALIBLE";
-        }
+        MDMode * mode = [[MDMode alloc] initWithModeKey:indexPath.row];
+        cell.textLabel.text = [mode description];
         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
     }
     return cell;
@@ -1178,7 +1111,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
     }
     if (tableView == self.tableModes) {
-        chosenMode = [modes objectAtIndex:indexPath.row];
+        chosenMode = [[MDMode alloc] initWithModeKey:indexPath.row];
     }
 }
 

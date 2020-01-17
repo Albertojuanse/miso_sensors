@@ -283,12 +283,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         if ([sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic]) {
             
             // Get the measuring mode
-            NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
-                                                              andCredentialsUserDic:credentialsUserDic];
+            MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                            andCredentialsUserDic:credentialsUserDic];
             
             // If a monitoring type system; needs to save the UUID
             if (
-                [mode isEqualToString:@"MONITORING"]
+                [mode isModeKey:kModeMonitoring]
                 ) {
                 
                 // If there is any beacon in the event...
@@ -380,8 +380,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         
         // Get the measuring mode and items for initializing
         NSMutableArray * items = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
-        NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
-                                                          andCredentialsUserDic:credentialsUserDic];
+        MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                        andCredentialsUserDic:credentialsUserDic];
         monitoredRegions = [[NSMutableArray alloc] init];
         monitoredPositions = [[NSMutableArray alloc] init];
         
@@ -389,12 +389,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
            CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
             
-            if ([mode isEqualToString:@"MONITORING"]) {
-                
-                NSLog(@"[INFO][LMM] Instantiated class %@ when using %@ mode.",
-                      NSStringFromClass([self class]),
-                      mode
-                      );
+            if ([mode isModeKey:kModeMonitoring]) {
                 
                 // Resgiter the regions to be monitorized
                 for (NSMutableDictionary * itemDic in items) {
