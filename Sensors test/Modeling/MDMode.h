@@ -6,6 +6,8 @@
 //  Copyright © 2020 MISO. All rights reserved.
 //
 
+#include <Foundation/Foundation.h>
+
 /*!
  @typedef MDModes
  @brief  Working modes for modelling.
@@ -20,14 +22,24 @@
  @field kModeGPSSelfLocating measures GPS location as a reference for the final model.
  @field kModeCompassSelfLocating measures heading using the compass as a reference for the final model.
  */
-typedef struct {
-    int kModeMonitoring = 0;
-    int kModeRhoRhoModelling = 1;
-    int kModeRhoThetaModelling = 2;
-    int kModeThetaThetaModelling = 3;
-    int kModeRhoRhoLocating = 4;
-    int kModeRhoThetaLocating = 5;
-    int kModeThetaThetaLocating = 6;
-    int kModeGPSSelfLocating = 7;
-    int kModeCompassSelfLocating = 8;
-} MDModes;
+typedef NS_ENUM(int, MDModes){
+    kModeMonitoring,
+    kModeRhoRhoModelling,
+    kModeRhoThetaModelling,
+    kModeThetaThetaModelling,
+    kModeRhoRhoLocating,
+    kModeRhoThetaLocating,
+    kModeThetaThetaLocating,
+    kModeGPSSelfLocating,
+    kModeCompassSelfLocating
+};
+
+/*!
+ @class MDMode
+ @discussion A working mode that user can choose, depending on technology, mathematical calculus, etc. desired
+ */
+@interface MDMode: NSObject <NSCoding> {
+    int mode;
+}
+
+@end

@@ -144,7 +144,7 @@
 }
 
 /*!
- @method isEqualToMDType
+ @method isEqualToMDReference
  @discussion This method compares two MDReference objects.
  */
 - (BOOL)isEqualToMDReference:(MDReference *)reference
