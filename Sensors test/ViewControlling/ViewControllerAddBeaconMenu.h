@@ -34,7 +34,6 @@
     
 }
 
-
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 
 @property (weak, nonatomic) IBOutlet UILabel *labelBeacon1;
@@ -71,6 +70,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *textType;
 @property (weak, nonatomic) IBOutlet UITableView *tableTypes;
 
+// Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void) setSharedData:(SharedData *)givenSharedData;

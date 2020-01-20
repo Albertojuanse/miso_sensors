@@ -40,7 +40,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCSP] Shared data could not be accessed while loading cells' item.");
+        NSLog(@"[ERROR][VCSP] Shared data could not be accessed while loading select position view.");
     }
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
@@ -92,24 +92,6 @@
 }
 
 /*!
- @method setMotionManager:
- @discussion This method sets the motion manager.
- */
-- (void) setMotionManager:(MotionManager *)givenMotion
-{
-    motion = givenMotion;
-}
-
-/*!
- @method setLocationManager:
- @discussion This method sets the location manager.
- */
-- (void) setLocationManager:(LocationManagerDelegate *)givenLocation
-{
-    location = givenLocation;
-}
-
-/*!
  @method setItemBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
@@ -131,7 +113,7 @@
 
 /*!
  @method handleButtonBack:
- @discussion This method handles the Back button action and segue back to the main menu; 'prepareForSegue:sender:' method is called before.
+ @discussion This method handles the 'back' button action and segue back to the main menu; 'prepareForSegue:sender:' method is called before.
  */
 - (IBAction)handleButtonBack:(id)sender
 {
@@ -140,7 +122,7 @@
 
 /*!
  @method handleButtonGo:
- @discussion This method handles the 'Go' button action and segue to theta theta system locating view; 'prepareForSegue:sender:' method is called before.
+ @discussion This method handles the 'go' button action and segues to mode's locating view; 'prepareForSegue:sender:' method is called before.
  */
 - (IBAction)handleButtonGo:(id)sender
 {
@@ -158,28 +140,28 @@
         
         // This button can segue with different views depending on the mode chosen by the user in the main menu
         if ([mode isModeKey:kModeMonitoring]) {
-            // NSLog(@"[INFO][VCSP] Chosen mode is MONITORING.");
+            NSLog(@"[INFO][VCSP] Chosen mode is kModeMonitoring.");
             [self performSegueWithIdentifier:@"fromSelectPositionsToMONITORING" sender:sender];
             return;
         }
         if ([mode isModeKey:kModeRhoRhoLocating]) {
-            // NSLog(@"[INFO][VCSP] Chosen mode is RHO_RHO_LOCATING.");
+            NSLog(@"[INFO][VCSP] Chosen mode is kModeRhoRhoLocating.");
             // [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_RHO_LOCATING" sender:sender];
             return;
         }
         if ([mode isModeKey:kModeRhoThetaLocating]) {
-            // NSLog(@"[INFO][VCSP] Chosen mode is RHO_THETA_LOCATING.");
+            // NSLog(@"[INFO][VCSP] Chosen mode is kModeRhoThetaLocating.");
             // [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_THETA_LOCATING" sender:sender];
             return;
         }
         if ([mode isModeKey:kModeRhoThetaModelling]) {
-            NSLog(@"[INFO][VCSP] Chosen mode is RHO_THETA_MODELING.");
+            NSLog(@"[INFO][VCSP] Chosen mode is kModeRhoThetaModelling.");
             [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_THETA_MODELING" sender:sender];
             return;
         }
         if ([mode isModeKey:kModeThetaThetaLocating]) {
-            // Go is only allowed if the user did choose at least one position in the table
-            NSLog(@"[INFO][VCSP] Chosen mode is THETA_THETA_LOCATING.");
+            // TO DO: Go is only allowed if the user did choose at least one position in the table. Alberto J. 2020/01/20.
+            NSLog(@"[INFO][VCSP] Chosen mode is kModeThetaThetaLocating.");
             [self performSegueWithIdentifier:@"fromSelectPositionsToTHETA_THETA_LOCATING" sender:sender];
         }
         
@@ -190,7 +172,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCSP] Shared data could not be accessed while loading cells' item.");
+        NSLog(@"[ERROR][VCSP] Shared data could not be accessed when tapped 'go' button item.");
     }
 }
 
@@ -236,8 +218,8 @@
         [viewControllerMonitoring setCredentialsUserDic:credentialsUserDic];
         [viewControllerMonitoring setUserDic:userDic];
         [viewControllerMonitoring setSharedData:sharedData];
-        [viewControllerMonitoring setMotionManager:motion];
-        [viewControllerMonitoring setLocationManager:location];
+        [viewControllerMonitoring setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerMonitoring setItemPositionIdNumber:itemPositionIdNumber];
         
     }
     if ([[segue identifier] isEqualToString:@"fromSelectPositionsToTHETA_THETA_LOCATING"]) {
@@ -248,8 +230,8 @@
         [viewControllerThetaThetaLocating setCredentialsUserDic:credentialsUserDic];
         [viewControllerThetaThetaLocating setUserDic:userDic];
         [viewControllerThetaThetaLocating setSharedData:sharedData];
-        [viewControllerThetaThetaLocating setMotionManager:motion];
-        [viewControllerThetaThetaLocating setLocationManager:location];
+        [viewControllerThetaThetaLocating setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerThetaThetaLocating setItemPositionIdNumber:itemPositionIdNumber];
         
     }
     if ([[segue identifier] isEqualToString:@"fromSelectPositionsToRHO_THETA_MODELING"]) {
@@ -260,8 +242,8 @@
         [viewControllerRhoThetaModeling setCredentialsUserDic:credentialsUserDic];
         [viewControllerRhoThetaModeling setUserDic:userDic];
         [viewControllerRhoThetaModeling setSharedData:sharedData];
-        [viewControllerRhoThetaModeling setMotionManager:motion];
-        [viewControllerRhoThetaModeling setLocationManager:location];
+        [viewControllerRhoThetaModeling setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerRhoThetaModeling setItemPositionIdNumber:itemPositionIdNumber];
         
     }
     if ([[segue identifier] isEqualToString:@"fromSelectPositionsToMain"]) {
@@ -272,19 +254,29 @@
         [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
         [viewControllerMainMenu setUserDic:userDic];
         [viewControllerMainMenu setSharedData:sharedData];
-        [viewControllerMainMenu setMotionManager:motion];
+        [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
+        
     }
     return;
 }
 
 #pragma mark - UItableView delegate methods
 
+/*!
+ @method numberOfSectionsInTableView:
+ @discussion Handles the upload of tables; returns the number of sections in them.
+ */
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
     return 1;
 }
 
+/*!
+ @method tableView:numberOfRowsInSection:
+ @discussion Handles the upload of tables; returns the number of items in them.
+ */
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableItems) {
@@ -295,6 +287,10 @@
     return 0;
 }
 
+/*!
+ @method tableView:cellForRowAtIndexPath:
+ @discussion Handles the upload of tables; returns each cell.
+ */
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
@@ -445,6 +441,10 @@
     return cell;
 }
 
+/*!
+ @method tableView:didSelectRowAtIndexPath:
+ @discussion Handles the upload of tables; handles the 'select a cell' action.
+ */
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {

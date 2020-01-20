@@ -48,6 +48,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *loginText;
 @property (weak, nonatomic) IBOutlet UIButton *calibrateButton;
 
+// Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void) setSharedData:(SharedData *)givenSharedData;
