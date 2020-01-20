@@ -35,7 +35,9 @@
     
     // Components
     // TO DO: Use UUID from component 'device'. Alberto J. 2020/01/20.
-    NSString * deviceUUID = [[NSUUID UUID] UUIDString];
+    if (!deviceUUID) {
+        deviceUUID = [[NSUUID UUID] UUIDString];
+    }
     if (!thetaThetaSystem) {
         thetaThetaSystem = [[RDThetaThetaSystem alloc] initWithSharedData:sharedData
                                                                   userDic:userDic
@@ -149,7 +151,7 @@
 
 /*!
  @method setItemBeaconIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ @discussion This method sets the NSNumber variable 'itemBeaconIdNumber'.
  */
 - (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
 {
@@ -158,11 +160,20 @@
 
 /*!
  @method setItemPositionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ @discussion This method sets the NSNumber variable 'itemPositionIdNumber'.
  */
 - (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
 {
     itemPositionIdNumber = givenItemPositionIdNumber;
+}
+
+/*!
+ @method setDeviceUUID:
+ @discussion This method sets the NSString variable 'deviceUUID'.
+ */
+- (void) setDeviceUUID:(NSString *)givenDeviceUUID
+{
+    deviceUUID = givenDeviceUUID;
 }
 
 #pragma mark - Buttons event handles
@@ -328,6 +339,7 @@
         [viewControllerModelingThetaThetaLocating setLocationManager:location];
         [viewControllerModelingThetaThetaLocating setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerModelingThetaThetaLocating setItemPositionIdNumber:itemPositionIdNumber];
+        [viewControllerModelingThetaThetaLocating setDeviceUUID:deviceUUID];
         return;
     }
 }

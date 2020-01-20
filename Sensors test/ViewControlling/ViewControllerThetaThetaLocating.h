@@ -36,6 +36,7 @@
     NSNumber * itemBeaconIdNumber;
     NSNumber * itemPositionIdNumber;
     NSString * locatedPositionUUID; // This one changes when the user measures and generates a new position for the device.
+    NSString * deviceUUID;
     MDMode * mode;
     
 }
@@ -54,5 +55,6 @@
 - (void) setLocationManager:(LMDelegateThetaThetaLocating *)givenLocation;
 - (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void) setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
+- (void) setDeviceUUID:(NSString *)givenDeviceUUID;
 
 @end

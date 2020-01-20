@@ -34,7 +34,6 @@
     }
     
     // Components
-    location = nil; // ARC disposal
     // TO DO: Use UUID from component 'device'. Alberto J. 2020/01/20.
     NSString * deviceUUID = [[NSUUID UUID] UUIDString];
     location = [[LMDelegateMonitoring alloc] initWithSharedData:sharedData

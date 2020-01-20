@@ -21,15 +21,30 @@
     [super viewDidLoad];
     
     // Register the current mode
+    mode = [[MDMode alloc] initWithModeKey:kModeThetaThetaLocating];
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        [sharedData inSessionDataSetMode:@"THETA_THETA_LOCATING"
+        [sharedData inSessionDataSetMode:mode
                        toUserWithUserDic:userDic
                    andCredentialsUserDic:credentialsUserDic];
     } else {
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+    }
+    
+    // Components and variables error management; they must be initialized in theta theta locating view
+    if (!deviceUUID) {
+        NSLog(@"[ERROR][VCMTTL] Variable 'deviceUUID' not found when loading view.");
+    }
+    if (!thetaThetaSystem) {
+        NSLog(@"[ERROR][VCMTTL] Component 'thetaThetaSystem' not found when loading view.");
+    }
+    if (!location) {
+        NSLog(@"[ERROR][VCMTTL] Component 'location' not found when loading view.");
+    }
+    if (!motion) {
+        NSLog(@"[ERROR][VCMTTL] Component 'motion' not found when loading view.");
     }
     
     // Initial state
@@ -37,13 +52,16 @@
                           andWithCredentialsUserDic:credentialsUserDic];
     
     // Variables
+    // locatedPositionUUID used for new positions located by this view and renewed every time.
     locatedPositionUUID = [[NSUUID UUID] UUIDString];
+    // For reference creation routine
     flagReference = false;
     sourceItem = nil;
     targetItem = nil;
     
     // Ask canvas to initialize
-    [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic andCredentialsUserDic:credentialsUserDic];
+    [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic
+                       andCredentialsUserDic:credentialsUserDic];
     
     // Visualization
     [self.labelStatus setText:@"Please, finish the model process."];
@@ -113,7 +131,7 @@
  @method setLocationManager:
  @discussion This method sets the location manager.
  */
-- (void) setLocationManager:(LocationManagerDelegate *)givenLocation
+- (void) setLocationManager:(LMDelegateThetaThetaLocating *)givenLocation
 {
     location = givenLocation;
 }
@@ -136,6 +154,15 @@
     itemPositionIdNumber = givenItemPositionIdNumber;
 }
 
+/*!
+ @method setDeviceUUID:
+ @discussion This method sets the NSString variable 'deviceUUID'.
+ */
+- (void) setDeviceUUID:(NSString *)givenDeviceUUID
+{
+    deviceUUID = givenDeviceUUID;
+}
+
 #pragma mark - Buttons event handles
 /*!
  @method handleBackButton:
@@ -152,6 +179,7 @@
  */
 - (IBAction)handleBackFinish:(id)sender
 {
+    // TO DO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
     [self performSegueWithIdentifier:@"fromModelingTHETA_THETA_LOCATINGToFinalModel" sender:sender];
 }
 
@@ -192,7 +220,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed while loading cells' item.");
+        NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed before handle the 'modify' button.");
     }
 }
 
@@ -261,7 +289,7 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed while loading cells' item.");
+        NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed before handle the 'reference' button.");
     }
 }
 
@@ -308,6 +336,7 @@
         [viewControllerThetaThetaLocating setSharedData:sharedData];
         [viewControllerThetaThetaLocating setMotionManager:motion];
         [viewControllerThetaThetaLocating setLocationManager:location];
+        [viewControllerThetaThetaLocating setDeviceUUID:deviceUUID];
         return;
     }
     if ([[segue identifier] isEqualToString:@"fromModelingTHETA_THETA_LOCATINGToFinalModel"]) {
@@ -318,8 +347,8 @@
         [viewControllerFinalModel setCredentialsUserDic:credentialsUserDic];
         [viewControllerFinalModel setUserDic:userDic];
         [viewControllerFinalModel setSharedData:sharedData];
-        [viewControllerFinalModel setMotionManager:motion];
-        [viewControllerFinalModel setLocationManager:location];
+        [viewControllerFinalModel setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerFinalModel setItemPositionIdNumber:itemPositionIdNumber];
         return;
     }
     
@@ -327,12 +356,20 @@
 
 #pragma mark - UItableView delegate methods
 
+/*!
+ @method numberOfSectionsInTableView:
+ @discussion Handles the upload of tables; returns the number of sections in them.
+ */
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
     return 1;
 }
 
+/*!
+ @method tableView:numberOfRowsInSection:
+ @discussion Handles the upload of tables; returns the number of items in them.
+ */
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableItemsChosen) {
@@ -349,6 +386,10 @@
     return 0;
 }
 
+/*!
+ @method tableView:cellForRowAtIndexPath:
+ @discussion Handles the upload of tables; returns each cell.
+ */
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
@@ -562,6 +603,10 @@
     return cell;
 }
 
+/*!
+ @method tableView:didSelectRowAtIndexPath:
+ @discussion Handles the upload of tables; handles the 'select a cell' action.
+ */
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -654,7 +699,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed while loading cells' item.");
+        NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed while selecting a cell.");
     }
 }
 
