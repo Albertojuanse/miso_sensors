@@ -21,26 +21,60 @@
     [super viewDidLoad];
     
     // Register the current mode
+    mode = [[MDMode alloc] initWithModeKey:kModeThetaThetaLocating];
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        [sharedData inSessionDataSetMode:@"THETA_THETA_LOCATING"
+        [sharedData inSessionDataSetMode:mode
                        toUserWithUserDic:userDic
                    andCredentialsUserDic:credentialsUserDic];
     } else {
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
     }
     
+    // Components
+    // TO DO: Use UUID from component 'device'. Alberto J. 2020/01/20.
+    NSString * deviceUUID = [[NSUUID UUID] UUIDString];
+    if (!thetaThetaSystem) {
+        thetaThetaSystem = [[RDThetaThetaSystem alloc] initWithSharedData:sharedData
+                                                                  userDic:userDic
+                                                               deviceUUID:deviceUUID
+                                                    andCredentialsUserDic:credentialsUserDic];
+    }
+    if (!location) {
+        location = [[LMDelegateThetaThetaLocating alloc] initWithSharedData:sharedData
+                                                                    userDic:userDic
+                                                           thetaThetaSystem:thetaThetaSystem
+                                                                 deviceUUID:deviceUUID
+                                                      andCredentialsUserDic:credentialsUserDic];
+    }
+    if (!motion) {
+        motion = [[MotionManager alloc] initWithSharedData:sharedData
+                                                   userDic:credentialsUserDic
+                                          thetaThetaSystem:thetaThetaSystem
+                                                deviceUUID:deviceUUID
+                                     andCredentialsUserDic:credentialsUserDic];
+        
+        // TO DO: make this configurable or properties. Alberto J. 2019/09/13.
+        motion.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
+        motion.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
+        motion.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.acce_biasBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.gyro_measuresBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.gyro_biasBuffer_capacity = [NSNumber numberWithInt:500];
+    }
+    
     // Initial state
     [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                           andWithCredentialsUserDic:credentialsUserDic];
     
-    // Variables
+    // Variables; used for new positions located by this view and renewed every time.
     locatedPositionUUID = [[NSUUID UUID] UUIDString];
     
     // Ask canvas to initialize
-    [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic andCredentialsUserDic:credentialsUserDic];
+    [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic
+                       andCredentialsUserDic:credentialsUserDic];
     
     // Visualization
     [self.buttonMeasure setEnabled:YES];
@@ -108,7 +142,7 @@
  @method setLocationManager:
  @discussion This method sets the location manager.
  */
-- (void) setLocationManager:(LocationManagerDelegate *)givenLocation
+- (void) setLocationManager:(LMDelegateThetaThetaLocating *)givenLocation
 {
     location = givenLocation;
 }
@@ -171,12 +205,12 @@
             [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
             
             // And send the notification
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startLocationMeasuring" object:nil];
-            NSLog(@"[NOTI][VCTTL] Notification \"startLocationMeasuring\" posted.");
-            //[[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
-            //NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopes\" posted.");
-            //[[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring" object:nil];
-            //NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopeHeadingMeasuring\" posted.");
+            // [[NSNotificationCenter defaultCenter] postNotificationName:@"startCompassHeadingMeasuring" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
+            NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopes\" posted.");
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring"
+                                                                object:nil];
+            NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopeHeadingMeasuring\" posted.");
             return;
         } else {
             return;
@@ -187,7 +221,7 @@
         // This next line have been moved into "stopGyroscopesHeadingMeasuring" method, because the measure is generated in this case after stop measuring
         // [sharedData inSessionDataSetIdleUserWithUserDic:userDic andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
-        // [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring" object:nil];
+        // [[NSNotificationCenter defaultCenter] postNotificationName:@"stopCompassHeadingMeasuring" object:nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
         NSLog(@"[NOTI][VCTTL] Notification \"stopGyroscopes\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
@@ -269,8 +303,8 @@
         [viewControllerSelectPositions setCredentialsUserDic:credentialsUserDic];
         [viewControllerSelectPositions setUserDic:userDic];
         [viewControllerSelectPositions setSharedData:sharedData];
-        [viewControllerSelectPositions setMotionManager:motion];
-        [viewControllerSelectPositions setLocationManager:location];
+        [viewControllerSelectPositions setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
@@ -292,18 +326,28 @@
         [viewControllerModelingThetaThetaLocating setSharedData:sharedData];
         [viewControllerModelingThetaThetaLocating setMotionManager:motion];
         [viewControllerModelingThetaThetaLocating setLocationManager:location];
+        [viewControllerModelingThetaThetaLocating setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerModelingThetaThetaLocating setItemPositionIdNumber:itemPositionIdNumber];
         return;
     }
 }
 
 #pragma mark - UItableView delegate methods
 
+/*!
+ @method numberOfSectionsInTableView:
+ @discussion Handles the upload of tables; returns the number of sections in them.
+ */
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
     return 1;
 }
 
+/*!
+ @method tableView:numberOfRowsInSection:
+ @discussion Handles the upload of tables; returns the number of items in them.
+ */
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableItemsChosen) {
@@ -320,6 +364,10 @@
     return 0;
 }
 
+/*!
+ @method tableView:cellForRowAtIndexPath:
+ @discussion Handles the upload of tables; returns each cell.
+ */
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
@@ -512,6 +560,10 @@
     return cell;
 }
 
+/*!
+ @method tableView:didSelectRowAtIndexPath:
+ @discussion Handles the upload of tables; handles the 'select a cell' action.
+ */
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -567,7 +619,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCTTL] Shared data could not be accessed while loading cells' item.");
+            NSLog(@"[ERROR][VCTTL] Shared data could not be accessed while selecting a cell.");
         }
     }
     if (tableView == self.tableTypes) {

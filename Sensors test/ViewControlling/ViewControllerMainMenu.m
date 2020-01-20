@@ -165,6 +165,7 @@
     
     // Variables
     // Variables for naming porpuses; each new component created increases this counters to generate unique names.
+    // TO DO: These variables to session dic in shared data. Alberto J. 2020/01/20.
     if (!itemBeaconIdNumber) {
         itemBeaconIdNumber = [NSNumber numberWithInteger:5];
     }

@@ -208,6 +208,25 @@
     return self;
 }
 
+/*!
+ @method initWithSharedData:userDic::thetaThetaSystem:deviceUUID:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the location systems, the device's UUID and the credentials of the user for access it.
+ */
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
+                           userDic:(NSMutableDictionary *)initUserDic
+                  thetaThetaSystem:(RDThetaThetaSystem *)initThetaThetaSystem
+                        deviceUUID:(NSString *)initDeviceUUID
+             andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
+{
+    sharedData = initSharedData;
+    credentialsUserDic = initCredentialsUserDic;
+    userDic = initUserDic;
+    deviceUUID = initDeviceUUID;
+    thetaThetaSystem = initThetaThetaSystem;
+    self = [self initWithSharedData:initSharedData];
+    return self;
+}
+
 #pragma mark - Instance methods
 /*!
  @method setCredentialUserDic:
