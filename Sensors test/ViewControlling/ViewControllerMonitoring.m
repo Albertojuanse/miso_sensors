@@ -35,6 +35,7 @@
     
     // Components
     location = nil; // ARC disposal
+    // TO DO: Use UUID from component 'device'. Alberto J. 2020/01/20.
     NSString * deviceUUID = [[NSUUID UUID] UUIDString];
     location = [[LMDelegateMonitoring alloc] initWithSharedData:sharedData
                                                         userDic:userDic
@@ -82,8 +83,8 @@
     // Initial state measuring and init measures
     [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                andWithCredentialsUserDic:credentialsUserDic];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"startLocationMeasuring" object:nil];
-    NSLog(@"[NOTI][VCM] Notification \"startLocationMeasuring\" posted.");
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"startMonitoringMeasures" object:nil];
+    NSLog(@"[NOTI][VCM] Notification \"startMonitoringMeasures\" posted.");
 }
 
 /*!
@@ -174,8 +175,8 @@
         // Stop measuring
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                                    andWithCredentialsUserDic:credentialsUserDic];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring" object:nil];
-        NSLog(@"[NOTI][VCM] Notification \"stopLocationMeasuring\" posted.");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMonitoringMeasures" object:nil];
+        NSLog(@"[NOTI][VCM] Notification \"stopMonitoringMeasures\" posted.");
         
         // Set registered items as located and reference with the registering item
         MDType * type = [[MDType alloc] initWithName:@"Register"];

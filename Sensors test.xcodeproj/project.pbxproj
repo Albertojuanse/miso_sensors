@@ -41,6 +41,7 @@
 		4295FB2222D35D7A0024B155 /* ViewControllerMainMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */; };
 		4295FB2622D360BB0024B155 /* ViewControllerAddBeaconMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */; };
 		429FA65F22EB19DB00F3D415 /* MDType.m in Sources */ = {isa = PBXBuildFile; fileRef = 429FA65E22EB19DB00F3D415 /* MDType.m */; };
+		42B676EE23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B676ED23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m */; };
 		42CEBE2E234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */; };
 		42F07CD02359C86E00134FFA /* SDPersistantMutableDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F07CCF2359C86E00134FFA /* SDPersistantMutableDictionary.m */; };
 		42F07CD32359CB6200134FFA /* NSMutableArray+Printable.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F07CD22359CB6200134FFA /* NSMutableArray+Printable.m */; };
@@ -112,6 +113,8 @@
 		4295FB2422D360930024B155 /* ViewControllerAddBeaconMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerAddBeaconMenu.h; sourceTree = "<group>"; };
 		4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerAddBeaconMenu.m; sourceTree = "<group>"; };
 		429FA65E22EB19DB00F3D415 /* MDType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDType.m; sourceTree = "<group>"; };
+		42B676EC23D5B5AD005E3CBD /* LMDelegateThetaThetaLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateThetaThetaLocating.h; sourceTree = "<group>"; };
+		42B676ED23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateThetaThetaLocating.m; sourceTree = "<group>"; };
 		42CEBE2C2345009D0094B1BA /* ViewControllerModelingThetaThetaLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerModelingThetaThetaLocating.h; sourceTree = "<group>"; };
 		42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerModelingThetaThetaLocating.m; sourceTree = "<group>"; };
 		42F07CCE2359C85000134FFA /* SDPersistantMutableDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDPersistantMutableDictionary.h; sourceTree = "<group>"; };
@@ -179,6 +182,8 @@
 				426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */,
 				4227338923D0BB5500F79364 /* LMDelegateMonitoring.h */,
 				4227338A23D0BB6B00F79364 /* LMDelegateMonitoring.m */,
+				42B676EC23D5B5AD005E3CBD /* LMDelegateThetaThetaLocating.h */,
+				42B676ED23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m */,
 			);
 			path = LocationManaging;
 			sourceTree = "<group>";
@@ -344,6 +349,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42B676EE23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m in Sources */,
 				428B7C6022E089B200B0C660 /* RDThetaThetaSystem.m in Sources */,
 				42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */,
 				426501BD22A03B4300BE20B7 /* Canvas.m in Sources */,
