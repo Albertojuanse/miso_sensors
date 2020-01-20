@@ -290,56 +290,47 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             if (
                 [mode isModeKey:kModeMonitoring]
                 ) {
-                
-                // If there is any beacon in the event...
-                if (beacons.count > 0) {
                     
-                    for (CLBeacon *beacon in beacons) {
-                        // ...get its information...
-                        NSString * uuid = [[beacon proximityUUID] UUIDString];
-                        NSLog(@"[INFO][LMM] Beacon ranged %@; registering.", uuid);
-                        
-                        RDPosition * registerPosition = [[RDPosition alloc] init];
-                        registerPosition.x = position.x;
-                        registerPosition.y = position.y;
-                        registerPosition.z = position.z;
-                        
-                        // ...and compose a measure with them.
-                        [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithFloat:0.0]
-                                                      ofSort:@"rssi"
-                                                withItemUUID:uuid
-                                              withDeviceUUID:deviceUUID
-                                                  atPosition:registerPosition
-                                              takenByUserDic:userDic
-                                   andWithCredentialsUserDic:credentialsUserDic];
-                    }
-                    NSLog(@"[INFO][LMM] Generated measures:");
-                    NSLog(@"[INFO][LMM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
+                for (CLBeacon *beacon in beacons) {
+                    // ...get its information...
+                    NSString * uuid = [[beacon proximityUUID] UUIDString];
+                    NSLog(@"[INFO][LMM] Beacon ranged %@; registering.", uuid);
                     
-                    // Ask view controller to refresh the canvas and table
-                    if(beacons.count > 0) {
-                        NSLog(@"[NOTI][LMM] Notification \"refreshCanvas\" posted.");
-                        [[NSNotificationCenter defaultCenter]
-                         postNotificationName:@"refreshCanvas"
-                         object:nil];
-                        NSLog(@"[NOTI][LMM] Notification \"refreshRegisterTable\" posted.");
-                        [[NSNotificationCenter defaultCenter]
-                         postNotificationName:@"refreshRegisterTable"
-                         object:nil];
-                    }
+                    RDPosition * registerPosition = [[RDPosition alloc] init];
+                    registerPosition.x = position.x;
+                    registerPosition.y = position.y;
+                    registerPosition.z = position.z;
+                    
+                    // ...and compose a measure with them.
+                    [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithFloat:0.0]
+                                                  ofSort:@"rssi"
+                                            withItemUUID:uuid
+                                          withDeviceUUID:deviceUUID
+                                              atPosition:registerPosition
+                                          takenByUserDic:userDic
+                               andWithCredentialsUserDic:credentialsUserDic];
                 }
+                NSLog(@"[INFO][LMM] Generated measures:");
+                NSLog(@"[INFO][LMM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
+                
+                // Ask view controller to refresh the canvas and table
+                NSLog(@"[NOTI][LMM] Notification \"refreshCanvas\" posted.");
+                [[NSNotificationCenter defaultCenter]
+                 postNotificationName:@"refreshCanvas"
+                 object:nil];
+                NSLog(@"[NOTI][LMM] Notification \"refreshRegisterTable\" posted.");
+                [[NSNotificationCenter defaultCenter]
+                 postNotificationName:@"refreshRegisterTable"
+                 object:nil];
             }
             
         } else { // If is idle or traveling...
-            // ...if there is any beacon in the event...
-            if (beacons.count > 0) {
-                // ...do something with them or it will be saved in some Ipad's buffering queue and appear later.
-                for (CLBeacon *beacon in beacons) {
-                    NSString * uuid = [[beacon proximityUUID] UUIDString];
-                    uuid = nil; // ARC dispose
-                    NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
-                    rssi = nil;
-                }
+            // ...do something with them or it will be saved in some Ipad's buffering queue and appear later.
+            for (CLBeacon *beacon in beacons) {
+                NSString * uuid = [[beacon proximityUUID] UUIDString];
+                uuid = nil; // ARC dispose
+                NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
+                rssi = nil;
             }
         }
         
