@@ -270,7 +270,8 @@
         [viewControllerSelectPositions setCredentialsUserDic:credentialsUserDic];
         [viewControllerSelectPositions setUserDic:userDic];
         [viewControllerSelectPositions setSharedData:sharedData];
-        [viewControllerSelectPositions setMotionManager:motion];
+        [viewControllerSelectPositions setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
@@ -290,19 +291,28 @@
         [viewControllerFinalModel setCredentialsUserDic:credentialsUserDic];
         [viewControllerFinalModel setUserDic:userDic];
         [viewControllerFinalModel setSharedData:sharedData];
-        [viewControllerFinalModel setMotionManager:motion];
+        [viewControllerFinalModel setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerFinalModel setItemPositionIdNumber:itemPositionIdNumber];
         return;
     }
 }
 
 #pragma mark - UItableView delegate methods
 
+/*!
+ @method numberOfSectionsInTableView:
+ @discussion Handles the upload of tables; returns the number of sections in them.
+ */
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
     return 1;
 }
 
+/*!
+ @method tableView:numberOfRowsInSection:
+ @discussion Handles the upload of tables; returns the number of items in them.
+ */
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableRegister) {
@@ -313,6 +323,10 @@
     return 0;
 }
 
+/*!
+ @method tableView:cellForRowAtIndexPath:
+ @discussion Handles the upload of tables; returns each cell.
+ */
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
