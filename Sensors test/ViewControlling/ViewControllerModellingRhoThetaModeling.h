@@ -1,31 +1,29 @@
 //
-//  ViewControllerModelingThetaThetaLocating.h
+//  ViewControllerModellingRhoThetaModeling.h
 //  Sensors test
 //
-//  Created by Alberto J. 2/10/19.
-//  Copyright © 2019 MISO. All rights reserved.
+//  Created by Alberto J. on 20/1/20.
+//  Copyright © 2020 MISO. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "ViewControllerThetaThetaLocating.h"
+#import "ViewControllerRhoThetaModeling.h"
 #import "ViewControllerFinalModel.h"
-#import "LMDelegateThetaThetaLocating.h"
-#import "RDThetaThetaSystem.h"
-#import "MotionManager.h"
+#import "LMDelegateRhoThetaModelling.h"
+#import "RDRhoThetaSystem.h"
 #import "Canvas.h"
 
 /*!
- @class ViewControllerModelingThetaThetaLocating
- @discussion This class extends UIViewController and controls the interface for locating the device with the theta theta location system.
+ @class ViewControllerModelingRhoThetaModeling
+ @discussion This class extends UIViewController and controls the interface for locating beacons with the rho theta location system.
  */
-@interface ViewControllerModelingThetaThetaLocating : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+@interface ViewControllerModellingRhoThetaModeling : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
     // Other components
     SharedData * sharedData;
-    RDThetaThetaSystem * thetaThetaSystem;
-    MotionManager * motion;
-    LMDelegateThetaThetaLocating * location;
+    RDRhoThetaSystem * thetaThetaSystem;
+    LMDelegateRhoThetaModelling * location;
     
     // Session and user context
     // The first credentials dictionary is for security issues and its proprietary is the one who logs-in in the device; the second one is used for identifying purposes; in multiuser context, the first one is used in the device for accessing data, etc. while the second one is shared to the rest of users when a measure is taken or something is changed to indicate who did it.
@@ -55,10 +53,10 @@
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void) setSharedData:(SharedData *)givenSharedData;
-- (void) setMotionManager:(MotionManager *)givenMotion;
-- (void) setLocationManager:(LMDelegateThetaThetaLocating *)givenLocation;
+- (void) setLocationManager:(LMDelegateRhoThetaModelling *)givenLocation;
 - (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void) setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void) setDeviceUUID:(NSString *)givenDeviceUUID;
 
 @end
+

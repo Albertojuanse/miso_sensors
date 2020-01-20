@@ -43,6 +43,7 @@
 		429FA65F22EB19DB00F3D415 /* MDType.m in Sources */ = {isa = PBXBuildFile; fileRef = 429FA65E22EB19DB00F3D415 /* MDType.m */; };
 		42B676EE23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B676ED23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m */; };
 		42B676F123D5E972005E3CBD /* LMDelegateRhoThetaModelling.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B676F023D5E972005E3CBD /* LMDelegateRhoThetaModelling.m */; };
+		42B676F423D60809005E3CBD /* ViewControllerModellingRhoThetaModeling.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B676F323D60809005E3CBD /* ViewControllerModellingRhoThetaModeling.m */; };
 		42CEBE2E234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */; };
 		42F07CD02359C86E00134FFA /* SDPersistantMutableDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F07CCF2359C86E00134FFA /* SDPersistantMutableDictionary.m */; };
 		42F07CD32359CB6200134FFA /* NSMutableArray+Printable.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F07CD22359CB6200134FFA /* NSMutableArray+Printable.m */; };
@@ -118,6 +119,8 @@
 		42B676ED23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateThetaThetaLocating.m; sourceTree = "<group>"; };
 		42B676EF23D5E964005E3CBD /* LMDelegateRhoThetaModelling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateRhoThetaModelling.h; sourceTree = "<group>"; };
 		42B676F023D5E972005E3CBD /* LMDelegateRhoThetaModelling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateRhoThetaModelling.m; sourceTree = "<group>"; };
+		42B676F223D607F6005E3CBD /* ViewControllerModellingRhoThetaModeling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerModellingRhoThetaModeling.h; sourceTree = "<group>"; };
+		42B676F323D60809005E3CBD /* ViewControllerModellingRhoThetaModeling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerModellingRhoThetaModeling.m; sourceTree = "<group>"; };
 		42CEBE2C2345009D0094B1BA /* ViewControllerModelingThetaThetaLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerModelingThetaThetaLocating.h; sourceTree = "<group>"; };
 		42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerModelingThetaThetaLocating.m; sourceTree = "<group>"; };
 		42F07CCE2359C85000134FFA /* SDPersistantMutableDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDPersistantMutableDictionary.h; sourceTree = "<group>"; };
@@ -212,6 +215,8 @@
 				422798872271F37800E07C39 /* ViewControllerRhoRhoModeling.m */,
 				4275ED5822D5E88E00A5CAB7 /* ViewControllerRhoThetaModeling.h */,
 				4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m */,
+				42B676F223D607F6005E3CBD /* ViewControllerModellingRhoThetaModeling.h */,
+				42B676F323D60809005E3CBD /* ViewControllerModellingRhoThetaModeling.m */,
 				428AF6C122D7A64E00BE5374 /* ViewControllerThetaThetaLocating.h */,
 				428AF6C222D7A67500BE5374 /* ViewControllerThetaThetaLocating.m */,
 				42CEBE2C2345009D0094B1BA /* ViewControllerModelingThetaThetaLocating.h */,
@@ -374,6 +379,7 @@
 				42F07CD02359C86E00134FFA /* SDPersistantMutableDictionary.m in Sources */,
 				42F07CD32359CB6200134FFA /* NSMutableArray+Printable.m in Sources */,
 				4276127422C0EE91007BDED8 /* SharedData.m in Sources */,
+				42B676F423D60809005E3CBD /* ViewControllerModellingRhoThetaModeling.m in Sources */,
 				42CEBE2E234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m in Sources */,
 				42B676F123D5E972005E3CBD /* LMDelegateRhoThetaModelling.m in Sources */,
 				42364B27236AE0BA00C387E5 /* MDReference.m in Sources */,

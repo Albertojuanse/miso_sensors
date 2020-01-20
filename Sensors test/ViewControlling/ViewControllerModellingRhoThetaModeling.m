@@ -1,14 +1,14 @@
 //
-//  ViewControllerThetaThetaLocating.m
+//  ViewControllerModellingRhoThetaModeling.m
 //  Sensors test
 //
-//  Created by MISO on 11/7/19.
-//  Copyright © 2019 MISO. All rights reserved.
+//  Created by Alberto J. on 20/1/20.
+//  Copyright © 2020 MISO. All rights reserved.
 //
 
-#import "ViewControllerThetaThetaLocating.h"
+#import "ViewControllerModellingRhoThetaModeling.h"
 
-@implementation ViewControllerThetaThetaLocating
+@implementation ViewControllerModellingRhoThetaModeling
 
 #pragma mark - UIViewController delegated methods
 
@@ -33,60 +33,44 @@
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
     }
     
-    // Components
-    // TO DO: Use UUID from component 'device'. Alberto J. 2020/01/20.
+    // Components and variables error management; they must be initialized in theta theta locating view
     if (!deviceUUID) {
-        deviceUUID = [[NSUUID UUID] UUIDString];
+        NSLog(@"[ERROR][VCMRTM] Variable 'deviceUUID' not found when loading view.");
     }
     if (!thetaThetaSystem) {
-        thetaThetaSystem = [[RDThetaThetaSystem alloc] initWithSharedData:sharedData
-                                                                  userDic:userDic
-                                                               deviceUUID:deviceUUID
-                                                    andCredentialsUserDic:credentialsUserDic];
+        NSLog(@"[ERROR][VCMRTM] Component 'thetaThetaSystem' not found when loading view.");
     }
     if (!location) {
-        location = [[LMDelegateThetaThetaLocating alloc] initWithSharedData:sharedData
-                                                                    userDic:userDic
-                                                           thetaThetaSystem:thetaThetaSystem
-                                                                 deviceUUID:deviceUUID
-                                                      andCredentialsUserDic:credentialsUserDic];
-    }
-    if (!motion) {
-        motion = [[MotionManager alloc] initWithSharedData:sharedData
-                                                   userDic:credentialsUserDic
-                                          thetaThetaSystem:thetaThetaSystem
-                                                deviceUUID:deviceUUID
-                                     andCredentialsUserDic:credentialsUserDic];
-        
-        // TO DO: make this configurable or properties. Alberto J. 2019/09/13.
-        motion.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
-        motion.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
-        motion.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
-        motion.acce_biasBuffer_capacity = [NSNumber numberWithInt:500];
-        motion.gyro_measuresBuffer_capacity = [NSNumber numberWithInt:500];
-        motion.gyro_biasBuffer_capacity = [NSNumber numberWithInt:500];
+        NSLog(@"[ERROR][VCMRTM] Component 'location' not found when loading view.");
     }
     
     // Initial state
     [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                           andWithCredentialsUserDic:credentialsUserDic];
     
-    // Variables; used for new positions located by this view and renewed every time.
+    // Variables
+    // locatedPositionUUID used for new positions located by this view and renewed every time.
     locatedPositionUUID = [[NSUUID UUID] UUIDString];
+    // For reference creation routine
+    flagReference = false;
+    sourceItem = nil;
+    targetItem = nil;
     
     // Ask canvas to initialize
     [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic
                        andCredentialsUserDic:credentialsUserDic];
     
     // Visualization
-    [self.buttonMeasure setEnabled:YES];
-    [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
+    [self.labelStatus setText:@"Please, finish the model process."];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableItemsChosen.delegate = self;
     self.tableTypes.delegate = self;
     self.tableItemsChosen.dataSource = self;
     self.tableTypes.dataSource = self;
+    // Allow multiple selection
+    self.tableItemsChosen.allowsMultipleSelection = true;
+    self.tableTypes.allowsMultipleSelection = true;
     
     [self.tableItemsChosen reloadData];
     [self.tableTypes reloadData];
@@ -132,26 +116,17 @@
 }
 
 /*!
- @method setMotionManager:
- @discussion This method sets the motion manager.
- */
-- (void) setMotionManager:(MotionManager *)givenMotion
-{
-    motion = givenMotion;
-}
-
-/*!
  @method setLocationManager:
  @discussion This method sets the location manager.
  */
-- (void) setLocationManager:(LMDelegateThetaThetaLocating *)givenLocation
+- (void) setLocationManager:(LMDelegateRhoThetaModelling *)givenLocation
 {
     location = givenLocation;
 }
 
 /*!
  @method setItemBeaconIdNumber:
- @discussion This method sets the NSNumber variable 'itemBeaconIdNumber'.
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
 - (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
 {
@@ -160,7 +135,7 @@
 
 /*!
  @method setItemPositionIdNumber:
- @discussion This method sets the NSNumber variable 'itemPositionIdNumber'.
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
 - (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
 {
@@ -177,94 +152,133 @@
 }
 
 #pragma mark - Buttons event handles
-
-/*!
- @method handleButtonMeasure:
- @discussion This method handles the action in which the Measure button is pressed; it must disable 'Travel' control buttons and ask location manager delegate to start measuring.
- */
-- (IBAction)handleButtonMeasure:(id)sender
-{
-    // First, validate the access to the data shared collection
-    if (
-        [sharedData validateCredentialsUserDic:credentialsUserDic]
-        )
-    {
-        
-    } else {
-        [self alertUserWithTitle:@"Measure won't be started."
-                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
-                      andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-                      }
-         ];
-        NSLog(@"[ERROR][VCTTL] Shared data could not be accessed while starting travel.");
-        return;
-    }
-    
-    // In every state the button performs different behaviours
-    NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic];
-    
-    if ([state isEqualToString:@"IDLE"]) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
-        // If user did chose a position to aim
-        if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic]) {
-            [self.buttonMeasure setEnabled:YES];
-            [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
-                                       andWithCredentialsUserDic:credentialsUserDic];
-            
-            [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
-            
-            BOTON Y ELEGIR TECNOLOGIA
-            
-            // And send the notification
-            // [[NSNotificationCenter defaultCenter] postNotificationName:@"startCompassHeadingMeasuring" object:nil];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
-            NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopes\" posted.");
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring"
-                                                                object:nil];
-            NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopeHeadingMeasuring\" posted.");
-            return;
-        } else {
-            return;
-        }
-    }
-    if ([state isEqualToString:@"MEASURING"]) { // If 'Measuring' is tapped, ask stop measuring.
-        [self.buttonMeasure setEnabled:YES];
-        // This next line have been moved into "stopGyroscopesHeadingMeasuring" method, because the measure is generated in this case after stop measuring
-        // [sharedData inSessionDataSetIdleUserWithUserDic:userDic andWithCredentialsUserDic:credentialsUserDic];
-        [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
-        // [[NSNotificationCenter defaultCenter] postNotificationName:@"stopCompassHeadingMeasuring" object:nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopGyroscopes\" posted.");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
-                                                            object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopGyroscopeHeadingMeasuring\" posted.");
-        // For showing the located items
-        [self.tableItemsChosen reloadData];
-        return;
-    }
-}
-
 /*!
  @method handleBackButton:
  @discussion This method dismiss this view and ask main menu view to be displayed; 'prepareForSegue:sender:' method is called before.
  */
 - (IBAction)handleBackButton:(id)sender
 {
-    [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToSelectPosition" sender:sender];
+    [self performSegueWithIdentifier:@"fromModellingRHO_THETA_MODELINGToRHO_THETA_MODELLING" sender:sender];
 }
 
 /*!
- @method handleButtonNext:
- @discussion This method is called one the user wnats to locate a new position and thus a new UUID is generated for it.
+ @method handleBackFinish:
+ @discussion This method dismiss this view and ask the final model to be shown; 'prepareForSegue:sender:' method is called before.
  */
-- (IBAction)handleButtonNext:(id)sender
+- (IBAction)handleBackFinish:(id)sender
 {
-    // New UUID
-    locatedPositionUUID = [[NSUUID UUID] UUIDString];
-    [location setDeviceUUID:locatedPositionUUID];
-    [motion setDeviceUUID:locatedPositionUUID];
+    // TO DO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
+    [self performSegueWithIdentifier:@"fromModellingRHO_THETA_MODELINGToFinalModel" sender:sender];
+}
+
+/*!
+ @method handleModifyButton:
+ @discussion This method changes the already represented model.
+ */
+- (IBAction)handleModifyButton:(id)sender
+{
+    flagReference = false;
+    sourceItem = nil;
+    targetItem = nil;
+    [self.labelStatus setText:@"Please, finish the model process."];
+    
+    // Database could not be accessed.
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        
+        // Get the user selection
+        NSMutableDictionary * itemDic = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                                                    andCredentialsUserDic:credentialsUserDic];
+        MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
+                                                                    andCredentialsUserDic:credentialsUserDic];
+        if (itemDic && type) {
+            itemDic[@"type"] = type;
+        }
+        
+        [self.canvas setNeedsDisplay];
+        [self.tableTypes reloadData];
+        [self.tableItemsChosen reloadData];
+        
+    } else {
+        [self alertUserWithTitle:@"Items won't be loaded."
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCMRTM] Shared data could not be accessed before handle the 'modify' button.");
+    }
+}
+
+/*!
+ @method handleReferenceButton:
+ @discussion This method creates a reference between teo components in the model.
+ */
+- (IBAction)handleReferenceButton:(id)sender
+{
+    // Database could not be accessed.
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        
+        // Get the user selection
+        NSMutableDictionary * itemDic = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                                                    andCredentialsUserDic:credentialsUserDic];
+        MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
+                                                                    andCredentialsUserDic:credentialsUserDic];
+        // If is the first time tapped
+        if (!flagReference) {
+            if (itemDic) {
+                // Save the item that will be the source item of the reference
+                sourceItem = itemDic;
+                flagReference = true;
+                [self.labelStatus setText:@"Please, select the item for referencing to."];
+            } else {
+                [self.labelStatus setText:@"Error, an item for referencing from must be selected and, then, another item AND a type."];
+                // Erase the item that would be the source item of the reference and the target one
+                sourceItem = nil;
+                targetItem = nil;
+                flagReference = false;
+            }
+        } else { // The second
+            if (itemDic && type) {
+                // Save the item that will be the target item of the reference
+                targetItem = itemDic;
+                // And create and add the reference
+                MDReference * reference = [[MDReference alloc] initWithType:type
+                                                               sourceItemId:sourceItem[@"identifier"]
+                                                            andTargetItemId:targetItem[@"identifier"]
+                                           ];
+                NSLog(@"[INFO][VCMRTM] Created reference %@", reference);
+                [sharedData inSessionDataAddReference:reference toUserWithUserDic:userDic withCredentialsUserDic:credentialsUserDic];
+                
+                // reset
+                [self.labelStatus setText:@"Reference saved."];
+            } else {
+                [self.labelStatus setText:@"Error, an item for referencing from must be selected and, then, another item AND a type."];
+            }
+            // reset
+            sourceItem = nil;
+            targetItem = nil;
+            flagReference = false;
+        }
+        
+        [self.canvas setNeedsDisplay];
+        [self.tableTypes reloadData];
+        [self.tableItemsChosen reloadData];
+        
+    } else {
+        [self alertUserWithTitle:@"Items won't be loaded."
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCMRTM] Shared data could not be accessed before handle the 'reference' button.");
+    }
 }
 
 /*!
@@ -292,58 +306,39 @@
 }
 
 /*!
- @method handleButtonModel:
- @discussion This method is called when user is prepared for modeling.
- */
-- (IBAction)handleButtonModel:(id)sender {
-    [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING" sender:sender];
-}
-
-/*!
  @method prepareForSegue:sender:
  @discussion This method is called before any segue and it is used for pass other views variables.
  */
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSLog(@"[INFO][VCTTL] Asked segue %@", [segue identifier]);
+    NSLog(@"[INFO][VCMRTM] Asked segue %@", [segue identifier]);
     
     // If main menu is going to be displayed, any variable can be returned here
-    if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToSelectPosition"]) {
+    if ([[segue identifier] isEqualToString:@"fromModellingRHO_THETA_MODELINGToRHO_THETA_MODELLING"]) {
         
         // Get destination view
-        ViewControllerSelectPositions * viewControllerSelectPositions = [segue destinationViewController];
+        ViewControllerRhoThetaModeling * viewControllerRhoThetaModeling = [segue destinationViewController];
         // Set the variables
-        [viewControllerSelectPositions setCredentialsUserDic:credentialsUserDic];
-        [viewControllerSelectPositions setUserDic:userDic];
-        [viewControllerSelectPositions setSharedData:sharedData];
-        [viewControllerSelectPositions setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
+        [viewControllerRhoThetaModeling setCredentialsUserDic:credentialsUserDic];
+        [viewControllerRhoThetaModeling setUserDic:userDic];
+        [viewControllerRhoThetaModeling setSharedData:sharedData];
+        [viewControllerRhoThetaModeling setLocationManager:location];
+        [viewControllerRhoThetaModeling setDeviceUUID:deviceUUID];
+        return;
+    }
+    if ([[segue identifier] isEqualToString:@"fromModellingRHO_THETA_MODELINGToFinalModel"]) {
         
-        // Ask Location manager to clean the measures taken and reset its position.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
-                                                            object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopGyroscopeHeadingMeasuring\" posted.");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
-                                                            object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"resetLocationAndMeasures\" posted.");
+        // Get destination view
+        ViewControllerFinalModel * viewControllerFinalModel = [segue destinationViewController];
+        // Set the variables
+        [viewControllerFinalModel setCredentialsUserDic:credentialsUserDic];
+        [viewControllerFinalModel setUserDic:userDic];
+        [viewControllerFinalModel setSharedData:sharedData];
+        [viewControllerFinalModel setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerFinalModel setItemPositionIdNumber:itemPositionIdNumber];
         return;
     }
     
-    if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING"]) {
-        
-        // Get destination view
-        ViewControllerModelingThetaThetaLocating * viewControllerModelingThetaThetaLocating = [segue destinationViewController];
-        // Set the variables
-        [viewControllerModelingThetaThetaLocating setCredentialsUserDic:credentialsUserDic];
-        [viewControllerModelingThetaThetaLocating setUserDic:userDic];
-        [viewControllerModelingThetaThetaLocating setSharedData:sharedData];
-        [viewControllerModelingThetaThetaLocating setMotionManager:motion];
-        [viewControllerModelingThetaThetaLocating setLocationManager:location];
-        [viewControllerModelingThetaThetaLocating setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerModelingThetaThetaLocating setItemPositionIdNumber:itemPositionIdNumber];
-        [viewControllerModelingThetaThetaLocating setDeviceUUID:deviceUUID];
-        return;
-    }
 }
 
 #pragma mark - UItableView delegate methods
@@ -400,10 +395,12 @@
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
-            // No item chosen by user
+            // No item chosen by user; for reloading after using
             [sharedData inSessionDataSetItemChosenByUser:nil
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
+            [cell setAccessoryType:UITableViewCellAccessoryNone];
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
             
             // Select the source of items; both chosen and located items are shown
             NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
@@ -437,25 +434,29 @@
                     if (itemDic[@"type"]) {
                         
                         RDPosition * position = itemDic[@"position"];
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: %@",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
                                                itemDic[@"identifier"],
                                                itemDic[@"type"],
                                                itemDic[@"uuid"],
                                                itemDic[@"major"],
                                                itemDic[@"minor"],
-                                               position
+                                               [position.x floatValue],
+                                               [position.y floatValue],
+                                               [position.z floatValue]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                         
                     } else {
                         
                         RDPosition * position = itemDic[@"position"];
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: %@",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
                                                itemDic[@"identifier"],
                                                itemDic[@"uuid"],
                                                itemDic[@"major"],
                                                itemDic[@"minor"],
-                                               position
+                                               [position.x floatValue],
+                                               [position.y floatValue],
+                                               [position.z floatValue]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                         
@@ -492,17 +493,21 @@
                 RDPosition * position = itemDic[@"position"];
                 if (itemDic[@"type"]) {
                     
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: %@",
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%.2f, %.2f, %.2f)",
                                            itemDic[@"identifier"],
                                            itemDic[@"type"],
-                                           position
+                                           [position.x floatValue],
+                                           [position.y floatValue],
+                                           [position.z floatValue]
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                 } else {
                     
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: %@",
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%.2f, %.2f, %.2f)",
                                            itemDic[@"identifier"],
-                                           position
+                                           [position.x floatValue],
+                                           [position.y floatValue],
+                                           [position.z floatValue]
                                            ];
                     cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                 }
@@ -516,10 +521,12 @@
                 if (itemDic[@"type"]) {
                     
                     if (position) {
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: %@",
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%.2f, %.2f, %.2f)",
                                                itemDic[@"identifier"],
                                                itemDic[@"type"],
-                                               position
+                                               [position.x floatValue],
+                                               [position.y floatValue],
+                                               [position.z floatValue]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
                     } else {
@@ -532,19 +539,21 @@
                     
                 } else {
                     
-                     if (position) {
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: %@",
+                    if (position) {
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%.2f, %.2f, %.2f)",
                                                itemDic[@"identifier"],
-                                               position
+                                               [position.x floatValue],
+                                               [position.y floatValue],
+                                               [position.z floatValue]
                                                ];
                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                     } else {
-                         cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n",
-                                                itemDic[@"identifier"],
-                                                itemDic[@"type"]
-                                                ];
-                         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                     }
+                    } else {
+                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n",
+                                               itemDic[@"identifier"],
+                                               itemDic[@"type"]
+                                               ];
+                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    }
                 }
                 
             }
@@ -555,12 +564,19 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCTTL] Shared data could not be accessed while loading cells' item.");
+            NSLog(@"[ERROR][VCMRTM] Shared data could not be accessed while loading cells' item.");
         }
     }
     
     // Configure individual cells
     if (tableView == self.tableTypes) {
+        // No type chosen by user; for reloading after using
+        [sharedData inSessionDataSetItemChosenByUser:nil
+                                   toUserWithUserDic:userDic
+                               andCredentialsUserDic:credentialsUserDic];
+        [cell setAccessoryType:UITableViewCellAccessoryNone];
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+        
         MDType * type = [
                          [sharedData fromMetamodelDataGetTypesWithCredentialsUserDic:credentialsUserDic]
                          objectAtIndex:indexPath.row
@@ -581,17 +597,12 @@
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
-    if (tableView == self.tableItemsChosen) {
-        // Database could not be accessed.
-        if (
-            [sharedData validateCredentialsUserDic:credentialsUserDic]
-            )
-        {
-            // No item chosen by user
-            [sharedData inSessionDataSetItemChosenByUser:nil
-                                       toUserWithUserDic:userDic
-                                   andCredentialsUserDic:credentialsUserDic];
+    // Database could not be accessed.
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        if (tableView == self.tableItemsChosen) {
             
             // Select the source of items; both chosen and located items are shown
             NSInteger itemsChosenCount = [[sharedData fromSessionDataGetItemsChosenByUserDic:userDic
@@ -603,47 +614,79 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             NSMutableDictionary * itemSelected = nil;
             if (indexPath.row < itemsChosenCount) {
                 itemSelected = [
-                           [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic]
-                           objectAtIndex:indexPath.row
-                           ];
+                                [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic]
+                                objectAtIndex:indexPath.row
+                                ];
             }
             if (indexPath.row >= itemsChosenCount && indexPath.row < itemsChosenCount + itemsLocatedCount) {
                 itemSelected = [
-                           [sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                   andCredentialsUserDic:credentialsUserDic]
-                           objectAtIndex:indexPath.row - itemsChosenCount
-                           ];
+                                [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                        andCredentialsUserDic:credentialsUserDic]
+                                objectAtIndex:indexPath.row - itemsChosenCount
+                                ];
             }
             
-            // Only not located positions can be aimed, positions were marked
-            if ([@"position" isEqualToString:itemSelected[@"sort"]] && ([@"NO" isEqualToString:itemSelected[@"located"]] || !itemSelected[@"located"]))
-            {
+            // The table was set in 'viewDidLoad' as multiple-selecting
+            // Manage multi-selection
+            UITableViewCell *selectedCell = [tableView cellForRowAtIndexPath:indexPath];
+            
+            if ([selectedCell accessoryType] == UITableViewCellAccessoryNone) { // If not checkmark
+                
+                [selectedCell setAccessoryType:UITableViewCellAccessoryCheckmark];
                 [sharedData inSessionDataSetItemChosenByUser:itemSelected
                                            toUserWithUserDic:userDic
                                        andCredentialsUserDic:credentialsUserDic];
-            } else {
-                [tableView deselectRowAtIndexPath:indexPath animated:NO];
+                
+            } else { // If checkmark
+                
+                [selectedCell setAccessoryType:UITableViewCellAccessoryNone];
+                [sharedData inSessionDataSetItemChosenByUser:nil
+                                           toUserWithUserDic:userDic
+                                       andCredentialsUserDic:credentialsUserDic];
+                
             }
             
-        } else {
-            [self alertUserWithTitle:@"Items won't be loaded."
-                             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
-                          andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-                          }
-             ];
-            NSLog(@"[ERROR][VCTTL] Shared data could not be accessed while selecting a cell.");
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+            
         }
-    }
-    if (tableView == self.tableTypes) {
-        MDType * typeSelected = [
-                                 [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
-                                 objectAtIndex:indexPath.row
-                                 ];
-        [sharedData inSessionDataSetTypeChosenByUser:typeSelected
-                                   toUserWithUserDic:userDic
-                               andCredentialsUserDic:credentialsUserDic];
+        if (tableView == self.tableTypes) {
+            
+            MDType * typeSelected = [
+                                     [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                                     objectAtIndex:indexPath.row
+                                     ];
+            
+            // The table was set in 'viewDidLoad' as multiple-selecting
+            // Manage multi-selection
+            UITableViewCell *selectedCell = [tableView cellForRowAtIndexPath:indexPath];
+            
+            if ([selectedCell accessoryType] == UITableViewCellAccessoryNone) { // If not checkmark
+                
+                [selectedCell setAccessoryType:UITableViewCellAccessoryCheckmark];
+                [sharedData inSessionDataSetTypeChosenByUser:typeSelected
+                                           toUserWithUserDic:userDic
+                                       andCredentialsUserDic:credentialsUserDic];
+                
+            } else { // If checkmark
+                
+                [selectedCell setAccessoryType:UITableViewCellAccessoryNone];
+                [sharedData inSessionDataSetTypeChosenByUser:nil
+                                           toUserWithUserDic:userDic
+                                       andCredentialsUserDic:credentialsUserDic];
+                
+            }
+            
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+        }
+    } else {
+        [self alertUserWithTitle:@"Items won't be loaded."
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCMRTM] Shared data could not be accessed while selecting a cell.");
     }
 }
 

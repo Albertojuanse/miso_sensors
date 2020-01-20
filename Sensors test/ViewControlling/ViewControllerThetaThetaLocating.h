@@ -11,6 +11,7 @@
 #import "ViewControllerMainMenu.h"
 #import "ViewControllerModelingThetaThetaLocating.h"
 #import "LMDelegateThetaThetaLocating.h"
+#import "RDThetaThetaSystem.h"
 #import "MotionManager.h"
 #import "Canvas.h"
 

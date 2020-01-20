@@ -243,7 +243,7 @@
  */
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSLog(@"[INFO][VCTTL] Asked segue %@", [segue identifier]);
+    NSLog(@"[INFO][VCM] Asked segue %@", [segue identifier]);
     
     // If main menu is going to be displayed, any variable can be returned here
     if ([[segue identifier] isEqualToString:@"fromMONITORINGToSelectPosition"]) {
@@ -260,10 +260,10 @@
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMonitoringMeasures"
                                                             object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopMonitoringMeasures\" posted.");
+        NSLog(@"[NOTI][VCM] Notification \"stopMonitoringMeasures\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
                                                             object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"resetLocationAndMeasures\" posted.");
+        NSLog(@"[NOTI][VCM] Notification \"resetLocationAndMeasures\" posted.");
         return;
     }
     
@@ -358,7 +358,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCTTL] Shared data could not be accessed while loading cells' item.");
+            NSLog(@"[ERROR][VCM] Shared data could not be accessed while loading cells' item.");
         }
     }
     

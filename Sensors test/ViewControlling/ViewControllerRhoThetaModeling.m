@@ -19,20 +19,23 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // Register the current mode
+    mode = [[MDMode alloc] initWithModeKey:kModeRhoThetaModelling];
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        
+        [sharedData inSessionDataSetMode:mode
+                       toUserWithUserDic:userDic
+                   andCredentialsUserDic:credentialsUserDic];
     } else {
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
     }
     
-    // Initial state
-    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
-                          andWithCredentialsUserDic:credentialsUserDic];
-    
-    // Get chosen item and set as device position
+    // Components
+    // TO DO: Use position and UUID from component 'device'. Alberto J. 2020/01/20.
+    // Get chosen item and set as device position and UUID
     NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
                                                                       andCredentialsUserDic:credentialsUserDic];
     NSMutableDictionary * itemChosenByUserAsDevicePosition;
@@ -53,9 +56,21 @@
             position.y = [NSNumber numberWithFloat:0.0];
             position.z = [NSNumber numberWithFloat:0.0];
         }
-        [motion setPosition:position];
+        if (!deviceUUID) {
+            if (!itemChosenByUserAsDevicePosition[@"uuid"]) {
+                NSLog(@"[ERROR][VCRTM] No UUID was found in the item chosen by user as device position; a random one set.");
+                deviceUUID = [[NSUUID UUID] UUIDString];
+            } else {
+                deviceUUID = itemChosenByUserAsDevicePosition[@"uuid"];
+            }
+        }
         [location setPosition:position];
+        [location setDeviceUUID:deviceUUID];
     }
+    
+    // Initial state
+    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                          andWithCredentialsUserDic:credentialsUserDic];
     
     // Ask canvas to initialize
     [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic andCredentialsUserDic:credentialsUserDic];
@@ -114,19 +129,10 @@
 }
 
 /*!
- @method setMotionManager:
- @discussion This method sets the motion manager.
- */
-- (void) setMotionManager:(MotionManager *)givenMotion
-{
-    motion = givenMotion;
-}
-
-/*!
  @method setLocationManager:
  @discussion This method sets the location manager.
  */
-- (void) setLocationManager:(LocationManagerDelegate *)givenLocation
+- (void) setLocationManager:(LMDelegateRhoThetaModelling *)givenLocation
 {
     location = givenLocation;
 }
@@ -147,6 +153,15 @@
 - (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
 {
     itemPositionIdNumber = givenItemPositionIdNumber;
+}
+
+/*!
+ @method setDeviceUUID:
+ @discussion This method sets the NSString variable 'deviceUUID'.
+ */
+- (void) setDeviceUUID:(NSString *)givenDeviceUUID
+{
+    deviceUUID = givenDeviceUUID;
 }
 
 #pragma mark - Buttons event handles
@@ -187,9 +202,9 @@
             [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
         
             // And send the notification
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startLocationMeasuring"
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"startCompassHeadingAndBeaconRangingMeasuring"
                                                                 object:nil];
-            NSLog(@"[NOTI][VCRTM] Notification \"startLocationMeasuring\" posted.");
+            NSLog(@"[NOTI][VCRTM] Notification \"startCompassHeadingAndBeaconRangingMeasuring\" posted.");
             return;
         } else {
             return;
@@ -200,7 +215,7 @@
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, aim the iBEacon device and tap 'Measure' for starting. Tap back for finishing."];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopCompassHeadingAndBeaconRangingMeasuring"
                                                             object:nil];
         NSLog(@"[NOTI][VCRTM] Notification \"stopLocationMeasuring\" posted.");
         return;
@@ -221,7 +236,7 @@
  @discussion This method is called when user is prepared for modeling.
  */
 - (IBAction)handleModelButton:(id)sender {
-    [self performSegueWithIdentifier:@"fromRHO_THETA_MODELINGToModelingTHETA_THETA_LOCATING" sender:sender];
+    [self performSegueWithIdentifier:@"fromRHO_THETA_MODELINGToModellingRHO_THETA_MODELLING" sender:sender];
 }
 
 /*!
@@ -265,40 +280,49 @@
         [viewControllerSelectPositions setCredentialsUserDic:credentialsUserDic];
         [viewControllerSelectPositions setUserDic:userDic];
         [viewControllerSelectPositions setSharedData:sharedData];
-        [viewControllerSelectPositions setMotionManager:motion];
-        [viewControllerSelectPositions setLocationManager:location];
+        [viewControllerSelectPositions setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
         
         // Ask Location manager to clean the measures taken and reset its position.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopCompassHeadingAndBeaconRangingMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"stopLocationMeasuring\" posted.");
+        NSLog(@"[NOTI][VCRTM] Notification \"stopCompassHeadingAndBeaconRangingMeasuring\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
                                                             object:nil];
         NSLog(@"[NOTI][VCRTM] Notification \"resetLocationAndMeasures\" posted.");
         return;
     }
     
-    if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING"]) {
+    if ([[segue identifier] isEqualToString:@"fromRHO_THETA_MODELINGToModellingRHO_THETA_MODELLING"]) {
         
         // Get destination view
-        ViewControllerModelingThetaThetaLocating * viewControllerModelingThetaThetaLocating = [segue destinationViewController];
+        ViewControllerModellingRhoThetaModeling * viewControllerModellingRhoThetaModeling = [segue destinationViewController];
         // Set the variables
-        [viewControllerModelingThetaThetaLocating setCredentialsUserDic:credentialsUserDic];
-        [viewControllerModelingThetaThetaLocating setUserDic:userDic];
-        [viewControllerModelingThetaThetaLocating setSharedData:sharedData];
-        [viewControllerModelingThetaThetaLocating setMotionManager:motion];
-        [viewControllerModelingThetaThetaLocating setLocationManager:location];
+        [viewControllerModellingRhoThetaModeling setCredentialsUserDic:credentialsUserDic];
+        [viewControllerModellingRhoThetaModeling setUserDic:userDic];
+        [viewControllerModellingRhoThetaModeling setSharedData:sharedData];
+        [viewControllerModellingRhoThetaModeling setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerModellingRhoThetaModeling setItemPositionIdNumber:itemPositionIdNumber];
+        [viewControllerModellingRhoThetaModeling setDeviceUUID:deviceUUID];
         return;
     }
 }
 
 #pragma mark - UItableView delegate methods
+/*!
+ @method numberOfSectionsInTableView:
+ @discussion Handles the upload of tables; returns the number of sections in them.
+ */
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
     return 1;
 }
 
+/*!
+ @method tableView:numberOfRowsInSection:
+ @discussion Handles the upload of tables; returns the number of items in them.
+ */
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableItems) {
@@ -324,6 +348,10 @@
     return 0;
 }
 
+/*!
+ @method tableView:cellForRowAtIndexPath:
+ @discussion Handles the upload of tables; returns each cell.
+ */
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
@@ -508,6 +536,10 @@
     return cell;
 }
 
+/*!
+ @method tableView:didSelectRowAtIndexPath:
+ @discussion Handles the upload of tables; handles the 'select a cell' action.
+ */
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -542,7 +574,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while loading cells' item.");
+            NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while selecting a cell.");
         }
     }
     if (tableView == self.tableTypes) {
