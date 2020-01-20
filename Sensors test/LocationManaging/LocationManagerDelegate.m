@@ -908,7 +908,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  */
 - (void) startUpdatingLocation:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"startUpdatingLocation"]){
-        NSLog(@"[NOTI][VCMM] Notification \"startUpdatingLocation\" recived.");
+        NSLog(@"[NOTI][LM] Notification \"startUpdatingLocation\" recived.");
         // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                    andWithCredentialsUserDic:credentialsUserDic];
@@ -1017,7 +1017,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  */
 - (void) stopUpdatingLocation:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"stopUpdatingLocation"]){
-        NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingLocation\" recived.");
+        NSLog(@"[NOTI][LM] Notification \"stopUpdatingLocation\" recived.");
         // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
@@ -1109,7 +1109,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
              }
              ];
              */
-            NSLog(@"[ERROR][LM] Shared data could not be accessed while starting measuring.");
+            NSLog(@"[ERROR][LM] Shared data could not be accessed while starting updating heding.");
             return;
         }
         NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
@@ -1148,183 +1148,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                               andWithCredentialsUserDic:credentialsUserDic];
         [locationManager stopUpdatingHeading];
         NSLog(@"[INFO][LM] Stop updating device heading.");
-    }
-}
-
-/*!
- @method startLocationMeasuring
- @discussion This method sets the flag 'measuring' true, and thus the measures are stored.
- */
-- (void) startLocationMeasuring:(NSNotification *) notification
-{
-    if ([[notification name] isEqualToString:@"startLocationMeasuring"]){
-        NSLog(@"[NOTI][LM] Notification \"startLocationMeasuring\" recived.");
-        
-        NSMutableArray * items = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
-        
-        // Register them if it is posible.
-        switch (CLLocationManager.authorizationStatus) {
-            case kCLAuthorizationStatusNotDetermined:
-                // Request authorization initially
-                NSLog(@"[ERROR][LM] Authorization is still not known.");
-                
-            case kCLAuthorizationStatusRestricted:
-                // Disable location features
-                NSLog(@"[ERROR][LM] User still restricts localization services.");
-                break;
-                
-            case kCLAuthorizationStatusDenied:
-                // Disable location features
-                NSLog(@"[ERROR][LM] User still doesn't allow localization services.");
-                break;
-                
-            case kCLAuthorizationStatusAuthorizedAlways:
-                // Enable location features
-                NSLog(@"[INFO][LM] User still allows 'always' localization services.");
-                break;
-                
-            case kCLAuthorizationStatusAuthorizedWhenInUse:
-                // Enable location features
-                NSLog(@"[INFO][LM] User still allows 'when-in-use' localization services.");
-                break;
-                
-            default:
-                break;
-        }
-        
-        // Error management
-        if ([CLLocationManager locationServicesEnabled]) {
-            NSLog(@"[INFO][LM] Location services still enabled.");
-        }else{
-            NSLog(@"[ERROR][LM] Location services still not enabled.");
-        }
-        
-        if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]]) {
-            NSLog(@"[INFO][LM] Monitoring still available for class CLBeaconRegion.");
-        }else{
-            NSLog(@"[ERROR][LM] Monitoring still not available for class CLBeaconRegion.");
-        }
-        
-        if ([CLLocationManager isRangingAvailable]) {
-            NSLog(@"[INFO][LM] Ranging still available.");
-        }else{
-            NSLog(@"[ERROR][LM] Ranging still not available.");
-        }
-        
-        if ([CLLocationManager headingAvailable]) {
-            NSLog(@"[INFO][LM] Heading available.");
-        }else{
-            NSLog(@"[ERROR][LM] Heading not available.");
-        }
-        
-        // Validate the access to the data shared collection
-        if (
-            [sharedData validateCredentialsUserDic:credentialsUserDic]
-            )
-        {
-            
-        } else {
-            /*
-             [self alertUserWithTitle:@"Beacon ranged won't be procesed."
-             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
-             andHandler:^(UIAlertAction * action) {
-             // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-             }
-             ];
-             */
-            NSLog(@"[ERROR][LM] Shared data could not be accessed while starting measuring.");
-            return;
-        }
-        
-        // TO DO: Calibration. Alberto J. 2019/11/20
-        calibrationYvalue = [NSNumber numberWithFloat:0.01];
-        // Get the measuring mode
-        NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
-                                                          andCredentialsUserDic:credentialsUserDic];
-        monitoredRegions = [[NSMutableArray alloc] init];
-        monitoredPositions = [[NSMutableArray alloc] init];
-        
-        // If using location services is allowed
-        if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
-           CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
-            
-            if (
-                [mode isEqualToString:@"MONITORING"] ||
-                [mode isEqualToString:@"RHO_RHO_MODELING"] ||
-                [mode isEqualToString:@"RHO_THETA_MODELING"] ||
-                [mode isEqualToString:@"RHO_RHO_LOCATING"] ||
-                [mode isEqualToString:@"RHO_THETA_LOCATING"]
-                ) {
-                
-                // Resgiter the regions to be monitorized
-                for (NSMutableDictionary * itemDic in items) {
-                    
-                    // Could be a position or a beacon
-                    if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
-                        NSString * uuidString = itemDic[@"uuid"];
-                        NSInteger major = [itemDic[@"major"] integerValue];
-                        NSInteger minor = [itemDic[@"minor"] integerValue];
-                        NSString * identifier = itemDic[@"identifier"];
-                        
-                        // Create a NSUUID with proximity UUID of the broadcasting beacons
-                        NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:uuidString];
-                        
-                        // Setup searching region with proximity UUID as the broadcasting beacon
-                        CLBeaconRegion * region = [[CLBeaconRegion alloc] initWithProximityUUID:uuid major:major minor:minor identifier:identifier];
-                        [monitoredRegions addObject:region];
-                        
-                        [locationManager startRangingBeaconsInRegion:region];
-                        NSLog(@"[INFO][LM] Device monitorizes a region:");
-                        NSLog(@"[INFO][LM] -> %@", [[region proximityUUID] UUIDString]);
-                        
-                        // But if its position is loaded, the user wants to use it to locate itself against them
-                        if (itemDic[@"position"]) {
-                            [monitoredPositions addObject:itemDic[@"position"]];
-                        }
-                    }
-                    if ([@"position" isEqualToString:itemDic[@"sort"]]) {
-                        [monitoredPositions addObject:itemDic[@"position"]];
-                    }
-                    if ([@"model" isEqualToString:itemDic[@"sort"]]) {
-                        // TO DO: What needs Location manager of previus models?. Alberto J. 2019/07/18.
-                    }
-                    
-                }
-                NSLog(@"[INFO][LM] Start monitoring regions.");
-            }
-            // If a theta type system
-            if (
-                [mode isEqualToString:@"THETA_THETA_MODELING"] ||
-                [mode isEqualToString:@"RHO_THETA_MODELING"] ||
-                [mode isEqualToString:@"THETA_THETA_LOCATING"] ||
-                [mode isEqualToString:@"RHO_THETA_LOCATING"]
-                ) {
-                
-                [locationManager startUpdatingHeading];
-                NSLog(@"[INFO][LM] Start updating heading.");
-            }
-            
-        }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied ||
-                  CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted){
-            // If is not allowed to use location services, delete registered regions and heading updates
-            [self stopRoutine];
-        }
-    }
-}
-
-/*!
- @method stopLocationMeasuring:
- @discussion This method sets the flag 'measuring' false, and thus the measures are not stored; it also deletes the monitored regions from location manager.
- */
-- (void) stopLocationMeasuring:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"stopLocationMeasuring"]) {
-        NSLog(@"[NOTI][LM] Notification \"stopLocationMeasuring\" recived.");
-    
-        // Instance variables
-        isItemChosenByUserRanged = NO;
-        
-        // Delete registered regions and heading updates
-        [self stopRoutine];
     }
 }
 
@@ -1481,7 +1304,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
              }
              ];
              */
-            NSLog(@"[ERROR][LM] Shared data could not be accessed while starting measuring.");
+            NSLog(@"[ERROR][LM] Shared data could not be accessed while calibrating.");
             return;
         }
         
