@@ -21,8 +21,7 @@
     [super viewDidLoad];
     
     // Visualization
-    self.loginText.text = [self.loginText.text stringByAppendingString:@" "];
-    self.loginText.text = [self.loginText.text stringByAppendingString:userDic[@"name"]];
+    [self showUser];
     
     // Other components; only inizialated if they didn't be so
     // Init the shared data collection with the credentials of the device user.
@@ -158,54 +157,87 @@
         [[sharedData getSessionDataWithCredentialsUserDic:credentialsUserDic] addObject:sessionDic];
     }
     
-    // TO DO: Move all this instantiations to views for strategy pattern. Alberto J. 2019/01/16.
-    // ****      MOVE       *****
-    // Init the radiodetermination components
-    NSString * deviceUUID = [[NSUUID UUID] UUIDString];
-    if (!rhoRhoSystem) {
-        rhoRhoSystem = [[RDRhoRhoSystem alloc] initWithSharedData:sharedData
-                                                          userDic:userDic
-                                                       deviceUUID:deviceUUID
-                                            andCredentialsUserDic:credentialsUserDic];
-    }
-    if (!rhoThetaSystem) {
-        rhoThetaSystem = [[RDRhoThetaSystem alloc] initWithSharedData:sharedData
-                                                              userDic:userDic
-                                                           deviceUUID:deviceUUID
-                                                andCredentialsUserDic:credentialsUserDic];
-    }
-    if (!thetaThetaSystem) {
-        thetaThetaSystem = [[RDThetaThetaSystem alloc] initWithSharedData:sharedData
-                                                                  userDic:userDic
-                                                               deviceUUID:deviceUUID
-                                                    andCredentialsUserDic:credentialsUserDic];
-    }
-    
-    // Init the motion manager, given the shared data component and the credentials of the device user; if it is the first time the view loads this components won't exist but if not these had been created and set as others views' atributes.
-    if(!motion) {
-        motion = [[MotionManager alloc] initWithSharedData:sharedData
-                                                   userDic:credentialsUserDic
-                                              rhoRhoSystem:rhoRhoSystem
-                                            rhoThetaSystem:rhoThetaSystem
-                                          thetaThetaSystem:thetaThetaSystem
-                                                deviceUUID:deviceUUID
-                                     andCredentialsUserDic:credentialsUserDic];
-        
-        // TO DO: make this configurable or properties. Alberto J. 2019/09/13.
-        motion.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
-        motion.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
-        motion.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
-        motion.acce_biasBuffer_capacity = [NSNumber numberWithInt:500];
-        motion.gyro_measuresBuffer_capacity = [NSNumber numberWithInt:500];
-        motion.gyro_biasBuffer_capacity = [NSNumber numberWithInt:500];
-    }
-    
-    // ****  END MOVE       *****
-    
     // Variables; only inizialated if they didn't be so.
     // TO DO: Pass this in every view and call the modes by index, not by string. Alberto J. 2020/01/14.
     
-    // Registers
+    // Load any saved component or model in device's persistent memory or create the demo ones if is the first time that user logs in.
+    [self loadComponents];
+    
+    // Variables
+    // Variables for naming porpuses; each new component created increases this counters to generate unique names.
+    if (!itemBeaconIdNumber) {
+        itemBeaconIdNumber = [NSNumber numberWithInteger:5];
+    }
+    
+    if (!itemPositionIdNumber) {
+        itemPositionIdNumber = [NSNumber numberWithInteger:5];
+    }
+    
+    // This object must listen to this events
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(calibrationFinished:)
+                                                 name:@"calibrationFinished"
+                                               object:nil];
+    
+    // Table delegates; the delegate methods for attending these tables are part of this class.
+    self.tableModes.delegate = self;
+    self.tableModes.dataSource = self;
+    self.tableItems.delegate = self;
+    self.tableItems.dataSource = self;
+    
+    [self.tableModes reloadData];
+    [self.tableItems reloadData];
+}
+
+/*!
+ @method viewDidAppear
+ @discussion This method notifies the view controller that its view was added to a view hierarchy.
+ */
+- (void)viewDidAppear:(BOOL)animated {
+    // Verify that credentials grant user to shared data
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        NSLog(@"[INFO][VCMM] User credentials have been validated.");
+    } else {
+        [self alertUserWithTitle:@"User not allowed."
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+         ];
+        NSLog(@"[ERROR][VCMM] Shared data could not be accessed after view loading.");
+        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+    }
+}
+
+/*!
+ @method didReceiveMemoryWarning
+ @discussion This method dispose of any resources that can be recreated id a memory warning is recived.
+ */
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*!
+ @method showUser
+ @discussion This method defines how user name is shown once logged.
+ */
+- (void)showUser
+{
+    self.loginText.text = [self.loginText.text stringByAppendingString:@" "];
+    self.loginText.text = [self.loginText.text stringByAppendingString:userDic[@"name"]];
+}
+
+/*!
+ @method loadComponents
+ @discussion This method loads any saved component or model in device's persistent memory or create the demo ones if is the first time that user logs in
+ */
+- (void)loadComponents
+{
     if (userDidLogIn) {
         // Search for current information saved in system; if not, register them as first time
         BOOL registerCorrect = YES;
@@ -225,7 +257,7 @@
         if (areModelsData) {
             areModels = [NSKeyedUnarchiver unarchiveObjectWithData:areModelsData];
         }
-    
+        
         // Retrieve or create each category of information
         if (areItemsData && areItems && [areItems isEqualToString:@"YES"]) {
             // Existing saved data
@@ -242,7 +274,7 @@
                 NSMutableDictionary * itemDic = [NSKeyedUnarchiver unarchiveObjectWithData:itemData];
                 [items addObject:itemDic];
             }
-        
+            
             // Set them as items data in data shared
             [sharedData setItemsData:items withCredentialsUserDic:credentialsUserDic];
             
@@ -471,7 +503,7 @@
             
             NSLog(@"[INFO][VCMM] No model found in device.");
         }
-    
+        
         if (!registerCorrect) {
             NSLog(@"[ERROR][VCMM] Register of items incorrect; user credentials granted?.");
         }
@@ -479,63 +511,6 @@
         // That way, when a logged in user returns to main manu this routine is not repited.
         userDidLogIn = NO;
     }
-    
-    // Variables
-    if (!itemBeaconIdNumber) {
-        itemBeaconIdNumber = [NSNumber numberWithInteger:5];
-    }
-    
-    if (!itemPositionIdNumber) {
-        itemPositionIdNumber = [NSNumber numberWithInteger:5];
-    }
-    
-    // This object must listen to this events
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(calibrationFinished:)
-                                                 name:@"calibrationFinished"
-                                               object:nil];
-    
-    // Table delegates; the delegate methods for attending these tables are part of this class.
-    self.tableModes.delegate = self;
-    self.tableModes.dataSource = self;
-    self.tableItems.delegate = self;
-    self.tableItems.dataSource = self;
-    
-    [self.tableModes reloadData];
-    [self.tableItems reloadData];
-}
-
-/*!
- @method viewDidAppear
- @discussion This method notifies the view controller that its view was added to a view hierarchy.
- */
-- (void)viewDidAppear:(BOOL)animated {
-    // Verify that credentials grant user to shared data
-    if (
-        [sharedData validateCredentialsUserDic:credentialsUserDic]
-        )
-    {
-        NSLog(@"[INFO][VCMM] User credentials have been validated.");
-    } else {
-        [self alertUserWithTitle:@"User not allowed."
-                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
-                      andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-                      }
-         ];
-        NSLog(@"[ERROR][VCMM] Shared data could not be accessed after view loading.");
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-    }
-}
-
-/*!
- @method didReceiveMemoryWarning
- @discussion This method dispose of any resources that can be recreated id a memory warning is recived.
- */
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Instance methods
@@ -568,14 +543,6 @@
 }
 
 /*!
- @method setMotionManager:
- @discussion This method sets the motion manager.
- */
-- (void) setMotionManager:(MotionManager *)givenMotion
-{
-    motion = givenMotion;
-}
-/*!
  @method setItemBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
@@ -597,7 +564,7 @@
 
 /*!
  @method handleButtonSingOut:
- @discussion This method handles the Sing Out button action and ask Login View to delete user; 'prepareForSegue:sender:' method is called before.
+ @discussion This method handles the 'sing out' button action and ask Login View to delete user; 'prepareForSegue:sender:' method is called before.
  */
 - (IBAction)handleButtonSingOut:(id)sender {
     userDidAskSignOut = YES;
@@ -606,7 +573,7 @@
 
 /*!
  @method handleButtonLogOut:
- @discussion This method handles the Sing Out button action and ask Login View to delete credentials dictionaries; 'prepareForSegue:sender:' method is called before.
+ @discussion This method handles the 'log out' button action and ask Login View to delete credentials dictionaries; 'prepareForSegue:sender:' method is called before.
  */
 - (IBAction)handleButtonLogOut:(id)sender {
     userDidAskLogOut = YES;
@@ -615,7 +582,7 @@
 
 /*!
  @method handleButtonAdd:
- @discussion This method handles the Add button action and ask the add view to show; 'prepareForSegue:sender:' method is called before.
+ @discussion This method handles the 'add' button action and ask the add view to show; 'prepareForSegue:sender:' method is called before.
  */
 - (IBAction)handleButonAdd:(id)sender
 {
@@ -624,7 +591,7 @@
 
 /*!
  @method handleButtonCalibrate:
- @discussion This method handles the Calibrate button action and ask the Location Manager to do so.
+ @discussion This method handles the 'calibrate' button action and ask the Location Manager to do so.
  */
 - (IBAction)handleButonCalibrate:(id)sender
 {
@@ -633,6 +600,7 @@
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
+        // TO DO: Create a location manager for this. Alberto J. 2020/01/20.
         // Get the item chosen by user; only beacons can be calibrated
         NSMutableDictionary * itemChosenByUser = [sharedData
                                                   fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
@@ -672,6 +640,10 @@
     [self.calibrateButton setEnabled:YES];
 }
 
+/*!
+ @method handleButonStart:
+ @discussion This method handles the 'start' button action and asks to segue to the user's mode selection.
+ */
 - (IBAction)handleButonStart:(id)sender
 {
     // Register the current mode
@@ -718,6 +690,7 @@
                            andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
+            // TO DO: A view for this. Alberto J. 2020/01/20
             if ([chosenMode isModeKey:kModeGPSSelfLocating]) { // GPS_SELF_LOCATING
                 MDMode * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                                          andCredentialsUserDic:credentialsUserDic];
@@ -729,6 +702,13 @@
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopUpdatingLocation"
                                                                             object:nil];
                         NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingLocation\" posted.");
+                        // Let user know that the measure is done
+                        [self alertUserWithTitle:@"Geoposition acquiered."
+                                         message:[NSString stringWithFormat:@"A geolocated position has been acquired; it will be used as an attribute of the model."]
+                                      andHandler:^(UIAlertAction * action) {
+                                          // Nothing to do.
+                                      }
+                         ];
                     } else {
                         [sharedData inSessionDataSetMode:chosenMode
                                        toUserWithUserDic:userDic
@@ -747,6 +727,7 @@
                 }
                 
             }
+            // TO DO: A view for this. Alberto J. 2020/01/20
             if ([chosenMode isModeKey:kModeCompassSelfLocating]) { // COMPASS_SELF_LOCATING
                 MDMode * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                                        andCredentialsUserDic:credentialsUserDic];
@@ -758,6 +739,13 @@
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopUpdatingHeading"
                                                                             object:nil];
                         NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingHeading\" posted.");
+                        // Let user know that the measure is done
+                        [self alertUserWithTitle:@"Heading measure acquiered."
+                                         message:[NSString stringWithFormat:@"A heading measure has been acquired; it will be used as an attribute of the model."]
+                                      andHandler:^(UIAlertAction * action) {
+                                          // Nothing to do.
+                                      }
+                         ];
                     } else {
                         [sharedData inSessionDataSetMode:chosenMode
                                        toUserWithUserDic:userDic
@@ -844,8 +832,6 @@
         [viewControllerAddBeaconMenu setCredentialsUserDic:credentialsUserDic];
         [viewControllerAddBeaconMenu setUserDic:userDic];
         [viewControllerAddBeaconMenu setSharedData:sharedData];
-        [viewControllerAddBeaconMenu setMotionManager:motion];
-        
         [viewControllerAddBeaconMenu setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerAddBeaconMenu setItemPositionIdNumber:itemPositionIdNumber];
         
@@ -860,7 +846,8 @@
         [viewControllerRhoRhoModeling setCredentialsUserDic:credentialsUserDic];
         [viewControllerRhoRhoModeling setUserDic:userDic];
         [viewControllerRhoRhoModeling setSharedData:sharedData];
-        [viewControllerRhoRhoModeling setMotionManager:motion];
+        [viewControllerRhoRhoModeling setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerRhoRhoModeling setItemPositionIdNumber:itemPositionIdNumber];
         
     }
     
@@ -873,14 +860,13 @@
         [viewControllerRhoThetaModeling setCredentialsUserDic:credentialsUserDic];
         [viewControllerRhoThetaModeling setUserDic:userDic];
         [viewControllerRhoThetaModeling setSharedData:sharedData];
-        [viewControllerRhoThetaModeling setMotionManager:motion];
+        [viewControllerRhoThetaModeling setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerRhoThetaModeling setItemPositionIdNumber:itemPositionIdNumber];
         
     }
     
     // If Theta Theta Syetem based Modeling is going to be displayed, there is no need of the beaconsAndPositionsRegistered array.
     if ([[segue identifier] isEqualToString:@"fromMainToTHETA_THETA_MODELING"]) {
-        
-        // TO DO. Alberto J. 2019/09/06.
         
     }
     
@@ -893,7 +879,8 @@
         [viewControllerSelectPositions setCredentialsUserDic:credentialsUserDic];
         [viewControllerSelectPositions setUserDic:userDic];
         [viewControllerSelectPositions setSharedData:sharedData];
-        [viewControllerSelectPositions setMotionManager:motion];
+        [viewControllerSelectPositions setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
         
     }
 }
@@ -1062,7 +1049,7 @@
         }
     }
     if (tableView == self.tableModes) {
-        MDMode * mode = [[MDMode alloc] initWithModeKey:indexPath.row];
+        MDMode * mode = [[MDMode alloc] initWithModeKey:(int)indexPath.row];
         cell.textLabel.text = [mode description];
         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
     }
@@ -1111,7 +1098,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
     }
     if (tableView == self.tableModes) {
-        chosenMode = [[MDMode alloc] initWithModeKey:indexPath.row];
+        chosenMode = [[MDMode alloc] initWithModeKey:(int)indexPath.row];
     }
 }
 
