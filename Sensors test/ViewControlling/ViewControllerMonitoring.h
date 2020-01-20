@@ -22,7 +22,6 @@
     
     // Other components
     SharedData * sharedData;
-    MotionManager * motion;
     LocationManagerDelegateMonitoring * location;
     
     // Session and user context
@@ -49,8 +48,6 @@
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void) setSharedData:(SharedData *)givenSharedData;
-- (void) setMotionManager:(MotionManager *)givenMotion;
-- (void) setLocationManager:(LocationManagerDelegateMonitoring *)givenLocation;
 - (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void) setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 

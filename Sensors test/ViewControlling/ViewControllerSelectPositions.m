@@ -137,7 +137,7 @@
         // Get the current mode
         MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                           andCredentialsUserDic:credentialsUserDic];
-        
+        // TO DO: Different behavior depending on mode. Alberto J. 2020/01/20.
         // This button can segue with different views depending on the mode chosen by the user in the main menu
         if ([mode isModeKey:kModeMonitoring]) {
             NSLog(@"[INFO][VCSP] Chosen mode is kModeMonitoring.");

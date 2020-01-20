@@ -61,7 +61,6 @@
             position.y = [NSNumber numberWithFloat:0.0];
             position.z = [NSNumber numberWithFloat:0.0];
         }
-        [motion setPosition:position];
         [location setPosition:position];
     }
     
@@ -140,24 +139,6 @@
 }
 
 /*!
- @method setMotionManager:
- @discussion This method sets the motion manager.
- */
-- (void) setMotionManager:(MotionManager *)givenMotion
-{
-    motion = givenMotion;
-}
-
-/*!
- @method setLocationManager:
- @discussion This method sets the location manager.
- */
-- (void) setLocationManager:(LocationManagerDelegateMonitoring *)givenLocation
-{
-    location = givenLocation;
-}
-
-/*!
  @method setItemBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
@@ -188,6 +169,8 @@
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
+        // TO DO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
+        
         // Stop measuring
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                                    andWithCredentialsUserDic:credentialsUserDic];
@@ -213,6 +196,7 @@
                                 toUserWithUserDic:userDic
                            withCredentialsUserDic:credentialsUserDic];
         }
+        location = nil;
         [self performSegueWithIdentifier:@"fromMONITORINGToFinalModel" sender:sender];
     } else {
         

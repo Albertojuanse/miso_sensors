@@ -272,7 +272,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          ];
          */
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-        NSLog(@"[ERROR][LMM] Shared data could not be accessed while starting travel.");
+        NSLog(@"[ERROR][LMM] Shared data could not be accessed when ranged a beacon.");
         return;
     }
     
@@ -374,7 +374,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
              }
              ];
              */
-            NSLog(@"[ERROR][LMM] Shared data could not be accessed while starting measuring.");
+            NSLog(@"[ERROR][LMM] Shared data could not be accessed while starting locating measure.");
             return;
         }
         
