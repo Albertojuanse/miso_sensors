@@ -84,7 +84,6 @@
     [self changeView];
     return;
 }
-     
 
 /*!
  @method changeView
@@ -264,7 +263,6 @@
 }
 
 #pragma mark - Instance methods
-
 /*!
  @method setCredentialsUserDic:
  @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
@@ -293,15 +291,6 @@
 }
 
 /*!
- @method setMotionManager:
- @discussion This method sets the motion manager.
- */
-- (void) setMotionManager:(MotionManager *)givenMotion
-{
-    motion = givenMotion;
-}
-
-/*!
  @method setItemBeaconIdNumber:
  @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
  */
@@ -323,7 +312,7 @@
 
 /*!
  @method handleButtonDelete:
- @discussion This method handles the 'Delete' button action and ask the main menu to delete the beacon submitted by the user.
+ @discussion This method handles the 'delete' button action and ask the main menu to delete the beacon submitted by the user.
  */
 - (IBAction)handleButtonDelete:(id)sender
 {
@@ -424,7 +413,7 @@
 
 /*!
  @method handleButtonAdd:
- @discussion This method handles the Add button action and ask the main menu to add the new beacon submitted by the user.
+ @discussion This method handles the 'add' button action and ask the main menu to add the new beacon submitted by the user.
  */
 - (IBAction)handleButtonAdd:(id)sender
 {
@@ -626,7 +615,7 @@
 
 /*!
  @method handleButtonBack:
- @discussion This method handles the 'Back' button action and segue back to the main menu; 'prepareForSegue:sender:' method is called before.
+ @discussion This method handles the 'back' button action and segue back to the main menu; 'prepareForSegue:sender:' method is called before.
  */
 - (IBAction)handleButtonBack:(id)sender
 {
@@ -706,7 +695,7 @@
 
 /*!
  @method handleButtonRemoveType:
- @discussion This method handles the 'Remove type' button action and unregister the user type if it exits.
+ @discussion This method handles the 'remove type' button action and unregister the user type if it exits.
  */
 - (IBAction)handleButtonRemoveType:(id)sender
 {
@@ -805,7 +794,7 @@
 }
 
 /*!
- @method prepareForSegue:sender:
+ @method validateUserEntries
  @discussion This method is called before any segue and it is used for pass other views variables.
  */
 - (BOOL) validateUserEntries {
@@ -979,8 +968,6 @@
         [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
         [viewControllerMainMenu setUserDic:userDic];
         [viewControllerMainMenu setSharedData:sharedData];
-        [viewControllerMainMenu setMotionManager:motion];
-        
         [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
         
@@ -993,8 +980,6 @@
         [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
         [viewControllerMainMenu setUserDic:userDic];
         [viewControllerMainMenu setSharedData:sharedData];
-        [viewControllerMainMenu setMotionManager:motion];
-        
         [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
         
@@ -1003,12 +988,20 @@
 
 #pragma mark - UItableView delegate methods
 
+/*!
+ @method numberOfSectionsInTableView:
+ @discussion Handles the upload of tables; returns the number of sections in them.
+ */
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
     return 1;
 }
 
+/*!
+ @method tableView:numberOfRowsInSection:
+ @discussion Handles the upload of tables; returns the number of items in them.
+ */
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableTypes) {
@@ -1031,6 +1024,10 @@
     return 0;
 }
 
+/*!
+ @method tableView:cellForRowAtIndexPath:
+ @discussion Handles the upload of tables; returns each cell.
+ */
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
