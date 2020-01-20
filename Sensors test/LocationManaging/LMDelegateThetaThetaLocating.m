@@ -34,10 +34,6 @@
         locationManager.delegate = self;
         locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
         locationManager.distanceFilter = kCLDistanceFilterNone;
-        //[locationManager startUpdatingLocation];
-        // It seems is only for background modes
-        //locationManager.allowsBackgroundLocationUpdates = YES;
-        //locationManager.pausesLocationUpdatesAutomatically = false;
         
         // Ask for authorization for location services
         switch (CLLocationManager.authorizationStatus) {
@@ -71,11 +67,11 @@
         // This object must listen to this events
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(startCompassHeadingMeasuring:)
-                                                     name:@"startLocationMeasuring"
+                                                     name:@"startCompassHeadingMeasuring"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(stopCompassHeadingMeasuring:)
-                                                     name:@"stopLocationMeasuring"
+                                                     name:@"stopCompassHeadingMeasuring"
                                                    object:nil];
         
         NSLog(@"[INFO][LMTTL] LocationManager prepared for monitoring mode.");

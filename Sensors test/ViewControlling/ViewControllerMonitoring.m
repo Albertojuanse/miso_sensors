@@ -258,9 +258,9 @@
         [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
         
         // Ask Location manager to clean the measures taken and reset its position.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMonitoringMeasures"
                                                             object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopLocationMeasuring\" posted.");
+        NSLog(@"[NOTI][VCTTL] Notification \"stopMonitoringMeasures\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
                                                             object:nil];
         NSLog(@"[NOTI][VCTTL] Notification \"resetLocationAndMeasures\" posted.");

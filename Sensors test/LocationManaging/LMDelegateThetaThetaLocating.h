@@ -14,7 +14,7 @@
 #import "SharedData.h"
 
 /*!
- @class LMDelegateThetaThetaLocating.h
+ @class LMDelegateThetaThetaLocating
  @discussion This class implements the protocol CLLocationManagerDelegate to handle the events of location manager in kModeThetaThetaLocating mode.
  */
 @interface LMDelegateThetaThetaLocating: NSObject<CLLocationManagerDelegate>{
@@ -32,11 +32,6 @@
     // Variables
     RDPosition * position;  // Current position of device
     
-    // Data store
-    NSMutableArray * monitoredRegions;
-    NSMutableArray * monitoredPositions;
-    
-    // Orchestration variables
 }
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData

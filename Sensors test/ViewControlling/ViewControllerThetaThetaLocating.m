@@ -318,9 +318,9 @@
         [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
         
         // Ask Location manager to clean the measures taken and reset its position.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopLocationMeasuring\" posted.");
+        NSLog(@"[NOTI][VCTTL] Notification \"stopGyroscopeHeadingMeasuring\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
                                                             object:nil];
         NSLog(@"[NOTI][VCTTL] Notification \"resetLocationAndMeasures\" posted.");
