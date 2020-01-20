@@ -467,4 +467,28 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         [locationManager stopUpdatingHeading];
     }
 }
+
+/*!
+ @method reset
+ @discussion Setter of current position of the device using observer pattern.
+ */
+- (void) reset:(NSNotification *) notification
+{
+    if ([[notification name] isEqualToString:@"resetLocationAndMeasures"]){
+        NSLog(@"[NOTI][LM] Notification \"resetLocationAndMeasures\" recived.");
+        
+        // Instance variables
+        // Set device's location at the origin
+        position = [[RDPosition alloc] init];
+        position.x = [NSNumber numberWithFloat:0.0];
+        position.y = [NSNumber numberWithFloat:0.0];
+        position.z = [NSNumber numberWithFloat:0.0];
+        
+        // Delete registered regions and heading updates
+        [self stopRoutine];
+        
+        // Components
+        [sharedData resetMeasuresWithCredentialsUserDic:credentialsUserDic];
+    }
+}
 @end
