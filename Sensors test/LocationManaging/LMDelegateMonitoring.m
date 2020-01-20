@@ -1,14 +1,14 @@
 //
-//  LocationManagerDelegateMonitoring.m
+//  LMDelegateMonitoring.m
 //  Sensors test
 //
 //  Created by Alberto J. on 16/1/20.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 
-#import "LocationManagerDelegateMonitoring.h"
+#import "LMDelegateMonitoring.h"
 
-@implementation LocationManagerDelegateMonitoring : NSObject
+@implementation LMDelegateMonitoring : NSObject
 
 /*!
  @method init

@@ -300,7 +300,7 @@
         // Set the variables and components
         [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
         [viewControllerMainMenu setUserDic:userDic];
-        [viewControllerMainMenu setSharedData:sharedData];        
+        [viewControllerMainMenu setSharedData:sharedData];
         [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
         

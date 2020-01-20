@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		421FCEB922CF5C8E00C62E5E /* miso.png in Resources */ = {isa = PBXBuildFile; fileRef = 421FCEB822CF5C8E00C62E5E /* miso.png */; };
-		4227338B23D0BB6B00F79364 /* LocationManagerDelegateMonitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227338A23D0BB6B00F79364 /* LocationManagerDelegateMonitoring.m */; };
+		4227338B23D0BB6B00F79364 /* LMDelegateMonitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227338A23D0BB6B00F79364 /* LMDelegateMonitoring.m */; };
 		422798852271F37800E07C39 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798842271F37800E07C39 /* AppDelegate.m */; };
 		422798882271F37800E07C39 /* ViewControllerRhoRhoModeling.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798872271F37800E07C39 /* ViewControllerRhoRhoModeling.m */; };
 		4227988B2271F37800E07C39 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 422798892271F37800E07C39 /* Main.storyboard */; };
@@ -48,8 +48,8 @@
 
 /* Begin PBXFileReference section */
 		421FCEB822CF5C8E00C62E5E /* miso.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = miso.png; sourceTree = "<group>"; };
-		4227338923D0BB5500F79364 /* LocationManagerDelegateMonitoring.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationManagerDelegateMonitoring.h; sourceTree = "<group>"; };
-		4227338A23D0BB6B00F79364 /* LocationManagerDelegateMonitoring.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocationManagerDelegateMonitoring.m; sourceTree = "<group>"; };
+		4227338923D0BB5500F79364 /* LMDelegateMonitoring.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateMonitoring.h; sourceTree = "<group>"; };
+		4227338A23D0BB6B00F79364 /* LMDelegateMonitoring.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateMonitoring.m; sourceTree = "<group>"; };
 		422798802271F37800E07C39 /* Sensors test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sensors test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		422798832271F37800E07C39 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		422798842271F37800E07C39 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -177,8 +177,8 @@
 			children = (
 				426501B822A03B2A00BE20B7 /* LocationManagerDelegate.h */,
 				426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */,
-				4227338923D0BB5500F79364 /* LocationManagerDelegateMonitoring.h */,
-				4227338A23D0BB6B00F79364 /* LocationManagerDelegateMonitoring.m */,
+				4227338923D0BB5500F79364 /* LMDelegateMonitoring.h */,
+				4227338A23D0BB6B00F79364 /* LMDelegateMonitoring.m */,
 			);
 			path = LocationManaging;
 			sourceTree = "<group>";
@@ -356,7 +356,7 @@
 				424F576B234C9D1D00826B27 /* ViewControllerFinalModel.m in Sources */,
 				4255A9FA23D21B5D008DDB9F /* MDMode.m in Sources */,
 				4242F6C722CBA7C600C4B0B7 /* Adder.m in Sources */,
-				4227338B23D0BB6B00F79364 /* LocationManagerDelegateMonitoring.m in Sources */,
+				4227338B23D0BB6B00F79364 /* LMDelegateMonitoring.m in Sources */,
 				422798932271F37800E07C39 /* main.m in Sources */,
 				422798852271F37800E07C39 /* AppDelegate.m in Sources */,
 				429FA65F22EB19DB00F3D415 /* MDType.m in Sources */,

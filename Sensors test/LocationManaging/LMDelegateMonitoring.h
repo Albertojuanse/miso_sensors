@@ -1,5 +1,5 @@
 //
-//  LocationManagerDelegateMonitoring.h
+//  LMDelegateMonitoring.h
 //  Sensors test
 //
 //  Created by Alberto J. on 16/1/20.
@@ -13,10 +13,10 @@
 #import "SharedData.h"
 
 /*!
- @class LocationManagerDelegateMonitoring
+ @class LMDelegateMonitoring
  @discussion This class implements the protocol CLLocationManagerDelegate to handle the events of location manager in Monitoring mode.
  */
-@interface LocationManagerDelegateMonitoring: NSObject<CLLocationManagerDelegate>{
+@interface LMDelegateMonitoring: NSObject<CLLocationManagerDelegate>{
     
     // Session and user context
     NSMutableDictionary * credentialsUserDic;

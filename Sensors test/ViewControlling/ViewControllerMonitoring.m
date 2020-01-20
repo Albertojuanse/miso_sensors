@@ -36,10 +36,10 @@
     // Components
     location = nil; // ARC disposal
     NSString * deviceUUID = [[NSUUID UUID] UUIDString];
-    location = [[LocationManagerDelegateMonitoring alloc] initWithSharedData:sharedData
-                                                                     userDic:userDic
-                                                                  deviceUUID:deviceUUID
-                                                       andCredentialsUserDic:credentialsUserDic];
+    location = [[LMDelegateMonitoring alloc] initWithSharedData:sharedData
+                                                        userDic:userDic
+                                                     deviceUUID:deviceUUID
+                                          andCredentialsUserDic:credentialsUserDic];
     
     // Get chosen item and set as device position
     NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
