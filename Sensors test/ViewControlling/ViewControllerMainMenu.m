@@ -665,17 +665,14 @@
                 [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:userDic];
-                [self performSegueWithIdentifier:@"fromMainToRHO_RHO_MODELING" sender:sender];
+                [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
             if ([chosenMode isModeKey:kModeRhoThetaModelling]) { // RHO_THETA_MODELING
-                [sharedData inSessionDataSetMode:chosenMode
-                               toUserWithUserDic:userDic
-                           andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
             if ([chosenMode isModeKey:kModeThetaThetaModelling]) { // THETA_THETA_MODELING
                 return;
-                // [self performSegueWithIdentifier:@"fromMainToTHETA_THETA_MODELING" sender:sender];
+                // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
             if ([chosenMode isModeKey:kModeRhoRhoLocating]) { // RHO_RHO_LOCATING
                 return;
@@ -835,39 +832,6 @@
         [viewControllerAddBeaconMenu setSharedData:sharedData];
         [viewControllerAddBeaconMenu setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerAddBeaconMenu setItemPositionIdNumber:itemPositionIdNumber];
-        
-    }
-    
-    // If Rho Rho Syetem based Modeling is going to be displayed, pass it the beaconsAndPositionsRegistered array.
-    if ([[segue identifier] isEqualToString:@"fromMainToRHO_RHO_MODELING"]) {
-        
-        // Get destination view
-        ViewControllerRhoRhoModeling * viewControllerRhoRhoModeling = [segue destinationViewController];
-        // Set the variables and components
-        [viewControllerRhoRhoModeling setCredentialsUserDic:credentialsUserDic];
-        [viewControllerRhoRhoModeling setUserDic:userDic];
-        [viewControllerRhoRhoModeling setSharedData:sharedData];
-        [viewControllerRhoRhoModeling setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerRhoRhoModeling setItemPositionIdNumber:itemPositionIdNumber];
-        
-    }
-    
-    // If Rho Theta Syetem based Modeling is going to be displayed, pass it the beaconsAndPositionsRegistered array.
-    if ([[segue identifier] isEqualToString:@"fromMainToRHO_THETA_MODELING"]) {
-        
-        // Get destination view
-        ViewControllerRhoThetaModeling * viewControllerRhoThetaModeling = [segue destinationViewController];
-        // Set the variables
-        [viewControllerRhoThetaModeling setCredentialsUserDic:credentialsUserDic];
-        [viewControllerRhoThetaModeling setUserDic:userDic];
-        [viewControllerRhoThetaModeling setSharedData:sharedData];
-        [viewControllerRhoThetaModeling setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerRhoThetaModeling setItemPositionIdNumber:itemPositionIdNumber];
-        
-    }
-    
-    // If Theta Theta Syetem based Modeling is going to be displayed, there is no need of the beaconsAndPositionsRegistered array.
-    if ([[segue identifier] isEqualToString:@"fromMainToTHETA_THETA_MODELING"]) {
         
     }
     

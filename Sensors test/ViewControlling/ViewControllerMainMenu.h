@@ -12,8 +12,6 @@
 #import "ViewControllerLogin.h"
 #import "ViewControllerAddBeaconMenu.h"
 #import "ViewControllerSelectPositions.h"
-#import "ViewControllerRhoRhoModeling.h"
-#import "ViewControllerRhoThetaModeling.h"
 
 /*!
  @class ViewControllerMainMenu
