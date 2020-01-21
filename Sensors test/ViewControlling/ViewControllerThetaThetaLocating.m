@@ -215,9 +215,8 @@
             
             [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
             
-            BOTON Y ELEGIR TECNOLOGIA
-            
             // And send the notification
+            // TO DO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
             // [[NSNotificationCenter defaultCenter] postNotificationName:@"startCompassHeadingMeasuring" object:nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
             NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopes\" posted.");

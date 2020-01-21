@@ -45,7 +45,8 @@
 		42B676F123D5E972005E3CBD /* LMDelegateRhoThetaModelling.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B676F023D5E972005E3CBD /* LMDelegateRhoThetaModelling.m */; };
 		42B676F423D60809005E3CBD /* ViewControllerModellingRhoThetaModeling.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B676F323D60809005E3CBD /* ViewControllerModellingRhoThetaModeling.m */; };
 		42CEBE2E234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */; };
-		42ED9F6A23D73ECB00537FE6 /* ViewControllingRhoRhoLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42ED9F6923D73ECB00537FE6 /* ViewControllingRhoRhoLocating.m */; };
+		42ED9F6A23D73ECB00537FE6 /* ViewControllerRhoRhoLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42ED9F6923D73ECB00537FE6 /* ViewControllerRhoRhoLocating.m */; };
+		42ED9F6D23D7415500537FE6 /* LMDelegateRhoRhoLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42ED9F6C23D7415500537FE6 /* LMDelegateRhoRhoLocating.m */; };
 		42F07CD02359C86E00134FFA /* SDPersistantMutableDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F07CCF2359C86E00134FFA /* SDPersistantMutableDictionary.m */; };
 		42F07CD32359CB6200134FFA /* NSMutableArray+Printable.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F07CD22359CB6200134FFA /* NSMutableArray+Printable.m */; };
 /* End PBXBuildFile section */
@@ -124,8 +125,10 @@
 		42B676F323D60809005E3CBD /* ViewControllerModellingRhoThetaModeling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerModellingRhoThetaModeling.m; sourceTree = "<group>"; };
 		42CEBE2C2345009D0094B1BA /* ViewControllerModelingThetaThetaLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerModelingThetaThetaLocating.h; sourceTree = "<group>"; };
 		42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerModelingThetaThetaLocating.m; sourceTree = "<group>"; };
-		42ED9F6823D73E8300537FE6 /* ViewControllingRhoRhoLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllingRhoRhoLocating.h; sourceTree = "<group>"; };
-		42ED9F6923D73ECB00537FE6 /* ViewControllingRhoRhoLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllingRhoRhoLocating.m; sourceTree = "<group>"; };
+		42ED9F6823D73E8300537FE6 /* ViewControllerRhoRhoLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerRhoRhoLocating.h; sourceTree = "<group>"; };
+		42ED9F6923D73ECB00537FE6 /* ViewControllerRhoRhoLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerRhoRhoLocating.m; sourceTree = "<group>"; };
+		42ED9F6B23D7412200537FE6 /* LMDelegateRhoRhoLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateRhoRhoLocating.h; sourceTree = "<group>"; };
+		42ED9F6C23D7415500537FE6 /* LMDelegateRhoRhoLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateRhoRhoLocating.m; sourceTree = "<group>"; };
 		42F07CCE2359C85000134FFA /* SDPersistantMutableDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDPersistantMutableDictionary.h; sourceTree = "<group>"; };
 		42F07CCF2359C86E00134FFA /* SDPersistantMutableDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDPersistantMutableDictionary.m; sourceTree = "<group>"; };
 		42F07CD12359C9C500134FFA /* NSMutableArray+Printable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Printable.h"; sourceTree = "<group>"; };
@@ -191,10 +194,12 @@
 				426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */,
 				4227338923D0BB5500F79364 /* LMDelegateMonitoring.h */,
 				4227338A23D0BB6B00F79364 /* LMDelegateMonitoring.m */,
-				42B676EC23D5B5AD005E3CBD /* LMDelegateThetaThetaLocating.h */,
-				42B676ED23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m */,
 				42B676EF23D5E964005E3CBD /* LMDelegateRhoThetaModelling.h */,
 				42B676F023D5E972005E3CBD /* LMDelegateRhoThetaModelling.m */,
+				42ED9F6B23D7412200537FE6 /* LMDelegateRhoRhoLocating.h */,
+				42ED9F6C23D7415500537FE6 /* LMDelegateRhoRhoLocating.m */,
+				42B676EC23D5B5AD005E3CBD /* LMDelegateThetaThetaLocating.h */,
+				42B676ED23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m */,
 			);
 			path = LocationManaging;
 			sourceTree = "<group>";
@@ -216,8 +221,8 @@
 				429093DF23AA4B3C000CEA6E /* ViewControllerMonitoring.m */,
 				422798862271F37800E07C39 /* ViewControllerRhoRhoModeling.h */,
 				422798872271F37800E07C39 /* ViewControllerRhoRhoModeling.m */,
-				42ED9F6823D73E8300537FE6 /* ViewControllingRhoRhoLocating.h */,
-				42ED9F6923D73ECB00537FE6 /* ViewControllingRhoRhoLocating.m */,
+				42ED9F6823D73E8300537FE6 /* ViewControllerRhoRhoLocating.h */,
+				42ED9F6923D73ECB00537FE6 /* ViewControllerRhoRhoLocating.m */,
 				4275ED5822D5E88E00A5CAB7 /* ViewControllerRhoThetaModeling.h */,
 				4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m */,
 				42B676F223D607F6005E3CBD /* ViewControllerModellingRhoThetaModeling.h */,
@@ -380,6 +385,7 @@
 				4227338B23D0BB6B00F79364 /* LMDelegateMonitoring.m in Sources */,
 				422798932271F37800E07C39 /* main.m in Sources */,
 				422798852271F37800E07C39 /* AppDelegate.m in Sources */,
+				42ED9F6D23D7415500537FE6 /* LMDelegateRhoRhoLocating.m in Sources */,
 				429FA65F22EB19DB00F3D415 /* MDType.m in Sources */,
 				42F07CD02359C86E00134FFA /* SDPersistantMutableDictionary.m in Sources */,
 				42F07CD32359CB6200134FFA /* NSMutableArray+Printable.m in Sources */,
@@ -395,7 +401,7 @@
 				4295FB2622D360BB0024B155 /* ViewControllerAddBeaconMenu.m in Sources */,
 				4227989B2271F60700E07C39 /* MotionManager.m in Sources */,
 				4275ED5A22D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m in Sources */,
-				42ED9F6A23D73ECB00537FE6 /* ViewControllingRhoRhoLocating.m in Sources */,
+				42ED9F6A23D73ECB00537FE6 /* ViewControllerRhoRhoLocating.m in Sources */,
 				4242F6C422CB9EC200C4B0B7 /* Buffer.m in Sources */,
 				4295FB2222D35D7A0024B155 /* ViewControllerMainMenu.m in Sources */,
 				428AF6C322D7A67500BE5374 /* ViewControllerThetaThetaLocating.m in Sources */,
