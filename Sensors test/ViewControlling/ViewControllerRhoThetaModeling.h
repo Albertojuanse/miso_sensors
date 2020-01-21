@@ -22,7 +22,7 @@
     
     // Other components
     SharedData * sharedData;
-    RDRhoThetaSystem * thetaThetaSystem;
+    RDRhoThetaSystem * rhoThetaSystem;
     LMDelegateRhoThetaModelling * location;
     
     // Session and user context

@@ -36,6 +36,19 @@
     // Components
     // TO DO: Use position and UUID from component 'device'. Alberto J. 2020/01/20.
     // Get chosen item and set as device position and UUID
+    if (!rhoThetaSystem) {
+        rhoThetaSystem = [[RDRhoThetaSystem alloc] initWithSharedData:sharedData
+                                                              userDic:userDic
+                                                           deviceUUID:nil
+                                                andCredentialsUserDic:credentialsUserDic];
+    }
+    if (!location) {
+        location = [[LMDelegateRhoThetaModelling alloc] initWithSharedData:sharedData
+                                                                   userDic:userDic
+                                                            rhoThetaSystem:rhoThetaSystem
+                                                                deviceUUID:nil
+                                                     andCredentialsUserDic:credentialsUserDic];
+    }
     NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
                                                                       andCredentialsUserDic:credentialsUserDic];
     NSMutableDictionary * itemChosenByUserAsDevicePosition;
@@ -64,6 +77,7 @@
                 deviceUUID = itemChosenByUserAsDevicePosition[@"uuid"];
             }
         }
+        [rhoThetaSystem setDeviceUUID:deviceUUID];
         [location setPosition:position];
         [location setDeviceUUID:deviceUUID];
         [location setItemBeaconIdNumber:itemBeaconIdNumber];
