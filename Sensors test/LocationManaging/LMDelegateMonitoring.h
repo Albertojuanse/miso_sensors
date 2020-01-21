@@ -21,6 +21,9 @@
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
+    // Beacons' region identifiers
+    NSNumber * itemBeaconIdNumber;
+    NSNumber * itemPositionIdNumber;
     NSString * deviceUUID;
     
     // Components
@@ -28,7 +31,6 @@
     CLLocationManager * locationManager;
     
     // Variables
-    
     RDPosition * position;  // Current position of device
     
     // Data store
@@ -44,6 +46,8 @@
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void)setUserDic:(NSMutableDictionary *)givenUserDic;
+- (void)setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
+- (void)setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void)setDeviceUUID:(NSString *)givenDeviceUUID;
 - (void)setPosition:(RDPosition *)givenPosition;
 - (RDPosition *)getPosition;

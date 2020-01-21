@@ -78,7 +78,7 @@
                                                      name:@"resetLocationAndMeasures"
                                                    object:nil];
         
-        NSLog(@"[INFO][LMRTM] LocationManager prepared for monitoring mode.");
+        NSLog(@"[INFO][LMRTM] LocationManager prepared for kModeRhoThetaModelling mode.");
     }
     
     return self;
@@ -133,6 +133,24 @@
 {
     deviceUUID = givenDeviceUUID;
     return;
+}
+
+/*!
+ @method setItemBeaconIdNumber:
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ */
+- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
+{
+    itemBeaconIdNumber = givenItemBeaconIdNumber;
+}
+
+/*!
+ @method setItemPositionIdNumber:
+ @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
+ */
+- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
+{
+    itemPositionIdNumber = givenItemPositionIdNumber;
 }
 
 /*!
@@ -380,11 +398,10 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                 NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
                                 infoDic[@"located"] = @"YES";
                                 infoDic[@"sort"] = @"position";
-                                infoDic[@"identifier"] = [NSString
-                                                          stringWithFormat:@"location%@@miso.uam.es",
-                                                          [positionKey substringFromIndex:
-                                                           [positionKey length] - 4]
-                                                          ];
+                                NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
+                                itemPositionIdNumber = [NSNumber numberWithInteger:[itemPositionIdNumber integerValue] + 1];
+                                positionId = [positionId stringByAppendingString:@"@miso.uam.es"];
+                                infoDic[@"identifier"] = positionId;
                                 infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
                                 BOOL savedItem = [sharedData inItemDataAddItemOfSort:@"position"
                                                                             withUUID:positionKey
@@ -625,7 +642,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
-        [locationManager stopUpdatingLocation];
+        [self stopRoutine];
         NSLog(@"[INFO][LMRTM] Stop updating compass and iBeacons.");
     }
 }
