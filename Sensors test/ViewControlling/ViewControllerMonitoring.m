@@ -40,6 +40,8 @@
                                                         userDic:userDic
                                                      deviceUUID:deviceUUID
                                           andCredentialsUserDic:credentialsUserDic];
+    [location setItemBeaconIdNumber:itemBeaconIdNumber];
+    [location setItemPositionIdNumber:itemPositionIdNumber];
     
     // Get chosen item and set as device position
     NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic

@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "ViewControllerMainMenu.h"
+#import "LocationManagerDelegate.h"
+#import "MotionManager.h"
 #import "Canvas.h"
 
 /*!
@@ -53,12 +55,12 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 @property (weak, nonatomic) IBOutlet UIButton *buttonTravel;
 
+// Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void) setSharedData:(SharedData *)givenSharedData;
 - (void) setMotionManager:(MotionManager *)givenMotion;
 - (void) setLocationManager:(LocationManagerDelegate *)givenLocation;
-
 - (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void) setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 

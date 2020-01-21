@@ -50,6 +50,8 @@
                                                            thetaThetaSystem:thetaThetaSystem
                                                                  deviceUUID:deviceUUID
                                                       andCredentialsUserDic:credentialsUserDic];
+        [location setItemBeaconIdNumber:itemBeaconIdNumber];
+        [location setItemPositionIdNumber:itemPositionIdNumber];
     }
     if (!motion) {
         motion = [[MotionManager alloc] initWithSharedData:sharedData

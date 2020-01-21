@@ -66,6 +66,8 @@
         }
         [location setPosition:position];
         [location setDeviceUUID:deviceUUID];
+        [location setItemBeaconIdNumber:itemBeaconIdNumber];
+        [location setItemPositionIdNumber:itemPositionIdNumber];
     }
     
     // Initial state
