@@ -435,7 +435,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         }
         
         // Get the measuring mode and items for initializing
-        NSMutableArray * items = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
+        NSMutableArray * items = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                              andCredentialsUserDic:credentialsUserDic];
         MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic];
         monitoredRegions = [[NSMutableArray alloc] init];

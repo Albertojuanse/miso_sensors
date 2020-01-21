@@ -1359,10 +1359,10 @@
             </objects>
             <point key="canvasLocation" x="1485" y="-733"/>
         </scene>
-        <!--View Controller-->
+        <!--View Controller Rho Rho Locating-->
         <scene sceneID="0VE-tB-oJb">
             <objects>
-                <viewController id="04n-E6-oj0" sceneMemberID="viewController">
+                <viewController id="04n-E6-oj0" customClass="ViewControllerRhoRhoLocating" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NJj-DK-ebU">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1416,6 +1416,7 @@
                                         <state key="normal" title="Next"/>
                                         <connections>
                                             <action selector="handleButtonNext:" destination="iCa-UJ-9hQ" eventType="touchUpInside" id="vRn-fn-ldS"/>
+                                            <action selector="handleNextButton:" destination="04n-E6-oj0" eventType="touchUpInside" id="J6X-0D-joA"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aOm-wK-sil">
@@ -1471,6 +1472,8 @@
                         <outlet property="labelStatus" destination="EnJ-91-q6o" id="Zjr-M2-gzP"/>
                         <outlet property="tableItems" destination="YaQ-p2-ERi" id="xtS-Zb-KK3"/>
                         <outlet property="tableTypes" destination="jFv-aP-gql" id="7iB-iL-xeX"/>
+                        <segue destination="zBC-hA-n0a" kind="show" identifier="fromRHO_RHO_LOCATINGToSelectPosition" id="mQN-zE-pLX"/>
+                        <segue destination="Yt7-Vj-vjk" kind="show" id="GXt-pt-FwK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gQy-G9-4cL" sceneMemberID="firstResponder"/>
@@ -1479,10 +1482,10 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="crr-mq-j8Q"/>
+        <segue reference="GXt-pt-FwK"/>
         <segue reference="QxI-WS-XJS"/>
         <segue reference="A3y-43-nSw"/>
-        <segue reference="ARI-Cn-mJV"/>
+        <segue reference="mQN-zE-pLX"/>
         <segue reference="OWJ-G0-Y79"/>
     </inferredMetricsTieBreakers>
 </document>

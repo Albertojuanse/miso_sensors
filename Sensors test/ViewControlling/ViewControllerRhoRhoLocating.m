@@ -1,14 +1,14 @@
 //
-//  ViewControllerRhoThetaModeling.m
+//  ViewControllingRhoRhoLocating.m
 //  Sensors test
 //
-//  Created by Alberto J. on 10/7/19.
-//  Copyright © 2019 MISO. All rights reserved.
+//  Created by Alberto J. on 21/1/20.
+//  Copyright © 2020 MISO. All rights reserved.
 //
 
-#import "ViewControllerMainMenu.h"
+#import "ViewControllerRhoRhoLocating.h"
 
-@implementation ViewControllerRhoThetaModeling
+@implementation ViewControllerRhoRhoLocating
 
 #pragma mark - UIViewController delegated methods
 
@@ -21,7 +21,7 @@
     [super viewDidLoad];
     
     // Register the current mode
-    mode = [[MDMode alloc] initWithModeKey:kModeRhoThetaModelling];
+    mode = [[MDMode alloc] initWithModeKey:kModeRhoRhoLocating];
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
@@ -34,52 +34,22 @@
     }
     
     // Components
-    // TO DO: Use position and UUID from component 'device'. Alberto J. 2020/01/20.
-    // Get chosen item and set as device position and UUID
-    if (!rhoThetaSystem) {
-        rhoThetaSystem = [[RDRhoThetaSystem alloc] initWithSharedData:sharedData
-                                                              userDic:userDic
-                                                           deviceUUID:nil
-                                                andCredentialsUserDic:credentialsUserDic];
+    // In this mode, the device UUID is used to generate every located component; thus, it changes when user wants to locate another component.
+    if (!deviceUUID) {
+        deviceUUID = [[NSUUID UUID] UUIDString];
+    }
+    if (!rhoRhoSystem) {
+        rhoRhoSystem = [[RDRhoRhoSystem alloc] initWithSharedData:sharedData
+                                                          userDic:userDic
+                                                       deviceUUID:deviceUUID
+                                            andCredentialsUserDic:credentialsUserDic];
     }
     if (!location) {
-        location = [[LMDelegateRhoThetaModelling alloc] initWithSharedData:sharedData
-                                                                   userDic:userDic
-                                                            rhoThetaSystem:rhoThetaSystem
-                                                                deviceUUID:nil
-                                                     andCredentialsUserDic:credentialsUserDic];
-    }
-    NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                                      andCredentialsUserDic:credentialsUserDic];
-    NSMutableDictionary * itemChosenByUserAsDevicePosition;
-    if (itemsChosenByUser.count == 0) {
-        NSLog(@"[ERROR][VCRTM] The collection with the items chosen by user is empty; no device position provided.");
-    } else {
-        itemChosenByUserAsDevicePosition = [itemsChosenByUser objectAtIndex:0];
-        if (itemsChosenByUser.count > 1) {
-            NSLog(@"[ERROR][VCRTM] The collection with the items chosen by user have more than one item; the first one is set as device position.");
-        }
-    }
-    if (itemChosenByUserAsDevicePosition) {
-        RDPosition * position = itemChosenByUserAsDevicePosition[@"position"];
-        if (!position) {
-            NSLog(@"[ERROR][VCRTM] No position was found in the item chosen by user as device position; (0,0,0) is set.");
-            position = [[RDPosition alloc] init];
-            position.x = [NSNumber numberWithFloat:0.0];
-            position.y = [NSNumber numberWithFloat:0.0];
-            position.z = [NSNumber numberWithFloat:0.0];
-        }
-        if (!deviceUUID) {
-            if (!itemChosenByUserAsDevicePosition[@"uuid"]) {
-                NSLog(@"[ERROR][VCRTM] No UUID was found in the item chosen by user as device position; a random one set.");
-                deviceUUID = [[NSUUID UUID] UUIDString];
-            } else {
-                deviceUUID = itemChosenByUserAsDevicePosition[@"uuid"];
-            }
-        }
-        [rhoThetaSystem setDeviceUUID:deviceUUID];
-        [location setPosition:position];
-        [location setDeviceUUID:deviceUUID];
+        location = [[LMDelegateRhoRhoLocating alloc] initWithSharedData:sharedData
+                                                                userDic:userDic
+                                                           rhoRhoSystem:rhoRhoSystem
+                                                             deviceUUID:deviceUUID
+                                                  andCredentialsUserDic:credentialsUserDic];
         [location setItemBeaconIdNumber:itemBeaconIdNumber];
         [location setItemPositionIdNumber:itemPositionIdNumber];
     }
@@ -93,7 +63,7 @@
     
     // Visualization
     [self.buttonMeasure setEnabled:YES];
-    [self.labelStatus setText:@"IDLE; please, aim the iBEacon device and tap 'Measure' for starting. Tap back for finishing."];
+    [self.labelStatus setText:@"IDLE; please, move to any position and tap 'Measure' to start. Tap 'Next' to add another component. Tap back to finish."];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableItems.delegate = self;
@@ -148,7 +118,7 @@
  @method setLocationManager:
  @discussion This method sets the location manager.
  */
-- (void) setLocationManager:(LMDelegateRhoThetaModelling *)givenLocation
+- (void) setLocationManager:(LMDelegateRhoRhoLocating *)givenLocation
 {
     location = givenLocation;
 }
@@ -201,41 +171,53 @@
                           // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while starting travel.");
+        NSLog(@"[ERROR][VCRRL] Shared data could not be accessed before start measuring.");
         return;
     }
     
     // In every state the button performs different behaviours
-    NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic];
-    
-    if ([state isEqualToString:@"IDLE"]) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
+    if ([sharedData fromSessionDataIsIdleUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic]) { // If idle, user can measuring; if 'Measuring' is tapped, user asks start measuring.
         if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic]) {
-            [self.buttonMeasure setEnabled:YES];
+            [self.buttonMeasure setEnabled:NO];
             [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                        andWithCredentialsUserDic:credentialsUserDic];
-            [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
-        
+            [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again to finish the measure."];
+            
             // And send the notification
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startCompassHeadingAndBeaconRangingMeasuring"
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"startBeaconRangingMeasuring"
                                                                 object:nil];
-            NSLog(@"[NOTI][VCRTM] Notification \"startCompassHeadingAndBeaconRangingMeasuring\" posted.");
-            return;
+            NSLog(@"[NOTI][VCRRL] Notification \"startBeaconRangingMeasuring\" posted.");
         } else {
-            return;
         }
+        return;
     }
-    if ([state isEqualToString:@"MEASURING"]) { // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
+    if ([sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic]) { // If measuring, user can go idle; if 'Measuring' is tapped, user asks stop measuring.
         [self.buttonMeasure setEnabled:YES];
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
-        [self.labelStatus setText:@"IDLE; please, aim the iBEacon device and tap 'Measure' for starting. Tap back for finishing."];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopCompassHeadingAndBeaconRangingMeasuring"
+        [self.labelStatus setText:@"IDLE; please, tap 'Next' to add another component, move to any position and tap 'Measure' to start. Tap back to finish."];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopBeaconRangingMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"stopCompassHeadingAndBeaconRangingMeasuring\" posted.");
+        NSLog(@"[NOTI][VCRRL] Notification \"stopBeaconRangingMeasuring\" posted.");
         return;
     }
+}
+
+/*!
+ @method handleBackButton:
+ @discussion This method handles the 'next' button renewing the UUID for a new component and setting it in components.
+ */
+- (IBAction)handleNextButton:(id)sender {
+    [self alertUserWithTitle:@"Component added to the model."
+                     message:[NSString stringWithFormat:@"Please, move to a new location. UUID: %@.", deviceUUID]
+                  andHandler:^(UIAlertAction * action) {
+                      // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                  }
+     ];
+    deviceUUID = [[NSUUID UUID] UUIDString];
+    [location setDeviceUUID:deviceUUID];
+    [rhoRhoSystem setDeviceUUID:deviceUUID];
 }
 
 /*!
@@ -244,7 +226,7 @@
  */
 - (IBAction)handleBackButton:(id)sender
 {
-    [self performSegueWithIdentifier:@"fromRHO_THETA_MODELINGToSelectPosition" sender:sender];
+    [self performSegueWithIdentifier:@"fromRHO_RHO_LOCATINGToSelectPosition" sender:sender];
 }
 
 /*!
@@ -252,7 +234,7 @@
  @discussion This method is called when user is prepared for modeling.
  */
 - (IBAction)handleModelButton:(id)sender {
-    [self performSegueWithIdentifier:@"fromRHO_THETA_MODELINGToModellingRHO_THETA_MODELLING" sender:sender];
+    [self performSegueWithIdentifier:@"fromRHO_RHO_LOCATINGToFinalModel" sender:sender];
 }
 
 /*!
@@ -285,10 +267,10 @@
  */
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSLog(@"[INFO][VCRTM] Asked segue %@", [segue identifier]);
+    NSLog(@"[INFO][VCRRL] Asked segue %@", [segue identifier]);
     
     // If main menu is going to be displayed, any variable can be returned here
-    if ([[segue identifier] isEqualToString:@"fromRHO_THETA_MODELINGToSelectPosition"]) {
+    if ([[segue identifier] isEqualToString:@"fromRHO_RHO_LOCATINGToSelectPosition"]) {
         
         // Get destination view
         ViewControllerSelectPositions * viewControllerSelectPositions = [segue destinationViewController];
@@ -300,26 +282,26 @@
         [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
         
         // Ask Location manager to clean the measures taken and reset its position.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopCompassHeadingAndBeaconRangingMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopBeaconRangingMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"stopCompassHeadingAndBeaconRangingMeasuring\" posted.");
+        NSLog(@"[NOTI][VCRRL] Notification \"stopBeaconRangingMeasuring\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"resetLocationAndMeasures\" posted.");
+        NSLog(@"[NOTI][VCRRL] Notification \"resetLocationAndMeasures\" posted.");
         return;
     }
     
-    if ([[segue identifier] isEqualToString:@"fromRHO_THETA_MODELINGToModellingRHO_THETA_MODELLING"]) {
+    if ([[segue identifier] isEqualToString:@"fromRHO_RHO_LOCATINGToFinalModel"]) {
         
         // Get destination view
-        ViewControllerModellingRhoThetaModeling * viewControllerModellingRhoThetaModeling = [segue destinationViewController];
+        ViewControllerFinalModel * viewControllerFinalModel = [segue destinationViewController];
         // Set the variables
-        [viewControllerModellingRhoThetaModeling setCredentialsUserDic:credentialsUserDic];
-        [viewControllerModellingRhoThetaModeling setUserDic:userDic];
-        [viewControllerModellingRhoThetaModeling setSharedData:sharedData];
-        [viewControllerModellingRhoThetaModeling setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerModellingRhoThetaModeling setItemPositionIdNumber:itemPositionIdNumber];
-        [viewControllerModellingRhoThetaModeling setDeviceUUID:deviceUUID];
+        [viewControllerFinalModel setCredentialsUserDic:credentialsUserDic];
+        [viewControllerFinalModel setUserDic:userDic];
+        [viewControllerFinalModel setSharedData:sharedData];
+        [viewControllerFinalModel setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerFinalModel setItemPositionIdNumber:itemPositionIdNumber];
+        //[viewControllerFinalModel setDeviceUUID:deviceUUID];
         return;
     }
 }
@@ -355,7 +337,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while loading items.");
+            NSLog(@"[ERROR][VCRRL] Shared data could not be accessed while loading items.");
         }
     }
     if (tableView == self.tableTypes) {
@@ -533,7 +515,7 @@
                               // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while loading cells' item.");
+            NSLog(@"[ERROR][VCRRL] Shared data could not be accessed while loading cells' item.");
         }
     }
     
@@ -550,58 +532,6 @@
     }
     
     return cell;
-}
-
-/*!
- @method tableView:didSelectRowAtIndexPath:
- @discussion Handles the upload of tables; handles the 'select a cell' action.
- */
-- (void)tableView:(UITableView *)tableView
-didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (tableView == self.tableItems) {
-        
-        // Database could not be accessed.
-        if (
-            [sharedData validateCredentialsUserDic:credentialsUserDic]
-            )
-        {
-            // Load the item depending of the source
-            NSMutableDictionary * itemSelected = nil;
-            itemSelected = [
-                                                  [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
-                                                  objectAtIndex:indexPath.row
-                                                  ];
-            
-            // Only beacons can be aimed, positions were marked
-            if ([@"position" isEqualToString:itemSelected[@"sort"]] && ([@"NO" isEqualToString:itemSelected[@"located"]] || !itemSelected[@"located"]))
-            {
-                [tableView deselectRowAtIndexPath:indexPath animated:NO];
-            } else {
-                [sharedData inSessionDataSetItemChosenByUser:itemSelected
-                                           toUserWithUserDic:userDic
-                                       andCredentialsUserDic:credentialsUserDic];
-            }
-            
-        } else {
-            [self alertUserWithTitle:@"Items won't be loaded."
-                             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
-                          andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-                          }
-             ];
-            NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while selecting a cell.");
-        }
-    }
-    if (tableView == self.tableTypes) {
-        MDType * typeSelected = [
-                                 [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
-                                 objectAtIndex:indexPath.row
-                                 ];
-        [sharedData inSessionDataSetTypeChosenByUser:typeSelected
-                                   toUserWithUserDic:userDic
-                               andCredentialsUserDic:credentialsUserDic];
-    }
 }
 
 @end
