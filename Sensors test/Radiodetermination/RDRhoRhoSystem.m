@@ -217,7 +217,7 @@
         )
     {
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-        NSLog(@"[ERROR][RR] Shared data could not be accessed while loading cells' item.");
+        NSLog(@"[ERROR][RR] Shared data could not be accessed before use grid aproximation.");
     }
     
     // Declare collections

@@ -105,7 +105,7 @@
         )
     {
         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
-        NSLog(@"[ERROR][TT] Shared data could not be accessed before location procces.");
+        NSLog(@"[ERROR][TT] Shared data could not be accessed before use barycenter aproximation.");
     }
     
     // Declare collections
