@@ -45,7 +45,6 @@
 		42B676F123D5E972005E3CBD /* LMDelegateRhoThetaModelling.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B676F023D5E972005E3CBD /* LMDelegateRhoThetaModelling.m */; };
 		42B676F423D60809005E3CBD /* ViewControllerModellingRhoThetaModeling.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B676F323D60809005E3CBD /* ViewControllerModellingRhoThetaModeling.m */; };
 		42CEBE2E234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */; };
-		42E4B7E223D8966A003888C0 /* ModesProperties.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42E4B7E123D8966A003888C0 /* ModesProperties.plist */; };
 		42ED9F6A23D73ECB00537FE6 /* ViewControllerRhoRhoLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42ED9F6923D73ECB00537FE6 /* ViewControllerRhoRhoLocating.m */; };
 		42ED9F6D23D7415500537FE6 /* LMDelegateRhoRhoLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42ED9F6C23D7415500537FE6 /* LMDelegateRhoRhoLocating.m */; };
 		42F07CD02359C86E00134FFA /* SDPersistantMutableDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F07CCF2359C86E00134FFA /* SDPersistantMutableDictionary.m */; };
@@ -126,7 +125,6 @@
 		42B676F323D60809005E3CBD /* ViewControllerModellingRhoThetaModeling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerModellingRhoThetaModeling.m; sourceTree = "<group>"; };
 		42CEBE2C2345009D0094B1BA /* ViewControllerModelingThetaThetaLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerModelingThetaThetaLocating.h; sourceTree = "<group>"; };
 		42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerModelingThetaThetaLocating.m; sourceTree = "<group>"; };
-		42E4B7E123D8966A003888C0 /* ModesProperties.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ModesProperties.plist; sourceTree = "<group>"; };
 		42ED9F6823D73E8300537FE6 /* ViewControllerRhoRhoLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerRhoRhoLocating.h; sourceTree = "<group>"; };
 		42ED9F6923D73ECB00537FE6 /* ViewControllerRhoRhoLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerRhoRhoLocating.m; sourceTree = "<group>"; };
 		42ED9F6B23D7412200537FE6 /* LMDelegateRhoRhoLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateRhoRhoLocating.h; sourceTree = "<group>"; };
@@ -151,7 +149,6 @@
 		422798772271F37800E07C39 = {
 			isa = PBXGroup;
 			children = (
-				42E4B7E123D8966A003888C0 /* ModesProperties.plist */,
 				422798822271F37800E07C39 /* Sensors test */,
 				422798812271F37800E07C39 /* Products */,
 			);
@@ -360,7 +357,6 @@
 			files = (
 				422798902271F37800E07C39 /* LaunchScreen.storyboard in Resources */,
 				4227988D2271F37800E07C39 /* Assets.xcassets in Resources */,
-				42E4B7E223D8966A003888C0 /* ModesProperties.plist in Resources */,
 				4227988B2271F37800E07C39 /* Main.storyboard in Resources */,
 				421FCEB922CF5C8E00C62E5E /* miso.png in Resources */,
 			);
