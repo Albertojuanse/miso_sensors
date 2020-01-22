@@ -1,14 +1,14 @@
 //
-//  MDMetamodel.m
+//  MDRoutine.m
 //  Sensors test
 //
 //  Created by Alberto J. on 22/1/20.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 
-#import "MDMetamodel.h"
+#import "MDRoutine.h"
 
-@implementation MDMetamodel: NSObject
+@implementation MDRoutine: NSObject
 
 /*!
  @method init
@@ -20,7 +20,8 @@
     if (self) {
         name = [[NSString alloc] init];
         description = [[NSString alloc] init];
-        types = [[NSMutableArray alloc] init];
+        modes = [[NSMutableDictionary alloc] init];
+        metamodels = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -43,17 +44,20 @@
 }
 
 /*!
- @method initWithName:description:andTypes:
+ @method initWithName:description:modes:andMetamodels:
  @discussion Constructor
  */
 - (instancetype)initWithName:(NSString *)initName
                  description:(NSString *)initDescription
-                    andTypes:(NSMutableArray*)initTypes
+                       modes:(NSMutableDictionary *)initModes
+               andMetamodels:(NSMutableDictionary *)initMetamodels
 {
     self = [self initWithName:initName andDescription:description];
     if (self) {
-        types = nil;
-        types = initTypes;
+        modes = nil;
+        modes = initModes;
+        metamodels = nil;
+        metamodels = initMetamodels;
     }
     return self;
 }
@@ -70,7 +74,8 @@
     
     name = [decoder decodeObjectForKey:@"name"];
     description = [decoder decodeObjectForKey:@"description"];
-    types = [decoder decodeObjectForKey:@"types"];
+    modes = [decoder decodeObjectForKey:@"modes"];
+    metamodels = [decoder decodeObjectForKey:@"metamodels"];
     
     return self;
 }
@@ -92,11 +97,19 @@
 }
 
 /*!
- @method getTypes
- @discussion Getter of the 'types' NSMutableArray object.
+ @method getModes
+ @discussion Getter of the 'modes' NSMutableArray object.
  */
-- (NSMutableArray *)getTypes {
-    return types;
+- (NSMutableDictionary *)getModes {
+    return modes;
+}
+
+/*!
+ @method getMetamodels
+ @discussion Getter of the 'metamodels' NSMutableArray object.
+ */
+- (NSMutableDictionary *)getMetamodels {
+    return metamodels;
 }
 
 /*!
@@ -116,11 +129,19 @@
 }
 
 /*!
- @method setTypes
- @discussion Setter of the 'types' NSMutableArray object.
+ @method setModes
+ @discussion Setter of the 'modes' NSMutableDictionary object.
  */
-- (void)setTypes:(NSMutableArray *)givenTypes {
-    types = givenTypes;
+- (void)setModes:(NSMutableDictionary *)givenModes {
+    modes = givenModes;
+}
+
+/*!
+ @method setMetamodels
+ @discussion Setter of the 'metamodels' NSMutableDictionary object.
+ */
+- (void)setMetamodels:(NSMutableDictionary *)givenMetamodels {
+    metamodels = givenMetamodels;
 }
 
 /*!
@@ -134,24 +155,27 @@
     if (!other || ![other isKindOfClass:[self class]]) {
         return NO;
     }
-    return [self isEqualToMDMetamodel:other];
+    return [self isEqualToMDRoutine:other];
 }
 
 /*!
  @method isEqualToMDMetamodel
- @discussion This method compares two MDMetamodel objects.
+ @discussion This method compares two MDRoutine objects.
  */
-- (BOOL)isEqualToMDMetamodel:(MDMetamodel *)metamodel {
-    if (metamodel == self) {
+- (BOOL)isEqualToMDRoutine:(MDRoutine *)routine {
+    if (routine == self) {
         return YES;
     }
-    if (name != [metamodel getName]) {
+    if (name != [routine getName]) {
         return NO;
     }
-    if (description != [metamodel getDescription]) {
+    if (description != [routine getDescription]) {
         return NO;
     }
-    if (![types isEqual:[metamodel getTypes]]) {
+    if (![modes isEqual:[routine getModes]]) {
+        return NO;
+    }
+    if (![metamodels isEqual:[routine getMetamodels]]) {
         return NO;
     }
     return YES;
@@ -164,7 +188,8 @@
 - (void)encodeWithCoder:(NSCoder *)encoder {
     [encoder encodeObject:name forKey:@"name"];
     [encoder encodeObject:description forKey:@"description"];
-    [encoder encodeObject:types forKey:@"types"];
+    [encoder encodeObject:modes forKey:@"modes"];
+    [encoder encodeObject:metamodels forKey:@"metamodels"];
 }
 
 /*!
@@ -172,7 +197,7 @@
  @discussion This method creates an NSString object for showing and loggin purposes; equivalent to 'toString()'.
  */
 - (NSString *)description {
-    return [NSString stringWithFormat: @"{%@}", name];
+    return [NSString stringWithFormat: @"%@", name];
 }
 
 /*!
