@@ -112,10 +112,10 @@
     NSMutableDictionary * locatedPositions = [[NSMutableDictionary alloc] init];
     
     // Different behaviour depending on location mode
-    NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
-                                                      andCredentialsUserDic:credentialsUserDic];
+    MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                    andCredentialsUserDic:credentialsUserDic];
 
-    if ([mode isEqualToString:@"RHO_THETA_MODELING"]) {
+    if ([mode isModeKey:kModeRhoThetaModelling]) {
         
         // In a modeling mode the items must be located using the measures taken by the device or devices from items and the headings aginst them. That implies that, each UUID groups the measures taken from a certain beacon and so, for every one of them a RDPosition would be found.
         
@@ -236,7 +236,7 @@
         }
         
     }
-    if ([mode isEqualToString:@"RHO_THETA_LOCATING"]) {
+    if ([mode isModeKey:kModeRhoThetaLocating]) {
         
         // In a locating mode the device must be located using the measures from items and the headings aginst them. That implies that, each UUID groups the measures taken from a certain beacon and the device position must be calculed using all of them.
         
@@ -366,13 +366,13 @@
     
     // If not a rho rho theta type system
     if (
-        [mode isEqualToString:@"RHO_RHO_MODELING"] ||
-        [mode isEqualToString:@"RHO_RHO_LOCATING"] ||
-        [mode isEqualToString:@"THETA_THETA_MODELING"] ||
-        [mode isEqualToString:@"THETA_THETA_LOCATING"]
+        [mode isModeKey:kModeRhoRhoModelling] ||
+        [mode isModeKey:kModeRhoRhoLocating] ||
+        [mode isModeKey:kModeThetaThetaLocating] ||
+        [mode isModeKey:kModeThetaThetaModelling]
         
         ) {
-        NSLog(@"[ERROR][RT] Rho theta type system called when in an other mode.");
+        NSLog(@"[ERROR][RT] Rho theta type system called when in %@ mode.", mode);
     }
     
     NSLog(@"[INFO][RT] Finish Radiolocating beacons.");

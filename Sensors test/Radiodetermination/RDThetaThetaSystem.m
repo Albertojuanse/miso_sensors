@@ -112,10 +112,10 @@
     NSMutableDictionary * locatedPositions = [[NSMutableDictionary alloc] init];
     
     // Different behaviour depending on location mode
-    NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
-                                                      andCredentialsUserDic:credentialsUserDic];
+    MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                    andCredentialsUserDic:credentialsUserDic];
     /*
-    if ([mode isEqualToString:@"THETA_THETA_MODELING"]) {
+    if ([mode isModeKey:kModeThetaThetaModelling]) {
     
         // In theta theta based systems each UUID represents a position that must be located using the headings measures against to it, and so, for every one of them a RDPosition would be found.
         
@@ -356,7 +356,7 @@
     }
     */
     
-    if ([mode isEqualToString:@"THETA_THETA_LOCATING"]) {
+    if ([mode isModeKey:kModeThetaThetaLocating]) {
         
         // In theta theta locating systems each UUID represents an item that the user aims to measure the header against it. Using those measures the device position must be located.
         
@@ -584,10 +584,10 @@
         
         // If not a theta theta type system
         if (
-            [mode isEqualToString:@"RHO_RHO_MODELING"] ||
-            [mode isEqualToString:@"RHO_THETA_MODELING"] ||
-            [mode isEqualToString:@"RHO_RHO_LOCATING"] ||
-            [mode isEqualToString:@"RHO_THETA_LOCATING"]
+            [mode isModeKey:kModeRhoRhoModelling] ||
+            [mode isModeKey:kModeRhoThetaModelling] ||
+            [mode isModeKey:kModeRhoRhoLocating] ||
+            [mode isModeKey:kModeRhoThetaLocating]
             ) {
             NSLog(@"[ERROR][TT] Theta theta type system called when in a theta theta mode.");
         }

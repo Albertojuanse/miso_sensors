@@ -224,8 +224,8 @@
     NSMutableDictionary * locatedPositions = [[NSMutableDictionary alloc] init];
     
     // Different behaviour depending on location mode
-    NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
-    if ([mode isEqualToString:@"RHO_RHO_MODELING"]) {
+    MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
+    if ([mode isModeKey:kModeRhoRhoModelling]) {
         
         // In a modeling mode the items must be located using the measures taken by the device or devices. That implies that, each UUID groups the measures taken from a certain beacon and so, for every one of them a RDPosition would be found.
         
@@ -352,7 +352,7 @@
             }
         }
     }
-    if ([mode isEqualToString:@"RHO_RHO_LOCATING"]) {
+    if ([mode isModeKey:kModeRhoRhoLocating]) {
         
         // In a locating mode the device must be located using the measures from items. That implies that, each UUID groups the measures taken from a certain beacon and the device position must be calculed using all of them.
         
@@ -491,10 +491,10 @@
 
     // If not a rho rho type system
     if (
-        [mode isEqualToString:@"THETA_THETA_MODELING"] ||
-        [mode isEqualToString:@"RHO_THETA_MODELING"] ||
-        [mode isEqualToString:@"THETA_THETA_LOCATING"] ||
-        [mode isEqualToString:@"RHO_THETA_LOCATING"]
+        [mode isModeKey:kModeThetaThetaModelling] ||
+        [mode isModeKey:kModeRhoThetaModelling] ||
+        [mode isModeKey:kModeThetaThetaLocating] ||
+        [mode isModeKey:kModeRhoThetaLocating]
         ) {
         NSLog(@"[ERROR][RR] Theta type system called when in a rho rho mode.");
     }

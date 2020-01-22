@@ -988,13 +988,13 @@
         // Different behave depending on the mode
             
         // Get the measuring mode
-        NSString * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
-                                                          andCredentialsUserDic:credentialsUserDic];
+        MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                        andCredentialsUserDic:credentialsUserDic];
         
         // If a rho type system which needs ranging
         if (
-            [mode isEqualToString:@"RHO_RHO_MODELING"] ||
-            [mode isEqualToString:@"RHO_RHO_LOCATING"]
+            [mode isModeKey:kModeRhoRhoModelling] ||
+            [mode isModeKey:kModeRhoRhoLocating]
             )
         {
             // Do nothing
@@ -1004,8 +1004,8 @@
         
         // If a rho theta type system;
         if (
-            [mode isEqualToString:@"RHO_THETA_MODELING"] ||
-            [mode isEqualToString:@"RHO_THETA_LOCATING"]
+            [mode isModeKey:kModeRhoThetaModelling] ||
+            [mode isModeKey:kModeRhoThetaLocating]
             )
         {
             // TO DO: Alberto J. 2019/10/15.
@@ -1013,8 +1013,8 @@
         
         // If a theta theta type system; it is supposed that in this case gyroscopes are used to get the heading
         if (
-            [mode isEqualToString:@"THETA_THETA_MODELING"] ||
-            [mode isEqualToString:@"THETA_THETA_LOCATING"]
+            [mode isModeKey:kModeThetaThetaModelling] ||
+            [mode isModeKey:kModeThetaThetaLocating]
             )
         {
             // Calculate the measure
