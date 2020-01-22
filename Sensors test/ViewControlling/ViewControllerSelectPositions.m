@@ -146,7 +146,7 @@
         }
         if ([mode isModeKey:kModeRhoRhoLocating]) {
             NSLog(@"[INFO][VCSP] Chosen mode is kModeRhoRhoLocating.");
-            // [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_RHO_LOCATING" sender:sender];
+            [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_RHO_LOCATING" sender:sender];
             return;
         }
         if ([mode isModeKey:kModeRhoThetaLocating]) {
@@ -220,6 +220,18 @@
         [viewControllerMonitoring setSharedData:sharedData];
         [viewControllerMonitoring setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerMonitoring setItemPositionIdNumber:itemPositionIdNumber];
+        
+    }
+    if ([[segue identifier] isEqualToString:@"fromSelectPositionsToRHO_RHO_LOCATING"]) {
+        
+        // Get destination view
+        ViewControllerRhoRhoLocating * viewControllerRhoRhoLocating = [segue destinationViewController];
+        // Set the variables
+        [viewControllerRhoRhoLocating setCredentialsUserDic:credentialsUserDic];
+        [viewControllerRhoRhoLocating setUserDic:userDic];
+        [viewControllerRhoRhoLocating setSharedData:sharedData];
+        [viewControllerRhoRhoLocating setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerRhoRhoLocating setItemPositionIdNumber:itemPositionIdNumber];
         
     }
     if ([[segue identifier] isEqualToString:@"fromSelectPositionsToTHETA_THETA_LOCATING"]) {

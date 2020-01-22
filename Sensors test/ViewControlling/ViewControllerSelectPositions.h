@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "ViewControllerMonitoring.h"
 #import "ViewControllerThetaThetaLocating.h"
+#import "ViewControllerRhoRhoLocating.h"
 #import "ViewControllerRhoThetaModeling.h"
 #import "ViewControllerMainMenu.h"
 
