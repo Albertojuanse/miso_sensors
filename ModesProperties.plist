@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>kModeMonitoring</key>
+	<string>Monitorig</string>
+	<key>kModeRhoRhoModelling</key>
+	<string>Locate others using iBeacon</string>
+	<key>kModeRhoThetaModelling</key>
+	<string>Locate others using iBeacon and brújula</string>
+	<key>kModeThetaThetaModelling</key>
+	<string>Locate others using compass</string>
+	<key>kModeRhoRhoLocating</key>
+	<string>Self locate using iBeacon</string>
+	<key>kModeRhoThetaLocating</key>
+	<string>Self locate using iBeacon and brújula</string>
+	<key>kModeThetaThetaLocating</key>
+	<string>Self locate using compass</string>
+	<key>kModeGPSSelfLocating</key>
+	<string>Self locate using GPS</string>
+	<key>kModeCompassSelfLocating</key>
+	<string>Self heading using compass</string>
+	<key>kModesCount</key>
+	<string></string>
+</dict>
+</plist>
