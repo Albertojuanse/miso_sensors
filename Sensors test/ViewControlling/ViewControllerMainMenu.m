@@ -665,22 +665,34 @@
                 [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:userDic];
-                [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+                return;
+                // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
             if ([chosenMode isModeKey:kModeRhoThetaModelling]) { // RHO_THETA_MODELING
+                [sharedData inSessionDataSetMode:chosenMode
+                               toUserWithUserDic:userDic
+                           andCredentialsUserDic:userDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
             if ([chosenMode isModeKey:kModeThetaThetaModelling]) { // THETA_THETA_MODELING
-                return;
-                // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+                [sharedData inSessionDataSetMode:chosenMode
+                               toUserWithUserDic:userDic
+                           andCredentialsUserDic:userDic];
+                [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
             if ([chosenMode isModeKey:kModeRhoRhoLocating]) { // RHO_RHO_LOCATING
-                return;
+                [sharedData inSessionDataSetMode:chosenMode
+                               toUserWithUserDic:userDic
+                           andCredentialsUserDic:userDic];
                 // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+                return;
             }
             if ([chosenMode isModeKey:kModeRhoThetaLocating]) { // RHO_THETA_LOCATING
-                return;
+                [sharedData inSessionDataSetMode:chosenMode
+                               toUserWithUserDic:userDic
+                           andCredentialsUserDic:userDic];
                 // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+                return;
             }
             if ([chosenMode isModeKey:kModeThetaThetaLocating]) { // THETA_THETA_LOCATING
                 [sharedData inSessionDataSetMode:chosenMode
