@@ -4,5 +4,13 @@
 <dict>
 	<key>general/name</key>
 	<string>Metaphore</string>
+	<key>navbar/height</key>
+	<integer>100</integer>
+	<key>navbar/red</key>
+	<integer>45</integer>
+	<key>navbar/green</key>
+	<integer>80</integer>
+	<key>navbar/blue</key>
+	<integer>111</integer>
 </dict>
 </plist>

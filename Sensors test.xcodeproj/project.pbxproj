@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		421550EF23D9B67F00945294 /* PListLayout.plist in Resources */ = {isa = PBXBuildFile; fileRef = 421550EE23D9B67F00945294 /* PListLayout.plist */; };
 		421550F223D9BA5500945294 /* ViewControllerConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 421550F123D9BA5500945294 /* ViewControllerConfiguration.m */; };
+		421550F823D9F3AB00945294 /* VCToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 421550F723D9F3AB00945294 /* VCToolbar.m */; };
+		421550FA23DA0D8700945294 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 421550F923DA0D8600945294 /* icon.png */; };
 		421FCEB922CF5C8E00C62E5E /* miso.png in Resources */ = {isa = PBXBuildFile; fileRef = 421FCEB822CF5C8E00C62E5E /* miso.png */; };
 		4227338B23D0BB6B00F79364 /* LMDelegateMonitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227338A23D0BB6B00F79364 /* LMDelegateMonitoring.m */; };
 		422798852271F37800E07C39 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798842271F37800E07C39 /* AppDelegate.m */; };
@@ -59,6 +61,9 @@
 		421550EE23D9B67F00945294 /* PListLayout.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PListLayout.plist; sourceTree = "<group>"; };
 		421550F023D9BA3900945294 /* ViewControllerConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerConfiguration.h; sourceTree = "<group>"; };
 		421550F123D9BA5500945294 /* ViewControllerConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerConfiguration.m; sourceTree = "<group>"; };
+		421550F623D9F39900945294 /* VCToolbar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCToolbar.h; sourceTree = "<group>"; };
+		421550F723D9F3AB00945294 /* VCToolbar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCToolbar.m; sourceTree = "<group>"; };
+		421550F923DA0D8600945294 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		421FCEB822CF5C8E00C62E5E /* miso.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = miso.png; sourceTree = "<group>"; };
 		4227338923D0BB5500F79364 /* LMDelegateMonitoring.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateMonitoring.h; sourceTree = "<group>"; };
 		4227338A23D0BB6B00F79364 /* LMDelegateMonitoring.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateMonitoring.m; sourceTree = "<group>"; };
@@ -190,6 +195,7 @@
 				4227988C2271F37800E07C39 /* Assets.xcassets */,
 				422798912271F37800E07C39 /* Info.plist */,
 				422798922271F37800E07C39 /* main.m */,
+				421550F923DA0D8600945294 /* icon.png */,
 				421FCEB822CF5C8E00C62E5E /* miso.png */,
 				42F07CCE2359C85000134FFA /* SDPersistantMutableDictionary.h */,
 				42F07CCF2359C86E00134FFA /* SDPersistantMutableDictionary.m */,
@@ -253,6 +259,8 @@
 				42300BDA2330E03000E2385F /* VCPosition.m */,
 				42673B9E234336D4004E46A8 /* VCType.h */,
 				42673B9F234336E3004E46A8 /* VCType.m */,
+				421550F623D9F39900945294 /* VCToolbar.h */,
+				421550F723D9F3AB00945294 /* VCToolbar.m */,
 			);
 			path = ViewControlling;
 			sourceTree = "<group>";
@@ -375,6 +383,7 @@
 			files = (
 				422798902271F37800E07C39 /* LaunchScreen.storyboard in Resources */,
 				421550EF23D9B67F00945294 /* PListLayout.plist in Resources */,
+				421550FA23DA0D8700945294 /* icon.png in Resources */,
 				4227988D2271F37800E07C39 /* Assets.xcassets in Resources */,
 				4227988B2271F37800E07C39 /* Main.storyboard in Resources */,
 				421FCEB922CF5C8E00C62E5E /* miso.png in Resources */,
@@ -400,6 +409,7 @@
 				422798882271F37800E07C39 /* ViewControllerRhoRhoModeling.m in Sources */,
 				425124292320F3840096D0A8 /* ViewControllerLogin.m in Sources */,
 				424F576B234C9D1D00826B27 /* ViewControllerFinalModel.m in Sources */,
+				421550F823D9F3AB00945294 /* VCToolbar.m in Sources */,
 				4255A9FA23D21B5D008DDB9F /* MDMode.m in Sources */,
 				42E4B7E523D8BCDD003888C0 /* MDRoutine.m in Sources */,
 				4242F6C722CBA7C600C4B0B7 /* Adder.m in Sources */,

@@ -921,31 +921,31 @@
     UIColor *color;
     switch (index % 8) {
         case 0:
-            color = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
+            color = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:1.0];
             break;
         case 1:
-            color = [UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:0.2];
+            color = [UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:1.0];
             break;
         case 2:
-            color = [UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:0.2];
+            color = [UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:1.0];
             break;
         case 3:
-            color = [UIColor colorWithRed:127.0/255.0 green:128.0/255.0 blue:0.0 alpha:0.2];
+            color = [UIColor colorWithRed:127.0/255.0 green:128.0/255.0 blue:0.0 alpha:1.0];
             break;
         case 4:
-            color = [UIColor colorWithRed:127.0/255.0 green:0.0 blue:128.0/255.0 alpha:0.2];
+            color = [UIColor colorWithRed:127.0/255.0 green:0.0 blue:128.0/255.0 alpha:1.0];
             break;
         case 5:
-            color = [UIColor colorWithRed:0.0 green:127.0/255.0 blue:128.0/255.0 alpha:0.2];
+            color = [UIColor colorWithRed:0.0 green:127.0/255.0 blue:128.0/255.0 alpha:1.0];
             break;
         case 6:
-            color = [UIColor colorWithRed:127.0/255.0 green:64.0 blue:64.0 alpha:0.2];
+            color = [UIColor colorWithRed:127.0/255.0 green:64.0 blue:64.0 alpha:1.0];
             break;
         case 7:
-            color = [UIColor colorWithRed:64.0 green:127.0/255.0 blue:64.0 alpha:0.2];
+            color = [UIColor colorWithRed:64.0 green:127.0/255.0 blue:64.0 alpha:1.0];
             break;
         default:
-            color = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:0.2];
+            color = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:1.0];
             break;
     }
     return color;
