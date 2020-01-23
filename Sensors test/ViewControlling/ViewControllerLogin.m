@@ -234,6 +234,14 @@
 }
 
 /*!
+ @method handleButtonConfiguration:
+ @discussion This method handles the 'configuration' button action and segues to that view.
+ */
+- (IBAction)handleButtonConfiguration:(id)sender {
+    [self performSegueWithIdentifier:@"fromLoginToConfiguration" sender:sender];
+}
+
+/*!
  @method isAnyUserRegistered
  @discussion This method checks if there is any user registered.
  */
@@ -306,8 +314,6 @@
         return NO;
     }
 }
-
-
 
 /*!
  @method validateCredentialsUserDic:
@@ -446,6 +452,14 @@
         // Set the variable
         [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
         [viewControllerMainMenu setUserDic:userDic];
+    }
+    if ([[segue identifier] isEqualToString:@"fromLoginToConfiguration"]) {
+        
+        // Get destination view
+        ViewControllerConfiguration * viewControllerConfiguration = [segue destinationViewController];
+        // Set the variable
+        [viewControllerConfiguration setCredentialsUserDic:credentialsUserDic];
+        [viewControllerConfiguration setUserDic:userDic];
     }
 }
 

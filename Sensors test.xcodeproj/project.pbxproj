@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		421550EF23D9B67F00945294 /* PListLayout.plist in Resources */ = {isa = PBXBuildFile; fileRef = 421550EE23D9B67F00945294 /* PListLayout.plist */; };
+		421550F223D9BA5500945294 /* ViewControllerConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 421550F123D9BA5500945294 /* ViewControllerConfiguration.m */; };
 		421FCEB922CF5C8E00C62E5E /* miso.png in Resources */ = {isa = PBXBuildFile; fileRef = 421FCEB822CF5C8E00C62E5E /* miso.png */; };
 		4227338B23D0BB6B00F79364 /* LMDelegateMonitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227338A23D0BB6B00F79364 /* LMDelegateMonitoring.m */; };
 		422798852271F37800E07C39 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798842271F37800E07C39 /* AppDelegate.m */; };
@@ -54,6 +56,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		421550EE23D9B67F00945294 /* PListLayout.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PListLayout.plist; sourceTree = "<group>"; };
+		421550F023D9BA3900945294 /* ViewControllerConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerConfiguration.h; sourceTree = "<group>"; };
+		421550F123D9BA5500945294 /* ViewControllerConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerConfiguration.m; sourceTree = "<group>"; };
 		421FCEB822CF5C8E00C62E5E /* miso.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = miso.png; sourceTree = "<group>"; };
 		4227338923D0BB5500F79364 /* LMDelegateMonitoring.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateMonitoring.h; sourceTree = "<group>"; };
 		4227338A23D0BB6B00F79364 /* LMDelegateMonitoring.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateMonitoring.m; sourceTree = "<group>"; };
@@ -155,6 +160,7 @@
 		422798772271F37800E07C39 = {
 			isa = PBXGroup;
 			children = (
+				421550EE23D9B67F00945294 /* PListLayout.plist */,
 				422798822271F37800E07C39 /* Sensors test */,
 				422798812271F37800E07C39 /* Products */,
 			);
@@ -217,6 +223,8 @@
 				4227988E2271F37800E07C39 /* LaunchScreen.storyboard */,
 				425124272320F35B0096D0A8 /* ViewControllerLogin.h */,
 				425124282320F3840096D0A8 /* ViewControllerLogin.m */,
+				421550F023D9BA3900945294 /* ViewControllerConfiguration.h */,
+				421550F123D9BA5500945294 /* ViewControllerConfiguration.m */,
 				4295FB2322D35D8D0024B155 /* ViewControllerMainMenu.h */,
 				4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */,
 				4295FB2422D360930024B155 /* ViewControllerAddBeaconMenu.h */,
@@ -366,6 +374,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				422798902271F37800E07C39 /* LaunchScreen.storyboard in Resources */,
+				421550EF23D9B67F00945294 /* PListLayout.plist in Resources */,
 				4227988D2271F37800E07C39 /* Assets.xcassets in Resources */,
 				4227988B2271F37800E07C39 /* Main.storyboard in Resources */,
 				421FCEB922CF5C8E00C62E5E /* miso.png in Resources */,
@@ -407,6 +416,7 @@
 				42B676F123D5E972005E3CBD /* LMDelegateRhoThetaModelling.m in Sources */,
 				42364B27236AE0BA00C387E5 /* MDReference.m in Sources */,
 				42300BDB2330E03000E2385F /* VCPosition.m in Sources */,
+				421550F223D9BA5500945294 /* ViewControllerConfiguration.m in Sources */,
 				429093E023AA4B3C000CEA6E /* ViewControllerMonitoring.m in Sources */,
 				426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */,
 				4242F6CB22CBACAB00C4B0B7 /* Averager.m in Sources */,
