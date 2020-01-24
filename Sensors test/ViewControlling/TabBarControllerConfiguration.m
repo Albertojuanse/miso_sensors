@@ -23,21 +23,9 @@
     // Get views instances
     NSArray * viewControllers = [self viewControllers];
     for (UIViewController * view in viewControllers) {
+        
+        // Depending on the view, pass different variables or set a different tab icon
         NSString * viewClass = NSStringFromClass([view class]);
-        if ([viewClass containsString:@"Modes"]){
-            viewControllerConfigurationModes = (ViewControllerConfigurationModes*)view;
-            
-            // Pass the variables as in segues
-            [viewControllerConfigurationModes setUserDic:userDic];
-            [viewControllerConfigurationModes setCredentialsUserDic:credentialsUserDic];
-            
-            // Configure the tab icon
-            UITabBarItem * modesTabBarItem = [[UITabBarItem alloc] initWithTitle:nil
-                                                                           image:[UIImage imageNamed:@"routine.png"]
-                                                                             tag:1];
-            [viewControllerConfigurationModes setTabBarItem:modesTabBarItem];
-            
-        }
         if ([viewClass containsString:@"Metamodels"]){
             viewControllerConfigurationMetamodels = (ViewControllerConfigurationMetamodels*)view;
             
@@ -48,9 +36,24 @@
             // Configure the tab icon
             UITabBarItem * metamodelTabBarItem = [[UITabBarItem alloc] initWithTitle:nil
                                                                                image:[UIImage imageNamed:@"metamodel.png"]
-                                                                                 tag:2];
+                                                                                 tag:1];
             [viewControllerConfigurationMetamodels setTabBarItem:metamodelTabBarItem];
         }
+        if ([viewClass containsString:@"Modes"]){
+            viewControllerConfigurationModes = (ViewControllerConfigurationModes*)view;
+            
+            // Pass the variables as in segues
+            [viewControllerConfigurationModes setUserDic:userDic];
+            [viewControllerConfigurationModes setCredentialsUserDic:credentialsUserDic];
+            
+            // Configure the tab icon
+            UITabBarItem * modesTabBarItem = [[UITabBarItem alloc] initWithTitle:nil
+                                                                           image:[UIImage imageNamed:@"routine.png"]
+                                                                             tag:2];
+            [viewControllerConfigurationModes setTabBarItem:modesTabBarItem];
+            
+        }
+        
     }
 }
 
