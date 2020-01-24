@@ -67,7 +67,8 @@
                                 <rect key="frame" x="642" y="962" width="94" height="30"/>
                                 <state key="normal" title="Configuration"/>
                                 <connections>
-                                    <action selector="handleButtonConfiguration:" destination="QfP-rI-9YT" eventType="touchUpInside" id="WVY-6w-9rb"/>
+                                    <action selector="handleButtonConfiguration:" destination="QfP-rI-9YT" eventType="touchUpInside" id="PTz-IW-8hO"/>
+                                    <segue destination="5aU-1v-1Om" kind="show" identifier="fromLoginToConfiguration" id="JR8-v9-FfP"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -105,44 +106,11 @@
                         <outlet property="passText" destination="qVE-ED-hWC" id="42Z-va-IDg"/>
                         <outlet property="userText" destination="KNS-bu-BhY" id="zGO-vd-HRa"/>
                         <segue destination="lVP-jp-YaV" kind="show" identifier="loginFromLoginToMain" id="jUo-Ud-pm0"/>
-                        <segue destination="Yib-zM-HxQ" kind="show" identifier="fromLoginToConfiguration" id="BFf-9j-YRY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Eze-I4-Kxx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1754" y="24"/>
-        </scene>
-        <!--View Controller Configuration-->
-        <scene sceneID="hRB-TP-6bA">
-            <objects>
-                <viewController id="Yib-zM-HxQ" customClass="ViewControllerConfiguration" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="H7c-2h-jYx">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BW8-Rc-8Ax" customClass="VCToolbar">
-                                <rect key="frame" x="0.0" y="0.0" width="768" height="60"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="60" id="CbI-lw-fzi"/>
-                                </constraints>
-                            </view>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="BW8-Rc-8Ax" firstAttribute="trailing" secondItem="HKf-wB-G2X" secondAttribute="trailing" id="3I8-MA-qvw"/>
-                            <constraint firstItem="BW8-Rc-8Ax" firstAttribute="top" secondItem="H7c-2h-jYx" secondAttribute="top" id="4uI-VX-Rhi"/>
-                            <constraint firstItem="BW8-Rc-8Ax" firstAttribute="leading" secondItem="HKf-wB-G2X" secondAttribute="leading" id="yaR-cw-pQ2"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="HKf-wB-G2X"/>
-                    </view>
-                    <connections>
-                        <segue destination="QfP-rI-9YT" kind="show" identifier="fromConfigurationToLogin" id="mEA-po-uaY"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="4Ws-rL-1Ry" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-1755.46875" y="793.9453125"/>
         </scene>
         <!--View Controller Main Menu-->
         <scene sceneID="lCf-Dm-cIw">
@@ -284,6 +252,86 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WTd-at-ldf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-777.34375" y="24.609375"/>
+        </scene>
+        <!--Item-->
+        <scene sceneID="0lB-o6-0Kf">
+            <objects>
+                <viewController id="PUF-Vd-cEJ" customClass="ViewControllerConfigurationModes" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="smN-xc-zMR">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label 1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IK3-4N-sbD">
+                                <rect key="frame" x="406" y="301" width="109" height="45"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l2D-sl-NxG" customClass="VCToolbar">
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="60"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="dmz-gd-3p6"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="l2D-sl-NxG" firstAttribute="trailing" secondItem="8eN-SV-Ypc" secondAttribute="trailing" id="4B4-0e-iec"/>
+                            <constraint firstItem="l2D-sl-NxG" firstAttribute="leading" secondItem="8eN-SV-Ypc" secondAttribute="leading" id="OFS-u5-BYi"/>
+                            <constraint firstItem="l2D-sl-NxG" firstAttribute="top" secondItem="smN-xc-zMR" secondAttribute="top" id="gak-sM-php"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="8eN-SV-Ypc"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Item" id="AAF-KM-5Gt"/>
+                    <connections>
+                        <outlet property="toolbar" destination="l2D-sl-NxG" id="u6O-OE-okl"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1V6-WN-BlQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2155.46875" y="1735.546875"/>
+        </scene>
+        <!--Item-->
+        <scene sceneID="AGz-dH-Q4l">
+            <objects>
+                <viewController id="mqL-qo-A1i" customClass="ViewControllerConfigurationMetamodels" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="IV5-WW-YoS">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label 2" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RjA-DE-tcK">
+                                <rect key="frame" x="325" y="316" width="109" height="45"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xyw-aX-LoV" customClass="VCToolbar">
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="60"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="KM5-1e-x9q"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="xyw-aX-LoV" firstAttribute="leading" secondItem="SPj-Kh-vP0" secondAttribute="leading" id="1DA-Tr-kMp"/>
+                            <constraint firstItem="xyw-aX-LoV" firstAttribute="top" secondItem="IV5-WW-YoS" secondAttribute="top" id="cBu-Lr-VbJ"/>
+                            <constraint firstItem="xyw-aX-LoV" firstAttribute="trailing" secondItem="SPj-Kh-vP0" secondAttribute="trailing" id="hru-cE-C84"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="SPj-Kh-vP0"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Item" id="VBU-0d-qGS"/>
+                    <connections>
+                        <outlet property="toolbar" destination="xyw-aX-LoV" id="Bpl-xj-aml"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Don-5U-Fst" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1348.4375" y="1735.546875"/>
         </scene>
         <!--View Controller Add Beacon Menu-->
         <scene sceneID="7FD-gP-vw4">
@@ -681,7 +729,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tgg-1Q-QhH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-777" y="794"/>
+            <point key="canvasLocation" x="-611.71875" y="793.9453125"/>
         </scene>
         <!--View Controller Select Positions-->
         <scene sceneID="x5T-83-M4m">
@@ -771,7 +819,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ewG-5j-Hqc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="33" y="794"/>
+            <point key="canvasLocation" x="198.4375" y="793.9453125"/>
         </scene>
         <!--View Controller Rho Theta Modeling-->
         <scene sceneID="J6u-go-mjX">
@@ -1522,6 +1570,24 @@
             </objects>
             <point key="canvasLocation" x="761" y="25"/>
         </scene>
+        <!--Tab Bar Configuration-->
+        <scene sceneID="KYf-OO-B9P">
+            <objects>
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="5aU-1v-1Om" customClass="TabBarConfiguration" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="dIc-RW-48h">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="mqL-qo-A1i" kind="relationship" relationship="viewControllers" id="WRp-Xi-vMd"/>
+                        <segue destination="PUF-Vd-cEJ" kind="relationship" relationship="viewControllers" id="kel-Dc-TeQ"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uzt-OR-bAx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1755" y="794"/>
+        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="GXt-pt-FwK"/>
@@ -1529,6 +1595,5 @@
         <segue reference="A3y-43-nSw"/>
         <segue reference="ARI-Cn-mJV"/>
         <segue reference="jUo-Ud-pm0"/>
-        <segue reference="mEA-po-uaY"/>
     </inferredMetricsTieBreakers>
 </document>

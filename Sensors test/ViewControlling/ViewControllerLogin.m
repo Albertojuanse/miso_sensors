@@ -38,6 +38,7 @@
         credentialsUserDic = nil;
     }
     credentialsUserDicArray = [[NSMutableArray alloc] init];
+    test = @"Test string";
 }
 
 /*!
@@ -456,10 +457,11 @@
     if ([[segue identifier] isEqualToString:@"fromLoginToConfiguration"]) {
         
         // Get destination view
-        ViewControllerConfiguration * viewControllerConfiguration = [segue destinationViewController];
+        TabBarConfiguration * tabBarConfiguration = [segue destinationViewController];
         // Set the variable
-        [viewControllerConfiguration setCredentialsUserDic:credentialsUserDic];
-        [viewControllerConfiguration setUserDic:userDic];
+        [tabBarConfiguration setCredentialsUserDic:credentialsUserDic];
+        [tabBarConfiguration setUserDic:userDic];
+        [tabBarConfiguration setTest:test];
     }
 }
 

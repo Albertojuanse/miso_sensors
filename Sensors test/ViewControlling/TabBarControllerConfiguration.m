@@ -1,33 +1,24 @@
 //
-//  ViewControllerConfiguration.m
+//  TabBarControllerConfiguration.m
 //  Sensors test
 //
-//  Created by Alberto J. on 23/1/20.
+//  Created by Alberto J. on 24/1/20.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 
-#import "ViewControllerConfiguration.h"
+#import "TabBarControllerConfiguration.h"
 
-@implementation ViewControllerConfiguration
+@implementation TabBarConfiguration
 
 #pragma mark - UIViewController delegated methods
-
 /*!
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
  */
 - (void)viewDidLoad
 {
-    
-}
-
-/*!
- @method viewDidAppear:
- @discussion This method notifies the view controller that its view was added to a view hierarchy.
- */
-- (void)viewDidAppear:(BOOL)animated
-{
-    
+    // Set this class as the delegated one to handle tab's events
+    self.delegate = self;
 }
 
 /*!
@@ -41,7 +32,6 @@
 }
 
 #pragma mark - Instance methods
-
 /*!
  @method setCredentialsUserDic:
  @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
@@ -60,24 +50,26 @@
     userDic = givenUserDic;
 }
 
-#pragma mark - Button events handlers
-
 /*!
- @method prepareForSegue:sender:
- @discussion This method is called before any segue and it is used for pass other views variables.
+ @method setTest:
+ @discussion This method sets the NSMutableDictionary with the identifying purposes user credentials.
  */
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void) setTest:(NSString *)givenTest
 {
-    NSLog(@"[INFO][VCL] Asked segue %@", [segue identifier]);
-    if ([[segue identifier] isEqualToString:@"fromConfigurationToLogin"]) {
-        
-        // Get destination view
-        ViewControllerLogin * viewControllerLogin = [segue destinationViewController];
-        // Set the variable
-        [viewControllerLogin setCredentialsUserDic:credentialsUserDic];
-        [viewControllerLogin setUserDic:userDic];
-    }
+    test = givenTest;
 }
 
-@end
+#pragma mark - UITabBarControllerDelegate delegated methods
 
+/*!
+ @method tabBarController:didSelectViewController:
+ @discussion This method handles the event of selecting a tab.
+ */
+- (void)tabBarController:(UITabBarController *)tabBarController
+ didSelectViewController:(UIViewController *)viewController
+{
+    
+}
+
+
+@end

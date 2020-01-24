@@ -12,14 +12,14 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    NSLog(@"[HOLA]");
     // Layout
+    // TO DO: This is not working. Alberto J. 2020/01/23.
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
     self.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
                                            green:[layoutDic[@"navbar/green"] floatValue]/255.0
                                             blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                           alpha:1.0
+                                           alpha:0.5
                             ];
     
     // Tittle
