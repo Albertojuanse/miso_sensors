@@ -18,6 +18,7 @@
  */
 - (void)viewDidLoad
 {
+    // Toolbar layout
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
     self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
@@ -64,15 +65,6 @@
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic
 {
     userDic = givenUserDic;
-}
-
-/*!
- @method setTest:
- @discussion This method sets the NSMutableDictionary with the identifying purposes user credentials.
- */
-- (void) setTest:(NSString *)givenTest
-{
-    test = givenTest;
 }
 
 @end

@@ -18,6 +18,7 @@
  */
 - (void)viewDidLoad
 {
+    // Toolbar layout
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
     self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
@@ -72,7 +73,7 @@
  */
 - (void) setTest:(NSString *)givenTest
 {
-    test = givenTest;
+    
 }
 
 @end

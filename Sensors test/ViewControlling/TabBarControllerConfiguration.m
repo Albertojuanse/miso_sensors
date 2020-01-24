@@ -19,6 +19,24 @@
 {
     // Set this class as the delegated one to handle tab's events
     self.delegate = self;
+    
+    // Get views instances
+    NSArray * viewControllers = [self viewControllers];
+    for (UIViewController * view in viewControllers) {
+        NSString * viewClass = NSStringFromClass([view class]);
+        if ([viewClass containsString:@"Modes"]){
+            viewControllerConfigurationModes = (ViewControllerConfigurationModes*)view;
+            // Pass the variables as in segues
+            [viewControllerConfigurationModes setUserDic:userDic];
+            [viewControllerConfigurationModes setCredentialsUserDic:credentialsUserDic];
+        }
+        if ([viewClass containsString:@"Metamodels"]){
+            viewControllerConfigurationMetamodels = (ViewControllerConfigurationMetamodels*)view;
+            // Pass the variables as in segues
+            [viewControllerConfigurationMetamodels setUserDic:userDic];
+            [viewControllerConfigurationMetamodels setCredentialsUserDic:credentialsUserDic];
+        }
+    }
 }
 
 /*!
@@ -50,26 +68,19 @@
     userDic = givenUserDic;
 }
 
-/*!
- @method setTest:
- @discussion This method sets the NSMutableDictionary with the identifying purposes user credentials.
- */
-- (void) setTest:(NSString *)givenTest
-{
-    test = givenTest;
-}
-
 #pragma mark - UITabBarControllerDelegate delegated methods
 
 /*!
  @method tabBarController:didSelectViewController:
- @discussion This method handles the event of selecting a tab.
+ @discussion This method handles the event of changing between tabs.
  */
 - (void)tabBarController:(UITabBarController *)tabBarController
  didSelectViewController:(UIViewController *)viewController
 {
-    
+    if (viewController == viewControllerConfigurationModes) {
+    }
+    if (viewController == viewControllerConfigurationMetamodels) {
+    }
 }
-
 
 @end

@@ -38,7 +38,6 @@
         credentialsUserDic = nil;
     }
     credentialsUserDicArray = [[NSMutableArray alloc] init];
-    test = @"Test string";
 }
 
 /*!
@@ -461,7 +460,6 @@
         // Set the variable
         [tabBarConfiguration setCredentialsUserDic:credentialsUserDic];
         [tabBarConfiguration setUserDic:userDic];
-        [tabBarConfiguration setTest:test];
     }
 }
 
