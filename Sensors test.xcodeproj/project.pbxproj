@@ -50,6 +50,8 @@
 		42B676F423D60809005E3CBD /* ViewControllerModellingRhoThetaModeling.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B676F323D60809005E3CBD /* ViewControllerModellingRhoThetaModeling.m */; };
 		42BE9E9F23DB0922002D08FA /* TabBarControllerConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BE9E9E23DB0922002D08FA /* TabBarControllerConfiguration.m */; };
 		42BE9EA223DB0BD2002D08FA /* ViewControllerConfigurationMetamodels.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BE9EA123DB0BD2002D08FA /* ViewControllerConfigurationMetamodels.m */; };
+		42BE9EA923DB55BD002D08FA /* metamodel.png in Resources */ = {isa = PBXBuildFile; fileRef = 42BE9EA823DB55BD002D08FA /* metamodel.png */; };
+		42BE9EAB23DB5903002D08FA /* routine.png in Resources */ = {isa = PBXBuildFile; fileRef = 42BE9EAA23DB5903002D08FA /* routine.png */; };
 		42CEBE2E234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */; };
 		42E4B7E523D8BCDD003888C0 /* MDRoutine.m in Sources */ = {isa = PBXBuildFile; fileRef = 42E4B7E423D8BCDD003888C0 /* MDRoutine.m */; };
 		42E4B7E823D8BE03003888C0 /* MDMetamodel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42E4B7E723D8BE03003888C0 /* MDMetamodel.m */; };
@@ -141,6 +143,8 @@
 		42BE9E9E23DB0922002D08FA /* TabBarControllerConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TabBarControllerConfiguration.m; sourceTree = "<group>"; };
 		42BE9EA023DB0BC4002D08FA /* ViewControllerConfigurationMetamodels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerConfigurationMetamodels.h; sourceTree = "<group>"; };
 		42BE9EA123DB0BD2002D08FA /* ViewControllerConfigurationMetamodels.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerConfigurationMetamodels.m; sourceTree = "<group>"; };
+		42BE9EA823DB55BD002D08FA /* metamodel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = metamodel.png; sourceTree = "<group>"; };
+		42BE9EAA23DB5903002D08FA /* routine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = routine.png; sourceTree = "<group>"; };
 		42CEBE2C2345009D0094B1BA /* ViewControllerModelingThetaThetaLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerModelingThetaThetaLocating.h; sourceTree = "<group>"; };
 		42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerModelingThetaThetaLocating.m; sourceTree = "<group>"; };
 		42E4B7E323D8BCBD003888C0 /* MDRoutine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDRoutine.h; sourceTree = "<group>"; };
@@ -231,6 +235,7 @@
 		426501B722A0393100BE20B7 /* ViewControlling */ = {
 			isa = PBXGroup;
 			children = (
+				42BE9EA323DB5117002D08FA /* Images */,
 				422798892271F37800E07C39 /* Main.storyboard */,
 				4227988E2271F37800E07C39 /* LaunchScreen.storyboard */,
 				425124272320F35B0096D0A8 /* ViewControllerLogin.h */,
@@ -333,6 +338,15 @@
 			path = SignalProcessing;
 			sourceTree = "<group>";
 		};
+		42BE9EA323DB5117002D08FA /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				42BE9EAA23DB5903002D08FA /* routine.png */,
+				42BE9EA823DB55BD002D08FA /* metamodel.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -395,8 +409,10 @@
 				421550EF23D9B67F00945294 /* PListLayout.plist in Resources */,
 				421550FA23DA0D8700945294 /* icon.png in Resources */,
 				4227988D2271F37800E07C39 /* Assets.xcassets in Resources */,
+				42BE9EAB23DB5903002D08FA /* routine.png in Resources */,
 				4227988B2271F37800E07C39 /* Main.storyboard in Resources */,
 				421FCEB922CF5C8E00C62E5E /* miso.png in Resources */,
+				42BE9EA923DB55BD002D08FA /* metamodel.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

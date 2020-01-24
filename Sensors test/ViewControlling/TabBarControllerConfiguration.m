@@ -26,15 +26,30 @@
         NSString * viewClass = NSStringFromClass([view class]);
         if ([viewClass containsString:@"Modes"]){
             viewControllerConfigurationModes = (ViewControllerConfigurationModes*)view;
+            
             // Pass the variables as in segues
             [viewControllerConfigurationModes setUserDic:userDic];
             [viewControllerConfigurationModes setCredentialsUserDic:credentialsUserDic];
+            
+            // Configure the tab icon
+            UITabBarItem * modesTabBarItem = [[UITabBarItem alloc] initWithTitle:nil
+                                                                           image:[UIImage imageNamed:@"routine.png"]
+                                                                             tag:1];
+            [viewControllerConfigurationModes setTabBarItem:modesTabBarItem];
+            
         }
         if ([viewClass containsString:@"Metamodels"]){
             viewControllerConfigurationMetamodels = (ViewControllerConfigurationMetamodels*)view;
+            
             // Pass the variables as in segues
             [viewControllerConfigurationMetamodels setUserDic:userDic];
             [viewControllerConfigurationMetamodels setCredentialsUserDic:credentialsUserDic];
+            
+            // Configure the tab icon
+            UITabBarItem * metamodelTabBarItem = [[UITabBarItem alloc] initWithTitle:nil
+                                                                               image:[UIImage imageNamed:@"metamodel.png"]
+                                                                                 tag:2];
+            [viewControllerConfigurationMetamodels setTabBarItem:metamodelTabBarItem];
         }
     }
 }

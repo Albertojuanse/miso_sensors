@@ -301,17 +301,35 @@
                                     <constraint firstAttribute="height" constant="60" id="KM5-1e-x9q"/>
                                 </constraints>
                             </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nHc-Ia-rQZ">
+                                <rect key="frame" x="32" y="92" width="336" height="851"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ueu-7Q-9NG">
+                                <rect key="frame" x="400" y="92" width="336" height="851"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="xyw-aX-LoV" firstAttribute="leading" secondItem="SPj-Kh-vP0" secondAttribute="leading" id="1DA-Tr-kMp"/>
+                            <constraint firstItem="SPj-Kh-vP0" firstAttribute="trailing" secondItem="ueu-7Q-9NG" secondAttribute="trailing" constant="32" id="1Hr-nO-PFm"/>
+                            <constraint firstItem="nHc-Ia-rQZ" firstAttribute="top" secondItem="xyw-aX-LoV" secondAttribute="bottom" constant="32" id="EnN-ri-Nlv"/>
+                            <constraint firstItem="ueu-7Q-9NG" firstAttribute="leading" secondItem="nHc-Ia-rQZ" secondAttribute="trailing" constant="32" id="L3X-8V-a5d"/>
+                            <constraint firstItem="ueu-7Q-9NG" firstAttribute="top" secondItem="xyw-aX-LoV" secondAttribute="bottom" constant="32" id="MYC-NY-Qdu"/>
+                            <constraint firstItem="SPj-Kh-vP0" firstAttribute="bottom" secondItem="ueu-7Q-9NG" secondAttribute="bottom" constant="32" id="ZCp-qe-3uu"/>
                             <constraint firstItem="xyw-aX-LoV" firstAttribute="top" secondItem="IV5-WW-YoS" secondAttribute="top" id="cBu-Lr-VbJ"/>
                             <constraint firstItem="xyw-aX-LoV" firstAttribute="trailing" secondItem="SPj-Kh-vP0" secondAttribute="trailing" id="hru-cE-C84"/>
+                            <constraint firstItem="SPj-Kh-vP0" firstAttribute="bottom" secondItem="nHc-Ia-rQZ" secondAttribute="bottom" constant="32" id="pMV-Xl-6Nl"/>
+                            <constraint firstItem="nHc-Ia-rQZ" firstAttribute="leading" secondItem="SPj-Kh-vP0" secondAttribute="leading" constant="32" id="rvw-m9-FsJ"/>
+                            <constraint firstItem="ueu-7Q-9NG" firstAttribute="width" secondItem="nHc-Ia-rQZ" secondAttribute="width" id="sNv-Wj-Mlx"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="SPj-Kh-vP0"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="VBU-0d-qGS"/>
                     <connections>
+                        <outlet property="tableMetamodels" destination="nHc-Ia-rQZ" id="P0o-NB-jzY"/>
+                        <outlet property="tableTypes" destination="ueu-7Q-9NG" id="Xxl-YP-V5b"/>
                         <outlet property="toolbar" destination="xyw-aX-LoV" id="Bpl-xj-aml"/>
                     </connections>
                 </viewController>
@@ -1576,9 +1594,9 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="GXt-pt-FwK"/>
+        <segue reference="FM1-nA-kyi"/>
         <segue reference="QxI-WS-XJS"/>
-        <segue reference="A3y-43-nSw"/>
+        <segue reference="hiw-ci-FFd"/>
         <segue reference="ARI-Cn-mJV"/>
         <segue reference="jUo-Ud-pm0"/>
     </inferredMetricsTieBreakers>

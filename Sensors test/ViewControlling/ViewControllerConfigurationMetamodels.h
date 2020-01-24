@@ -23,6 +23,8 @@
 }
 
 @property (weak, nonatomic) IBOutlet VCToolbar *toolbar;
+@property (weak, nonatomic) IBOutlet UITableView *tableMetamodels;
+@property (weak, nonatomic) IBOutlet UITableView *tableTypes;
 
 // Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
