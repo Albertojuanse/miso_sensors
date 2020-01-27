@@ -313,6 +313,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         // Check if this section is the extra one for "new item"
         if (indexPath.row > types.count) {
             [self newItem];
+        } else { // If not, ask to remove item from metamodel
+            [self askRemoveItem];
         }
 
     }
