@@ -123,6 +123,14 @@
     
     [self.tableMetamodels reloadData];
     [self.tableTypes reloadData];
+
+    // Table gestures for drag and drop
+    self.tableMetamodels.dragInteractionEnabled = true;
+    self.tableTypes.dragInteractionEnabled = true;
+    self.tableMetamodels.dragDelegated = self;
+    self.tableTypes.dragDelegated = self;
+    self.tableMetamodels.dropDelegated = self;
+    self.tableTypes.dropDelegated = self;
     
 }
 
@@ -165,8 +173,7 @@
     userDic = givenUserDic;
 }
 
-#pragma mark - UItableView delegate methods
-
+#pragma mark - UItableView data delegate methods
 /*!
  @method numberOfSectionsInTableView:
  @discussion Handles the upload of tables; returns the number of sections in them.
@@ -310,5 +317,76 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
     }
 }
+
+#pragma mark - UItableView dragging delegate methods
+/*!
+ @method tableView:itemsForBeginningDragSession:atIndexPath:
+ @discussion Handles the upload of tables; returns the initial set of items for a drag and drop session.
+ */
+- (NSArray<UIDrag Item *> *)tableView:(UITableView *)tableView
+         itemsForBeginningDragSession:(id<UIDragSession>)session
+                          atIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.tableMetamodels) {
+        // Return an empety array since these ones cannot be dragged
+	return [[NSArray alloc] init];
+
+    }
+    if (tableView == self.tableTypes) {
+        
+        // Check if this section is the extra one for "new item"
+        if (indexPath.row > types.count) {
+            // Return an empty array since this one cannot be dragged
+	    return [[NSArray alloc] init];
+
+        } else {
+            // Return the array with the initial set of items to drag
+	    MDType * cellsType = [types objectAtIndex:indexPath.row];
+	    NSItemProvider * typeItemProvider = [[NSItemProvider alloc] initWithObject:itemProvider];
+	    UIDragItem * typeDragItem = [[UIDragItem alloc] initWithItemProvider:typeItemProvider];
+	    return [[NSArray alloc] initWithObjects:typeDragItem,nil];
+        }
+
+    }
+    return [[NSArray alloc] init];
+}
+
+/*!
+ @method tableView:canHandleDropSession:
+ @discussion Handles the upload of tables; cheks if the target table can handle a drag and drop session.
+ */
+- (BOOL)tableView:(UITableView *)tableView
+canHandleDropSession:(id<UIDragSession>)session;
+{
+    if (tableView == self.tableMetamodels) {
+                
+        // This table can only handle drops of MDType classes.
+        if (session.items.count != 1) {
+
+            // Check items
+	    NSArray * sessionItems = session.items;
+            UIDragItem * typeDragItem = [sessionItems objectAtIndex:0];
+            NSItemProvider * typeItemProvider = typeDragItem.itemProvider;
+            [typeItemProvider loadObjectsOfClass:[MDType class] completionHandler:(handler de la consulta asincrona del MDType)];
+            
+            
+	} else { 
+            return NO;   
+	}
+
+    }
+    if (tableView == self.tableTypes) {
+        
+        // This table cannot be target of any drag and drop
+        return NO;
+
+    }
+    return NO;
+}
+
+Adopting Drag and Drop in a Table View
+
+#pragma mark - New types and metamodels
+
 
 @end

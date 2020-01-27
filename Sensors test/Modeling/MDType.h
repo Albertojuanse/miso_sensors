@@ -12,7 +12,8 @@
  @protocol MDType
  @discussion Abstract definition of any type that can be used for modeling
  */
-@protocol MDType
+NSItemProviderReading
+@protocol MDType <NSItemProviderReading>
 
 @required
 - (instancetype)init;
