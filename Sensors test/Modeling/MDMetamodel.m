@@ -124,6 +124,22 @@
 }
 
 /*!
+ @method addType
+ @discussion Setter of a new type in NSMutableArray 'type'.
+ */
+- (void)addType:(MDType *)givenType {
+    newType = YES;
+    for (MDType * eachType in types) {
+        if ([[eachType getName] isEqualToString:[givenType getName]]) {
+            newType = NO;
+        }
+    }
+    if (newType) {
+        [types addObject:givenType];
+    }
+}
+
+/*!
  @method isEqual
  @discussion This method overwrites the isEqual super method.
  */

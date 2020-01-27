@@ -29,6 +29,7 @@
 - (void)setName:(NSString *)givenName;
 - (void)setDescription:(NSString *)givenDescription;
 - (void)setTypes:(NSMutableArray *)givenTypes;
+- (void)addType:(MDType *)givenType;
 - (NSString *)getName;
 - (NSString *)getDescription;
 - (NSMutableArray *)getTypes;
