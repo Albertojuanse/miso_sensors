@@ -253,7 +253,7 @@
     if (tableView == self.tableMetamodels) {
         
         // Check if this section is the extra one for "new item"
-        if (section > metamodels.count) {
+        if (indexPath.section > metamodels.count) {
             cell.textLabel.text = [NSString stringWithFormat:@"+"];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         } else {
@@ -273,7 +273,7 @@
     if (tableView == self.tableTypes) {
         
         // Check if this section is the extra one for "new item"
-        if (section > types.count) {
+        if (indexPath.row > types.count) {
             cell.textLabel.text = [NSString stringWithFormat:@"+"];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         } else {
@@ -293,7 +293,22 @@
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    if (tableView == self.tableMetamodels) {
+        
+        // Check if this section is the extra one for "new item"
+        if (indexPath.section > metamodels.count) {
+            [self newMetamodel];
+        }
+
+    }
+    if (tableView == self.tableTypes) {
+        
+        // Check if this section is the extra one for "new item"
+        if (indexPath.row > types.count) {
+            [self newItem];
+        }
+
+    }
 }
 
 @end
