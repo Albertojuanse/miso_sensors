@@ -329,6 +329,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.tableMetamodels) {
         // Return an empety array since these ones cannot be dragged
+        NSLog(@"[INFO][VCCM] User did try to start drag and drop, but this table is not allowed to do so.");
 	return [[NSArray alloc] init];
 
     }
@@ -337,6 +338,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         // Check if this section is the extra one for "new item"
         if (indexPath.row > types.count) {
             // Return an empty array since this one cannot be dragged
+            NSLog(@"[INFO][VCCM] User did try to start drag and drop, but 'new item' row is not allowed to do so.");
 	    return [[NSArray alloc] init];
 
         } else {
@@ -344,6 +346,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 	    MDType * cellsType = [types objectAtIndex:indexPath.row];
 	    NSItemProvider * typeItemProvider = [[NSItemProvider alloc] initWithObject:itemProvider];
 	    UIDragItem * typeDragItem = [[UIDragItem alloc] initWithItemProvider:typeItemProvider];
+            NSLog(@"[INFO][VCCM] User did start drag and drop; item %@ provided", cellsType);
 	    return [[NSArray alloc] initWithObjects:typeDragItem,nil];
         }
 
@@ -353,38 +356,115 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 /*!
  @method tableView:canHandleDropSession:
- @discussion Handles the upload of tables; cheks if the target table can handle a drag and drop session.
+ @discussion Handles the upload of tables; cheks if the destination table can handle a drag and drop session.
  */
 - (BOOL)tableView:(UITableView *)tableView
-canHandleDropSession:(id<UIDragSession>)session;
+canHandleDropSession:(id<UIDragSession>)session
 {
     if (tableView == self.tableMetamodels) {
                 
         // This table can only handle drops of MDType classes.
-        if (session.items.count != 1) {
+        if (session.items.count == 1) {
+            NSLog(@"[INFO][VCCM] Allowed to drop provided item in this cell.");
+            return YES;           
+	} else {
+            NSLog(@"[INFO][VCCM] Not allowed to drop provided item in this cell.");
+            return NO;   
+	}
 
-            // Check items
-	    NSArray * sessionItems = session.items;
-            UIDragItem * typeDragItem = [sessionItems objectAtIndex:0];
-            NSItemProvider * typeItemProvider = typeDragItem.itemProvider;
-            [typeItemProvider loadObjectsOfClass:[MDType class] completionHandler:(handler de la consulta asincrona del MDType)];
-            
+    }
+    if (tableView == self.tableTypes) {     
+        // This table cannot be target of any drag and drop
+        NSLog(@"[INFO][VCCM] Not allowed to drop provided item in this table.");
+        return NO;
+    }
+    return NO;
+}
+
+/*!
+ @method tableView:dropSessionDidUpdate:withDestinationIndexPath:
+ @discussion Handles the upload of tables; propose how the destination table handles a drag and drop session.
+ */
+- (UITableViewDropProposal *)tableView:(UITableView *)tableView
+                  dropSessionDidUpdate:(id<UIDropSession>)session
+              withDestinationIndexPath:(NSIndexPath *)destinationIndexPath
+{
+    if (tableView == self.tableMetamodels) {
+                
+        // This table can only handle drops of MDType classes.
+        if (session.items.count == 1) {
+
+            UITableViewDropProposal * proposal;
+
+            // Check if this section is the extra one for "new item"
+            if (indexPath.section > metamodels.count) {
+                // Return a forbidden proposal
+                NSLog(@"[INFO][VCCM] Proposed not to allow user to drop provided item in this cell.");
+                proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperation.forbidden
+                                                                           intent:UITableViewDropProposal.Intent.unspecified];
+            } else {
+                // Return a copy and insert proposal
+                NSLog(@"[INFO][VCCM] Proposed allow user to drop (copy and insert) provided item in this cell.");
+                proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperation.copy
+                                                                           intent:UITableViewDropProposal.Intent.insertIntoDestinationIndezPath];
+            }
+	    return proposal;
             
 	} else { 
-            return NO;   
+            return nil;   
 	}
 
     }
     if (tableView == self.tableTypes) {
         
         // This table cannot be target of any drag and drop
-        return NO;
-
+        // Return a forbidden proposal
+        NSLog(@"[INFO][VCCM] Proposed not to allow user to drop provided item in this table.");
+        proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperation.forbidden
+                                                                   intent:UITableViewDropProposal.Intent.unspecified];
     }
-    return NO;
+    NSLog(@"[INFO][VCCM] By default proposed not to allow user to drop provided item in this table.");
+    proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperation.forbidden
+                                                               intent:UITableViewDropProposal.Intent.unspecified];
 }
 
-Adopting Drag and Drop in a Table View
+/*!
+ @method tableView:performDropWithCoordinator:
+ @discussion Handles the upload of tables; propose how the destination table handles a drag and drop session.
+ */
+- (void)tableView:(UITableView *)tableView
+performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
+{
+    // Decide an indexPath for the new cell depending on user's droping selection
+    NSIndexPath * userDropingIndexPath = coordinator.destinationIndexPath;
+    NSInteger section = userDropingIndexPath.section;
+    if (section > metamodel.count) {
+        NSLog(@"[INFO][VCCM] User did droppped in the 'new item' cell.");
+        return;
+    } else {
+        NSLog(@"[INFO][VCCM] User did droppped the provided item.");
+    }
+    MDMetamodel * userDropingMetamodel = [metamodels objectAtIndex:section];
+    NSInteger row = [[userDropingMetamodel getTypes] count];
+
+    // Get provided items from drag and drop session
+    UIDropSession * session = coordinator.session;
+    NSProgress * loadingProgress = [session loadObjectsOfClass:[MDType class]
+                                                    completion:^(NSArray * objects) {
+                          MDType * cellType = [objects objectAtIndex:0];
+                          if (objects.count != 1) {
+                              NSLog(@"[ERROR][VCCM] More than one provided items from drop session; using first one.");
+                          }
+                          NSLog(@"[INFO][VCCM] Loaded provided item %@.", cellType);
+
+                          // Update metamodel
+                          [userDropingMetamodel addType:cellType];
+                      }
+                     ];
+    // Reload data
+    [self.tableMetamodels reloadData];
+
+}
 
 #pragma mark - New types and metamodels
 
