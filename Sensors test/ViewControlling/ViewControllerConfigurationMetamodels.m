@@ -175,7 +175,8 @@
 {
     if (tableView == self.tableMetamodels) {
 	// A section for each metamodel
-        return metamodels.count;
+        // One extra for "new item" row
+        return metamodels.count + 1;
     }
     if (tableView == self.tableTypes) {
 	// No sections for types
@@ -192,13 +193,20 @@
 {
     if (tableView == self.tableMetamodels) {
 	// Get the types in each metamodel and count its types
-        MDMetamodel * eachMetamodel = [metamodels objectAtIndex:section];
-	NSMutableArray * eachTypes = [eachMetamodel getTypes];
-        return eachTypes.count;
+        
+        // Check if this section is the extra one for "new item"
+        if (section > metamodels.count) {
+            return 1;
+        } else {
+            MDMetamodel * eachMetamodel = [metamodels objectAtIndex:section];
+	    NSMutableArray * eachTypes = [eachMetamodel getTypes];
+            return eachTypes.count;
+        }
     }
     if (tableView == self.tableTypes) {
         // Show a cell for each type
-        return types.count;
+        // One extra for "new item" row
+        return types.count + 1;
     }
     return 0;
 }
@@ -210,9 +218,15 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     if (tableView == self.tableMetamodels) {
-	// Get the name of each metamodel
-        MDMetamodel * eachMetamodel = [metamodels objectAtIndex:section];
-        return [eachMetamodel getName];
+
+        // Check if this section is the extra one for "new item"
+        if (section > metamodels.count) {
+            return @"New metamodel";
+        } else {
+            // Get the name of each metamodel
+            MDMetamodel * eachMetamodel = [metamodels objectAtIndex:section];
+            return [eachMetamodel getName];
+        }
     }
     if (tableView == self.tableTypes) {
 	// No sections for types
@@ -238,21 +252,36 @@
     // Configure individual cells
     if (tableView == self.tableMetamodels) {
         
-        // Get the metamodel that shows this section...
-        MDMetamodel * eachMetamodel = [metamodels objectAtIndex:indexPath.section];
+        // Check if this section is the extra one for "new item"
+        if (section > metamodels.count) {
+            cell.textLabel.text = [NSString stringWithFormat:@"+"];
+            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+        } else {
+            // Get the metamodel that shows this section...
+            MDMetamodel * eachMetamodel = [metamodels objectAtIndex:indexPath.section];
         
-        // ...and get each of its types.
-        MDType * eachType = [[eachType getTypes] objectAtIndex:indexPath.row];
-        NSString * eachTypeName = [eachType getName];
-        cell.textLabel.text = [NSString stringWithFormat:@"%<@>", eachTypeName];
-        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            // ...and get each of its types.
+            MDType * eachType = [[eachType getTypes] objectAtIndex:indexPath.row];
+            NSString * eachTypeName = [eachType getName];
+            cell.textLabel.text = [NSString stringWithFormat:@"<%@>", eachTypeName];
+            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+        }
+
+        
         
     }
-    if (tableView == self.Types) {
-        MDType * eachType = [types objectAtIndex:indexPath.row];
-        NSString * eachTypeName = [eachType getName];
-        cell.textLabel.text = [NSString stringWithFormat:@"%<@>", eachTypeName];
-        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+    if (tableView == self.tableTypes) {
+        
+        // Check if this section is the extra one for "new item"
+        if (section > types.count) {
+            cell.textLabel.text = [NSString stringWithFormat:@"+"];
+            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+        } else {
+            MDType * eachType = [types objectAtIndex:indexPath.row];
+            NSString * eachTypeName = [eachType getName];
+            cell.textLabel.text = [NSString stringWithFormat:@"<%@>", eachTypeName];
+            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+        }
     }
     return cell;
 }
