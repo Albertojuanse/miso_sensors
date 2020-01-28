@@ -14,7 +14,7 @@
  @class ViewControllerConfigurationMetamodels
  @discussion This class extends UIViewController and controls the metamodels configuration interface.
  */
-@interface ViewControllerConfigurationMetamodels : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+@interface ViewControllerConfigurationMetamodels : UIViewController <UITableViewDelegate, UITableViewDataSource, UITableViewDragDelegate, UITableViewDropDelegate> {
     
     // The first credentials dictionary is for security purposes and its proprietary is the one who logs-in in the device; the second one is used for identifying purposes; in multiuser context, the first one is used in the device for accessing data, etc. while the second one is shared to the rest of users when a measure is taken or something is changed to indicate who did it.
     NSMutableDictionary * credentialsUserDic;
