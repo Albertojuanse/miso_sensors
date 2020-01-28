@@ -54,26 +54,11 @@
 }
 
 /*!
- @method initWithCoder:
- @discussion Constructor called when an object must be initiated with the data stored, shared... with a coding way.
- */
-- (id)initWithCoder:(NSCoder *)decoder {
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    
-    name = [decoder decodeObjectForKey:@"name"];
-    attributes = [decoder decodeObjectForKey:@"attributes"];
-    
-    return self;
-}
-
-/*!
  @method getName
  @discussion Getter of the 'name' attribute.
  */
-- (NSString *)getName {
+- (NSString *)getName
+{
     return name;
 }
 
@@ -81,7 +66,8 @@
  @method setName
  @discussion Setter of the 'name' attribute.
  */
-- (void)setName:(NSString *)givenName {
+- (void)setName:(NSString *)givenName
+{
     name = givenName;
 }
 
@@ -89,7 +75,8 @@
  @method getAttributes
  @discussion Getter of the 'attributes' NSMutableArray object.
  */
-- (NSMutableArray *)getAttributes {
+- (NSMutableArray *)getAttributes
+{
     return attributes;
 }
 
@@ -97,7 +84,8 @@
  @method setAttributes
  @discussion Setter of the 'attributes' NSMutableArray object.
  */
-- (void)setAttributes:(NSMutableArray *)givenAttributes {
+- (void)setAttributes:(NSMutableArray *)givenAttributes
+{
     attributes = givenAttributes;
 }
 
@@ -109,7 +97,8 @@
     if (other == self) {
         return YES;
     }
-    if (!other || ![other isKindOfClass:[self class]]) {
+    if (!other || ![other isKindOfClass:[self class]])
+    {
         return NO;
     }
     return [self isEqualToMDType:other];
@@ -119,7 +108,8 @@
  @method isEqualToMDType
  @discussion This method compares two MDType objects.
  */
-- (BOOL)isEqualToMDType:(MDType *)type {
+- (BOOL)isEqualToMDType:(MDType *)type
+{
     if (type == self) {
         return YES;
     }
@@ -133,19 +123,11 @@
 }
 
 /*!
- @method encodeWithCoder:
- @discussion This method is called when this object must be coded as a data object for storing, sharing...
- */
-- (void)encodeWithCoder:(NSCoder *)encoder {
-    [encoder encodeObject:name forKey:@"name"];
-    [encoder encodeObject:attributes forKey:@"attributes"];
-}
-
-/*!
  @method description
  @discussion This method creates an NSString object for showing and loggin purposes; equivalent to 'toString()'.
  */
-- (NSString *)description {
+- (NSString *)description
+{
     return [NSString stringWithFormat: @"<%@>", name];
 }
 
@@ -153,8 +135,82 @@
  @method stringValue
  @discussion This method creates an NSString object for showing and loggin purposes; equivalent to 'toString()'.
  */
-- (NSString *)stringValue {
+- (NSString *)stringValue
+{
     return [self description];
+}
+
+#pragma mark - NSCoding methods
+
+/*!
+ @method initWithCoder:
+ @discussion Constructor called when an object must be initiated with the data stored, shared... with a coding way.
+ */
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    name = [decoder decodeObjectForKey:@"name"];
+    attributes = [decoder decodeObjectForKey:@"attributes"];
+    
+    return self;
+}
+
+/*!
+ @method encodeWithCoder:
+ @discussion This method is called when this object must be coded as a data object for storing, sharing...
+ */
+- (void)encodeWithCoder:(NSCoder *)encoder
+{
+    [encoder encodeObject:name forKey:@"name"];
+    [encoder encodeObject:attributes forKey:@"attributes"];
+}
+
+#pragma mark - NSItemProviderWriting methods
+
++ (NSArray<NSString *> * _Nullable)writableTypeIdentifiersForItemProvider {
+    return @[@"es.uam.miso.mdtype"];
+}
+
+/*!
+ @method loadDataWithTypeIdentifier:forItemProviderCompletionHandler:
+ @discussion This method is called when this object is dragged or dropped in view.
+ */
+- (NSProgress *)loadDataWithTypeIdentifier:(NSString *)typeIdentifier
+          forItemProviderCompletionHandler:(void (^)(NSData *data, NSError *error))completionHandler
+{
+    NSLog(@"[INFO][MDT] Asked current progress.");
+    return [NSProgress currentProgress];
+}
+
+/*!
+ @method itemProviderVisibilityForRepresentationWithTypeIdentifier:
+ @discussion This method is called when this object is dragged or dropped in view.
+ */
++ (NSItemProviderRepresentationVisibility)itemProviderVisibilityForRepresentationWithTypeIdentifier:(NSString *)typeIdentifier
+{
+    NSLog(@"[INFO][MDT] Asked providerVisibility value.");
+    return NSItemProviderRepresentationVisibilityOwnProcess;
+}
+
+#pragma mark - NSItemProviderReading methods
+
++ (NSArray<NSString *> * _Nullable)readableTypeIdentifiersForItemProvider {
+    return @[@"es.uam.miso.mdtype"];
+}
+
+/*!
+ @method objectWithItemProviderData:typeIdentifier:error:
+ @discussion This method is called when this object is dragged or dropped in view.
+ */
++ (instancetype)objectWithItemProviderData:(NSData *)data
+                            typeIdentifier:(NSString *)typeIdentifier
+                                     error:(NSError * _Nullable *)outError
+{
+    return self;
 }
 
 @end

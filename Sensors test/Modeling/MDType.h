@@ -10,10 +10,9 @@
 
 /*!
  @protocol MDType
- @discussion Abstract definition of any type that can be used for modeling
+ @discussion Abstract definition of any type that can be used for modeling.
  */
-NSItemProviderReading
-@protocol MDType <NSItemProviderReading>
+@protocol MDType
 
 @required
 - (instancetype)init;
@@ -33,12 +32,15 @@ NSItemProviderReading
  @class MDType
  @discussion Definition of any type that can be used for modeling
  */
-@interface MDType: NSObject <MDType, NSCoding> {
+@interface MDType: NSObject <MDType, NSCoding, NSItemProviderReading, NSItemProviderWriting> {
     
     NSString * name;
     NSMutableArray * attributes;
     
 }
+
+@property(class, readonly, copy, nonatomic) NSArray<NSString *> *writableTypeIdentifiersForItemProvider;
+@property(class, readonly, copy, nonatomic) NSArray<NSString *> *readableTypeIdentifiersForItemProvider;
 
 - (instancetype)init;
 - (instancetype)initWithName:(NSString *)givenName;
