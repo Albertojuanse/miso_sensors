@@ -4,7 +4,6 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -68,7 +67,6 @@
                                 <state key="normal" title="Configuration"/>
                                 <connections>
                                     <action selector="handleButtonConfiguration:" destination="QfP-rI-9YT" eventType="touchUpInside" id="PTz-IW-8hO"/>
-                                    <segue destination="5aU-1v-1Om" kind="show" identifier="fromLoginToConfiguration" id="JR8-v9-FfP"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -106,6 +104,7 @@
                         <outlet property="passText" destination="qVE-ED-hWC" id="42Z-va-IDg"/>
                         <outlet property="userText" destination="KNS-bu-BhY" id="zGO-vd-HRa"/>
                         <segue destination="lVP-jp-YaV" kind="show" identifier="loginFromLoginToMain" id="jUo-Ud-pm0"/>
+                        <segue destination="5aU-1v-1Om" kind="show" identifier="fromLoginToConfiguration" id="XOm-kL-PEe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Eze-I4-Kxx" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1580,6 +1579,7 @@
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="5aU-1v-1Om" customClass="TabBarConfiguration" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="dIc-RW-48h">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>

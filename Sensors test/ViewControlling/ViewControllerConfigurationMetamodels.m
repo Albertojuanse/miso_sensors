@@ -98,6 +98,9 @@
         MDMetamodel * buildingMetamodel = [[MDMetamodel alloc] initWithName:@"Building"
                                                                 description:@"Building"
                                                                    andTypes:metamodelTypes];
+        MDMetamodel * building2Metamodel = [[MDMetamodel alloc] initWithName:@"Building2"
+                                                                description:@"Building2"
+                                                                   andTypes:metamodelTypes];
         
         // Save them in persistent memory
         areMetamodelsData = nil; // ARC disposing
@@ -105,6 +108,7 @@
         [userDefaults setObject:areMetamodelsData forKey:@"es.uam.miso/data/metamodels/areMetamodels"];
         metamodels = [[NSMutableArray alloc] init];
         [metamodels addObject:buildingMetamodel];
+        [metamodels addObject:building2Metamodel];
         NSData * metamodelsData = [NSKeyedArchiver archivedDataWithRootObject:metamodels];
         [userDefaults setObject:metamodelsData forKey:@"es.uam.miso/data/metamodels/metamodels"];
         
@@ -183,7 +187,7 @@
     }
     if (tableView == self.tableTypes) {
 	// No sections for types
-        return 0;
+        return 1;
     }
     return 0;
 }
@@ -198,7 +202,7 @@
 	// Get the types in each metamodel and count its types
         
         // Check if this section is the extra one for "new item"
-        if (section > metamodels.count) {
+        if (section > metamodels.count - 1) {
             return 1;
         } else {
             MDMetamodel * eachMetamodel = [metamodels objectAtIndex:section];
@@ -223,7 +227,7 @@
     if (tableView == self.tableMetamodels) {
 
         // Check if this section is the extra one for "new item"
-        if (section > metamodels.count) {
+        if (section > metamodels.count - 1) {
             return @"New metamodel";
         } else {
             // Get the name of each metamodel
@@ -233,7 +237,7 @@
     }
     if (tableView == self.tableTypes) {
 	// No sections for types
-        return nil;
+        return @"All types";
     }
     return nil;
 }
@@ -256,7 +260,7 @@
     if (tableView == self.tableMetamodels) {
         
         // Check if this section is the extra one for "new item"
-        if (indexPath.section > metamodels.count) {
+        if (indexPath.section > metamodels.count - 1) {
             cell.textLabel.text = [NSString stringWithFormat:@"+"];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         } else {
@@ -276,7 +280,7 @@
     if (tableView == self.tableTypes) {
         
         // Check if this section is the extra one for "new item"
-        if (indexPath.row > types.count) {
+        if (indexPath.row > types.count - 1) {
             cell.textLabel.text = [NSString stringWithFormat:@"+"];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         } else {
@@ -299,8 +303,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     if (tableView == self.tableMetamodels) {
         
         // Check if this section is the extra one for "new item"
-        if (indexPath.section > metamodels.count) {
+        if (indexPath.section > metamodels.count - 1) {
             //[self newMetamodel];
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
             
             //@"es.uam.miso/data/metamodels/areTypes"
             //@"es.uam.miso/data/metamodels/areMetamodels"
@@ -312,8 +317,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     if (tableView == self.tableTypes) {
         
         // Check if this section is the extra one for "new item"
-        if (indexPath.row > types.count) {
+        if (indexPath.row > types.count - 1) {
             //[self newItem];
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
         } else { // If not, ask to remove item from metamodel
             //[self askRemoveItem];
         }
@@ -339,7 +345,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     if (tableView == self.tableTypes) {
         
         // Check if this section is the extra one for "new item"
-        if (indexPath.row > types.count) {
+        if (indexPath.row > types.count - 1) {
             // Return an empty array since this one cannot be dragged
             NSLog(@"[INFO][VCCM] User did try to start drag and drop, but 'new item' row is not allowed to do so.");
 	    return [[NSArray alloc] init];
@@ -368,12 +374,12 @@ canHandleDropSession:(id<UIDragSession>)session
                 
         // This table can only handle drops of MDType classes.
         if (session.items.count == 1) {
-            NSLog(@"[INFO][VCCM] Allowed to drop provided item in this cell.");
-            return YES;           
-	} else {
+            NSLog(@"[INFO][VCCM] Allowed to drop provided item in this table.");
+            return YES;
+        } else {
             NSLog(@"[INFO][VCCM] Not allowed to drop provided item in this cell.");
-            return NO;   
-	}
+            return NO;
+        }
 
     }
     if (tableView == self.tableTypes) {     
@@ -392,6 +398,8 @@ canHandleDropSession:(id<UIDragSession>)session
                   dropSessionDidUpdate:(id<UIDropSession>)session
               withDestinationIndexPath:(NSIndexPath *)destinationIndexPath
 {
+    NSLog(@"[INFO][VCCM] User wants to drop in section %td", destinationIndexPath.section);
+    NSLog(@"[INFO][VCCM] User wants to drop in row %td", destinationIndexPath.row);
     
     UITableViewDropProposal * proposal;
     if (tableView == self.tableMetamodels) {
@@ -400,16 +408,26 @@ canHandleDropSession:(id<UIDragSession>)session
         if (session.items.count == 1) {
 
             // Check if this section is the extra one for "new item"
-            if (destinationIndexPath.section > metamodels.count) {
+            if (destinationIndexPath.section > metamodels.count - 1) {
                 // Return a forbidden proposal
                 NSLog(@"[INFO][VCCM] Proposed not to allow user to drop provided item in this cell.");
                 proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationForbidden
                                                                            intent:UITableViewDropIntentUnspecified];
             } else {
-                // Return a copy and insert proposal
-                NSLog(@"[INFO][VCCM] Proposed allow user to drop (copy and insert) provided item in this cell.");
-                proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationCopy
+                
+                // Manage empty cells
+                UITableViewCell * destinationCell = [self.tableMetamodels cellForRowAtIndexPath:destinationIndexPath];
+                if ( !destinationCell.textLabel.text || [@"" isEqualToString:destinationCell.textLabel.text]) {
+                    // Return a forbidden proposal
+                    NSLog(@"[INFO][VCCM] Proposed not to allow user to drop provided item in this cell.");
+                    proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationForbidden
+                                                                               intent:UITableViewDropIntentUnspecified];
+                } else {
+                    // Return a copy and insert proposal
+                    NSLog(@"[INFO][VCCM] Proposed allow user to drop (copy and insert) provided item in this cell.");
+                    proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationCopy
                                                                            intent:UITableViewDropIntentInsertAtDestinationIndexPath];
+                }
             }
             
 	} else { 
@@ -425,9 +443,6 @@ canHandleDropSession:(id<UIDragSession>)session
         proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationForbidden
                                                                    intent:UITableViewDropIntentUnspecified];
     }
-    NSLog(@"[INFO][VCCM] By default proposed not to allow user to drop provided item in this table.");
-    proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationForbidden
-                                                               intent:UITableViewDropIntentUnspecified];
     return proposal;
 }
 
@@ -441,7 +456,8 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
     // Decide an indexPath for the new cell depending on user's droping selection
     NSIndexPath * userDropingIndexPath = coordinator.destinationIndexPath;
     NSInteger section = userDropingIndexPath.section;
-    if (section > metamodels.count) {
+    NSLog(@"[INFO][VCCM] User did droppped in section %td.", section);
+    if (section > metamodels.count - 1) {
         NSLog(@"[INFO][VCCM] User did droppped in the 'new item' cell.");
         return;
     } else {
