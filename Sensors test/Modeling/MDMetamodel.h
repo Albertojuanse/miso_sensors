@@ -7,6 +7,7 @@
 //
 
 #include <Foundation/Foundation.h>
+#include "MDType.h"
 
 /*!
  @class MDMetamodel

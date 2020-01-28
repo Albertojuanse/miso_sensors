@@ -128,7 +128,7 @@
  @discussion Setter of a new type in NSMutableArray 'type'.
  */
 - (void)addType:(MDType *)givenType {
-    newType = YES;
+    BOOL newType = YES;
     for (MDType * eachType in types) {
         if ([[eachType getName] isEqualToString:[givenType getName]]) {
             newType = NO;
