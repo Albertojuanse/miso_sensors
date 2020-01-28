@@ -30,10 +30,6 @@
                                     ];
     
     // Load existing types and metamodels in the device
-    @"es.uam.miso/data/metamodels/areTypes"
-    @"es.uam.miso/data/metamodels/areMetamodels"
-    @"es.uam.miso/data/metamodels/types"
-    @"es.uam.miso/data/metamodels/metamodels"
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
     
     // Search for 'areTypes' boolean and if so, load the MDType array
@@ -304,7 +300,12 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
         // Check if this section is the extra one for "new item"
         if (indexPath.section > metamodels.count) {
-            [self newMetamodel];
+            //[self newMetamodel];
+            
+            //@"es.uam.miso/data/metamodels/areTypes"
+            //@"es.uam.miso/data/metamodels/areMetamodels"
+            //@"es.uam.miso/data/metamodels/types"
+            //@"es.uam.miso/data/metamodels/metamodels"
         }
 
     }
@@ -312,9 +313,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
         // Check if this section is the extra one for "new item"
         if (indexPath.row > types.count) {
-            [self newItem];
+            //[self newItem];
         } else { // If not, ask to remove item from metamodel
-            [self askRemoveItem];
+            //[self askRemoveItem];
         }
 
     }
@@ -391,26 +392,25 @@ canHandleDropSession:(id<UIDragSession>)session
                   dropSessionDidUpdate:(id<UIDropSession>)session
               withDestinationIndexPath:(NSIndexPath *)destinationIndexPath
 {
+    
+    UITableViewDropProposal * proposal;
     if (tableView == self.tableMetamodels) {
                 
         // This table can only handle drops of MDType classes.
         if (session.items.count == 1) {
-
-            UITableViewDropProposal * proposal;
 
             // Check if this section is the extra one for "new item"
             if (destinationIndexPath.section > metamodels.count) {
                 // Return a forbidden proposal
                 NSLog(@"[INFO][VCCM] Proposed not to allow user to drop provided item in this cell.");
                 proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationForbidden
-                                                                           intent:UITableViewDropProposal.Intent.unspecified];
+                                                                           intent:UITableViewDropIntentUnspecified];
             } else {
                 // Return a copy and insert proposal
                 NSLog(@"[INFO][VCCM] Proposed allow user to drop (copy and insert) provided item in this cell.");
                 proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationCopy
-                                                                           intent:UITableViewDropProposal.Intent.insertIntoDestinationIndezPath];
+                                                                           intent:UITableViewDropIntentInsertAtDestinationIndexPath];
             }
-	    return proposal;
             
 	} else { 
             return nil;   
@@ -423,11 +423,12 @@ canHandleDropSession:(id<UIDragSession>)session
         // Return a forbidden proposal
         NSLog(@"[INFO][VCCM] Proposed not to allow user to drop provided item in this table.");
         proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationForbidden
-                                                                   intent:UITableViewDropProposal.Intent.unspecified];
+                                                                   intent:UITableViewDropIntentUnspecified];
     }
     NSLog(@"[INFO][VCCM] By default proposed not to allow user to drop provided item in this table.");
     proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationForbidden
-                                                               intent:UITableViewDropProposal.Intent.unspecified];
+                                                               intent:UITableViewDropIntentUnspecified];
+    return proposal;
 }
 
 /*!
@@ -449,18 +450,33 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
     MDMetamodel * userDropingMetamodel = [metamodels objectAtIndex:section];
     NSInteger row = [[userDropingMetamodel getTypes] count];
 
-    // Get provided items from drag and drop session
-    NSProgress * loadingProgress = [coordinator.session loadObjectsOfClass:[MDType class]
-                                                                completion:^(NSArray * objects) {
-                                                                    MDType * cellType = [objects objectAtIndex:0];
-                                                                    if (objects.count != 1) {
-                                                                        NSLog(@"[ERROR][VCCM] More than one provided items from drop session; using first one.");
-                                                                    }
-                                                                    NSLog(@"[INFO][VCCM] Loaded provided item %@.", cellType);
-                                                                    // Update metamodel
-                                                                    [userDropingMetamodel addType:cellType];
-                                                                }
-                                    ];
+    // Different behaviour depending on dropping proposal
+    switch (coordinator.proposal.operation) {
+        case UIDropOperationCopy:
+            
+            NSLog(@"[INFO][VCCM] Droppped provided item being copied.");
+            
+            // Get the dropped object
+            NSArray * itemsProvided = coordinator.items;
+            UIDragItem * typeDragItem = [itemsProvided objectAtIndex:0];
+            NSItemProvider * typeItemProvider = typeDragItem.itemProvider;
+            [typeItemProvider loadObjectOfClass:[MDType class]
+                              completionHandler:^(id<NSItemProviderReading> _Nullable __strong object,
+                                                  NSError * _Nullable __strong error) {
+                                  if (object) {
+                                      MDType * cellType = object;
+                                      NSLog(@"[INFO][VCCM] Loaded provided item %@.", cellType);
+                                      // Update metamodel
+                                      [userDropingMetamodel addType:cellType];
+                                  } else {
+                                      NSLog(@"[INFO][VCCM] No payload in dropped provided item.");
+                                  }
+                              }
+             ];
+            break;
+    }
+    
+    
     // Reload data
     [self.tableMetamodels reloadData];
 }
