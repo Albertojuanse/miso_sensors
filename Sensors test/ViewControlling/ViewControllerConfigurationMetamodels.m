@@ -554,5 +554,119 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
 }
 
 #pragma mark - New types and metamodels
+/*!
+ @method newMetamodelWithName:andDescription:
+ @discussion This method is called when user wants to create a new metamodel.
+ */
+- (BOOL)newMetamodelWithName:(NSString *)name
+              andDescription:(NSString *)description
+{
+    MDMetamodel * newMetamodel = [[MDMetamodel alloc] initWithName:name
+                                                    andDescription:description];
+    [metamodels addObject:newMetamodel];
+    return YES;
+}
+
+/*!
+ @method removeMetamodelWithName:
+ @discussion This method is called when user wants to remove a metamodel.
+ */
+- (BOOL)removeMetamodelWithName:(NSString *)name
+{
+    MDMetamodel * foundMetamodel;
+    for (MDMetamodel * eachMetadmodel in metamodels) {
+        if ([name isEqualToString:[eachMetadmodel getName]]) {
+            foundMetamodel = eachMetadmodel;
+        }
+    }
+    if (foundMetamodel) {
+        [metamodels removeObject:foundMetamodel];
+        return YES;
+    }
+    return NO;
+}
+
+/*!
+ @method updatePersistentMetamodels
+ @discussion This method is called when user changes metamodels collection in orther to upload it.
+ */
+- (BOOL)updatePersistentMetamodels
+{
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodels/metamodels"];
+    [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodels/areMetamodels"];
+    
+    // Check if there is any type
+    NSData * areMetamodelsData;
+    if (metamodels.count > 0) {
+        areMetamodelsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+    } else {
+        areMetamodelsData = [NSKeyedArchiver archivedDataWithRootObject:@"NO"];
+    }
+    
+    // Save information
+    [userDefaults setObject:areMetamodelsData forKey:@"es.uam.miso/data/metamodels/areMetamodels"];
+    NSData * metamodelsData = [NSKeyedArchiver archivedDataWithRootObject:metamodels];
+    [userDefaults setObject:metamodelsData forKey:@"es.uam.miso/data/metamodels/metamodels"];
+    
+    return YES;
+}
+
+/*!
+ @method newTypeWithName:
+ @discussion This method is called when user wants to create a new type.
+ */
+- (BOOL)newTypeWithName:(NSString *)name
+{
+    MDType * newType = [[MDType alloc] initWithName:name];
+    [types addObject:newType];
+    return YES;
+}
+
+/*!
+ @method removeTypeWithName:
+ @discussion This method is called when user wants to remove a type.
+ */
+- (BOOL)removeTypeWithName:(NSString *)name
+{
+    MDType * foundType;
+    for (MDType * eachType in types) {
+        if ([name isEqualToString:[eachType getName]]) {
+            foundType = eachType;
+        }
+    }
+    if (foundType) {
+        [types removeObject:foundType];
+        return YES;
+    }
+    return NO;
+}
+
+/*!
+ @method updatePersistentTypes
+ @discussion This method is called when user changes types collection in orther to upload it.
+ */
+- (BOOL)updatePersistentTypes
+{
+    // Remove previous collection
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodels/types"];
+    [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodels/areTypes"];
+    
+    // Check if there is any type
+    NSData * areTypesData;
+    if (types.count > 0) {
+        areTypesData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+    } else {
+        areTypesData = [NSKeyedArchiver archivedDataWithRootObject:@"NO"];
+    }
+    
+    // Save information
+    [userDefaults setObject:areTypesData forKey:@"es.uam.miso/data/metamodels/areTypes"];
+    NSData * typesData = [NSKeyedArchiver archivedDataWithRootObject:types];
+    [userDefaults setObject:typesData forKey:@"es.uam.miso/data/metamodels/types"];
+    
+    return YES;
+}
 
 @end
