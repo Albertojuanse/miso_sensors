@@ -55,6 +55,7 @@
         MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
         MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
         MDType * wallType = [[MDType alloc] initWithName:@"Wall"];
+        MDType * doorType = [[MDType alloc] initWithName:@"Door"];
         
         // Save them in persistent memory
         areTypesData = nil; // ARC disposing
@@ -66,6 +67,7 @@
         [types addObject:cornerType];
         [types addObject:deviceType];
         [types addObject:wallType];
+        [types addObject:doorType];
         NSData * typesData = [NSKeyedArchiver archivedDataWithRootObject:types];
         [userDefaults setObject:typesData forKey:@"es.uam.miso/data/metamodels/types"];
         
@@ -98,11 +100,11 @@
         MDMetamodel * buildingMetamodel = [[MDMetamodel alloc] initWithName:@"Building"
                                                                 description:@"Building"
                                                                    andTypes:metamodelTypes];
-        MDType * doorType = [[MDType alloc] initWithName:@"Door"];
-        [types addObject:doorType];
+        NSMutableArray * metamodel2Types = [metamodelTypes mutableCopy];
+        [metamodel2Types removeLastObject];
         MDMetamodel * building2Metamodel = [[MDMetamodel alloc] initWithName:@"Building2"
                                                                 description:@"Building2"
-                                                                   andTypes:metamodelTypes];
+                                                                   andTypes:metamodel2Types];
         
         // Save them in persistent memory
         areMetamodelsData = nil; // ARC disposing
@@ -208,7 +210,8 @@
             return 1;
         } else {
             MDMetamodel * eachMetamodel = [metamodels objectAtIndex:section];
-	    NSMutableArray * eachTypes = [eachMetamodel getTypes];
+            NSMutableArray * eachTypes = [eachMetamodel getTypes];
+            NSLog(@"[HOLA] Metamodel %@ have %tu items",eachMetamodel, eachTypes.count);
             return eachTypes.count;
         }
     }
@@ -263,6 +266,7 @@
         
         // Check if this section is the extra one for "new item"
         if (indexPath.section > metamodels.count - 1) {
+            NSLog(@"[HOLA] Section %td, Row %td labeled with +",indexPath.section ,indexPath.row);
             cell.textLabel.text = [NSString stringWithFormat:@"+"];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         } else {
@@ -272,11 +276,10 @@
             // ...and get each of its types.
             MDType * eachType = [[eachMetamodel getTypes] objectAtIndex:indexPath.row];
             NSString * eachTypeName = [eachType getName];
+            NSLog(@"[HOLA] Section %td, Row %td labeled with <%@>",indexPath.section ,indexPath.row, [eachType getName]);
             cell.textLabel.text = [NSString stringWithFormat:@"<%@>", eachTypeName];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         }
-
-        
         
     }
     if (tableView == self.tableTypes) {
@@ -306,7 +309,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
         // Check if this section is the extra one for "new item"
         if (indexPath.section > metamodels.count - 1) {
-            //[self newMetamodel];
+            [self newMetamodel];
+            [self updatePersistentMetamodels];
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
             
             //@"es.uam.miso/data/metamodels/areTypes"
@@ -320,10 +324,12 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
         // Check if this section is the extra one for "new item"
         if (indexPath.row > types.count - 1) {
-            //[self newItem];
+            [self newType];
+            [self updatePersistentTypes];
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
         } else { // If not, ask to remove item from metamodel
-            //[self askRemoveItem];
+            [self removeType];
+            [self updatePersistentTypes];
         }
 
     }
@@ -433,7 +439,7 @@ canHandleDropSession:(id<UIDragSession>)session
                     // Return a copy and insert proposal
                     //NSLog(@"[INFO][VCCM] Proposed allow user to drop (copy and insert) provided item in this cell.");
                     proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationCopy
-                                                                           intent:UITableViewDropIntentInsertAtDestinationIndexPath];
+                                                                           intent:UITableViewDropIntentAutomatic];
                 }
             }
             
@@ -460,62 +466,93 @@ canHandleDropSession:(id<UIDragSession>)session
 - (void)tableView:(UITableView *)tableView
 performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
 {
-    // Decide an indexPath for the new cell depending on user's droping selection
-    NSIndexPath * destinationIndexPath = coordinator.destinationIndexPath;
-    NSInteger section = destinationIndexPath.section;
-    if (section > metamodels.count - 1) {
-        NSLog(@"[INFO][VCCM] User did droppped in the 'new item' cell.");
-        return;
-    } else {
-        NSLog(@"[INFO][VCCM] User did droppped the provided item in section %td.", section);
-    }
-    MDMetamodel * userDropingMetamodel = [metamodels objectAtIndex:section];
-    NSInteger row = [[userDropingMetamodel getTypes] count];
+    if (tableView == self.tableMetamodels) {
+        // Decide an indexPath for the new cell depending on user's droping selection
+        NSIndexPath * destinationIndexPath = coordinator.destinationIndexPath;
+        NSInteger section = destinationIndexPath.section;
+        if (section > metamodels.count - 1) {
+            NSLog(@"[INFO][VCCM] User did droppped in the 'new item' cell.");
+            return;
+        } else {
+            NSLog(@"[INFO][VCCM] User did droppped the provided item in section %td.", section);
+        }
 
-    // Different behaviour depending on dropping proposal
-    switch (coordinator.proposal.operation) {
-        case UIDropOperationCopy:
-            
-            NSLog(@"[INFO][VCCM] Droppped provided item being copied.");
-            [tableView performBatchUpdates:^{
-                [coordinator.session loadObjectsOfClass:MDType.class completion:^(NSArray<__kindof id<NSItemProviderReading>> * _Nonnull objects) {
-                    [objects enumerateObjectsUsingBlock:^(__kindof id<NSItemProviderReading>  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                        MDType * cellType = obj;
-                        [userDropingMetamodel addType:cellType];
+        // Different behaviour depending on dropping proposal
+        switch (coordinator.proposal.operation) {
+            case UIDropOperationCancel:
+                break;
+            case UIDropOperationForbidden:
+                break;
+            case UIDropOperationMove:
+                break;
+            case UIDropOperationCopy:
+                
+                NSLog(@"[INFO][VCCM] Droppped provided item being copied.");
+                [self.tableMetamodels performBatchUpdates:^{
+                    [coordinator.session loadObjectsOfClass:MDType.class completion:^(NSArray<__kindof id<NSItemProviderReading>> * _Nonnull objects) {
+                        [objects enumerateObjectsUsingBlock:^(__kindof id<NSItemProviderReading>  _Nonnull object, NSUInteger idx, BOOL * _Nonnull stop) {
+                            MDType * cellType = object;
+                            NSLog(@"[INFO][VCCM] Droppped and copied a NSType %@ item.", cellType);
+                            
+                            // Update metamodel
+                            MDMetamodel * userDropMetamodel = [metamodels objectAtIndex:section];
+                            BOOL newType =[userDropMetamodel addType:cellType];
+                            
+                            // Update table
+                            if (newType) {
+                                NSMutableArray * userDropMetamodelTypes = [userDropMetamodel getTypes];
+                                NSInteger addRow = userDropMetamodelTypes.count - 1;
+                                NSIndexPath * addIndexPath = [NSIndexPath indexPathForRow:addRow inSection:section];
+                                [self.tableMetamodels insertRowsAtIndexPaths:@[addIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                            }
+                        }];
                     }];
-                }];
-            }
-                                completion:^(BOOL finished) {
-                                    // Nothing
-                                }];
-            
-            // Get the dropped object
-            NSArray * itemsProvided = coordinator.session.items;
-            UIDragItem * typeDragItem = [itemsProvided objectAtIndex:0];  // Only one item was dragged
-            NSItemProvider * typeItemProvider = typeDragItem.itemProvider;
-            [typeItemProvider loadObjectOfClass:[MDType class]
-                              completionHandler:^(id<NSItemProviderReading> _Nullable __strong object,
-                                                  NSError * _Nullable __strong error) {
-                                  if (object) {
-                                      MDType * cellType = object;
-                                      [userDropingMetamodel addType:cellType];
-                                      NSLog(@"[INFO][VCCM] Loaded provided item %@.", cellType);
-                                      // Update metamodel
-                                      
-                                  } else {
-                                      NSLog(@"[INFO][VCCM] No payload in dropped provided item.");
+                }
+                                    completion:^(BOOL finished) {
+                                        if (finished) {
+                                            // Update device metamodel
+                                            [self updatePersistentMetamodels];
+                                        }
+                                    }
+                 ];
+                
+                /* Another way retrieving each UIDragItem
+                NSArray * itemsProvided = coordinator.session.items;
+                UIDragItem * typeDragItem = [itemsProvided objectAtIndex:0];  // Only one item was dragged
+                NSItemProvider * typeItemProvider = typeDragItem.itemProvider;
+                [typeItemProvider loadObjectOfClass:[MDType class]
+                                  completionHandler:^(id<NSItemProviderReading> _Nullable __strong object,
+                                                      NSError * _Nullable __strong error) {
+                                      if (object) {
+                                          MDType * cellType = object;
+                                          NSLog(@"[INFO][VCCM] Droppped and copied a NSType %@ item.", cellType);
+                 
+                                          // Update metamodel
+                                          MDMetamodel * userDropMetamodel = [metamodels objectAtIndex:section];
+                                          BOOL newType =[userDropMetamodel addType:cellType];
+                                          
+                                          // Update table
+                                          if (newType) {
+                                              NSMutableArray * userDropMetamodelTypes = [userDropMetamodel getTypes];
+                                              NSInteger addRow = userDropMetamodelTypes.count - 1;
+                                              NSIndexPath * addIndexPath = [NSIndexPath indexPathForRow:addRow inSection:section];
+                                              [self.tableMetamodels insertRowsAtIndexPaths:@[addIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                                          }
+                 
+                                      } else {
+                                          NSLog(@"[INFO][VCCM] No payload in dropped provided item.");
+                                      }
                                   }
-                              }
-             ];
-            break;
+                 ];
+                 */
+                
+                break;
+        }
+        // Reload data
+        [self.tableMetamodels reloadData];
     }
-    
-    
-    // Reload data
-    [self.tableMetamodels reloadData];
 }
 
 #pragma mark - New types and metamodels
-
 
 @end

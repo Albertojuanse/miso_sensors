@@ -53,7 +53,10 @@
     self = [self initWithName:initName andDescription:description];
     if (self) {
         types = nil;
-        types = initTypes;
+        types = [[NSMutableArray alloc] init];
+        for (MDType * eachType in initTypes) {
+            [types addObject:eachType];
+        }
     }
     return self;
 }
@@ -127,7 +130,7 @@
  @method addType
  @discussion Setter of a new type in NSMutableArray 'type'.
  */
-- (void)addType:(MDType *)givenType {
+- (BOOL)addType:(MDType *)givenType {
     BOOL newType = YES;
     for (MDType * eachType in types) {
         if ([[eachType getName] isEqualToString:[givenType getName]]) {
@@ -137,6 +140,7 @@
     if (newType) {
         [types addObject:givenType];
     }
+    return newType;
 }
 
 /*!
