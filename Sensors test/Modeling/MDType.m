@@ -53,6 +53,7 @@
     return self;
 }
 
+#pragma mark - Instance methods
 /*!
  @method getName
  @discussion Getter of the 'name' attribute.
@@ -141,7 +142,6 @@
 }
 
 #pragma mark - NSCoding methods
-
 /*!
  @method initWithCoder:
  @discussion Constructor called when an object must be initiated with the data stored, shared... with a coding way.
@@ -170,20 +170,27 @@
 }
 
 #pragma mark - NSItemProviderWriting methods
-
-+ (NSArray<NSString *> * _Nullable)writableTypeIdentifiersForItemProvider {
-    return @[@"es.uam.miso.mdtype"];
+/*!
+ @method writableTypeIdentifiersForItemProvider
+ @discussion Synthesized getter of property 'writableTypeIdentifiersForItemProvider'.
+ */
++ (NSArray<NSString *> * _Nullable)writableTypeIdentifiersForItemProvider
+{
+    NSString* identifier = NSStringFromClass(self.class);
+    return @[identifier];
 }
 
 /*!
  @method loadDataWithTypeIdentifier:forItemProviderCompletionHandler:
- @discussion This method is called when this object is dragged or dropped in view.
+ @discussion This method is called when an instance of this object is dragged in a view to create a NSData data object of it.
  */
 - (NSProgress *)loadDataWithTypeIdentifier:(NSString *)typeIdentifier
           forItemProviderCompletionHandler:(void (^)(NSData *data, NSError *error))completionHandler
 {
-    NSLog(@"[INFO][MDT] Asked current progress.");
-    return [NSProgress currentProgress];
+    NSLog(@"[INFO][MDT] An instance of MDType %@ dragged.", [self description]);
+    NSData* data = [NSKeyedArchiver archivedDataWithRootObject:self];
+    completionHandler(data, nil);
+    return nil;
 }
 
 /*!
@@ -197,20 +204,25 @@
 }
 
 #pragma mark - NSItemProviderReading methods
-
-+ (NSArray<NSString *> * _Nullable)readableTypeIdentifiersForItemProvider {
-    return @[@"es.uam.miso.mdtype"];
+/*!
+ @method readableTypeIdentifiersForItemProvider
+ @discussion Synthesized getter of property 'readableTypeIdentifiersForItemProvider'.
+ */
++ (NSArray<NSString *> * _Nullable)readableTypeIdentifiersForItemProvider
+{
+    NSString* identifier = NSStringFromClass(self.class);
+    return @[identifier];
 }
 
 /*!
  @method objectWithItemProviderData:typeIdentifier:error:
- @discussion This method is called when this object is dragged or dropped in view.
+ @discussion This method is called when a NSData data object is dropped in a view to create an instance of this object with it.
  */
-+ (instancetype)objectWithItemProviderData:(NSData *)data
-                            typeIdentifier:(NSString *)typeIdentifier
-                                     error:(NSError * _Nullable *)outError
++ (nullable instancetype)objectWithItemProviderData:(nonnull NSData *)data
+                                     typeIdentifier:(nonnull NSString *)typeIdentifier
+                                              error:(NSError * _Nullable __autoreleasing * _Nullable)outError
 {
-    return self;
+    MDType * type = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    return type;
 }
-
 @end
