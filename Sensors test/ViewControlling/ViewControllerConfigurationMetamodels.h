@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "VCToolbar.h"
+#import "MDType.h"
 
 /*!
  @class ViewControllerConfigurationMetamodels
