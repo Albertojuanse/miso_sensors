@@ -603,7 +603,7 @@ canEditRowAtIndexPath:(NSIndexPath *)indexPath
         if (indexPath.section > metamodels.count - 1) {
             return NO;
         } else {
-            return YES;
+            return NO;
         }
     }
     if (tableView == self.tableTypes) {
@@ -720,15 +720,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (BOOL)removeTypeWithName:(NSString *)name
 {
     // Remove the type for every metamodel
-    NSInteger typeSection = 0;
-    for (MDMetamodel * eachMetamodel in metamodels) {
-        NSInteger typeRow = [eachMetamodel removeTypeWithName:name];
-        if (typeRow >= 0) {
-            NSIndexPath * indexPathToDelete = [NSIndexPath indexPathForRow:typeRow inSection:typeSection];
-            [self.tableMetamodels deleteRowsAtIndexPaths:@[indexPathToDelete] withRowAnimation:UITableViewRowAnimationFade];
-        }
-        typeSection = typeSection + 1;
-    }
+    // TO DO: Remove the type for every metamodel. 2020/01/30.
     
     // Remove the type itself
     MDType * foundType;
