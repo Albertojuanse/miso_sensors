@@ -144,6 +144,44 @@
 }
 
 /*!
+ @method removeType:
+ @discussion Remover of a type in NSMutableArray 'type'.
+ */
+- (BOOL)removeType:(MDType *)givenType {
+    MDType * foundType;
+    for (MDType * eachType in types) {
+        if ([givenType isEqualToMDType:eachType]) {
+            foundType = eachType;
+        }
+    }
+    if (foundType) {
+        [types removeObject:foundType];
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+/*!
+ @method removeTypeWithName:
+ @discussion Remover of a type in NSMutableArray 'type'.
+ */
+- (BOOL)removeTypeWithName:(NSString *)givenName {
+    MDType * foundType;
+    for (MDType * eachType in types) {
+        if ([givenName isEqualToString:[eachType getName]]) {
+            foundType = eachType;
+        }
+    }
+    if (foundType) {
+        [types removeObject:foundType];
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+/*!
  @method isEqual
  @discussion This method overwrites the isEqual super method.
  */
