@@ -309,7 +309,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
         // Check if this section is the extra one for "new item"
         if (indexPath.section > metamodels.count - 1) {
-            [self newMetamodel];
+            //[self newMetamodel];
             [self updatePersistentMetamodels];
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
             
@@ -324,15 +324,57 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
         // Check if this section is the extra one for "new item"
         if (indexPath.row > types.count - 1) {
-            [self newType];
-            [self updatePersistentTypes];
+            // Show the alert
+            [self askUserNewType];
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
-        } else { // If not, ask to remove item from metamodel
-            [self removeType];
             [self updatePersistentTypes];
+            
+        } else {
+            // Nothing to do
         }
 
     }
+}
+
+/*!
+ @method askUserNewType:
+ @discussion This method ask the user a new type using a pop up view.
+ */
+- (void) askUserNewType
+{
+    UIAlertController * alertAddType = [UIAlertController
+                                        alertControllerWithTitle:@"New type"
+                                        message:@"Please, write the name of the new type."
+                                        preferredStyle:UIAlertControllerStyleAlert
+                                        ];
+    
+    [alertAddType addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        typeTextField = textField;
+    }];
+    
+    UIAlertAction * addButton = [UIAlertAction
+                                 actionWithTitle:@"Add"
+                                 style:UIAlertActionStyleDefault
+                                 handler:^(UIAlertAction * _Nonnull action) {
+                                     NSString * userInput = typeTextField.text;
+                                     NSLog(@"%@", userInput);
+                                     [self newTypeWithName:userInput];
+                                     [self updatePersistentTypes];
+                                     [self.tableTypes reloadData];
+                                     NSLog(@"%@", types);
+                                 }
+                                 ];
+    
+    UIAlertAction * cancelButton = [UIAlertAction
+                                    actionWithTitle:@"Cancel"
+                                    style:UIAlertActionStyleDefault
+                                    handler:nil
+                                    ];
+    
+    [alertAddType addAction:addButton];
+    [alertAddType addAction:cancelButton];
+    [self presentViewController:alertAddType animated:YES completion:nil];
+    return;
 }
 
 #pragma mark - UItableView drag and drop delegate methods

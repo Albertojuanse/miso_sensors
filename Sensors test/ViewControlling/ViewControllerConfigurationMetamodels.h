@@ -24,6 +24,7 @@
     // Varibles
     NSMutableArray * types;
     NSMutableArray * metamodels;
+    UITextField * typeTextField;
     
 }
 
