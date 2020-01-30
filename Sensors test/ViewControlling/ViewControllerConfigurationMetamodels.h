@@ -25,6 +25,8 @@
     NSMutableArray * types;
     NSMutableArray * metamodels;
     UITextField * typeTextField;
+    BOOL removingAType;
+    NSString * nameTypeToRemove;
     
 }
 

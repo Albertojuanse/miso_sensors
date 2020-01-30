@@ -31,8 +31,8 @@
 - (void)setDescription:(NSString *)givenDescription;
 - (void)setTypes:(NSMutableArray *)givenTypes;
 - (BOOL)addType:(MDType *)givenType;
-- (BOOL)removeType:(MDType *)givenType;
-- (BOOL)removeTypeWithName:(NSString *)givenName;
+- (NSInteger)removeType:(MDType *)givenType;
+- (NSInteger)removeTypeWithName:(NSString *)givenName;
 - (NSString *)getName;
 - (NSString *)getDescription;
 - (NSMutableArray *)getTypes;

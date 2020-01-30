@@ -211,7 +211,6 @@
         } else {
             MDMetamodel * eachMetamodel = [metamodels objectAtIndex:section];
             NSMutableArray * eachTypes = [eachMetamodel getTypes];
-            NSLog(@"[HOLA] Metamodel %@ have %tu items",eachMetamodel, eachTypes.count);
             return eachTypes.count;
         }
     }
@@ -266,7 +265,6 @@
         
         // Check if this section is the extra one for "new item"
         if (indexPath.section > metamodels.count - 1) {
-            NSLog(@"[HOLA] Section %td, Row %td labeled with +",indexPath.section ,indexPath.row);
             cell.textLabel.text = [NSString stringWithFormat:@"+"];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         } else {
@@ -276,7 +274,6 @@
             // ...and get each of its types.
             MDType * eachType = [[eachMetamodel getTypes] objectAtIndex:indexPath.row];
             NSString * eachTypeName = [eachType getName];
-            NSLog(@"[HOLA] Section %td, Row %td labeled with <%@>",indexPath.section ,indexPath.row, [eachType getName]);
             cell.textLabel.text = [NSString stringWithFormat:@"<%@>", eachTypeName];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         }
@@ -310,7 +307,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         // Check if this section is the extra one for "new item"
         if (indexPath.section > metamodels.count - 1) {
             //[self newMetamodel];
-            [self updatePersistentMetamodels];
+            //[self updatePersistentMetamodels];
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
             
             //@"es.uam.miso/data/metamodels/areTypes"
@@ -357,11 +354,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                                  style:UIAlertActionStyleDefault
                                  handler:^(UIAlertAction * _Nonnull action) {
                                      NSString * userInput = typeTextField.text;
-                                     NSLog(@"%@", userInput);
                                      [self newTypeWithName:userInput];
                                      [self updatePersistentTypes];
                                      [self.tableTypes reloadData];
-                                     NSLog(@"%@", types);
                                  }
                                  ];
     
@@ -595,6 +590,59 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
     }
 }
 
+#pragma mark - UItableView swip cells methods
+/*!
+ @method tableView:canEditRowAtIndexPath:
+ @discussion This method sets every cell as editable.
+ */
+- (BOOL)tableView:(UITableView *)tableView
+canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.tableMetamodels) {
+        // Only types' cells can be edited; not the extra one for create metamodels.
+        if (indexPath.section > metamodels.count - 1) {
+            return NO;
+        } else {
+            return YES;
+        }
+    }
+    if (tableView == self.tableTypes) {
+        // Only types' cells can be edited; not the extra one for create types.
+        if (indexPath.row > types.count - 1) {
+            return NO;
+        } else {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+/*!
+ @method tableView:commitEditingStyle:forRowAtIndexPath:
+ @discussion This method is called when user edits a row.
+ */
+- (void)tableView:(UITableView *)tableView
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.tableMetamodels) {
+        NSLog(@"[VCCM][ERROR] Edited a cell in metamodels table.");
+    }
+    if (self.tableTypes) {
+        // If deleted
+        if (editingStyle == UITableViewCellEditingStyleDelete) {
+            // Reove the type and update
+            MDType * typeToRemove = [types objectAtIndex:indexPath.row];
+            [self removeTypeWithName:[typeToRemove getName]];
+            [self updatePersistentTypes];
+            // Remove the cell
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        } else {
+            NSLog(@"[VCCM][ERROR] Unhandled editing style in types table: %td", editingStyle);
+        }
+    }
+}
+
 #pragma mark - New types and metamodels
 /*!
  @method newMetamodelWithName:andDescription:
@@ -671,6 +719,18 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
  */
 - (BOOL)removeTypeWithName:(NSString *)name
 {
+    // Remove the type for every metamodel
+    NSInteger typeSection = 0;
+    for (MDMetamodel * eachMetamodel in metamodels) {
+        NSInteger typeRow = [eachMetamodel removeTypeWithName:name];
+        if (typeRow >= 0) {
+            NSIndexPath * indexPathToDelete = [NSIndexPath indexPathForRow:typeRow inSection:typeSection];
+            [self.tableMetamodels deleteRowsAtIndexPaths:@[indexPathToDelete] withRowAnimation:UITableViewRowAnimationFade];
+        }
+        typeSection = typeSection + 1;
+    }
+    
+    // Remove the type itself
     MDType * foundType;
     for (MDType * eachType in types) {
         if ([name isEqualToString:[eachType getName]]) {

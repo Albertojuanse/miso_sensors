@@ -145,40 +145,44 @@
 
 /*!
  @method removeType:
- @discussion Remover of a type in NSMutableArray 'type'.
+ @discussion Remover of a type in NSMutableArray 'type', if not found, returns -1.
  */
-- (BOOL)removeType:(MDType *)givenType {
+- (NSInteger)removeType:(MDType *)givenType {
+    NSInteger index = 0;
+    NSInteger foundIndex = -1;
     MDType * foundType;
     for (MDType * eachType in types) {
         if ([givenType isEqualToMDType:eachType]) {
             foundType = eachType;
+            foundIndex = index;
         }
+        index = index + 1;
     }
     if (foundType) {
         [types removeObject:foundType];
-        return YES;
-    } else {
-        return NO;
     }
+    return foundIndex;
 }
 
 /*!
  @method removeTypeWithName:
  @discussion Remover of a type in NSMutableArray 'type'.
  */
-- (BOOL)removeTypeWithName:(NSString *)givenName {
+- (NSInteger)removeTypeWithName:(NSString *)givenName {
+    NSInteger index = 0;
+    NSInteger foundIndex = -1;
     MDType * foundType;
     for (MDType * eachType in types) {
         if ([givenName isEqualToString:[eachType getName]]) {
             foundType = eachType;
+            foundIndex = index;
         }
+        index = index + 1;
     }
     if (foundType) {
         [types removeObject:foundType];
-        return YES;
-    } else {
-        return NO;
     }
+    return foundIndex;
 }
 
 /*!
