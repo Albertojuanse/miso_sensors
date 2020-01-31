@@ -273,8 +273,7 @@
         
             // ...and get each of its types.
             MDType * eachType = [[eachMetamodel getTypes] objectAtIndex:indexPath.row];
-            NSString * eachTypeName = [eachType getName];
-            cell.textLabel.text = [NSString stringWithFormat:@"<%@>", eachTypeName];
+            cell.textLabel.text = [NSString stringWithFormat:@"%@", eachType];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         }
         
@@ -287,8 +286,7 @@
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         } else {
             MDType * eachType = [types objectAtIndex:indexPath.row];
-            NSString * eachTypeName = [eachType getName];
-            cell.textLabel.text = [NSString stringWithFormat:@"<%@>", eachTypeName];
+            cell.textLabel.text = [NSString stringWithFormat:@"%@", eachType];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         }
     }
@@ -603,7 +601,7 @@ canEditRowAtIndexPath:(NSIndexPath *)indexPath
         if (indexPath.section > metamodels.count - 1) {
             return NO;
         } else {
-            return NO;
+            return YES;
         }
     }
     if (tableView == self.tableTypes) {
@@ -626,17 +624,47 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.tableMetamodels) {
-        NSLog(@"[VCCM][ERROR] Edited a cell in metamodels table.");
+        // If deleted
+        if (editingStyle == UITableViewCellEditingStyleDelete) {
+            
+
+            // Remove the type in metamodel and update
+            MDMetamodel * metamodelToModify = [metamodels objectAtIndex:indexPath.section];
+            NSLog(@"[VCCM][INFO] User wants to remove a type from metamodel %@.", metamodelToModify);
+            NSMutableArray * typesToModify = [metamodelToModify getTypes];
+            NSLog(@"[VCCM][INFO] -> Needed to remove type %@.", [typesToModify objectAtIndex:indexPath.row]);
+            [typesToModify removeObjectAtIndex:indexPath.row];
+            [self updatePersistentMetamodels];
+            /*
+            // Remove the cell's type
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+             */
+            
+        } else {
+            NSLog(@"[VCCM][ERROR] Unhandled editing style in metamodels table: %td", editingStyle);
+        }
     }
     if (self.tableTypes) {
         // If deleted
         if (editingStyle == UITableViewCellEditingStyleDelete) {
-            // Reove the type and update
             MDType * typeToRemove = [types objectAtIndex:indexPath.row];
+            NSLog(@"[VCCM][INFO] User wants to remove type %@.", typeToRemove);
+            
+            /*
+            // Remove the type from metamodels that use it
+            NSMutableArray * indexPaths = [self fromMetamodelsGetIndexPathsOfTypeWithName:[typeToRemove getName]];
+            for (NSIndexPath * eachIndexPath in indexPaths) {
+                NSLog(@"[VCCM][INFO] -> Needed to remove from metamodel %@.", [metamodels objectAtIndex:eachIndexPath.section]);
+            }
+            [self.tableMetamodels deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
+             */
+            
+            // Remove the type itself and update
             [self removeTypeWithName:[typeToRemove getName]];
             [self updatePersistentTypes];
-            // Remove the cell
+            // Remove the cell's type
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            
         } else {
             NSLog(@"[VCCM][ERROR] Unhandled editing style in types table: %td", editingStyle);
         }
@@ -703,6 +731,33 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 /*!
+ @method fromMetamodelsGetIndexPathsOfTypeWithName:
+ @discussion This method is called when user deletes a type and returns the index paths of that type in metamodels to remove them too.
+ */
+- (NSMutableArray *)fromMetamodelsGetIndexPathsOfTypeWithName:(NSString *)name
+{
+    NSMutableArray * indexPaths = [[NSMutableArray alloc] init];
+    NSInteger metamodelIndex = 0;
+    // Search for the type in metamodels
+    for (MDMetamodel * eachMetamodel in metamodels) {
+        
+        NSInteger typeIndex = 0;
+        NSMutableArray * eachTypes = [eachMetamodel getTypes];
+        for (MDType * eachType in eachTypes) {
+            
+            if ([name isEqualToString:[eachType getName]]) {
+                [indexPaths addObject:[NSIndexPath indexPathForRow:typeIndex inSection:metamodelIndex]];
+            }
+            typeIndex = typeIndex + 1;
+        }
+        
+        metamodelIndex = metamodelIndex + 1;
+    }
+    
+    return indexPaths;
+}
+
+/*!
  @method newTypeWithName:
  @discussion This method is called when user wants to create a new type.
  */
@@ -719,9 +774,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
  */
 - (BOOL)removeTypeWithName:(NSString *)name
 {
-    // Remove the type for every metamodel
-    // TO DO: Remove the type for every metamodel. 2020/01/30.
-    
     // Remove the type itself
     MDType * foundType;
     for (MDType * eachType in types) {
