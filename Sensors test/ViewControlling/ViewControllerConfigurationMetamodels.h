@@ -24,7 +24,10 @@
     // Varibles
     NSMutableArray * types;
     NSMutableArray * metamodels;
+    
+    // Creation and removing of types and metamodels
     UITextField * typeTextField;
+    UITextField * metamodelTextField;
     BOOL removingAType;
     NSString * nameTypeToRemove;
     

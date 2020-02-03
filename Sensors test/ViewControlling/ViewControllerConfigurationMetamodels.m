@@ -304,14 +304,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
         // Check if this section is the extra one for "new item"
         if (indexPath.section > metamodels.count - 1) {
-            //[self newMetamodel];
-            //[self updatePersistentMetamodels];
+            // Show the alert
+            [self askUserNewMetamodel];
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
-            
-            //@"es.uam.miso/data/metamodels/areTypes"
-            //@"es.uam.miso/data/metamodels/areMetamodels"
-            //@"es.uam.miso/data/metamodels/types"
-            //@"es.uam.miso/data/metamodels/metamodels"
+            [self updatePersistentMetamodels];
         }
 
     }
@@ -360,7 +356,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                                          [self newTypeWithName:userInput];
                                          [self updatePersistentTypes];
                                          [self.tableTypes reloadData];
-                                     }                                     
+                                         [self updatePersistentTypes];
+                                     }
                                  }
                                  ];
     
@@ -373,6 +370,51 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     [alertAddType addAction:addButton];
     [alertAddType addAction:cancelButton];
     [self presentViewController:alertAddType animated:YES completion:nil];
+    return;
+}
+
+/*!
+ @method askUserNewMetamodel:
+ @discussion This method ask the user a new metamodel using a pop up view.
+ */
+- (void) askUserNewMetamodel
+{
+    UIAlertController * alertAddMetamodel = [UIAlertController
+                                        alertControllerWithTitle:@"New metamodel"
+                                        message:@"Please, write the name of the new metamodel."
+                                        preferredStyle:UIAlertControllerStyleAlert
+                                        ];
+    
+    [alertAddMetamodel addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        metamodelTextField = textField;
+    }];
+    
+    UIAlertAction * addButton = [UIAlertAction
+                                 actionWithTitle:@"Add"
+                                 style:UIAlertActionStyleDefault
+                                 handler:^(UIAlertAction * _Nonnull action) {
+                                     
+                                     NSString * userInput = metamodelTextField.text;
+                                     // Regex verification to avoid empty names.
+                                     if ([userInput isEqualToString:@""]){
+                                         NSLog(@"[ERROR] User tried to create a metamodel with no name.");
+                                     } else {
+                                         [self newMetamodelWithName:userInput andDescription:userInput];
+                                         [self updatePersistentMetamodels];
+                                         [self.tableMetamodels reloadData];
+                                     }
+                                 }
+                                 ];
+    
+    UIAlertAction * cancelButton = [UIAlertAction
+                                    actionWithTitle:@"Cancel"
+                                    style:UIAlertActionStyleDefault
+                                    handler:nil
+                                    ];
+    
+    [alertAddMetamodel addAction:addButton];
+    [alertAddMetamodel addAction:cancelButton];
+    [self presentViewController:alertAddMetamodel animated:YES completion:nil];
     return;
 }
 
