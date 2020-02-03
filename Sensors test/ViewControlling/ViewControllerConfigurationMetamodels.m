@@ -351,10 +351,16 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                                  actionWithTitle:@"Add"
                                  style:UIAlertActionStyleDefault
                                  handler:^(UIAlertAction * _Nonnull action) {
+                                     
                                      NSString * userInput = typeTextField.text;
-                                     [self newTypeWithName:userInput];
-                                     [self updatePersistentTypes];
-                                     [self.tableTypes reloadData];
+                                     // Regex verification to avoid empty names.
+                                     if ([userInput isEqualToString:@""]){
+                                         NSLog(@"[ERROR] User tried to create a type with no name.");
+                                     } else {
+                                         [self newTypeWithName:userInput];
+                                         [self updatePersistentTypes];
+                                         [self.tableTypes reloadData];
+                                     }                                     
                                  }
                                  ];
     
