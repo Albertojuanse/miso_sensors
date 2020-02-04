@@ -26,6 +26,15 @@
                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
                                                    alpha:0.5
                                     ];
+    
+    // View layout
+    [self.textName setPlaceholder:@"Type's name"];
+    [self.textAttributes setPlaceholder:@"List of attributes' names"];
+    [self.textModel setText:@""];
+    [[self.textModel layer] setBorderColor:[[UIColor lightGrayColor] CGColor]];
+    [[self.textModel layer] setBorderWidth:.4];
+    [[self.textModel layer] setCornerRadius:8.0f];
+    
 }
 
 /*!

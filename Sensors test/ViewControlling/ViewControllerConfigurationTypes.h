@@ -20,6 +20,9 @@
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
     
+    // New type variables
+    NSString * newName;
+    
 }
 
 @property (weak, nonatomic) IBOutlet VCToolbar *toolbar;

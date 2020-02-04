@@ -211,7 +211,12 @@
         } else {
             MDMetamodel * eachMetamodel = [metamodels objectAtIndex:section];
             NSMutableArray * eachTypes = [eachMetamodel getTypes];
-            return eachTypes.count;
+            if (eachTypes.count == 0) {
+                // If the metamodel is empty, create a dummy cell.
+                return 1;
+            } else {
+                return eachTypes.count;
+            }
         }
     }
     if (tableView == self.tableTypes) {
@@ -267,14 +272,24 @@
         if (indexPath.section > metamodels.count - 1) {
             cell.textLabel.text = [NSString stringWithFormat:@"+"];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            cell.textLabel.textAlignment = NSTextAlignmentCenter;
         } else {
             // Get the metamodel that shows this section...
             MDMetamodel * eachMetamodel = [metamodels objectAtIndex:indexPath.section];
         
             // ...and get each of its types.
-            MDType * eachType = [[eachMetamodel getTypes] objectAtIndex:indexPath.row];
-            cell.textLabel.text = [NSString stringWithFormat:@"%@", eachType];
-            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            NSMutableArray * eachTypes = [eachMetamodel getTypes];
+            if (eachTypes.count == 0) {
+                // If the metamodel is empty, create a dummy cell.
+                cell.textLabel.text = [NSString stringWithFormat:@"⇤"];
+                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                cell.textLabel.textAlignment = NSTextAlignmentCenter;
+            } else {
+                MDType * eachType = [[eachMetamodel getTypes] objectAtIndex:indexPath.row];
+                cell.textLabel.text = [NSString stringWithFormat:@"%@", eachType];
+                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                cell.textLabel.textAlignment = NSTextAlignmentLeft;
+            }
         }
         
     }
@@ -284,10 +299,12 @@
         if (indexPath.row > types.count - 1) {
             cell.textLabel.text = [NSString stringWithFormat:@"+"];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            cell.textLabel.textAlignment = NSTextAlignmentCenter;
         } else {
             MDType * eachType = [types objectAtIndex:indexPath.row];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", eachType];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            cell.textLabel.textAlignment = NSTextAlignmentLeft;
         }
     }
     return cell;
@@ -506,7 +523,7 @@ canHandleDropSession:(id<UIDragSession>)session
             // Check if this section is the extra one for "new item"
             if (destinationIndexPath.section > metamodels.count - 1) {
                 // Return a forbidden proposal
-                //NSLog(@"[INFO][VCCM] Proposed not to allow user to drop provided item in this cell.");
+                // NSLog(@"[INFO][VCCM] Proposed not to allow user to drop provided item in this cell.");
                 proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationForbidden
                                                                            intent:UITableViewDropIntentUnspecified];
             } else {
@@ -515,12 +532,12 @@ canHandleDropSession:(id<UIDragSession>)session
                 UITableViewCell * destinationCell = [self.tableMetamodels cellForRowAtIndexPath:destinationIndexPath];
                 if ( !destinationCell.textLabel.text || [@"" isEqualToString:destinationCell.textLabel.text]) {
                     // Return a forbidden proposal
-                    //NSLog(@"[INFO][VCCM] Proposed not to allow user to drop provided item in this cell.");
+                    // NSLog(@"[INFO][VCCM] Proposed not to allow user to drop provided item in this cell.");
                     proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationForbidden
                                                                                intent:UITableViewDropIntentUnspecified];
                 } else {
                     // Return a copy and insert proposal
-                    //NSLog(@"[INFO][VCCM] Proposed allow user to drop (copy and insert) provided item in this cell.");
+                    // NSLog(@"[INFO][VCCM] Proposed allow user to drop (copy and insert) provided item in this cell.");
                     proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationCopy
                                                                            intent:UITableViewDropIntentAutomatic];
                 }
@@ -579,7 +596,7 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
                             
                             // Update metamodel
                             MDMetamodel * userDropMetamodel = [metamodels objectAtIndex:section];
-                            BOOL newType =[userDropMetamodel addType:cellType];
+                            BOOL newType = [userDropMetamodel addType:cellType];
                             
                             // Update table
                             if (newType) {
