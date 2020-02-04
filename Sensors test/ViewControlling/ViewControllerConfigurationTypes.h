@@ -23,6 +23,12 @@
 }
 
 @property (weak, nonatomic) IBOutlet VCToolbar *toolbar;
+@property (weak, nonatomic) IBOutlet UITableView *tableTypes;
+@property (weak, nonatomic) IBOutlet UIButton *buttonEdit;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *buttonSave;
+@property (weak, nonatomic) IBOutlet UITextField *textName;
+@property (weak, nonatomic) IBOutlet UITextField *textAttributes;
+@property (weak, nonatomic) IBOutlet UITextView *textModel;
 
 // Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
