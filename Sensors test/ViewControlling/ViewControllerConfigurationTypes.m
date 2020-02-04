@@ -34,6 +34,7 @@
     [[self.textModel layer] setBorderColor:[[UIColor lightGrayColor] CGColor]];
     [[self.textModel layer] setBorderWidth:.4];
     [[self.textModel layer] setCornerRadius:8.0f];
+    [self.buttonSave setEnabled:NO];
     
     // Submit demo metamodel if it does not exist
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
@@ -115,6 +116,128 @@
 {
     userDic = givenUserDic;
 }
+
+#pragma mark - Butons event handle
+/*!
+ @method handleEditButton:
+ @discussion This method handles the 'edit' button action and ask the selected MDType to load on textfields.
+ */
+- (IBAction)handleEditButton:(id)sender
+{
+    // Only edit if user did select a type
+    if (chosenType) {
+        
+        // Set name
+        [self.textName setText:[chosenType getName]];
+        
+        // Set attributes
+        NSString * attributesString = @"";
+        NSMutableArray * attributes = [chosenType getAttributes];
+        for (MDAttribute * eachAtribute in attributes) {
+            attributesString = [attributesString stringByAppendingString:[eachAtribute getName]];
+            attributesString = [attributesString stringByAppendingString:@", "];
+        }
+        [self.textAttributes setText:attributesString];
+        
+        // Upload layout
+        [self.buttonSave setEnabled:YES];
+        [self.textModel setText:@""];
+        
+    } else {
+        return;
+    }
+    
+}
+
+/*!
+ @method handleSaveButton:
+ @discussion This method handles the 'save' button action and ask the selected MDType to be saved with the information in the textfields.
+ */
+- (IBAction)handleSaveButton:(id)sender
+{
+    // Only edit if user did select a type
+    if (chosenType) {
+        
+        // Get name
+        [chosenType setName:[self.textName text]];
+        
+        // Set attributes
+        NSString * attributesString = [self.textAttributes text];
+        NSMutableArray * attributes = [chosenType getAttributes];
+        NSArray * attributesNames = [attributesString componentsSeparatedByString:@", "];
+        for (NSString * eachAttributeNames in attributesNames) {
+            
+            // Check if it existed or not
+            BOOL nameFound = NO;
+            for (MDAttribute * eachAttribute in attributes) {
+                NSString * eachName = [eachAttribute getName];
+                if ([eachName isEqualToString:eachAttributeNames]) {
+                    nameFound = YES;
+                }
+            }
+            // Create it if not
+            if (!nameFound) {
+                MDAttribute * newAttribute = [[MDAttribute alloc] initWithName:eachAttributeNames];
+                [attributes addObject:newAttribute];
+            }
+            
+        }
+        [chosenType setAttributes:attributes];
+        
+        // Generate a model representation
+        NSMutableDictionary * typeDic = [[NSMutableDictionary alloc] init];
+        [typeDic setObject:[chosenType getName] forKey:@"name"];
+        [typeDic setObject:[chosenType getAttributes] forKey:@"attributes"];
+        NSString * typeDicString = [NSString stringWithFormat:@"%@", typeDic];
+        [self.textModel setText:typeDicString];
+        
+        // Save in device
+        [self updatePersistentTypes];
+
+        // Upload layout
+        [self.buttonSave setEnabled:NO];
+        [self.textName setText:@""];
+        [self.textAttributes setText:@""];
+        NSArray * selectedRows = [self.tableTypes indexPathsForSelectedRows];
+        for (NSIndexPath * eachIndexPath in selectedRows) {
+            [self.tableTypes deselectRowAtIndexPath:eachIndexPath animated:nil];
+        }
+        [self.tableTypes reloadData];
+        
+        
+    } else {
+        return;
+    }
+    
+}
+
+/*!
+ @method updatePersistentTypes
+ @discussion This method is called when user changes types collection in orther to upload it.
+ */
+- (BOOL)updatePersistentTypes
+{
+    // Remove previous collection
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodels/types"];
+    [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodels/areTypes"];
+    
+    // Check if there is any type
+    NSData * areTypesData;
+    if (types.count > 0) {
+        areTypesData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+    } else {
+        areTypesData = [NSKeyedArchiver archivedDataWithRootObject:@"NO"];
+    }
+    
+    // Save information
+    [userDefaults setObject:areTypesData forKey:@"es.uam.miso/data/metamodels/areTypes"];
+    NSData * typesData = [NSKeyedArchiver archivedDataWithRootObject:types];
+    [userDefaults setObject:typesData forKey:@"es.uam.miso/data/metamodels/types"];
+    
+    return YES;
+}
+
 
 #pragma mark - UItableView data delegate methods
 /*!

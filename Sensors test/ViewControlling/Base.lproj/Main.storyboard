@@ -1650,6 +1650,9 @@
                                 <rect key="frame" x="164" y="478" width="36" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                 <state key="normal" title="▲"/>
+                                <connections>
+                                    <action selector="handleSaveButton:" destination="it5-Xe-lJv" eventType="touchUpInside" id="Alb-RC-TMq"/>
+                                </connections>
                             </button>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="rvF-sA-os9">
                                 <rect key="frame" x="32" y="543" width="704" height="30"/>
@@ -1680,6 +1683,9 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                 <state key="normal" title="▼"/>
+                                <connections>
+                                    <action selector="handleEditButton:" destination="it5-Xe-lJv" eventType="touchUpInside" id="hhj-yf-y2x"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1712,8 +1718,8 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="Htn-Mn-mlT"/>
                     <connections>
-                        <outlet property="buttonEdit" destination="wwm-Pt-ogm" id="eAj-IH-Bcv"/>
-                        <outlet property="buttonSave" destination="U7L-wm-EoO" id="7My-T1-cbv"/>
+                        <outlet property="buttonEdit" destination="wwm-Pt-ogm" id="860-iC-p6y"/>
+                        <outlet property="buttonSave" destination="U7L-wm-EoO" id="5sO-Dp-Z4X"/>
                         <outlet property="tableTypes" destination="I1a-7L-BAP" id="zjf-rv-M0n"/>
                         <outlet property="textAttributes" destination="COn-9w-41X" id="soc-Jc-qR9"/>
                         <outlet property="textModel" destination="VwF-nv-lH9" id="1o5-n8-AFi"/>

@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "VCToolbar.h"
 #import "MDType.h"
+#import "MDAttribute.h"
 
 /*!
  @class ViewControllerConfigurationTypes
@@ -31,7 +32,7 @@
 @property (weak, nonatomic) IBOutlet VCToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UITableView *tableTypes;
 @property (weak, nonatomic) IBOutlet UIButton *buttonEdit;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *buttonSave;
+@property (weak, nonatomic) IBOutlet UIButton *buttonSave;
 @property (weak, nonatomic) IBOutlet UITextField *textName;
 @property (weak, nonatomic) IBOutlet UITextField *textAttributes;
 @property (weak, nonatomic) IBOutlet UITextView *textModel;

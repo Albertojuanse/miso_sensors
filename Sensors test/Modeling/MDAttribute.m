@@ -129,7 +129,7 @@
  */
 - (NSString *)description
 {
-    return [NSString stringWithFormat: @"\"%@\"", name];
+    return [NSString stringWithFormat: @"%@ = ", name];
 }
 
 /*!
