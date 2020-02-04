@@ -283,7 +283,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1V6-WN-BlQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2155.46875" y="1735.546875"/>
+            <point key="canvasLocation" x="-1330" y="1736"/>
         </scene>
         <!--Item-->
         <scene sceneID="AGz-dH-Q4l">
@@ -334,7 +334,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Don-5U-Fst" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1348.4375" y="1735.546875"/>
+            <point key="canvasLocation" x="-2068" y="1736"/>
         </scene>
         <!--View Controller Add Beacon Menu-->
         <scene sceneID="7FD-gP-vw4">
@@ -1584,20 +1584,88 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
-                        <segue destination="mqL-qo-A1i" kind="relationship" relationship="viewControllers" id="WRp-Xi-vMd"/>
-                        <segue destination="PUF-Vd-cEJ" kind="relationship" relationship="viewControllers" id="kel-Dc-TeQ"/>
+                        <segue destination="it5-Xe-lJv" kind="relationship" relationship="viewControllers" id="Mak-cb-FYu"/>
+                        <segue destination="mqL-qo-A1i" kind="relationship" relationship="viewControllers" id="Ty4-OY-3OT"/>
+                        <segue destination="PUF-Vd-cEJ" kind="relationship" relationship="viewControllers" id="IAK-zR-jRE"/>
+                        <segue destination="K89-5A-aAg" kind="relationship" relationship="viewControllers" id="FsQ-wC-hPN"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uzt-OR-bAx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1755" y="794"/>
         </scene>
+        <!--Item-->
+        <scene sceneID="Nzy-Yf-CDF">
+            <objects>
+                <viewController id="K89-5A-aAg" customClass="ViewControllerConfigurationBeacons" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8Sn-Kd-5pA">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="x3A-bt-iaF" customClass="VCToolbar">
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="60"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="otV-OH-qcV"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="x3A-bt-iaF" firstAttribute="top" secondItem="8Sn-Kd-5pA" secondAttribute="top" id="EO4-fr-lSe"/>
+                            <constraint firstItem="x3A-bt-iaF" firstAttribute="trailing" secondItem="nqu-1a-QpI" secondAttribute="trailing" id="U62-kk-GqL"/>
+                            <constraint firstItem="x3A-bt-iaF" firstAttribute="leading" secondItem="nqu-1a-QpI" secondAttribute="leading" id="dTb-1n-yUc"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="nqu-1a-QpI"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Item" id="afM-u9-bW3"/>
+                    <connections>
+                        <outlet property="toolbar" destination="x3A-bt-iaF" id="d8J-xO-SPZ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FkZ-Ke-OrH" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-612" y="1736"/>
+        </scene>
+        <!--Item-->
+        <scene sceneID="6Lk-3O-wo0">
+            <objects>
+                <viewController id="it5-Xe-lJv" customClass="ViewControllerConfigurationTypes" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="4Ez-1k-t7Z">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hSB-R5-syz" customClass="VCToolbar">
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="60"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="ada-gE-5mF"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="hSB-R5-syz" firstAttribute="trailing" secondItem="LCd-sB-2pk" secondAttribute="trailing" id="1df-8A-vXP"/>
+                            <constraint firstItem="hSB-R5-syz" firstAttribute="leading" secondItem="LCd-sB-2pk" secondAttribute="leading" id="UOg-E9-YGn"/>
+                            <constraint firstItem="hSB-R5-syz" firstAttribute="top" secondItem="4Ez-1k-t7Z" secondAttribute="top" id="aPQ-Rg-2qP"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="LCd-sB-2pk"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Item" id="Htn-Mn-mlT"/>
+                    <connections>
+                        <outlet property="toolbar" destination="hSB-R5-syz" id="tzD-Ap-23v"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="RVZ-rP-c0z" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2816" y="1736"/>
+        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="FM1-nA-kyi"/>
         <segue reference="QxI-WS-XJS"/>
-        <segue reference="hiw-ci-FFd"/>
+        <segue reference="A3y-43-nSw"/>
         <segue reference="ARI-Cn-mJV"/>
-        <segue reference="jUo-Ud-pm0"/>
+        <segue reference="OWJ-G0-Y79"/>
     </inferredMetricsTieBreakers>
 </document>

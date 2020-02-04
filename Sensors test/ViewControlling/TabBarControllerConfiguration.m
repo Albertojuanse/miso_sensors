@@ -26,6 +26,20 @@
         
         // Depending on the view, pass different variables or set a different tab icon
         NSString * viewClass = NSStringFromClass([view class]);
+        if ([viewClass containsString:@"Types"]){
+            viewControllerConfigurationTypes = (ViewControllerConfigurationTypes*)view;
+            
+            // Pass the variables as in segues
+            [viewControllerConfigurationTypes setUserDic:userDic];
+            [viewControllerConfigurationTypes setCredentialsUserDic:credentialsUserDic];
+            
+            // Configure the tab icon
+            UITabBarItem * modesTabBarItem = [[UITabBarItem alloc] initWithTitle:nil
+                                                                           image:[UIImage imageNamed:@"type.png"]
+                                                                             tag:2];
+            [viewControllerConfigurationTypes setTabBarItem:modesTabBarItem];
+            
+        }
         if ([viewClass containsString:@"Metamodels"]){
             viewControllerConfigurationMetamodels = (ViewControllerConfigurationMetamodels*)view;
             
@@ -51,6 +65,20 @@
                                                                            image:[UIImage imageNamed:@"routine.png"]
                                                                              tag:2];
             [viewControllerConfigurationModes setTabBarItem:modesTabBarItem];
+            
+        }
+        if ([viewClass containsString:@"Beacons"]){
+            viewControllerConfigurationBeacons = (ViewControllerConfigurationBeacons*)view;
+            
+            // Pass the variables as in segues
+            [viewControllerConfigurationBeacons setUserDic:userDic];
+            [viewControllerConfigurationBeacons setCredentialsUserDic:credentialsUserDic];
+            
+            // Configure the tab icon
+            UITabBarItem * modesTabBarItem = [[UITabBarItem alloc] initWithTitle:nil
+                                                                           image:[UIImage imageNamed:@"beacon.png"]
+                                                                             tag:2];
+            [viewControllerConfigurationBeacons setTabBarItem:modesTabBarItem];
             
         }
         
@@ -95,9 +123,13 @@
 - (void)tabBarController:(UITabBarController *)tabBarController
  didSelectViewController:(UIViewController *)viewController
 {
-    if (viewController == viewControllerConfigurationModes) {
+    if (viewController == viewControllerConfigurationTypes) {
     }
     if (viewController == viewControllerConfigurationMetamodels) {
+    }
+    if (viewController == viewControllerConfigurationModes) {
+    }
+    if (viewController == viewControllerConfigurationBeacons) {
     }
 }
 
