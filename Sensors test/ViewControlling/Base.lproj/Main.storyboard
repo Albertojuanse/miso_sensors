@@ -1713,7 +1713,7 @@
                     <tabBarItem key="tabBarItem" title="Item" id="Htn-Mn-mlT"/>
                     <connections>
                         <outlet property="buttonEdit" destination="wwm-Pt-ogm" id="eAj-IH-Bcv"/>
-                        <outlet property="buttonSave" destination="5Xj-JS-Z4y" id="13b-dr-fgo"/>
+                        <outlet property="buttonSave" destination="U7L-wm-EoO" id="7My-T1-cbv"/>
                         <outlet property="tableTypes" destination="I1a-7L-BAP" id="zjf-rv-M0n"/>
                         <outlet property="textAttributes" destination="COn-9w-41X" id="soc-Jc-qR9"/>
                         <outlet property="textModel" destination="VwF-nv-lH9" id="1o5-n8-AFi"/>

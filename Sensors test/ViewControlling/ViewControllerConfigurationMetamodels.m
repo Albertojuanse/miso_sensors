@@ -29,9 +29,8 @@
                                                    alpha:0.5
                                     ];
     
-    // Load existing types and metamodels in the device
+    // Submit demo metamodel if it does not exist
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    
     // Search for 'areTypes' boolean and if so, load the MDType array
     NSData * areTypesData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/areTypes"];
     NSString * areTypes;
@@ -46,34 +45,7 @@
         types = [NSKeyedUnarchiver unarchiveObjectWithData:typesData];
         
         NSLog(@"[INFO][VCCM] %tu ontologycal types found in device.", types.count);
-    } else {
-        // No saved data
-        // TO DO: Ask user if demo types have to be loaded. Alberto J. 2020/01/27.
-        
-        // Create the types
-        MDType * noType = [[MDType alloc] initWithName:@"<No type>"];
-        MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
-        MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
-        MDType * wallType = [[MDType alloc] initWithName:@"Wall"];
-        MDType * doorType = [[MDType alloc] initWithName:@"Door"];
-        
-        // Save them in persistent memory
-        areTypesData = nil; // ARC disposing
-        areTypesData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-        [userDefaults setObject:areTypesData forKey:@"es.uam.miso/data/metamodels/areTypes"];
-        
-        types = [[NSMutableArray alloc] init];
-        [types addObject:noType];
-        [types addObject:cornerType];
-        [types addObject:deviceType];
-        [types addObject:wallType];
-        [types addObject:doorType];
-        NSData * typesData = [NSKeyedArchiver archivedDataWithRootObject:types];
-        [userDefaults setObject:typesData forKey:@"es.uam.miso/data/metamodels/types"];
-        
-        NSLog(@"[INFO][VCCM] No ontologycal types found in device; demo types saved.");
     }
-    
     // Search for 'areMetamodels' boolean and if so, load the MDMetamodel array
     NSData * areMetamodelsData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/areMetamodels"];
     NSString * areMetamodels;
@@ -89,34 +61,7 @@
         
         NSLog(@"[INFO][VCCM] %tu metamodels found in device.", metamodels.count);
     } else {
-        // No saved data
-        // TO DO: Ask user if demo metamodels have to be loaded. Alberto J. 2020/01/27.
-        
-        // Create the metamodel with a copy of types
-        NSMutableArray * metamodelTypes = [[NSMutableArray alloc] init];
-        for (MDType * type in types) {
-            [metamodelTypes addObject:type];
-        }
-        MDMetamodel * buildingMetamodel = [[MDMetamodel alloc] initWithName:@"Building"
-                                                                description:@"Building"
-                                                                   andTypes:metamodelTypes];
-        NSMutableArray * metamodel2Types = [metamodelTypes mutableCopy];
-        [metamodel2Types removeLastObject];
-        MDMetamodel * building2Metamodel = [[MDMetamodel alloc] initWithName:@"Building2"
-                                                                description:@"Building2"
-                                                                   andTypes:metamodel2Types];
-        
-        // Save them in persistent memory
-        areMetamodelsData = nil; // ARC disposing
-        areMetamodelsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-        [userDefaults setObject:areMetamodelsData forKey:@"es.uam.miso/data/metamodels/areMetamodels"];
-        metamodels = [[NSMutableArray alloc] init];
-        [metamodels addObject:buildingMetamodel];
-        [metamodels addObject:building2Metamodel];
-        NSData * metamodelsData = [NSKeyedArchiver archivedDataWithRootObject:metamodels];
-        [userDefaults setObject:metamodelsData forKey:@"es.uam.miso/data/metamodels/metamodels"];
-        
-        NSLog(@"[INFO][VCCM] No metamodels found in device; demo metamodel saved.");
+        NSLog(@"[ERROR][VCCM] No metamodels found in device; demo metamodel saved.");
     }
 
     // Table delegates; the delegate methods for attending these tables are part of this class.
@@ -600,10 +545,23 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
                             
                             // Update table
                             if (newType) {
+                                
+                                // TO DO: Manage this; not working in new metamodels/sections.
+                                /*
+                                 // Replace the dummy cell if exists
+                                 NSIndexPath * currentCellIndexPath = [NSIndexPath indexPathForRow:0 inSection:section];
+                                 UITableViewCell * currentCell = [tableView cellForRowAtIndexPath:currentCellIndexPath];
+                                 NSString * currentCellText = currentCell.textLabel.text;
+                                 if ([currentCellText isEqualToString:@"⇤"]) {
+                                     [self.tableMetamodels deleteRowsAtIndexPaths:@[currentCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                                 }
+                                */
+                                
                                 NSMutableArray * userDropMetamodelTypes = [userDropMetamodel getTypes];
                                 NSInteger addRow = userDropMetamodelTypes.count - 1;
                                 NSIndexPath * addIndexPath = [NSIndexPath indexPathForRow:addRow inSection:section];
-                                [self.tableMetamodels insertRowsAtIndexPaths:@[addIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                                [tableView deleteRowsAtIndexPaths:@[addIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                                [tableView insertRowsAtIndexPaths:@[addIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                             }
                         }];
                     }];
