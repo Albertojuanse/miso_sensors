@@ -158,8 +158,15 @@
     // Only edit if user did select a type
     if (chosenType) {
         
-        // Get name
-        [chosenType setName:[self.textName text]];
+        // Get name and check if it is a new one or not
+        NSString * nameSet = [self.textName text];
+        if ([nameSet isEqualToString:[chosenType getName]]) {
+            [chosenType setName:[self.textName text]];
+        } else {
+            MDType * newType = [[MDType alloc] initWithName:nameSet];
+            chosenType = newType;
+        }
+        
         
         // Set attributes if exists
         NSString * attributesString = [self.textAttributes text];
