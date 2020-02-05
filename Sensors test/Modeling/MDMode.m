@@ -36,20 +36,7 @@
     return self;
 }
 
-/*!
- @method initWithCoder:
- @discussion Constructor called when an object must be initiated with the data stored, shared... with a coding way.
- */
-- (id)initWithCoder:(NSCoder *)decoder {
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    NSNumber * codedMode = [decoder decodeObjectForKey:@"mode"];
-    mode = [codedMode integerValue];
-    return self;
-}
-
+#pragma mark - Instance methods
 /*!
  @method getMode
  @discussion Getter of the 'mode' attribute.
@@ -59,11 +46,47 @@
 }
 
 /*!
+ @method getMetamodels
+ @discussion Getter of the 'metamodels' attribute.
+ */
+- (NSMutableArray *)getMetamodels
+{
+    return metamodels;
+}
+
+/*!
  @method setMode
  @discussion Setter of the 'mode' attribute.
  */
 - (void)setMode:(enum MDModes)givenMode {
     mode = givenMode;
+}
+
+/*!
+ @method setMetamodels
+ @discussion Setter of the 'metamodels' attribute.
+ */
+- (void)setMetamodels:(NSMutableArray *)givenMetamodels
+{
+    metamodels = givenMetamodels;
+}
+
+/*!
+ @method addMetamodel
+ @discussion Setter of a new metamodel in 'metamodels' attribute.
+ */
+- (BOOL)addMetamodel:(MDMetamodel *)givenMetamodel
+{
+    BOOL newMetamodel = YES;
+    for (MDMetamodel * eachMetamodel in metamodels) {
+        if ([[eachMetamodel getName] isEqualToString:[givenMetamodel getName]]) {
+            newMetamodel = NO;
+        }
+    }
+    if (newMetamodel) {
+        [metamodels addObject:givenMetamodel];
+    }
+    return newMetamodel;
 }
 
 /*!
@@ -106,14 +129,6 @@
         return NO;
     }
     return YES;
-}
-
-/*!
- @method encodeWithCoder:
- @discussion This method is called when this object must be coded as a data object for storing, sharing...
- */
-- (void)encodeWithCoder:(NSCoder *)encoder {
-    [encoder encodeObject:[NSNumber numberWithInt:mode] forKey:@"mode"];
 }
 
 /*!
@@ -165,5 +180,28 @@
 - (NSString *)stringValue
 {
     return [self description];
+}
+
+#pragma mark - NSCoding methods
+/*!
+ @method initWithCoder:
+ @discussion Constructor called when an object must be initiated with the data stored, shared... with a coding way.
+ */
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    NSNumber * codedMode = [decoder decodeObjectForKey:@"mode"];
+    mode = [codedMode integerValue];
+    return self;
+}
+
+/*!
+ @method encodeWithCoder:
+ @discussion This method is called when this object must be coded as a data object for storing, sharing...
+ */
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [encoder encodeObject:[NSNumber numberWithInt:mode] forKey:@"mode"];
 }
 @end
