@@ -20,6 +20,14 @@
  */
 - (void)viewDidLoad
 {
+    // Preventing previous view variables' values due to tab controller lifecycle
+    types = nil;
+    metamodels = nil;
+    typeTextField = nil;
+    metamodelTextField = nil;
+    removingAType = nil;
+    nameTypeToRemove = nil;
+    
     // Toolbar layout
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];

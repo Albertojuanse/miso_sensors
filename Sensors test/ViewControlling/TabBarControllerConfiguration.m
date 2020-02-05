@@ -202,12 +202,16 @@
  didSelectViewController:(UIViewController *)viewController
 {
     if (viewController == viewControllerConfigurationTypes) {
+        [viewControllerConfigurationTypes viewDidLoad];
     }
     if (viewController == viewControllerConfigurationMetamodels) {
+        [viewControllerConfigurationMetamodels viewDidLoad];
     }
     if (viewController == viewControllerConfigurationModes) {
+        [viewControllerConfigurationModes viewDidLoad];
     }
     if (viewController == viewControllerConfigurationBeacons) {
+        [viewControllerConfigurationBeacons viewDidLoad];
     }
 }
 

@@ -18,6 +18,11 @@
  */
 - (void)viewDidLoad
 {
+    // Preventing previous view variables' values due to tab controller lifecycle
+    types = nil;
+    metamodels = nil;
+    chosenType = nil;
+    
     // Toolbar layout
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
