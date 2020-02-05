@@ -161,28 +161,30 @@
         // Get name
         [chosenType setName:[self.textName text]];
         
-        // Set attributes
+        // Set attributes if exists
         NSString * attributesString = [self.textAttributes text];
-        NSMutableArray * attributes = [chosenType getAttributes];
-        NSArray * attributesNames = [attributesString componentsSeparatedByString:@", "];
-        for (NSString * eachAttributeNames in attributesNames) {
-            
-            // Check if it existed or not
-            BOOL nameFound = NO;
-            for (MDAttribute * eachAttribute in attributes) {
-                NSString * eachName = [eachAttribute getName];
-                if ([eachName isEqualToString:eachAttributeNames]) {
-                    nameFound = YES;
+        if (attributesString && ![attributesString isEqualToString:@""]) {
+            NSMutableArray * attributes = [chosenType getAttributes];
+            NSArray * attributesNames = [attributesString componentsSeparatedByString:@", "];
+            for (NSString * eachAttributeNames in attributesNames) {
+                
+                // Check if it existed or not
+                BOOL nameFound = NO;
+                for (MDAttribute * eachAttribute in attributes) {
+                    NSString * eachName = [eachAttribute getName];
+                    if ([eachName isEqualToString:eachAttributeNames]) {
+                        nameFound = YES;
+                    }
                 }
+                // Create it if not
+                if (!nameFound) {
+                    MDAttribute * newAttribute = [[MDAttribute alloc] initWithName:eachAttributeNames];
+                    [attributes addObject:newAttribute];
+                }
+                
             }
-            // Create it if not
-            if (!nameFound) {
-                MDAttribute * newAttribute = [[MDAttribute alloc] initWithName:eachAttributeNames];
-                [attributes addObject:newAttribute];
-            }
-            
+            [chosenType setAttributes:attributes];
         }
-        [chosenType setAttributes:attributes];
         
         // Generate a model representation
         NSMutableDictionary * typeDic = [[NSMutableDictionary alloc] init];
