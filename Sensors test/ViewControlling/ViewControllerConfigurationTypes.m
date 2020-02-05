@@ -34,7 +34,6 @@
     [[self.textModel layer] setBorderColor:[[UIColor lightGrayColor] CGColor]];
     [[self.textModel layer] setBorderWidth:.4];
     [[self.textModel layer] setCornerRadius:8.0f];
-    [self.buttonSave setEnabled:NO];
     
     // Submit demo metamodel if it does not exist
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
@@ -140,7 +139,6 @@
         [self.textAttributes setText:attributesString];
         
         // Upload layout
-        [self.buttonSave setEnabled:YES];
         [self.textModel setText:@""];
         
     } else {
@@ -155,68 +153,74 @@
  */
 - (IBAction)handleSaveButton:(id)sender
 {
-    // Only edit if user did select a type
-    if (chosenType) {
+    // If user did not select a type, is a new one
+    NSString * nameSet = [self.textName text];
+    if (!chosenType) {
         
-        // Get name and check if it is a new one or not
-        NSString * nameSet = [self.textName text];
-        if ([nameSet isEqualToString:[chosenType getName]]) {
-            [chosenType setName:[self.textName text]];
-        } else {
+        // Check if it existed or not
+        BOOL nameFound = NO;
+        MDType * typeFound;
+        for (MDType * eachType in types) {
+            NSString * eachName = [eachType getName];
+            if ([eachName isEqualToString:nameSet]) {
+                nameFound = YES;
+                typeFound = eachType;
+            }
+        }
+        // Create it if not
+        if (!nameFound) {
             MDType * newType = [[MDType alloc] initWithName:nameSet];
             chosenType = newType;
+            [types addObject:newType];
+        } else {
+            chosenType = typeFound;
         }
         
-        
-        // Set attributes if exists
-        NSString * attributesString = [self.textAttributes text];
-        if (attributesString && ![attributesString isEqualToString:@""]) {
-            NSMutableArray * attributes = [chosenType getAttributes];
-            NSArray * attributesNames = [attributesString componentsSeparatedByString:@", "];
-            for (NSString * eachAttributeNames in attributesNames) {
-                
-                // Check if it existed or not
-                BOOL nameFound = NO;
-                for (MDAttribute * eachAttribute in attributes) {
-                    NSString * eachName = [eachAttribute getName];
-                    if ([eachName isEqualToString:eachAttributeNames]) {
-                        nameFound = YES;
-                    }
-                }
-                // Create it if not
-                if (!nameFound) {
-                    MDAttribute * newAttribute = [[MDAttribute alloc] initWithName:eachAttributeNames];
-                    [attributes addObject:newAttribute];
-                }
-                
-            }
-            [chosenType setAttributes:attributes];
-        }
-        
-        // Generate a model representation
-        NSMutableDictionary * typeDic = [[NSMutableDictionary alloc] init];
-        [typeDic setObject:[chosenType getName] forKey:@"name"];
-        [typeDic setObject:[chosenType getAttributes] forKey:@"attributes"];
-        NSString * typeDicString = [NSString stringWithFormat:@"%@", typeDic];
-        [self.textModel setText:typeDicString];
-        
-        // Save in device
-        [self updatePersistentTypes];
-
-        // Upload layout
-        [self.buttonSave setEnabled:NO];
-        [self.textName setText:@""];
-        [self.textAttributes setText:@""];
-        NSArray * selectedRows = [self.tableTypes indexPathsForSelectedRows];
-        for (NSIndexPath * eachIndexPath in selectedRows) {
-            [self.tableTypes deselectRowAtIndexPath:eachIndexPath animated:nil];
-        }
-        [self.tableTypes reloadData];
-        
-        
-    } else {
-        return;
     }
+    
+    // Set attributes if exists
+    NSString * attributesString = [self.textAttributes text];
+    if (attributesString && ![attributesString isEqualToString:@""]) {
+        NSMutableArray * attributes = [chosenType getAttributes];
+        NSArray * attributesNames = [attributesString componentsSeparatedByString:@", "];
+        for (NSString * eachAttributeNames in attributesNames) {
+            
+            // Check if it existed or not
+            BOOL nameFound = NO;
+            for (MDAttribute * eachAttribute in attributes) {
+                NSString * eachName = [eachAttribute getName];
+                if ([eachName isEqualToString:eachAttributeNames]) {
+                    nameFound = YES;
+                }
+            }
+            // Create it if not
+            if (!nameFound) {
+                MDAttribute * newAttribute = [[MDAttribute alloc] initWithName:eachAttributeNames];
+                [attributes addObject:newAttribute];
+            }
+            
+        }
+        [chosenType setAttributes:attributes];
+    }
+    
+    // Generate a model representation
+    NSMutableDictionary * typeDic = [[NSMutableDictionary alloc] init];
+    [typeDic setObject:[chosenType getName] forKey:@"name"];
+    [typeDic setObject:[chosenType getAttributes] forKey:@"attributes"];
+    NSString * typeDicString = [NSString stringWithFormat:@"%@", typeDic];
+    [self.textModel setText:typeDicString];
+    
+    // Save in device
+    [self updatePersistentTypes];
+
+    // Upload layout
+    [self.textName setText:@""];
+    [self.textAttributes setText:@""];
+    NSArray * selectedRows = [self.tableTypes indexPathsForSelectedRows];
+    for (NSIndexPath * eachIndexPath in selectedRows) {
+        [self.tableTypes deselectRowAtIndexPath:eachIndexPath animated:nil];
+    }
+    [self.tableTypes reloadData];
     
 }
 

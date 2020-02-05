@@ -560,7 +560,6 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
                                 NSMutableArray * userDropMetamodelTypes = [userDropMetamodel getTypes];
                                 NSInteger addRow = userDropMetamodelTypes.count - 1;
                                 NSIndexPath * addIndexPath = [NSIndexPath indexPathForRow:addRow inSection:section];
-                                [tableView deleteRowsAtIndexPaths:@[addIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                                 [tableView insertRowsAtIndexPaths:@[addIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                             }
                         }];
@@ -812,6 +811,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (foundType) {
         [types removeObject:foundType];
         return YES;
+    } else {
     }
     return NO;
 }
