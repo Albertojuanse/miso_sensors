@@ -267,23 +267,41 @@
                                     <constraint firstAttribute="height" constant="60" id="dmz-gd-3p6"/>
                                 </constraints>
                             </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Pvr-kR-5jl">
+                                <rect key="frame" x="32" y="92" width="336" height="851"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="FDW-Rk-IJc">
+                                <rect key="frame" x="400" y="92" width="336" height="851"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="l2D-sl-NxG" firstAttribute="trailing" secondItem="8eN-SV-Ypc" secondAttribute="trailing" id="4B4-0e-iec"/>
+                            <constraint firstItem="Pvr-kR-5jl" firstAttribute="leading" secondItem="8eN-SV-Ypc" secondAttribute="leading" constant="32" id="4QJ-VP-ixD"/>
+                            <constraint firstItem="8eN-SV-Ypc" firstAttribute="bottom" secondItem="FDW-Rk-IJc" secondAttribute="bottom" constant="32" id="7X6-rW-gYe"/>
+                            <constraint firstItem="FDW-Rk-IJc" firstAttribute="width" secondItem="Pvr-kR-5jl" secondAttribute="width" id="ALa-ez-w9H"/>
+                            <constraint firstItem="FDW-Rk-IJc" firstAttribute="top" secondItem="l2D-sl-NxG" secondAttribute="bottom" constant="32" id="Emf-Va-cKi"/>
+                            <constraint firstItem="Pvr-kR-5jl" firstAttribute="top" secondItem="l2D-sl-NxG" secondAttribute="bottom" constant="32" id="IP7-vG-Tx9"/>
+                            <constraint firstItem="FDW-Rk-IJc" firstAttribute="leading" secondItem="Pvr-kR-5jl" secondAttribute="trailing" constant="32" id="NAx-Gx-mLj"/>
                             <constraint firstItem="l2D-sl-NxG" firstAttribute="leading" secondItem="8eN-SV-Ypc" secondAttribute="leading" id="OFS-u5-BYi"/>
+                            <constraint firstItem="8eN-SV-Ypc" firstAttribute="trailing" secondItem="FDW-Rk-IJc" secondAttribute="trailing" constant="32" id="Zc4-NW-HOO"/>
+                            <constraint firstItem="8eN-SV-Ypc" firstAttribute="bottom" secondItem="Pvr-kR-5jl" secondAttribute="bottom" constant="32" id="cBz-nS-6cp"/>
                             <constraint firstItem="l2D-sl-NxG" firstAttribute="top" secondItem="smN-xc-zMR" secondAttribute="top" id="gak-sM-php"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="8eN-SV-Ypc"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="AAF-KM-5Gt"/>
                     <connections>
+                        <outlet property="tableMetamodels" destination="FDW-Rk-IJc" id="bev-Mr-EJ8"/>
+                        <outlet property="tableModes" destination="Pvr-kR-5jl" id="M1c-OJ-VVt"/>
                         <outlet property="toolbar" destination="l2D-sl-NxG" id="u6O-OE-okl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1V6-WN-BlQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1330" y="1736"/>
+            <point key="canvasLocation" x="-1330.46875" y="1735.546875"/>
         </scene>
         <!--Item-->
         <scene sceneID="AGz-dH-Q4l">

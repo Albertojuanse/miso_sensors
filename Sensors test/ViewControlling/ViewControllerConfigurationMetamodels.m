@@ -25,7 +25,7 @@
     metamodels = nil;
     typeTextField = nil;
     metamodelTextField = nil;
-    removingAType = nil;
+    removingDummyCell = nil;
     nameTypeToRemove = nil;
     
     // Toolbar layout
@@ -173,8 +173,15 @@
             MDMetamodel * eachMetamodel = [metamodels objectAtIndex:section];
             NSMutableArray * eachTypes = [eachMetamodel getTypes];
             if (eachTypes.count == 0) {
-                // If the metamodel is empty, create a dummy cell.
-                return 1;
+                
+                // If the metamodel is empty, create a dummy cell...
+                // ...unless the dummy cell itself is being deleted; iOS needs consistency to delete cells)
+                if (!removingDummyCell) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+                
             } else {
                 return eachTypes.count;
             }
@@ -508,28 +515,43 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
                             NSLog(@"[INFO][VCCM] Droppped and copied a NSType %@ item.", cellType);
                             
                             // Update metamodel
+                            // As there is a dummy cell if the meta model is empty, different behaviour is needed
                             MDMetamodel * userDropMetamodel = [metamodels objectAtIndex:section];
-                            BOOL newType = [userDropMetamodel addType:cellType];
-                            [self updatePersistentMetamodels];
+                            NSMutableArray * userDropMetamodelTypes = [userDropMetamodel getTypes];
                             
-                            // Update table
-                            if (newType) {
+                            if (userDropMetamodelTypes.count == 0) {
                                 
-                                // TO DO: Manage this; not working in new metamodels/sections.
-                                /*
-                                 // Replace the dummy cell if exists
-                                 NSIndexPath * currentCellIndexPath = [NSIndexPath indexPathForRow:0 inSection:section];
-                                 UITableViewCell * currentCell = [tableView cellForRowAtIndexPath:currentCellIndexPath];
-                                 NSString * currentCellText = currentCell.textLabel.text;
-                                 if ([currentCellText isEqualToString:@"⇤"]) {
-                                     [self.tableMetamodels deleteRowsAtIndexPaths:@[currentCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                                 }
-                                */
+                                removingDummyCell = YES;
                                 
-                                NSMutableArray * userDropMetamodelTypes = [userDropMetamodel getTypes];
-                                NSInteger addRow = userDropMetamodelTypes.count - 1;
-                                NSIndexPath * addIndexPath = [NSIndexPath indexPathForRow:addRow inSection:section];
-                                [tableView insertRowsAtIndexPaths:@[addIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                                // Remove the dummy cell
+                                NSIndexPath * currentCellIndexPath = [NSIndexPath indexPathForRow:0 inSection:section];
+                                [self.tableMetamodels deleteRowsAtIndexPaths:@[currentCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                                
+                                // Add new type
+                                BOOL newType = [userDropMetamodel addType:cellType];
+                                if (newType) {
+                                    [self updatePersistentMetamodels];
+                                    
+                                    // Update table
+                                    [tableView insertRowsAtIndexPaths:@[currentCellIndexPath]
+                                                     withRowAnimation:UITableViewRowAnimationAutomatic];
+                                }
+                                removingDummyCell = NO;
+                                
+                            } else { // Not empty metamodel
+                                
+                                BOOL newType = [userDropMetamodel addType:cellType];
+                                if (newType) {
+                                    [self updatePersistentMetamodels];
+                                    
+                                    // Update table
+                                    NSInteger addRow = userDropMetamodelTypes.count - 1;
+                                    NSIndexPath * addIndexPath = [NSIndexPath indexPathForRow:addRow
+                                                                                    inSection:section];
+                                    [tableView insertRowsAtIndexPaths:@[addIndexPath]
+                                                     withRowAnimation:UITableViewRowAnimationAutomatic];
+                                }
+                                
                             }
                             
                         }];

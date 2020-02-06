@@ -31,7 +31,7 @@
     // Creation and removing of types and metamodels
     UITextField * typeTextField;
     UITextField * metamodelTextField;
-    BOOL removingAType;
+    BOOL removingDummyCell;
     NSString * nameTypeToRemove;
     
 }
