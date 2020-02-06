@@ -25,7 +25,7 @@
     metamodels = nil;
     typeTextField = nil;
     metamodelTextField = nil;
-    removingDummyCell = nil;
+    removingFirstCell = nil;
     nameTypeToRemove = nil;
     
     // Toolbar layout
@@ -176,7 +176,7 @@
                 
                 // If the metamodel is empty, create a dummy cell...
                 // ...unless the dummy cell itself is being deleted; iOS needs consistency to delete cells)
-                if (!removingDummyCell) {
+                if (!removingFirstCell) {
                     return 1;
                 } else {
                     return 0;
@@ -521,7 +521,7 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
                             
                             if (userDropMetamodelTypes.count == 0) {
                                 
-                                removingDummyCell = YES;
+                                removingFirstCell = YES;
                                 
                                 // Remove the dummy cell
                                 NSIndexPath * currentCellIndexPath = [NSIndexPath indexPathForRow:0 inSection:section];
@@ -536,7 +536,7 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
                                     [tableView insertRowsAtIndexPaths:@[currentCellIndexPath]
                                                      withRowAnimation:UITableViewRowAnimationAutomatic];
                                 }
-                                removingDummyCell = NO;
+                                removingFirstCell = NO;
                                 
                             } else { // Not empty metamodel
                                 
@@ -643,13 +643,33 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             
             // Remove the type in metamodel and update
             MDMetamodel * metamodelToModify = [metamodels objectAtIndex:indexPath.section];
-            NSLog(@"[VCCM][INFO] User wants to remove a type from metamodel %@.", metamodelToModify);
             NSMutableArray * typesToModify = [metamodelToModify getTypes];
-            NSLog(@"[VCCM][INFO] -> Needed to remove type %@.", [typesToModify objectAtIndex:indexPath.row]);
-            [typesToModify removeObjectAtIndex:indexPath.row];
+            MDType * typeToRemove = [typesToModify objectAtIndex:indexPath.row];
+            NSLog(@"[INFO][VCCM] User wants to remove the type %@ from metamodel %@.", typeToRemove, metamodelToModify);
+            
+            // If the metamodels get empty, the dummy cell must be placed there
+            if (typesToModify.count < 2) {
+                
+                // TO DO: Not wotking. Alberto J. 2020/02/06
+                removingFirstCell = YES;
+                // Remove the cell's type
+                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                [typesToModify removeObjectAtIndex:indexPath.row];
+                removingFirstCell = NO;
+                
+                // Insert the dummy cell
+                [tableView insertRowsAtIndexPaths:@[indexPath]
+                                 withRowAnimation:UITableViewRowAnimationAutomatic];
+                
+            } else {
+                
+                [typesToModify removeObjectAtIndex:indexPath.row];
+                // Remove the cell's type
+                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                
+            }
+            
             [self updatePersistentMetamodels];
-            // Remove the cell's type
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             
         } else {
             NSLog(@"[VCCM][ERROR] Unhandled editing style in metamodels table: %td", editingStyle);
@@ -660,20 +680,39 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         if (editingStyle == UITableViewCellEditingStyleDelete) {
             
             MDType * typeToRemove = [types objectAtIndex:indexPath.row];
-            NSLog(@"[VCCM][INFO] User wants to remove type %@.", typeToRemove);
+            NSLog(@"[INFO][VCCM] User wants to remove type %@.", typeToRemove);
             
             // Remove the type from metamodels that use it
             NSMutableArray * metamodelsIndexPaths = [self fromMetamodelsGetIndexPathsOfTypeWithName:[typeToRemove getName]];
             for (NSIndexPath * eachMetamodelIndexPath in metamodelsIndexPaths) {
+                
                 MDMetamodel * metamodelToModify = [metamodels objectAtIndex:eachMetamodelIndexPath.section];
-                NSLog(@"[VCCM][INFO] User wants to remove the type %@ from metamodel %@.", typeToRemove, metamodelToModify);
+                NSLog(@"[INFO][VCCM] User wants to remove the type %@ from metamodel %@.", typeToRemove, metamodelToModify);
                 NSMutableArray * typesToModify = [metamodelToModify getTypes];
-                [typesToModify removeObjectAtIndex:eachMetamodelIndexPath.row];
+                
+                // If the metamodels get empty, the dummy cell must be placed there
+                if (typesToModify.count < 2) {
+                    
+                    // Remove the types cell
+                    removingFirstCell = YES;
+                    [typesToModify removeObjectAtIndex:eachMetamodelIndexPath.row];
+                    // Remove the cells of these types in metamodels
+                    NSLog(@"[INFO][VCCM] Removing cells of type %@ from metamodels table.", typeToRemove);
+                    [self.tableMetamodels deleteRowsAtIndexPaths:@[eachMetamodelIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+                    removingFirstCell = NO;
+                    
+                    [tableView insertRowsAtIndexPaths:@[eachMetamodelIndexPath]
+                                         withRowAnimation:UITableViewRowAnimationAutomatic];
+                    
+                } else { // Not empty metamodel
+                    
+                    [typesToModify removeObjectAtIndex:eachMetamodelIndexPath.row];
+                    // Remove the cells of these types in metamodels
+                    NSLog(@"[INFO][VCCM] Removing cells of type %@ from metamodels table.", typeToRemove);
+                    [self.tableMetamodels deleteRowsAtIndexPaths:@[eachMetamodelIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+                    
+                }
             }
-            
-            // Remove the cells of these types in metamodels
-            NSLog(@"[VCCM][INFO] Removing cells of type %@ from metamodels table.", typeToRemove);
-            [self.tableMetamodels deleteRowsAtIndexPaths:metamodelsIndexPaths withRowAnimation:UITableViewRowAnimationFade];
             
             // Upload the metamodels in device
             [self updatePersistentMetamodels];
