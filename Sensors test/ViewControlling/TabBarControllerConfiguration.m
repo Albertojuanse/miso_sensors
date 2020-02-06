@@ -124,6 +124,7 @@
             // Pass the variables as in segues
             [viewControllerConfigurationMetamodels setUserDic:userDic];
             [viewControllerConfigurationMetamodels setCredentialsUserDic:credentialsUserDic];
+            [viewControllerConfigurationMetamodels setTabBar:self];
             
             // Configure the tab icon
             UITabBarItem * metamodelTabBarItem = [[UITabBarItem alloc] initWithTitle:nil

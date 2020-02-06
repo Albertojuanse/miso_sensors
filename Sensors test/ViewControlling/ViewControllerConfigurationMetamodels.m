@@ -111,7 +111,6 @@
 }
 
 #pragma mark - Instance methods
-
 /*!
  @method setCredentialsUserDic:
  @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
@@ -128,6 +127,15 @@
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic
 {
     userDic = givenUserDic;
+}
+
+/*!
+ @method setUserDic:
+ @discussion This method sets the UITabBarController for switching porpuses.
+ */
+- (void) setTabBar:(UITabBarController *)givenTabBar
+{
+    tabBar = givenTabBar;
 }
 
 #pragma mark - UItableView data delegate methods
@@ -285,62 +293,14 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
         // Check if this section is the extra one for "new item"
         if (indexPath.row > types.count - 1) {
-            // Show the alert
-            [self askUserNewType];
-            [tableView deselectRowAtIndexPath:indexPath animated:NO];
-            [self updatePersistentTypes];
+            // Switch to types tab
+            [tabBar setSelectedIndex:0];
             
         } else {
             // Nothing to do
         }
 
     }
-}
-
-/*!
- @method askUserNewType:
- @discussion This method ask the user a new type using a pop up view.
- */
-- (void) askUserNewType
-{
-    UIAlertController * alertAddType = [UIAlertController
-                                        alertControllerWithTitle:@"New type"
-                                        message:@"Please, write the name of the new type."
-                                        preferredStyle:UIAlertControllerStyleAlert
-                                        ];
-    
-    [alertAddType addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        typeTextField = textField;
-    }];
-    
-    UIAlertAction * addButton = [UIAlertAction
-                                 actionWithTitle:@"Add"
-                                 style:UIAlertActionStyleDefault
-                                 handler:^(UIAlertAction * _Nonnull action) {
-                                     
-                                     NSString * userInput = typeTextField.text;
-                                     // Regex verification to avoid empty names.
-                                     if ([userInput isEqualToString:@""]){
-                                         NSLog(@"[ERROR] User tried to create a type with no name.");
-                                     } else {
-                                         [self newTypeWithName:userInput];
-                                         [self updatePersistentTypes];
-                                         [self.tableTypes reloadData];
-                                         [self updatePersistentTypes];
-                                     }
-                                 }
-                                 ];
-    
-    UIAlertAction * cancelButton = [UIAlertAction
-                                    actionWithTitle:@"Cancel"
-                                    style:UIAlertActionStyleDefault
-                                    handler:nil
-                                    ];
-    
-    [alertAddType addAction:addButton];
-    [alertAddType addAction:cancelButton];
-    [self presentViewController:alertAddType animated:YES completion:nil];
-    return;
 }
 
 /*!
@@ -550,6 +510,7 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
                             // Update metamodel
                             MDMetamodel * userDropMetamodel = [metamodels objectAtIndex:section];
                             BOOL newType = [userDropMetamodel addType:cellType];
+                            [self updatePersistentMetamodels];
                             
                             // Update table
                             if (newType) {
@@ -570,6 +531,7 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
                                 NSIndexPath * addIndexPath = [NSIndexPath indexPathForRow:addRow inSection:section];
                                 [tableView insertRowsAtIndexPaths:@[addIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                             }
+                            
                         }];
                     }];
                 }
