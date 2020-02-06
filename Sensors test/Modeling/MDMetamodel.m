@@ -165,7 +165,8 @@
         }
     }
     if (newMode) {
-        [types addObject:[NSNumber numberWithInt:givenModeKey]];
+        [modes addObject:[NSNumber numberWithInt:givenModeKey]];
+    } else {
     }
     return newMode;
 }
