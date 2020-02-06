@@ -190,18 +190,20 @@
         NSArray * attributesNames = [attributesString componentsSeparatedByString:@", "];
         for (NSString * eachAttributeNames in attributesNames) {
             
-            // Check if it existed or not
-            BOOL nameFound = NO;
-            for (MDAttribute * eachAttribute in attributes) {
-                NSString * eachName = [eachAttribute getName];
-                if ([eachName isEqualToString:eachAttributeNames]) {
-                    nameFound = YES;
+            if (![eachAttributeNames isEqualToString:@""]) {
+                // Check if it existed or not
+                BOOL nameFound = NO;
+                for (MDAttribute * eachAttribute in attributes) {
+                    NSString * eachName = [eachAttribute getName];
+                    if ([eachName isEqualToString:eachAttributeNames]) {
+                        nameFound = YES;
+                    }
                 }
-            }
-            // Create it if not
-            if (!nameFound) {
-                MDAttribute * newAttribute = [[MDAttribute alloc] initWithName:eachAttributeNames];
-                [attributes addObject:newAttribute];
+                // Create it if not
+                if (!nameFound) {
+                    MDAttribute * newAttribute = [[MDAttribute alloc] initWithName:eachAttributeNames];
+                    [attributes addObject:newAttribute];
+                }
             }
             
         }
