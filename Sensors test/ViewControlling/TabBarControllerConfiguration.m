@@ -72,15 +72,15 @@
         // TO DO: Ask user if demo metamodels have to be loaded. Alberto J. 2020/01/27.
         
         // Create some modes to use the metamodels
-        NSNumber * mode1 = [NSNumber numberWithInt:0];
-        NSNumber * mode2 = [NSNumber numberWithInt:1];
-        NSNumber * mode3 = [NSNumber numberWithInt:2];
-        NSNumber * mode4 = [NSNumber numberWithInt:3];
-        NSMutableArray * modesToMetamodels = [[NSMutableArray alloc] init];
-        [modesToMetamodels addObject:mode1];
-        [modesToMetamodels addObject:mode2];
-        [modesToMetamodels addObject:mode3];
-        [modesToMetamodels addObject:mode4];
+        NSNumber * mode1 = [NSNumber numberWithInt:1];
+        NSNumber * mode2 = [NSNumber numberWithInt:2];
+        NSNumber * mode3 = [NSNumber numberWithInt:3];
+        NSNumber * mode4 = [NSNumber numberWithInt:4];
+        NSMutableArray * metamodelModes = [[NSMutableArray alloc] init];
+        [metamodelModes addObject:mode1];
+        [metamodelModes addObject:mode2];
+        [metamodelModes addObject:mode3];
+        [metamodelModes addObject:mode4];
         
         // Create the metamodel with a copy of types
         NSMutableArray * metamodelTypes = [[NSMutableArray alloc] init];
@@ -90,14 +90,15 @@
         MDMetamodel * buildingMetamodel = [[MDMetamodel alloc] initWithName:@"Building"
                                                                 description:@"Building"
                                                                    andTypes:metamodelTypes];
-        [buildingMetamodel setModes:modesToMetamodels];
+        [buildingMetamodel setModes:metamodelModes];
         NSMutableArray * securityTypes = [metamodelTypes mutableCopy];
+        NSMutableArray * securityModes = [metamodelModes mutableCopy];
         [securityTypes removeLastObject];
-        [modesToMetamodels removeLastObject];
+        [securityModes removeLastObject];
         MDMetamodel * securityMetamodel = [[MDMetamodel alloc] initWithName:@"Security"
                                                                  description:@"Security"
                                                                     andTypes:securityTypes];
-        [securityMetamodel setModes:modesToMetamodels];
+        [securityMetamodel setModes:securityModes];
         
         // Save them in persistent memory
         areMetamodelsData = nil; // ARC disposing

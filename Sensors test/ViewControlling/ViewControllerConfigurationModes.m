@@ -294,7 +294,7 @@ canHandleDropSession:(id<UIDragSession>)session
     UITableViewDropProposal * proposal;
     if (tableView == self.tableMetamodels) {
         
-        // This table can only handle drops of MDType classes.
+        // This table can only handle drops of MDMode classes.
         if (session.items.count == 1) {
             
             // Manage empty cells
@@ -352,7 +352,7 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
                 
                 NSLog(@"[INFO][VCCM] Droppped provided item being copied.");
                 [self.tableMetamodels performBatchUpdates:^{
-                    [coordinator.session loadObjectsOfClass:MDType.class completion:^(NSArray<__kindof id<NSItemProviderReading>> * _Nonnull objects) {
+                    [coordinator.session loadObjectsOfClass:MDMode.class completion:^(NSArray<__kindof id<NSItemProviderReading>> * _Nonnull objects) {
                         [objects enumerateObjectsUsingBlock:^(__kindof id<NSItemProviderReading>  _Nonnull object, NSUInteger idx, BOOL * _Nonnull stop) {
                             MDMode * cellMode = object;
                             NSLog(@"[INFO][VCCM] Droppped and copied a MDMode item.");
@@ -360,17 +360,20 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
                             // Update metamodel
                             // As there is a dummy cell if the meta model is empty, different behaviour is needed
                             MDMetamodel * userDropMetamodel = [metamodels objectAtIndex:section];
-                            NSMutableArray * userDropMetamodelTypes = [userDropMetamodel getTypes];
+                            NSMutableArray * userDropMetamodelModes = [userDropMetamodel getModes];
                             
-                            if (userDropMetamodelTypes.count == 0) {
+                            if (userDropMetamodelModes.count == 0) {
                                 
                                 removingFirstCell = YES;
                                 
                                 // Remove the dummy cell
                                 NSIndexPath * currentCellIndexPath = [NSIndexPath indexPathForRow:0 inSection:section];
-                                [self.tableMetamodels deleteRowsAtIndexPaths:@[currentCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                                [tableView deleteRowsAtIndexPaths:@[currentCellIndexPath]
+                                                 withRowAnimation:UITableViewRowAnimationAutomatic];
                                 
-                                // Add new type
+                                // TO DO: Not Working. Alberto J. 2020/02/06.
+                                removingFirstCell = NO;
+                                // Add new mode
                                 BOOL newMode = [userDropMetamodel addModeKey:[cellMode getMode]];
                                 if (newMode) {
                                     [self updatePersistentMetamodels];
@@ -379,7 +382,6 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
                                     [tableView insertRowsAtIndexPaths:@[currentCellIndexPath]
                                                      withRowAnimation:UITableViewRowAnimationAutomatic];
                                 }
-                                removingFirstCell = NO;
                                 
                             } else { // Not empty metamodel
                                 
@@ -388,7 +390,7 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
                                     [self updatePersistentMetamodels];
                                     
                                     // Update table
-                                    NSInteger addRow = userDropMetamodelTypes.count - 1;
+                                    NSInteger addRow = userDropMetamodelModes.count - 1;
                                     NSIndexPath * addIndexPath = [NSIndexPath indexPathForRow:addRow
                                                                                     inSection:section];
                                     [tableView insertRowsAtIndexPaths:@[addIndexPath]
@@ -407,37 +409,6 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
                                                    }
                                                }
                  ];
-                
-                /* Another way retrieving each UIDragItem
-                 NSArray * itemsProvided = coordinator.session.items;
-                 UIDragItem * typeDragItem = [itemsProvided objectAtIndex:0];  // Only one item was dragged
-                 NSItemProvider * typeItemProvider = typeDragItem.itemProvider;
-                 [typeItemProvider loadObjectOfClass:[MDType class]
-                 completionHandler:^(id<NSItemProviderReading> _Nullable __strong object,
-                 NSError * _Nullable __strong error) {
-                 if (object) {
-                 MDType * cellType = object;
-                 NSLog(@"[INFO][VCCM] Droppped and copied a NSType %@ item.", cellType);
-                 
-                 // Update metamodel
-                 MDMetamodel * userDropMetamodel = [metamodels objectAtIndex:section];
-                 BOOL newType =[userDropMetamodel addType:cellType];
-                 
-                 // Update table
-                 if (newType) {
-                 NSMutableArray * userDropMetamodelTypes = [userDropMetamodel getTypes];
-                 NSInteger addRow = userDropMetamodelTypes.count - 1;
-                 NSIndexPath * addIndexPath = [NSIndexPath indexPathForRow:addRow inSection:section];
-                 [self.tableMetamodels insertRowsAtIndexPaths:@[addIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                 }
-                 
-                 } else {
-                 NSLog(@"[INFO][VCCM] No payload in dropped provided item.");
-                 }
-                 }
-                 ];
-                 */
-                
                 break;
         }
         // Reload data
@@ -456,7 +427,7 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
     [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodels/metamodels"];
     [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodels/areMetamodels"];
     
-    // Check if there is any type
+    // Check if there is any metamodel
     NSData * areMetamodelsData;
     if (metamodels.count > 0) {
         areMetamodelsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
