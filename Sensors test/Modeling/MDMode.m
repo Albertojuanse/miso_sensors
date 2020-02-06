@@ -63,33 +63,6 @@
 }
 
 /*!
- @method setMetamodels
- @discussion Setter of the 'metamodels' attribute.
- */
-- (void)setMetamodels:(NSMutableArray *)givenMetamodels
-{
-    metamodels = givenMetamodels;
-}
-
-/*!
- @method addMetamodel
- @discussion Setter of a new metamodel in 'metamodels' attribute.
- */
-- (BOOL)addMetamodel:(MDMetamodel *)givenMetamodel
-{
-    BOOL newMetamodel = YES;
-    for (MDMetamodel * eachMetamodel in metamodels) {
-        if ([[eachMetamodel getName] isEqualToString:[givenMetamodel getName]]) {
-            newMetamodel = NO;
-        }
-    }
-    if (newMetamodel) {
-        [metamodels addObject:givenMetamodel];
-    }
-    return newMetamodel;
-}
-
-/*!
  @method isEqual
  @discussion This method overwrites the isEqual super method.
  */

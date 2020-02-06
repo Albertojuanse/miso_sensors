@@ -7,7 +7,6 @@
 //
 
 #include <Foundation/Foundation.h>
-#include "MDMetamodel.h"
 
 /*!
  @typedef MDModes
@@ -50,8 +49,6 @@ typedef NS_ENUM(int, MDModes){
 - (MDModes)getMode;
 - (NSMutableArray *)getMetamodels;
 - (void)setMode:(MDModes)givenMode;
-- (void)setMetamodels:(NSMutableArray *)givenMetamodels;
-- (BOOL)addMetamodel:(MDMetamodel *)givenMetamodel;
 - (BOOL)isModeKey:(MDModes)key;
 - (BOOL)isEqual:(id)object;
 - (BOOL)isEqualToMDMode:(MDMode *)reference;
