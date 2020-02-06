@@ -8,6 +8,7 @@
 
 #include <Foundation/Foundation.h>
 #include "MDType.h"
+#include "MDMode.h"
 
 /*!
  @class MDMetamodel
@@ -18,6 +19,7 @@
     NSString * name;
     NSString * description;
     NSMutableArray * types;
+    NSMutableArray * modes;  // modes that use this metamodel
     
 }
 
@@ -31,11 +33,15 @@
 - (void)setDescription:(NSString *)givenDescription;
 - (void)setTypes:(NSMutableArray *)givenTypes;
 - (BOOL)addType:(MDType *)givenType;
+- (void)setModes:(NSMutableArray *)givenModes;
+- (BOOL)addModeKey:(MDModes)givenModeKey;
 - (NSInteger)removeType:(MDType *)givenType;
 - (NSInteger)removeTypeWithName:(NSString *)givenName;
+- (NSInteger)removeModeKey:(MDModes)givenModeKey;
 - (NSString *)getName;
 - (NSString *)getDescription;
 - (NSMutableArray *)getTypes;
+- (NSMutableArray *)getModes;
 - (BOOL)isEqual:(id)object;
 - (BOOL)isEqualToMDMetamodel:(MDMetamodel *)type;
 - (NSString *)description;
