@@ -58,6 +58,12 @@
     
     [self.tableMetamodels reloadData];
     [self.tableModes reloadData];
+    
+    // Table gestures for drag and drop
+    self.tableMetamodels.dragDelegate = self;
+    self.tableModes.dragDelegate = self;
+    self.tableMetamodels.dropDelegate = self;
+    self.tableModes.dropDelegate = self;
 }
 
 /*!
@@ -198,7 +204,7 @@
             cell.textLabel.textAlignment = NSTextAlignmentCenter;
         } else {
             NSNumber * eachMode = [[eachMetamodel getModes] objectAtIndex:indexPath.row];
-            MDMode * mode = [[MDMode alloc] initWithModeKey:[eachMode integerValue]];
+            MDMode * mode = [[MDMode alloc] initWithModeKey:[eachMode floatValue]];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", mode];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
             cell.textLabel.textAlignment = NSTextAlignmentLeft;
@@ -212,6 +218,258 @@
         cell.textLabel.textAlignment = NSTextAlignmentLeft;
     }
     return cell;
+}
+
+#pragma mark - UItableView drag and drop delegate methods
+/*!
+ @method tableView:itemsForBeginningDragSession:atIndexPath:
+ @discussion Handles drag and drop gestures between tables; returns the initial set of items for a drag and drop session.
+ */
+- (NSArray<UIDragItem *> *)tableView:(UITableView *)tableView
+        itemsForBeginningDragSession:(id<UIDragSession>)session
+                         atIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.tableMetamodels) {
+        // Return an empety array since these ones cannot be dragged
+        NSLog(@"[INFO][VCCM] User did try to start drag and drop, but this table is not allowed to do so.");
+        return [[NSArray alloc] init];
+        
+    }
+    if (tableView == self.tableModes) {
+        
+        // Return the array with the initial set of items to drag
+        MDMode * cellsMode = [[MDMode alloc] initWithModeKey:(int)indexPath.row];
+        NSItemProvider * modeItemProvider = [[NSItemProvider alloc] initWithObject:cellsMode];
+        UIDragItem * modeDragItem = [[UIDragItem alloc] initWithItemProvider:modeItemProvider];
+        NSLog(@"[INFO][VCCM] User did start drag and drop; a MDMode object provided.");
+        return [[NSArray alloc] initWithObjects:modeDragItem,nil];
+        
+    }
+    return [[NSArray alloc] init];
+}
+
+/*!
+ @method tableView:canHandleDropSession:
+ @discussion Handles drag and drop gestures between tables; cheks if the destination table can handle a drag and drop session.
+ */
+- (BOOL)tableView:(UITableView *)tableView
+canHandleDropSession:(id<UIDragSession>)session
+{
+    if (tableView == self.tableMetamodels) {
+        
+        // This table can only handle drops of MDMode classes.
+        if (session.items.count == 1) {
+            if([session canLoadObjectsOfClass:MDMode.class]) {
+                NSLog(@"[INFO][VCCM] Allowed to drop provided item in this table.");
+                return YES;
+            } else {
+                NSLog(@"[INFO][VCCM] Only MDMode class intances can be dropped in this cell.");
+                return NO;
+            }
+        } else {
+            NSLog(@"[INFO][VCCM] Only one provided item can be dropped in this cell.");
+            return NO;
+        }
+        
+    }
+    if (tableView == self.tableModes) {
+        // This table cannot be target of any drag and drop
+        NSLog(@"[INFO][VCCM] Not allowed to drop provided item in this table.");
+        return NO;
+    }
+    return NO;
+}
+
+/*!
+ @method tableView:dropSessionDidUpdate:withDestinationIndexPath:
+ @discussion Handles drag and drop gestures between tables; propose how the destination table handles a drag and drop session.
+ */
+- (UITableViewDropProposal *)tableView:(UITableView *)tableView
+                  dropSessionDidUpdate:(id<UIDropSession>)session
+              withDestinationIndexPath:(NSIndexPath *)destinationIndexPath
+{
+    //NSLog(@"[INFO][VCCM] User wants to drop in section %td", destinationIndexPath.section);
+    //NSLog(@"[INFO][VCCM] User wants to drop in row %td", destinationIndexPath.row);
+    
+    UITableViewDropProposal * proposal;
+    if (tableView == self.tableMetamodels) {
+        
+        // This table can only handle drops of MDType classes.
+        if (session.items.count == 1) {
+            
+            // Manage empty cells
+            UITableViewCell * destinationCell = [self.tableMetamodels cellForRowAtIndexPath:destinationIndexPath];
+            if ( !destinationCell.textLabel.text || [@"" isEqualToString:destinationCell.textLabel.text]) {
+                // Return a forbidden proposal
+                // NSLog(@"[INFO][VCCM] Proposed not to allow user to drop provided item in this cell.");
+                proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationForbidden
+                                                                           intent:UITableViewDropIntentUnspecified];
+            } else {
+                // Return a copy and insert proposal
+                // NSLog(@"[INFO][VCCM] Proposed allow user to drop (copy and insert) provided item in this cell.");
+                proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationCopy
+                                                                           intent:UITableViewDropIntentAutomatic];
+            }
+            
+        } else {
+            return nil;
+        }
+        
+    }
+    if (tableView == self.tableModes) {
+        
+        // This table cannot be target of any drag and drop
+        // Return a forbidden proposal
+        //NSLog(@"[INFO][VCCM] Proposed not to allow user to drop provided item in this table.");
+        proposal = [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationForbidden
+                                                                   intent:UITableViewDropIntentUnspecified];
+    }
+    return proposal;
+}
+
+/*!
+ @method tableView:performDropWithCoordinator:
+ @discussion Handles drag and drop gestures between tables; handles the drop of the dragged items' collection.
+ */
+- (void)tableView:(UITableView *)tableView
+performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
+{
+    if (tableView == self.tableMetamodels) {
+        // Decide an indexPath for the new cell depending on user's droping selection
+        NSIndexPath * destinationIndexPath = coordinator.destinationIndexPath;
+        NSInteger section = destinationIndexPath.section;
+        NSLog(@"[INFO][VCCM] User did droppped the provided item in section %td.", section);
+        
+        // Different behaviour depending on dropping proposal
+        switch (coordinator.proposal.operation) {
+            case UIDropOperationCancel:
+                break;
+            case UIDropOperationForbidden:
+                break;
+            case UIDropOperationMove:
+                break;
+            case UIDropOperationCopy:
+                
+                NSLog(@"[INFO][VCCM] Droppped provided item being copied.");
+                [self.tableMetamodels performBatchUpdates:^{
+                    [coordinator.session loadObjectsOfClass:MDType.class completion:^(NSArray<__kindof id<NSItemProviderReading>> * _Nonnull objects) {
+                        [objects enumerateObjectsUsingBlock:^(__kindof id<NSItemProviderReading>  _Nonnull object, NSUInteger idx, BOOL * _Nonnull stop) {
+                            MDMode * cellMode = object;
+                            NSLog(@"[INFO][VCCM] Droppped and copied a MDMode item.");
+                            
+                            // Update metamodel
+                            // As there is a dummy cell if the meta model is empty, different behaviour is needed
+                            MDMetamodel * userDropMetamodel = [metamodels objectAtIndex:section];
+                            NSMutableArray * userDropMetamodelTypes = [userDropMetamodel getTypes];
+                            
+                            if (userDropMetamodelTypes.count == 0) {
+                                
+                                removingFirstCell = YES;
+                                
+                                // Remove the dummy cell
+                                NSIndexPath * currentCellIndexPath = [NSIndexPath indexPathForRow:0 inSection:section];
+                                [self.tableMetamodels deleteRowsAtIndexPaths:@[currentCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                                
+                                // Add new type
+                                BOOL newMode = [userDropMetamodel addModeKey:[cellMode getMode]];
+                                if (newMode) {
+                                    [self updatePersistentMetamodels];
+                                    
+                                    // Update table
+                                    [tableView insertRowsAtIndexPaths:@[currentCellIndexPath]
+                                                     withRowAnimation:UITableViewRowAnimationAutomatic];
+                                }
+                                removingFirstCell = NO;
+                                
+                            } else { // Not empty metamodel
+                                
+                                BOOL newMode = [userDropMetamodel addModeKey:[cellMode getMode]];
+                                if (newMode) {
+                                    [self updatePersistentMetamodels];
+                                    
+                                    // Update table
+                                    NSInteger addRow = userDropMetamodelTypes.count - 1;
+                                    NSIndexPath * addIndexPath = [NSIndexPath indexPathForRow:addRow
+                                                                                    inSection:section];
+                                    [tableView insertRowsAtIndexPaths:@[addIndexPath]
+                                                     withRowAnimation:UITableViewRowAnimationAutomatic];
+                                }
+                                
+                            }
+                            
+                        }];
+                    }];
+                }
+                                               completion:^(BOOL finished) {
+                                                   if (finished) {
+                                                       // Update device metamodel
+                                                       [self updatePersistentMetamodels];
+                                                   }
+                                               }
+                 ];
+                
+                /* Another way retrieving each UIDragItem
+                 NSArray * itemsProvided = coordinator.session.items;
+                 UIDragItem * typeDragItem = [itemsProvided objectAtIndex:0];  // Only one item was dragged
+                 NSItemProvider * typeItemProvider = typeDragItem.itemProvider;
+                 [typeItemProvider loadObjectOfClass:[MDType class]
+                 completionHandler:^(id<NSItemProviderReading> _Nullable __strong object,
+                 NSError * _Nullable __strong error) {
+                 if (object) {
+                 MDType * cellType = object;
+                 NSLog(@"[INFO][VCCM] Droppped and copied a NSType %@ item.", cellType);
+                 
+                 // Update metamodel
+                 MDMetamodel * userDropMetamodel = [metamodels objectAtIndex:section];
+                 BOOL newType =[userDropMetamodel addType:cellType];
+                 
+                 // Update table
+                 if (newType) {
+                 NSMutableArray * userDropMetamodelTypes = [userDropMetamodel getTypes];
+                 NSInteger addRow = userDropMetamodelTypes.count - 1;
+                 NSIndexPath * addIndexPath = [NSIndexPath indexPathForRow:addRow inSection:section];
+                 [self.tableMetamodels insertRowsAtIndexPaths:@[addIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                 }
+                 
+                 } else {
+                 NSLog(@"[INFO][VCCM] No payload in dropped provided item.");
+                 }
+                 }
+                 ];
+                 */
+                
+                break;
+        }
+        // Reload data
+        [self.tableMetamodels reloadData];
+    }
+}
+
+#pragma mark - Save metamodels
+/*!
+ @method updatePersistentMetamodels
+ @discussion This method is called when user changes metamodels collection in orther to upload it.
+ */
+- (BOOL)updatePersistentMetamodels
+{
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodels/metamodels"];
+    [userDefaults removeObjectForKey:@"es.uam.miso/data/metamodels/areMetamodels"];
+    
+    // Check if there is any type
+    NSData * areMetamodelsData;
+    if (metamodels.count > 0) {
+        areMetamodelsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+    } else {
+        areMetamodelsData = [NSKeyedArchiver archivedDataWithRootObject:@"NO"];
+    }
+    
+    // Save information
+    [userDefaults setObject:areMetamodelsData forKey:@"es.uam.miso/data/metamodels/areMetamodels"];
+    NSData * metamodelsData = [NSKeyedArchiver archivedDataWithRootObject:metamodels];
+    [userDefaults setObject:metamodelsData forKey:@"es.uam.miso/data/metamodels/metamodels"];
+    
+    return YES;
 }
 
 @end
