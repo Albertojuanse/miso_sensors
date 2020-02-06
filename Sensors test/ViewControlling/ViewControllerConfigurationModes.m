@@ -53,9 +53,11 @@
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableMetamodels.delegate = self;
     self.tableMetamodels.dataSource = self;
+    self.tableModes.delegate = self;
+    self.tableModes.dataSource = self;
     
     [self.tableMetamodels reloadData];
-    
+    [self.tableModes reloadData];
 }
 
 /*!
@@ -191,7 +193,7 @@
         NSMutableArray * eachModes = [eachMetamodel getModes];
         if (eachModes.count == 0) {
             // If the metamodel is empty, create a dummy cell.
-            cell.textLabel.text = [NSString stringWithFormat:@"⇤"];
+            cell.textLabel.text = [NSString stringWithFormat:@"⇥"];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
             cell.textLabel.textAlignment = NSTextAlignmentCenter;
         } else {

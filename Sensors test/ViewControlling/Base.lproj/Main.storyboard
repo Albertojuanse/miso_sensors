@@ -295,7 +295,7 @@
                     <tabBarItem key="tabBarItem" title="Item" id="AAF-KM-5Gt"/>
                     <connections>
                         <outlet property="tableMetamodels" destination="FDW-Rk-IJc" id="bev-Mr-EJ8"/>
-                        <outlet property="tableModes" destination="Pvr-kR-5jl" id="M1c-OJ-VVt"/>
+                        <outlet property="tableModes" destination="Pvr-kR-5jl" id="v8W-zC-Lte"/>
                         <outlet property="toolbar" destination="l2D-sl-NxG" id="u6O-OE-okl"/>
                     </connections>
                 </viewController>
