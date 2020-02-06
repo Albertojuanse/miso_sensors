@@ -39,7 +39,7 @@ typedef NS_ENUM(int, MDModes){
  @class MDMode
  @discussion A working mode that user can choose, depending on technology, mathematical calculus, etc. desired
  */
-@interface MDMode: NSObject <NSCoding> {
+@interface MDMode: NSObject <NSCoding, NSItemProviderReading, NSItemProviderWriting> {
     int mode;
     NSMutableArray * metamodels;
 }

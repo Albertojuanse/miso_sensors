@@ -177,4 +177,61 @@
 - (void)encodeWithCoder:(NSCoder *)encoder {
     [encoder encodeObject:[NSNumber numberWithInt:mode] forKey:@"mode"];
 }
+
+#pragma mark - NSItemProviderWriting methods
+/*!
+ @method writableTypeIdentifiersForItemProvider
+ @discussion Synthesized getter of property 'writableTypeIdentifiersForItemProvider'.
+ */
++ (NSArray<NSString *> *)writableTypeIdentifiersForItemProvider
+{
+    NSString* identifier = NSStringFromClass(self.class);
+    return @[identifier];
+}
+
+/*!
+ @method loadDataWithTypeIdentifier:forItemProviderCompletionHandler:
+ @discussion This method is called when an instance of this object is dragged in a view to create a NSData data object of it.
+ */
+- (NSProgress *)loadDataWithTypeIdentifier:(NSString *)typeIdentifier
+          forItemProviderCompletionHandler:(void (^)(NSData *data, NSError *error))completionHandler
+{
+    NSLog(@"[INFO][MDM] An instance of MDMode %@ dragged.", [self description]);
+    NSData* data = [NSKeyedArchiver archivedDataWithRootObject:self];
+    completionHandler(data, nil);
+    return nil;
+}
+
+/*!
+ @method itemProviderVisibilityForRepresentationWithTypeIdentifier:
+ @discussion This method is called when this object is dragged or dropped in view.
+ */
++ (NSItemProviderRepresentationVisibility)itemProviderVisibilityForRepresentationWithTypeIdentifier:(NSString *)typeIdentifier
+{
+    NSLog(@"[INFO][MDM] Asked providerVisibility value.");
+    return NSItemProviderRepresentationVisibilityOwnProcess;
+}
+
+#pragma mark - NSItemProviderReading methods
+/*!
+ @method readableTypeIdentifiersForItemProvider
+ @discussion Synthesized getter of property 'readableTypeIdentifiersForItemProvider'.
+ */
++ (NSArray<NSString *> *)readableTypeIdentifiersForItemProvider
+{
+    NSString* identifier = NSStringFromClass(self.class);
+    return @[identifier];
+}
+
+/*!
+ @method objectWithItemProviderData:typeIdentifier:error:
+ @discussion This method is called when a NSData data object is dropped in a view to create an instance of this object with it.
+ */
++ (nullable instancetype)objectWithItemProviderData:(nonnull NSData *)data
+                                     typeIdentifier:(nonnull NSString *)typeIdentifier
+                                              error:(NSError * _Nullable __autoreleasing * _Nullable)outError
+{
+    MDMode * mode = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    return mode;
+}
 @end
