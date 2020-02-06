@@ -22,6 +22,9 @@
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
     
+    // Tab controller
+    UITabBarController * tabBar;
+    
     NSMutableArray * metamodels;
     
     // Creation and removing of models and metamodels
@@ -36,5 +39,6 @@
 // Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
+- (void) setTabBar:(UITabBarController *)givenTabBar;
 
 @end

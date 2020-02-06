@@ -20,6 +20,9 @@
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
     
+    // Tab controller
+    UITabBarController * tabBar;
+    
 }
 
 @property (weak, nonatomic) IBOutlet VCToolbar *toolbar;
@@ -27,6 +30,7 @@
 // Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
+- (void) setTabBar:(UITabBarController *)givenTabBar;
 
 @end
 

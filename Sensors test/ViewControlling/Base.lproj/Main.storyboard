@@ -268,13 +268,16 @@
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T7D-B4-XMf">
-                                <rect key="frame" x="20" y="20" width="30" height="30"/>
+                                <rect key="frame" x="20" y="20" width="40" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="kvt-tf-IVL"/>
-                                    <constraint firstAttribute="width" constant="30" id="xWB-Ps-CwD"/>
+                                    <constraint firstAttribute="width" constant="40" id="3IF-M3-5rd"/>
+                                    <constraint firstAttribute="height" constant="40" id="dGq-sC-894"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                 <state key="normal" title="⇧"/>
+                                <connections>
+                                    <action selector="handleBackButton:" destination="PUF-Vd-cEJ" eventType="touchUpInside" id="fae-ud-F23"/>
+                                </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Pvr-kR-5jl">
                                 <rect key="frame" x="32" y="92" width="336" height="851"/>
@@ -330,13 +333,16 @@
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oLE-oD-wKj">
-                                <rect key="frame" x="20" y="20" width="30" height="30"/>
+                                <rect key="frame" x="20" y="20" width="40" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="30" id="fdg-p6-9lc"/>
-                                    <constraint firstAttribute="height" constant="30" id="qqD-ue-gqw"/>
+                                    <constraint firstAttribute="width" constant="40" id="YGB-1V-Pw8"/>
+                                    <constraint firstAttribute="height" constant="40" id="gno-Ul-sJj"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                 <state key="normal" title="⇧"/>
+                                <connections>
+                                    <action selector="handleBackButton:" destination="mqL-qo-A1i" eventType="touchUpInside" id="CRW-Ms-y0q"/>
+                                </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nHc-Ia-rQZ">
                                 <rect key="frame" x="32" y="92" width="336" height="851"/>
@@ -1628,6 +1634,7 @@
                         <segue destination="mqL-qo-A1i" kind="relationship" relationship="viewControllers" id="Ty4-OY-3OT"/>
                         <segue destination="PUF-Vd-cEJ" kind="relationship" relationship="viewControllers" id="IAK-zR-jRE"/>
                         <segue destination="K89-5A-aAg" kind="relationship" relationship="viewControllers" id="FsQ-wC-hPN"/>
+                        <segue destination="QfP-rI-9YT" kind="show" identifier="fromConfigurationToLogin" id="Eai-Xz-BxM"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uzt-OR-bAx" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1644,8 +1651,25 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="x3A-bt-iaF" customClass="VCToolbar">
                                 <rect key="frame" x="0.0" y="0.0" width="768" height="60"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Pb-Vh-W5w">
+                                        <rect key="frame" x="20" y="20" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="40" id="EF3-9e-FF6"/>
+                                            <constraint firstAttribute="height" constant="40" id="PFj-r3-7W2"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="40"/>
+                                        <state key="normal" title="⇧"/>
+                                        <connections>
+                                            <action selector="handleBackButton:" destination="K89-5A-aAg" eventType="touchUpInside" id="Xzj-JW-aYb"/>
+                                            <action selector="handleBackButton:" destination="PUF-Vd-cEJ" eventType="touchUpInside" id="tWA-oM-Xfj"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
+                                    <constraint firstItem="7Pb-Vh-W5w" firstAttribute="top" secondItem="x3A-bt-iaF" secondAttribute="top" constant="20" id="JoC-bQ-P7C"/>
+                                    <constraint firstItem="7Pb-Vh-W5w" firstAttribute="leading" secondItem="x3A-bt-iaF" secondAttribute="leading" constant="20" id="YnP-8C-EeW"/>
                                     <constraint firstAttribute="height" constant="60" id="otV-OH-qcV"/>
                                 </constraints>
                             </view>
@@ -1679,15 +1703,15 @@
                                 <rect key="frame" x="0.0" y="0.0" width="768" height="60"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="j1T-UH-hmf">
-                                        <rect key="frame" x="20" y="20" width="30" height="30"/>
+                                        <rect key="frame" x="20" y="20" width="40" height="40"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="30" id="cF2-Yt-cLZ"/>
-                                            <constraint firstAttribute="height" constant="30" id="sTl-VL-s2D"/>
+                                            <constraint firstAttribute="width" constant="40" id="Wh2-ui-6VM"/>
+                                            <constraint firstAttribute="height" constant="40" id="yOl-nj-EqJ"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                         <state key="normal" title="⇧"/>
                                         <connections>
-                                            <action selector="handleBackButton:" destination="it5-Xe-lJv" eventType="touchUpInside" id="PCc-jN-Yq6"/>
+                                            <action selector="handleBackButton:" destination="it5-Xe-lJv" eventType="touchUpInside" id="4RM-au-pJP"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -1794,5 +1818,6 @@
         <segue reference="A3y-43-nSw"/>
         <segue reference="ARI-Cn-mJV"/>
         <segue reference="OWJ-G0-Y79"/>
+        <segue reference="Eai-Xz-BxM"/>
     </inferredMetricsTieBreakers>
 </document>

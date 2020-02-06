@@ -125,6 +125,7 @@
             // Pass the variables as in segues
             [viewControllerConfigurationTypes setUserDic:userDic];
             [viewControllerConfigurationTypes setCredentialsUserDic:credentialsUserDic];
+            [viewControllerConfigurationTypes setTabBar:self];
             
             // Configure the tab icon
             UITabBarItem * modesTabBarItem = [[UITabBarItem alloc] initWithTitle:nil
@@ -153,6 +154,7 @@
             // Pass the variables as in segues
             [viewControllerConfigurationModes setUserDic:userDic];
             [viewControllerConfigurationModes setCredentialsUserDic:credentialsUserDic];
+            [viewControllerConfigurationModes setTabBar:self];
             
             // Configure the tab icon
             UITabBarItem * modesTabBarItem = [[UITabBarItem alloc] initWithTitle:nil
@@ -167,6 +169,7 @@
             // Pass the variables as in segues
             [viewControllerConfigurationBeacons setUserDic:userDic];
             [viewControllerConfigurationBeacons setCredentialsUserDic:credentialsUserDic];
+            [viewControllerConfigurationBeacons setTabBar:self];
             
             // Configure the tab icon
             UITabBarItem * modesTabBarItem = [[UITabBarItem alloc] initWithTitle:nil
@@ -208,8 +211,25 @@
     userDic = givenUserDic;
 }
 
-#pragma mark - UITabBarControllerDelegate delegated methods
+#pragma mark - Event methods handlers
+/*!
+ @method prepareForSegue:sender:
+ @discussion This method is called before any segue and it is used for pass other views variables.
+ */
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    NSLog(@"[INFO][VCCT] Asked segue %@", [segue identifier]);
+    if ([[segue identifier] isEqualToString:@"fromConfigurationToLogin"]) {
+        
+        // Get destination view
+        ViewControllerLogin * viewControllerLogin = [segue destinationViewController];
+        // Set the variable
+        [viewControllerLogin setCredentialsUserDic:credentialsUserDic];
+        [viewControllerLogin setUserDic:userDic];
+    }
+}
 
+#pragma mark - UITabBarControllerDelegate delegated methods
 /*!
  @method tabBarController:didSelectViewController:
  @discussion This method handles the event of changing between tabs.

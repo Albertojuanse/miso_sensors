@@ -130,12 +130,22 @@
 }
 
 /*!
- @method setUserDic:
+ @method setTabBar:
  @discussion This method sets the UITabBarController for switching porpuses.
  */
 - (void) setTabBar:(UITabBarController *)givenTabBar
 {
     tabBar = givenTabBar;
+}
+
+#pragma mark - Butons event handle
+/*!
+ @method handleBackButton:
+ @discussion This method handles the 'edit' button action and ask the selected MDType to load on textfields.
+ */
+- (IBAction)handleBackButton:(id)sender
+{
+    [tabBar performSegueWithIdentifier:@"fromConfigurationToLogin" sender:sender];
 }
 
 #pragma mark - UItableView data delegate methods
