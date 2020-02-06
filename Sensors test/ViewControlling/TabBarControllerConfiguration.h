@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "MDType.h"
 #import "MDMetamodel.h"
+#import "MDMode.h"
 #import "VCToolbar.h"
 #import "ViewControllerLogin.h"
 #import "ViewControllerConfigurationTypes.h"
