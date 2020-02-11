@@ -20,7 +20,6 @@
 {
     // Preventing previous view variables' values due to tab controller lifecycle
     types = nil;
-    metamodels = nil;
     chosenType = nil;
     
     // Toolbar layout
@@ -56,23 +55,6 @@
         types = [NSKeyedUnarchiver unarchiveObjectWithData:typesData];
         
         NSLog(@"[INFO][VCCT] %tu ontologycal types found in device.", types.count);
-    }    
-    // Search for 'areMetamodels' boolean and if so, load the MDMetamodel array
-    NSData * areMetamodelsData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/areMetamodels"];
-    NSString * areMetamodels;
-    if (areMetamodelsData) {
-        areMetamodels = [NSKeyedUnarchiver unarchiveObjectWithData:areMetamodelsData];
-    }
-    if (areMetamodelsData && areMetamodels && [areMetamodels isEqualToString:@"YES"]) {
-        // Existing saved metamodsels
-        
-        // Retrieve the metamodels array
-        NSData * metamodelsData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/metamodels"];
-        metamodels = [NSKeyedUnarchiver unarchiveObjectWithData:metamodelsData];
-        
-        NSLog(@"[INFO][VCCT] %tu metamodels found in device.", metamodels.count);
-    } else {
-        NSLog(@"[ERROR][VCCT] No metamodels found in device; demo metamodel saved.");
     }
     
     // Table delegates; the delegate methods for attending these tables are part of this class.

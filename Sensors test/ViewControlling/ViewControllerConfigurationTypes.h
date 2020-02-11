@@ -27,7 +27,6 @@
     
     // Varibles
     NSMutableArray * types;
-    NSMutableArray * metamodels;
     MDType * chosenType;
     
 }
