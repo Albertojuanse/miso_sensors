@@ -10,10 +10,28 @@
 #import <UIKit/UIKit.h>
 
 /*!
+ @protocol RDPosition
+ @discussion Abstract definition of any position in space with its cartesian coordinates.
+ */
+@protocol RDPosition
+
+@required
+@property NSNumber * x;
+@property NSNumber * y;
+@property NSNumber * z;
+
+@optional
+- (BOOL)isEqual:(id)other;
+- (NSString *)description;
+- (NSString *)stringValue;
+
+@end
+
+/*!
  @class RDPosition
  @discussion This class defines a position in space with its cartesian coordinates.
  */
-@interface RDPosition: NSObject <NSCoding> {
+@interface RDPosition: NSObject <RDPosition, NSCoding> {
     
 }
 

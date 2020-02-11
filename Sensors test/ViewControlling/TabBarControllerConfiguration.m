@@ -24,6 +24,7 @@
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
     NSMutableArray * types;
     NSMutableArray * metamodels;
+    NSMutableArray * items;
     
     // Search for 'areTypes' boolean and if so, load the MDType array
     NSData * areTypesData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/areTypes"];
@@ -111,6 +112,140 @@
         [userDefaults setObject:metamodelsData forKey:@"es.uam.miso/data/metamodels/metamodels"];
         
         NSLog(@"[INFO][TBCC] No metamodels found in device; demo metamodel saved.");
+    }
+    
+    // Search for 'areItems' boolean and if so, load the items' NSMutableDictionary array
+    NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
+    NSString * areItems;
+    if (areItemsData) {
+        areItems = [NSKeyedUnarchiver unarchiveObjectWithData:areItemsData];
+    }
+    // Retrieve or create each category of information
+    if (areItemsData && areItems && [areItems isEqualToString:@"YES"]) {
+        
+    } else {
+        // No saved data; register some items
+        
+        items = [[NSMutableArray alloc] init];
+        MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
+        MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
+        
+        NSMutableDictionary * infoDic0 = [[NSMutableDictionary alloc] init];
+        RDPosition * position0 = [[RDPosition alloc] init];
+        position0.x = [NSNumber numberWithFloat:1.0];
+        position0.y = [NSNumber numberWithFloat:1.0];
+        position0.z = [NSNumber numberWithFloat:0.0];
+        [infoDic0 setValue:@"position" forKey:@"sort"];
+        [infoDic0 setValue:@"device@miso.uam.es" forKey:@"identifier"];
+        [infoDic0 setValue:position0 forKey:@"position"];
+        [infoDic0 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDic0 setValue:deviceType forKey:@"type"];
+        [items addObject:infoDic0];
+        
+        NSMutableDictionary * infoDic1 = [[NSMutableDictionary alloc] init];
+        RDPosition * position1 = [[RDPosition alloc] init];
+        position1.x = [NSNumber numberWithFloat:0.0];
+        position1.y = [NSNumber numberWithFloat:0.0];
+        position1.z = [NSNumber numberWithFloat:0.0];
+        [infoDic1 setValue:@"position" forKey:@"sort"];
+        [infoDic1 setValue:@"position1@miso.uam.es" forKey:@"identifier"];
+        [infoDic1 setValue:position1 forKey:@"position"];
+        [infoDic1 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDic1 setValue:cornerType forKey:@"type"];
+        [items addObject:infoDic1];
+        
+        NSMutableDictionary * infoDic2 = [[NSMutableDictionary alloc] init];
+        RDPosition * position2 = [[RDPosition alloc] init];
+        position2.x = [NSNumber numberWithFloat:3.5];
+        position2.y = [NSNumber numberWithFloat:0.0];
+        position2.z = [NSNumber numberWithFloat:0.0];
+        [infoDic2 setValue:@"position" forKey:@"sort"];
+        [infoDic2 setValue:@"position2@miso.uam.es" forKey:@"identifier"];
+        [infoDic2 setValue:position2 forKey:@"position"];
+        [infoDic2 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDic2 setValue:cornerType forKey:@"type"];
+        [items addObject:infoDic2];
+        
+        NSMutableDictionary * infoDic3 = [[NSMutableDictionary alloc] init];
+        RDPosition * position3 = [[RDPosition alloc] init];
+        position3.x = [NSNumber numberWithFloat:3.5];
+        position3.y = [NSNumber numberWithFloat:-13.0];
+        position3.z = [NSNumber numberWithFloat:0.0];
+        [infoDic3 setValue:@"position" forKey:@"sort"];
+        [infoDic3 setValue:@"position2@miso.uam.es" forKey:@"identifier"];
+        [infoDic3 setValue:position3 forKey:@"position"];
+        [infoDic3 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDic3 setValue:cornerType forKey:@"type"];
+        [items addObject:infoDic3];
+        
+        NSMutableDictionary * infoDic4 = [[NSMutableDictionary alloc] init];
+        RDPosition * position4 = [[RDPosition alloc] init];
+        position4.x = [NSNumber numberWithFloat:0.0];
+        position4.y = [NSNumber numberWithFloat:-13.0];
+        position4.z = [NSNumber numberWithFloat:0.0];
+        [infoDic4 setValue:@"position" forKey:@"sort"];
+        [infoDic4 setValue:@"position2@miso.uam.es" forKey:@"identifier"];
+        [infoDic4 setValue:position4 forKey:@"position"];
+        [infoDic4 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDic4 setValue:cornerType forKey:@"type"];
+        [items addObject:infoDic4];
+        
+        NSMutableDictionary * infoRegionRaspiDic = [[NSMutableDictionary alloc] init];
+        [infoRegionRaspiDic setValue:@"beacon" forKey:@"sort"];
+        [infoRegionRaspiDic setValue:@"raspi@miso.uam.es" forKey:@"identifier"];
+        [infoRegionRaspiDic setValue:@"25DC8A73-F3C9-4111-A7DD-C39CD4B828C7" forKey:@"uuid"];
+        [infoRegionRaspiDic setValue:@"1" forKey:@"major"];
+        [infoRegionRaspiDic setValue:@"0" forKey:@"minor"];
+        [items addObject:infoRegionRaspiDic];
+        
+        NSMutableDictionary * infoItemBeacon1Dic = [[NSMutableDictionary alloc] init];
+        [infoItemBeacon1Dic setValue:@"beacon" forKey:@"sort"];
+        [infoItemBeacon1Dic setValue:@"beacon1@miso.uam.es" forKey:@"identifier"];
+        [infoItemBeacon1Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825" forKey:@"uuid"];
+        [infoItemBeacon1Dic setValue:@"1" forKey:@"major"];
+        [infoItemBeacon1Dic setValue:@"1" forKey:@"minor"];
+        [items addObject:infoItemBeacon1Dic];
+        
+        NSMutableDictionary * infoItemBeacon2Dic = [[NSMutableDictionary alloc] init];
+        [infoItemBeacon2Dic setValue:@"beacon" forKey:@"sort"];
+        [infoItemBeacon2Dic setValue:@"beacon2@miso.uam.es" forKey:@"identifier"];
+        [infoItemBeacon2Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824" forKey:@"uuid"];
+        [infoItemBeacon2Dic setValue:@"1" forKey:@"major"];
+        [infoItemBeacon2Dic setValue:@"1" forKey:@"minor"];
+        [items addObject:infoItemBeacon2Dic];
+        
+        NSMutableDictionary * infoItemBeacon3Dic = [[NSMutableDictionary alloc] init];
+        [infoItemBeacon3Dic setValue:@"beacon" forKey:@"sort"];
+        [infoItemBeacon3Dic setValue:@"beacon3@miso.uam.es" forKey:@"identifier"];
+        [infoItemBeacon3Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823" forKey:@"uuid"];
+        [infoItemBeacon3Dic setValue:@"1" forKey:@"major"];
+        [infoItemBeacon3Dic setValue:@"1" forKey:@"minor"];
+        [items addObject:infoItemBeacon3Dic];
+        
+        
+        // Save them in persistent memory
+        areItemsData = nil; // ARC disposing
+        areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+        [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
+        
+        // Create de index in which names if items will be saved for retrieve them later
+        NSMutableArray * itemsIndex = [[NSMutableArray alloc] init];
+        for (NSMutableDictionary * item in items) {
+            // Item's name
+            NSString * itemIdentifier = item[@"identifier"];
+            // Save the name in the index
+            [itemsIndex addObject:itemIdentifier];
+            // Create the item's data and archive it
+            NSData * itemData = [NSKeyedArchiver archivedDataWithRootObject:item];
+            NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
+            [userDefaults setObject:itemData forKey:itemKey];
+        }
+        // ...and save the key
+        NSData * itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
+        [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
+        
+        NSLog(@"[INFO][TBCC] No items found in device; demo items saved.");
+        
     }
     
     // Get views instances

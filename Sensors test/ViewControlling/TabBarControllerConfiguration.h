@@ -11,6 +11,7 @@
 #import "MDType.h"
 #import "MDMetamodel.h"
 #import "MDMode.h"
+#import "RDPosition.h"
 #import "VCToolbar.h"
 #import "ViewControllerLogin.h"
 #import "ViewControllerConfigurationTypes.h"

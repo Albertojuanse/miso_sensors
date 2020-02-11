@@ -1733,10 +1733,10 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="gUt-ed-0mG">
-                                <rect key="frame" x="32" y="613" width="127" height="29"/>
+                                <rect key="frame" x="32" y="613" width="121" height="29"/>
                                 <segments>
-                                    <segment title="iBeacon"/>
-                                    <segment title="Position"/>
+                                    <segment title="         "/>
+                                    <segment title="Beacon"/>
                                 </segments>
                             </segmentedControl>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="UUID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hOD-0V-zg7">
@@ -1834,6 +1834,19 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="afM-u9-bW3"/>
                     <connections>
+                        <outlet property="buttonEdit" destination="LQq-Ou-eQz" id="GlH-lo-rF6"/>
+                        <outlet property="buttonSave" destination="AGJ-w2-4yL" id="fA6-eb-Qt1"/>
+                        <outlet property="labelBeaconMajor" destination="bee-8E-97L" id="kLc-Qa-ogP"/>
+                        <outlet property="labelBeaconMinor" destination="Ql8-at-XLQ" id="gcM-ZV-aqi"/>
+                        <outlet property="labelBeaconUUID" destination="hOD-0V-zg7" id="e8G-hl-D9G"/>
+                        <outlet property="segmentedControl" destination="gUt-ed-0mG" id="f6f-0h-COi"/>
+                        <outlet property="tableItems" destination="KmK-c0-rA1" id="imW-8q-3jh"/>
+                        <outlet property="textMajor" destination="mVi-au-uOK" id="1VB-6f-Y4C"/>
+                        <outlet property="textMinor" destination="QYm-tz-IaX" id="Jhe-P7-2WG"/>
+                        <outlet property="textUUID" destination="ACL-lR-yUQ" id="kjP-kP-tx8"/>
+                        <outlet property="textX" destination="Cah-vv-LdJ" id="wg2-m8-74U"/>
+                        <outlet property="textY" destination="baa-hD-itE" id="z7G-Lc-drE"/>
+                        <outlet property="textZ" destination="M5m-2G-sbk" id="Oez-vI-5si"/>
                         <outlet property="toolbar" destination="x3A-bt-iaF" id="d8J-xO-SPZ"/>
                     </connections>
                 </viewController>
