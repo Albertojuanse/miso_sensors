@@ -39,7 +39,7 @@
     [[self.textModel layer] setBorderWidth:.4];
     [[self.textModel layer] setCornerRadius:8.0f];
     
-    // Submit demo metamodel if it does not exist
+    // Get demo metamodel it exists
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
     // Search for 'areTypes' boolean and if so, load the MDType array
     NSData * areTypesData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/areTypes"];
@@ -258,7 +258,6 @@
     return YES;
 }
 
-
 #pragma mark - UItableView data delegate methods
 /*!
  @method numberOfSectionsInTableView:
@@ -313,17 +312,10 @@
     }
     if (tableView == self.tableTypes) {
         
-        // Check if this section is the extra one for "new item"
-        if (indexPath.row > types.count - 1) {
-            cell.textLabel.text = [NSString stringWithFormat:@"+"];
-            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-            cell.textLabel.textAlignment = NSTextAlignmentCenter;
-        } else {
-            MDType * eachType = [types objectAtIndex:indexPath.row];
-            cell.textLabel.text = [NSString stringWithFormat:@"%@", eachType];
-            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-            cell.textLabel.textAlignment = NSTextAlignmentLeft;
-        }
+        MDType * eachType = [types objectAtIndex:indexPath.row];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@", eachType];
+        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+        cell.textLabel.textAlignment = NSTextAlignmentLeft;
     }
     return cell;
 }
