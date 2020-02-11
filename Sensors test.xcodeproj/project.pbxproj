@@ -40,10 +40,10 @@
 		4275ED5A22D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m in Sources */ = {isa = PBXBuildFile; fileRef = 4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m */; };
 		4275ED5D22D5F84300A5CAB7 /* RDRhoThetaSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 4275ED5C22D5F84300A5CAB7 /* RDRhoThetaSystem.m */; };
 		4276127422C0EE91007BDED8 /* SharedData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4276127322C0EE91007BDED8 /* SharedData.m */; };
+		42776ACD23F30D9400CE44A0 /* beacon.png in Resources */ = {isa = PBXBuildFile; fileRef = 42776ACC23F30D9400CE44A0 /* beacon.png */; };
 		427828BF23E322F8005D19B3 /* metamodel.png in Resources */ = {isa = PBXBuildFile; fileRef = 427828BB23E322F8005D19B3 /* metamodel.png */; };
 		427828C023E322F8005D19B3 /* routine.png in Resources */ = {isa = PBXBuildFile; fileRef = 427828BC23E322F8005D19B3 /* routine.png */; };
 		427828C123E322F8005D19B3 /* type.png in Resources */ = {isa = PBXBuildFile; fileRef = 427828BD23E322F8005D19B3 /* type.png */; };
-		427828C223E322F8005D19B3 /* beacon.png in Resources */ = {isa = PBXBuildFile; fileRef = 427828BE23E322F8005D19B3 /* beacon.png */; };
 		428AF6C022D7915000BE5374 /* ViewControllerSelectPositions.m in Sources */ = {isa = PBXBuildFile; fileRef = 428AF6BF22D7915000BE5374 /* ViewControllerSelectPositions.m */; };
 		428AF6C322D7A67500BE5374 /* ViewControllerThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 428AF6C222D7A67500BE5374 /* ViewControllerThetaThetaLocating.m */; };
 		428B7C6022E089B200B0C660 /* RDThetaThetaSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 428B7C5F22E089B200B0C660 /* RDThetaThetaSystem.m */; };
@@ -128,10 +128,10 @@
 		4275ED5C22D5F84300A5CAB7 /* RDRhoThetaSystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDRhoThetaSystem.m; sourceTree = "<group>"; };
 		4276127222C0EE71007BDED8 /* SharedData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedData.h; sourceTree = "<group>"; };
 		4276127322C0EE91007BDED8 /* SharedData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedData.m; sourceTree = "<group>"; };
+		42776ACC23F30D9400CE44A0 /* beacon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beacon.png; sourceTree = "<group>"; };
 		427828BB23E322F8005D19B3 /* metamodel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = metamodel.png; sourceTree = "<group>"; };
 		427828BC23E322F8005D19B3 /* routine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = routine.png; sourceTree = "<group>"; };
 		427828BD23E322F8005D19B3 /* type.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = type.png; sourceTree = "<group>"; };
-		427828BE23E322F8005D19B3 /* beacon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beacon.png; sourceTree = "<group>"; };
 		42867F5722EA1C9A00927FEE /* MDType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDType.h; sourceTree = "<group>"; };
 		428AF6BE22D7912400BE5374 /* ViewControllerSelectPositions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerSelectPositions.h; sourceTree = "<group>"; };
 		428AF6BF22D7915000BE5374 /* ViewControllerSelectPositions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerSelectPositions.m; sourceTree = "<group>"; };
@@ -360,7 +360,7 @@
 		42BE9EA323DB5117002D08FA /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				427828BE23E322F8005D19B3 /* beacon.png */,
+				42776ACC23F30D9400CE44A0 /* beacon.png */,
 				427828BB23E322F8005D19B3 /* metamodel.png */,
 				427828BC23E322F8005D19B3 /* routine.png */,
 				427828BD23E322F8005D19B3 /* type.png */,
@@ -435,7 +435,7 @@
 				4227988B2271F37800E07C39 /* Main.storyboard in Resources */,
 				421FCEB922CF5C8E00C62E5E /* miso.png in Resources */,
 				427828BF23E322F8005D19B3 /* metamodel.png in Resources */,
-				427828C223E322F8005D19B3 /* beacon.png in Resources */,
+				42776ACD23F30D9400CE44A0 /* beacon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
