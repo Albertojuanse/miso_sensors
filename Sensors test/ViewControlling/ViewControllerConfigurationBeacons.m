@@ -11,7 +11,6 @@
 @implementation ViewControllerConfigurationBeacons
 
 #pragma mark - UIViewController delegated methods
-
 /*!
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
@@ -168,7 +167,6 @@
 }
 
 #pragma mark - Instance methods
-
 /*!
  @method setCredentialsUserDic:
  @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
@@ -204,6 +202,371 @@
 - (IBAction)handleBackButton:(id)sender
 {
     [tabBar performSegueWithIdentifier:@"fromConfigurationToLogin" sender:sender];
+}
+
+/*!
+ @method handleEditButton:
+ @discussion This method handles the 'edit' button action and ask the selected MDType to load on textfields.
+ */
+- (IBAction)handleEditButton:(id)sender
+{
+    // Only edit if user did select a type
+    if (chosenItem) {
+        
+        // Get type
+        NSString * itemSort = chosenItem[@"sort"];
+        if ([itemSort isEqualToString:@"position"]) {
+            [self.segmentedControl setEnabled:NO forSegmentAtIndex:1];
+            
+            // Set position
+            RDPosition * itemPosition = chosenItem[@"position"];
+            if (itemPosition) {
+                [self.textX setText:[NSString stringWithFormat:@"%.2f", [itemPosition.x floatValue]]];
+                [self.textY setText:[NSString stringWithFormat:@"%.2f", [itemPosition.y floatValue]]];
+                [self.textZ setText:[NSString stringWithFormat:@"%.2f", [itemPosition.z floatValue]]];
+            } else {
+                NSLog(@"[ERROR][VCCB] No position found in position %@", chosenItem[@"identifier"]);
+            }
+            
+        }
+        if ([itemSort isEqualToString:@"beacon"]) {
+            [self.segmentedControl setEnabled:YES forSegmentAtIndex:1];
+            selectedSegmentIndex = 1;
+            [self.segmentedControl setSelectedSegmentIndex:selectedSegmentIndex];
+            [self changeView];
+            
+            // Set position
+            RDPosition * itemPosition = chosenItem[@"position"];
+            if (itemPosition) {
+                [self.textX setText:[NSString stringWithFormat:@"%.2f", [itemPosition.x floatValue]]];
+                [self.textY setText:[NSString stringWithFormat:@"%.2f", [itemPosition.y floatValue]]];
+                [self.textZ setText:[NSString stringWithFormat:@"%.2f", [itemPosition.z floatValue]]];
+            } else {
+                NSLog(@"[INFO][VCCB] No position found in item %@", chosenItem[@"identifier"]);
+            }
+            
+            // Set UUID, minor and major
+            NSString * uuid = chosenItem[@"uuid"];
+            NSString * major = chosenItem[@"major"];
+            NSString * minor = chosenItem[@"minor"];
+            
+            if (uuid && major && minor) {
+                [self.textUUID setText:uuid];
+                [self.textMajor setText:major];
+                [self.textMinor setText:minor];
+            } else {
+                NSLog(@"[INFO][VCCB] No UUID, major or minor found in iBeacon %@", chosenItem[@"identifier"]);
+            }
+            
+        }
+        
+    } else {
+        return;
+    }
+    
+}
+
+/*!
+ @method handleSaveButton:
+ @discussion This method handles the 'save' button action and ask the selected MDType to be saved with the information in the textfields.
+ */
+- (IBAction)handleSaveButton:(id)sender
+{
+    // The beacons cannot be registered twice with different ID because Location Manager will fail their initialization; because of coherence, two equals positions cannot be registered. Thus, the data of every item must be searched and not only its identifier.
+    
+    // Different behaviour if position or beacon
+    // Validate data
+    if (![self validateUserEntries]) {
+        return;
+    }
+    
+    // Compose a dictionary with the information provided
+    NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
+    // Different behaviour if position or beacon
+    
+    if (selectedSegmentIndex == 0) { // position mode
+        infoDic[@"sort"] = @"position";
+        infoDic[@"uuid"] = [[NSUUID UUID] UUIDString];
+        NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
+        itemPositionIdNumber = [NSNumber numberWithInteger:[itemPositionIdNumber integerValue] + 1];
+        positionId = [positionId stringByAppendingString:@"@miso.uam.es"];
+        infoDic[@"identifier"] = positionId;
+    }
+    if (selectedSegmentIndex == 1) { // iBeacon mode
+        infoDic[@"sort"] = @"beacon";
+        infoDic[@"uuid"] = [self.textUUID text];
+        infoDic[@"major"] = [self.textMajor text];
+        infoDic[@"minor"] = [self.textMinor text];
+        NSString * beaconId = [@"beacon" stringByAppendingString:[itemBeaconIdNumber stringValue]];
+        itemBeaconIdNumber = [NSNumber numberWithInteger:[itemBeaconIdNumber integerValue] + 1];
+        beaconId = [beaconId stringByAppendingString:@"@miso.uam.es"];
+        infoDic[@"identifier"] = beaconId;
+    }
+    
+    // Position
+    if (selectedSegmentIndex == 0) { // position mode
+        // If the three coordinate values had been submitted
+        if (
+            ![[self.textX text] isEqualToString:@""] &&
+            ![[self.textY text] isEqualToString:@""] &&
+            ![[self.textZ text] isEqualToString:@""]
+            )
+        {
+            
+            RDPosition * positionToAdd = [[RDPosition alloc] init];
+            positionToAdd.x = [NSNumber numberWithFloat:[[self.textX text] floatValue]];
+            positionToAdd.y = [NSNumber numberWithFloat:[[self.textY text] floatValue]];
+            positionToAdd.z = [NSNumber numberWithFloat:[[self.textZ text] floatValue]];
+            infoDic[@"position"] = positionToAdd;
+        } else {
+            
+            // If all coordinate values missing the user tries to register a no located position but set its type.
+            if (
+                [[self.textX text] isEqualToString:@""] &&
+                [[self.textY text] isEqualToString:@""] &&
+                [[self.textZ text] isEqualToString:@""]
+                )
+            {
+                // This code is reached also when an type was set or uploaded, so check it
+                [self alertUserWithTitle:@"Warning."
+                                 message:@"Please, submit three (x, y, z) values or push \"Back\"."
+                              andHandler:^(UIAlertAction * action) {
+                                  // Do nothing
+                              }
+                 ];
+                return;
+            } else {
+                // If ths code is reached means that there is only some coordinate values but not all of them
+                [self alertUserWithTitle:@"Some coordinate values missing."
+                                 message:@"Please, submit three (x, y, z) values or push \"Back\"."
+                              andHandler:^(UIAlertAction * action) {
+                                  // Do nothing
+                              }
+                 ];
+                return;
+            }
+        }
+    }
+    if (selectedSegmentIndex == 1) { // iBeacon mode
+        // If the three coordinate values had been submitted
+        if (
+            ![[self.textX text] isEqualToString:@""] &&
+            ![[self.textY text] isEqualToString:@""] &&
+            ![[self.textZ text] isEqualToString:@""]
+            )
+        {
+            
+            RDPosition * positionToAdd = [[RDPosition alloc] init];
+            positionToAdd.x = [NSNumber numberWithFloat:[[self.textX text] floatValue]];
+            positionToAdd.y = [NSNumber numberWithFloat:[[self.textY text] floatValue]];
+            positionToAdd.z = [NSNumber numberWithFloat:[[self.textZ text] floatValue]];
+            infoDic[@"position"] = positionToAdd;
+        } else {
+            
+            // If all coordinate values missing the user tries to re-register a beacon, unless the user wanted to set its type
+            if (
+                [[self.textX text] isEqualToString:@""] &&
+                [[self.textY text] isEqualToString:@""] &&
+                [[self.textZ text] isEqualToString:@""]
+                )
+            {
+                
+                // This code is reached also when an type was set or uploaded, so check it
+                [self alertUserWithTitle:@"Warning."
+                                 message:@"As no coordinate values were introduced, the item's position is null."
+                              andHandler:^(UIAlertAction * action) {
+                                  // Do nothing
+                              }
+                 ];
+                infoDic[@"position"] = nil;
+                
+            } else {
+                // If ths code is reached means that there is only some coordinate values but not all of them
+                [self alertUserWithTitle:@"Some coordinate values missing."
+                                 message:@"Please, submit three (x, y, z) values or push \"Back\"."
+                              andHandler:^(UIAlertAction * action) {
+                                  // Do nothing
+                              }
+                 ];
+                return;
+            }
+        }
+    }
+    
+    // Add the item
+    [items addObject:infoDic];
+    
+    // Save in device
+    [self updatePersistentItems];
+    
+    // Upload layout
+    [self changeView];
+    NSArray * selectedRows = [self.tableItems indexPathsForSelectedRows];
+    for (NSIndexPath * eachIndexPath in selectedRows) {
+        [self.tableItems deselectRowAtIndexPath:eachIndexPath animated:nil];
+    }
+    [self.tableItems reloadData];
+    
+}
+
+/*!
+ @method validateUserEntries
+ @discussion This method is called before any segue and it is used for pass other views variables.
+ */
+- (BOOL) validateUserEntries {
+    
+    NSString * floatRegex = @"^$|[+-]?([0-9]*[.])?[0-9]+";
+    NSPredicate * floatTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", floatRegex];
+    if ([floatTest evaluateWithObject:[self.textX text]]){
+        //Matches
+    } else {
+        [self alertUserWithTitle:@"X value not valid."
+                         message:@"Please, use decimal dot: 0.01"
+                      andHandler:^(UIAlertAction * action) {
+                          // Do nothing
+                      }
+         ];
+        return NO;
+    }
+    if ([floatTest evaluateWithObject:[self.textY text]]){
+        //Matches
+    } else {
+        [self alertUserWithTitle:@"Y value not valid."
+                         message:@"Please, use decimal dot: 0.01"
+                      andHandler:^(UIAlertAction * action) {
+                          // Do nothing
+                      }
+         ];
+        return NO;
+    }
+    if ([floatTest evaluateWithObject:[self.textZ text]]){
+        //Matches
+    } else {
+        [self alertUserWithTitle:@"Z value not valid."
+                         message:@"Please, use decimal dot: 0.01"
+                      andHandler:^(UIAlertAction * action) {
+                          // Do nothing
+                      }
+         ];
+        return NO;
+    }
+    
+    // Validate beacon data only if avalible
+    if (selectedSegmentIndex == 1) { // iBeacon mode
+        
+        NSString * uuidRegex = @"[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}";
+        NSPredicate * uuidTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", uuidRegex];
+        if ([uuidTest evaluateWithObject:[self.textUUID text]]){
+            //Matches
+        } else {
+            [self alertUserWithTitle:@"UUID not valid."
+                             message:@"Please, submit a valid UUID."
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
+            return NO;
+        }
+        
+        NSString * majorAndMinorRegex = @"[0-9]{1}|[0-9]{1}[0-9]{1}|[0-9]{1}[0-9]{1}[0-9]{1}|[0-9]{1}[0-9]{1}[0-9]{1}[0-9]{1}";
+        NSPredicate * majorAndMinorTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", majorAndMinorRegex];
+        if ([majorAndMinorTest evaluateWithObject:[self.textMajor text]]){
+            //Matches
+        } else {
+            [self alertUserWithTitle:@"Major value not valid."
+                             message:@"Please, submit a valid major value."
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
+            return NO;
+        }
+        if ([majorAndMinorTest evaluateWithObject:[self.textMinor text]]){
+            //Matches
+        } else {
+            [self alertUserWithTitle:@"Minor value not valid."
+                             message:@"Please, submit a valid minor value."
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
+            return NO;
+        }
+    }
+    
+    return YES;
+}
+
+
+/*!
+ @method updatePersistentItems
+ @discussion This method is called when user changes types collection in orther to upload it.
+ */
+- (BOOL)updatePersistentItems
+{
+    // Remove previous collection
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults removeObjectForKey:@"es.uam.miso/data/items/areItems"];
+    // Get the index...
+    NSData * itemsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/items/index"];
+    NSMutableArray * itemsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:itemsIndexData];
+    // ...and remove each item
+    for (NSString * itemIdentifier in itemsIndex) {
+        [userDefaults removeObjectForKey:itemIdentifier];
+    }
+         
+    // Check if there is any item
+    NSData * areItemsData;
+    if (items.count > 0) {
+        areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+    } else {
+        areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"NO"];
+    }
+    
+    // Save information
+    [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
+    itemsIndex = nil; // ARC disposal
+    itemsIndex = [[NSMutableArray alloc] init];
+    for (NSMutableDictionary * item in items) {
+        // Item's name
+        NSString * itemIdentifier = item[@"identifier"];
+        // Save the name in the index
+        [itemsIndex addObject:itemIdentifier];
+        // Create the item's data and archive it
+        NSData * itemData = [NSKeyedArchiver archivedDataWithRootObject:item];
+        NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
+        [userDefaults setObject:itemData forKey:itemKey];
+    }
+    // ...and save the key
+    itemsIndexData = nil; // ARC disposal
+    itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
+    [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
+    
+    return YES;
+}
+
+/*!
+ @method alertUserWithTitle:andMessage:
+ @discussion This method alerts the user with a pop up window with a single "Ok" button given its message and title and lambda funcion handler.
+ */
+- (void) alertUserWithTitle:(NSString *)title
+                    message:(NSString *)message
+                 andHandler:(void (^)(UIAlertAction *action))handler;
+{
+    UIAlertController * alertUsersNotFound = [UIAlertController
+                                              alertControllerWithTitle:title
+                                              message:message
+                                              preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction * okButton = [UIAlertAction
+                                actionWithTitle:@"Ok"
+                                style:UIAlertActionStyleDefault
+                                handler:handler
+                                ];
+    
+    [alertUsersNotFound addAction:okButton];
+    [self presentViewController:alertUsersNotFound animated:YES completion:nil];
+    return;
 }
 
 #pragma mark - UItableView data delegate methods
