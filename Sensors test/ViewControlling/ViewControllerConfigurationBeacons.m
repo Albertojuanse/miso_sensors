@@ -47,8 +47,31 @@
     [self.textMinor setText:@""];
     [self changeView];
     
-    // Search for 'areItems' boolean and if so, load the items' NSMutableDictionary array
+    // Search for variables from device memory
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    NSData * areIdNumbersData = [userDefaults objectForKey:@"es.uam.miso/variables/areIdNumbers"];
+    NSString * areIdNumbers;
+    if (areIdNumbersData) {
+        areIdNumbers = [NSKeyedUnarchiver unarchiveObjectWithData:areIdNumbersData];
+    }
+    if (areIdNumbersData && areIdNumbers && [areIdNumbers isEqualToString:@"YES"]) {
+        
+        // Existing saved data
+        // Retrieve the items using the index
+        
+        // Retrieve the variables
+       NSData * itemBeaconIdNumberData = [userDefaults objectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+        NSData * itemPositionIdNumberData = [userDefaults objectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
+        // ...and retrieve each item
+        itemBeaconIdNumber = [NSKeyedUnarchiver unarchiveObjectWithData:itemBeaconIdNumberData];
+        itemPositionIdNumber = [NSKeyedUnarchiver unarchiveObjectWithData:itemPositionIdNumberData];
+        
+        NSLog(@"[INFO][VCCB] Variable itemBeaconIdNumber found in device.");
+        NSLog(@"[INFO][VCCB] Variable itemPositionIdNumber found in device.");
+        
+    }
+    
+    // Search for 'areItems' boolean and if so, load the items' NSMutableDictionary array
     NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
     NSString * areItems;
     if (areItemsData) {
