@@ -26,6 +26,33 @@
     NSMutableArray * metamodels;
     NSMutableArray * items;
     
+    // Search for variables from device memory
+    NSData * areIdNumbersData = [userDefaults objectForKey:@"es.uam.miso/variables/areIdNumbers"];
+    NSString * areIdNumbers;
+    if (areIdNumbersData) {
+        areIdNumbers = [NSKeyedUnarchiver unarchiveObjectWithData:areIdNumbersData];
+    } else {
+        areIdNumbers = @"NO";
+    }
+    if (areIdNumbersData && areIdNumbers && [areIdNumbers isEqualToString:@"YES"]) {
+        
+    } else {
+        // No saved variables
+        // Create the variables
+        NSNumber * itemBeaconIdNumber = [NSNumber numberWithInteger:5];
+        NSNumber * itemPositionIdNumber = [NSNumber numberWithInteger:5];
+        
+        // Save them in persistent memory
+        areIdNumbersData = nil; // ARC disposing
+        areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+        [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
+        NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
+        NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
+        [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+        [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
+        
+    }
+    
     // Search for 'areTypes' boolean and if so, load the MDType array
     NSData * areTypesData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/areTypes"];
     NSString * areTypes;
