@@ -417,6 +417,31 @@
         }
     }
     
+    // Validate registration to prevent duplications
+    if ([self isDuplicatedItem:infoDic]) {
+        
+        // If it is duplicate, alert the user and ask if item has to be modified
+        NSString * itemSort = infoDic[@"sort"];
+        if ([itemSort isEqualToString:@"position"]) {
+            
+            [self alertUserWithTitle:@"This position already exists."
+                             message:@"Please, submit different (x, y, z) values."
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
+            return;
+            
+        }
+        if ([itemSort isEqualToString:@"beacon"]) {
+            
+            [self askUserToModifyItem:infoDic];
+            return;
+            
+        }
+        
+    }
+    
     // Add the item
     [items addObject:infoDic];
     
@@ -521,6 +546,56 @@
     return YES;
 }
 
+/*!
+ @method isDuplicatedItem
+ @discussion This method is called when user wants to create a new item and prevents duplicated items.
+ */
+- (BOOL)isDuplicatedItem:(NSMutableDictionary *)itemDic
+{
+    BOOL isDuplicated = NO;
+    
+    // The beacons cannot be registered twice with different ID because Location Manager will fail their initialization; because of coherence, two equals positions cannot be registered. Thus, the data of every item must be searched and not only its identifier.
+    // Different behaviour if position or beacon
+    NSString * itemSort = itemDic[@"sort"];
+    if ([itemSort isEqualToString:@"position"]) {
+        
+        // Check position
+        RDPosition * itemPosition = itemDic[@"position"];
+        for (NSMutableDictionary * eachItemDic in items) {
+            
+            // Check only positions
+            NSString * eachItemSort = eachItemDic[@"sort"];
+            if ([eachItemSort isEqualToString:@"position"]) {
+                RDPosition * eachItemPosition = eachItemDic[@"position"];
+                if ([eachItemPosition isEqualToRDPosition:itemPosition]) {
+                    isDuplicated = YES;
+                }
+            }
+            
+        }
+        
+    }
+    if ([itemSort isEqualToString:@"beacon"]) {
+        
+        // Check UUID
+        NSString * itemUUID = itemDic[@"uuid"];
+        for (NSMutableDictionary * eachItemDic in items) {
+            
+            // Check only beacons
+            NSString * eachItemSort = eachItemDic[@"sort"];
+            if ([eachItemSort isEqualToString:@"beacon"]) {
+                NSString * eachItemUUID = eachItemDic[@"uuid"];
+                if ([eachItemUUID isEqualToString:itemUUID]) {
+                    isDuplicated = YES;
+                }
+            }
+            
+        }
+        
+    }
+    
+    return isDuplicated;
+}
 
 /*!
  @method updatePersistentItems
@@ -590,6 +665,52 @@
     
     [alertUsersNotFound addAction:okButton];
     [self presentViewController:alertUsersNotFound animated:YES completion:nil];
+    return;
+}
+
+/*!
+ @method askUserToModifyItem:
+ @discussion This method ask the user if the submited item must midify the selected one; this method is called when a duplicate UUID is found.
+ */
+- (void) askUserToModifyItem:(NSMutableDictionary *)itemDic
+{
+    UIAlertController * alertAddMetamodel = [UIAlertController
+                                             alertControllerWithTitle:@"This iBeacon already exists."
+                                             message:@"Please, use a different UUID or tap 'modify' to replace the existing iBeacon attributes with the new ones."
+                                             preferredStyle:UIAlertControllerStyleAlert
+                                             ];
+    
+    UIAlertAction * modifyButton = [UIAlertAction
+                                    actionWithTitle:@"Modify"
+                                    style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * _Nonnull action) {
+                                     
+                                        // Get all information except UUID from itemDic and set it in chosenItem
+                                        NSArray * itemDicKeys = [itemDic allKeys];
+                                        for (NSString * key in itemDicKeys) {
+                                            if (
+                                                [key isEqualToString:@"uuid"] ||
+                                                [key isEqualToString:@"major"] ||
+                                                [key isEqualToString:@"minor"]
+                                                ) {
+                                                chosenItem[key] = nil;
+                                                chosenItem[key] = itemDic[key];
+                                            }
+                                        }
+                                        
+                                        
+                                 }
+                                 ];
+    
+    UIAlertAction * cancelButton = [UIAlertAction
+                                    actionWithTitle:@"Cancel"
+                                    style:UIAlertActionStyleCancel
+                                    handler:nil
+                                    ];
+    
+    [alertAddMetamodel addAction:modifyButton];
+    [alertAddMetamodel addAction:cancelButton];
+    [self presentViewController:alertAddMetamodel animated:YES completion:nil];
     return;
 }
 

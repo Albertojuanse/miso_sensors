@@ -28,7 +28,7 @@
     NSNumber * itemBeaconIdNumber;
     NSNumber * itemPositionIdNumber;
     NSMutableArray * items;
-    NSDictionary * chosenItem;    
+    NSMutableDictionary * chosenItem;    
     // User selection in main manu
     NSInteger selectedSegmentIndex;
     
