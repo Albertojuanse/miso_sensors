@@ -430,12 +430,14 @@
                               // Do nothing
                           }
              ];
+            [self changeView];
             return;
             
         }
         if ([itemSort isEqualToString:@"beacon"]) {
             
             [self askUserToModifyItem:infoDic];
+            [self changeView];
             return;
             
         }
@@ -689,15 +691,15 @@
                                         NSArray * itemDicKeys = [itemDic allKeys];
                                         for (NSString * key in itemDicKeys) {
                                             if (
-                                                [key isEqualToString:@"uuid"] ||
-                                                [key isEqualToString:@"major"] ||
-                                                [key isEqualToString:@"minor"]
+                                                ![key isEqualToString:@"uuid"] ||
+                                                ![key isEqualToString:@"major"] ||
+                                                ![key isEqualToString:@"minor"]
                                                 ) {
                                                 chosenItem[key] = nil;
                                                 chosenItem[key] = itemDic[key];
                                             }
                                         }
-                                        
+                                        NSLog(@"[INFO][VCCB] User did modify the item %@", chosenItem);
                                         
                                  }
                                  ];
