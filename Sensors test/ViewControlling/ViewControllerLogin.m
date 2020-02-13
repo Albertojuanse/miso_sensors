@@ -19,7 +19,15 @@
  */
 - (void)viewDidLoad
 {
-    self.loginText.text = @"Please, enter your credentials.";
+    // Toolbar layout
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                   alpha:0.5
+                                    ];
+    
     if (userDidAskSignOut) {
         NSLog(@"[INFO][VCL] User did asked to sign out.");
         if ([self deleteUserWithCredentialsUserDic:userDic]) {
@@ -27,15 +35,25 @@
         } else {
             NSLog(@"[ERROR][VCL] User could not sign out.");
         }
-        self.loginText.text = @"User deleted. Please, enter your credentials.";
         userDic = nil;
         credentialsUserDic = nil;
+        [self alertUserWithTitle:@"User deleted."
+                         message:@""
+                      andHandler:^(UIAlertAction * action) {
+                          // Do nothing
+                      }
+         ];
     }
     if (userDidAskLogOut) {
         NSLog(@"[INFO][VCL] User did log out.");
-        self.loginText.text = @"User logged out. Please, enter your credentials.";
         userDic = nil;
         credentialsUserDic = nil;
+        [self alertUserWithTitle:@"User logged out."
+                         message:@""
+                      andHandler:^(UIAlertAction * action) {
+                          // Do nothing
+                      }
+         ];
     }
     credentialsUserDicArray = [[NSMutableArray alloc] init];
 }
@@ -77,6 +95,30 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+/*!
+ @method alertUserWithTitle:andMessage:
+ @discussion This method alerts the user with a pop up window with a single "Ok" button given its message and title and lambda funcion handler.
+ */
+- (void) alertUserWithTitle:(NSString *)title
+                    message:(NSString *)message
+                 andHandler:(void (^)(UIAlertAction *action))handler;
+{
+    UIAlertController * alertUsersNotFound = [UIAlertController
+                                              alertControllerWithTitle:title
+                                              message:message
+                                              preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction * okButton = [UIAlertAction
+                                actionWithTitle:@"Ok"
+                                style:UIAlertActionStyleDefault
+                                handler:handler
+                                ];
+    
+    [alertUsersNotFound addAction:okButton];
+    [self presentViewController:alertUsersNotFound animated:YES completion:nil];
+    return;
 }
 
 #pragma mark - Instance methods
@@ -131,7 +173,12 @@
     if ([userTest evaluateWithObject:[self.userText text]]){
         //Matches
     } else {
-        self.loginText.text = @"Error. User not valid. Please, only accepted a-z, A-Z, 0-9, \"_\" and \"-\".";
+        [self alertUserWithTitle:@"Invalid user."
+                         message:@"Please, only accepted a-z, A-Z, 0-9, \"_\" and \"-\"."
+                      andHandler:^(UIAlertAction * action) {
+                          // Do nothing
+                      }
+         ];
         return;
     }
     
@@ -140,7 +187,12 @@
     if ([passTest evaluateWithObject:[self.passText text]]){
         //Matches
     } else {
-        self.loginText.text = @"Error. Password not valid; minimum length 8 characters: a-z, A-Z, 0-9, \"_\" and \"-\".";
+        [self alertUserWithTitle:@"Invalid password."
+                         message:@"Minimum length 8 characters: a-z, A-Z, 0-9, \"_\" and \"-\"."
+                      andHandler:^(UIAlertAction * action) {
+                          // Do nothing
+                      }
+         ];
         return;
     }
     
@@ -165,7 +217,12 @@
     if ([self validateCredentialsUserDic:credentialsUserDic]) {
         [self performSegueWithIdentifier:@"loginFromLoginToMain" sender:sender];
     } else {
-        self.loginText.text = @"Error. Invalid user name or password.";
+        [self alertUserWithTitle:@"Invalid user name or password."
+                         message:@"Please, try again."
+                      andHandler:^(UIAlertAction * action) {
+                          // Do nothing
+                      }
+         ];
         return;
     }
     
@@ -184,7 +241,12 @@
     if ([userTest evaluateWithObject:[self.userText text]]){
         //Matches
     } else {
-        self.loginText.text = @"Error. User not valid. Please, only accepted a-z, A-Z, 0-9, \"_\" and \"-\".";
+        [self alertUserWithTitle:@"Invalid user."
+                         message:@"Please, only accepted a-z, A-Z, 0-9, \"_\" and \"-\"."
+                      andHandler:^(UIAlertAction * action) {
+                          // Do nothing
+                      }
+         ];
         return;
     }
     
@@ -193,7 +255,12 @@
     if ([passTest evaluateWithObject:[self.passText text]]){
         //Matches
     } else {
-        self.loginText.text = @"Error. Password not valid; minimum length 8 characters: a-z, A-Z, 0-9, \"_\" and \"-\".";
+        [self alertUserWithTitle:@"Invalid password."
+                         message:@"Minimum length 8 characters: a-z, A-Z, 0-9, \"_\" and \"-\"."
+                      andHandler:^(UIAlertAction * action) {
+                          // Do nothing
+                      }
+         ];
         return;
     }
     
@@ -221,12 +288,22 @@
         if ([self registerNewUserWithCredentialsUserDic:credentialsUserDic]) {
             [self performSegueWithIdentifier:@"loginFromLoginToMain" sender:sender];
         } else {
-            self.loginText.text = @"Error. An error occurred while registering. Please, wait a moment and try again.";
+            [self alertUserWithTitle:@"An error occurred while registering."
+                             message:@"Please, wait a moment and try again."
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }
+             ];
             return;
         }
         
     } else {
-        self.loginText.text = @"Error. Invalid user name or password, or existing name.";
+        [self alertUserWithTitle:@"Error"
+                         message:@"Invalid user name or password, or existing name."
+                      andHandler:^(UIAlertAction * action) {
+                          // Do nothing
+                      }
+         ];
         return;
     }
     
