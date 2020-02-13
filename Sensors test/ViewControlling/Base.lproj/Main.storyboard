@@ -1682,6 +1682,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                 <state key="normal" title="▲"/>
                                 <connections>
+                                    <action selector="handleSaveButton:" destination="K89-5A-aAg" eventType="touchUpInside" id="Aak-7h-iqq"/>
                                     <action selector="handleSaveButton:" destination="it5-Xe-lJv" eventType="touchUpInside" id="YaP-VG-kCB"/>
                                 </connections>
                             </button>
@@ -1694,6 +1695,7 @@
                                 <state key="normal" title="▼"/>
                                 <connections>
                                     <action selector="handleEditButton:" destination="it5-Xe-lJv" eventType="touchUpInside" id="4VR-aL-a45"/>
+                                    <action selector="handleEditButton:" destination="K89-5A-aAg" eventType="touchUpInside" id="H5H-Eb-Sax"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="x: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dsK-1g-p3X">

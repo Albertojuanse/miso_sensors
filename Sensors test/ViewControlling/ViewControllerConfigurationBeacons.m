@@ -233,6 +233,7 @@
  */
 - (IBAction)handleEditButton:(id)sender
 {
+    //NSLog(@"[INFO][VCCB] User wants to edit item: %@", chosenItem);
     // Only edit if user did select a type
     if (chosenItem) {
         
@@ -666,6 +667,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
         if (indexPath.row <= items.count) {
             chosenItem = [items objectAtIndex:indexPath.row];
+            //NSLog(@"[INFO][VCCB] User did select item: %@", chosenItem);
         }
         
     }
