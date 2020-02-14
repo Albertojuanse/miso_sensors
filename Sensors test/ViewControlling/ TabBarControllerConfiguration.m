@@ -199,7 +199,7 @@
         position3.y = [NSNumber numberWithFloat:-13.0];
         position3.z = [NSNumber numberWithFloat:0.0];
         [infoDic3 setValue:@"position" forKey:@"sort"];
-        [infoDic3 setValue:@"position2@miso.uam.es" forKey:@"identifier"];
+        [infoDic3 setValue:@"position3@miso.uam.es" forKey:@"identifier"];
         [infoDic3 setValue:position3 forKey:@"position"];
         [infoDic3 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
         [infoDic3 setValue:cornerType forKey:@"type"];
@@ -211,7 +211,7 @@
         position4.y = [NSNumber numberWithFloat:-13.0];
         position4.z = [NSNumber numberWithFloat:0.0];
         [infoDic4 setValue:@"position" forKey:@"sort"];
-        [infoDic4 setValue:@"position2@miso.uam.es" forKey:@"identifier"];
+        [infoDic4 setValue:@"position4@miso.uam.es" forKey:@"identifier"];
         [infoDic4 setValue:position4 forKey:@"position"];
         [infoDic4 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
         [infoDic4 setValue:cornerType forKey:@"type"];
