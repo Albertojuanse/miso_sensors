@@ -166,6 +166,9 @@
             [self.labelBeaconUUID setEnabled:NO];
             [self.labelBeaconMajor setEnabled:NO];
             [self.labelBeaconMinor setEnabled:NO];
+            [self.textUUID setText:@""];
+            [self.textMajor setText:@""];
+            [self.textMinor setText:@""];
             
             break;
         }
@@ -353,20 +356,31 @@
             {
                 // This code is reached also when an type was set or uploaded, so check it
                 [self alertUserWithTitle:@"Warning."
-                                 message:@"Please, submit three (x, y, z) values or push \"Back\"."
+                                 message:@"Please, submit three (x, y, z) values."
                               andHandler:^(UIAlertAction * action) {
                                   // Do nothing
                               }
                  ];
+                
+                // Upload layout
+                [self.segmentedControl setEnabled:YES forSegmentAtIndex:1];
+                [self changeView];
+                NSArray * selectedRows = [self.tableItems indexPathsForSelectedRows];
+                for (NSIndexPath * eachIndexPath in selectedRows) {
+                    [self.tableItems deselectRowAtIndexPath:eachIndexPath animated:nil];
+                }
+                [self.tableItems reloadData];
+                
                 return;
             } else {
                 // If ths code is reached means that there is only some coordinate values but not all of them
                 [self alertUserWithTitle:@"Some coordinate values missing."
-                                 message:@"Please, submit three (x, y, z) values or push \"Back\"."
+                                 message:@"Please, submit three (x, y, z) values."
                               andHandler:^(UIAlertAction * action) {
                                   // Do nothing
                               }
                  ];
+                
                 return;
             }
         }
@@ -451,6 +465,7 @@
     [self updatePersistentItems];
     
     // Upload layout
+    [self.segmentedControl setEnabled:YES forSegmentAtIndex:1];
     [self changeView];
     NSArray * selectedRows = [self.tableItems indexPathsForSelectedRows];
     for (NSIndexPath * eachIndexPath in selectedRows) {
