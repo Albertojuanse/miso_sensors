@@ -322,7 +322,7 @@
     //   (···)
     //  ]
     //
-    //            // METAMODEL DATA //
+    //               // TYPES DATA //
     //
     // The schema of typesData collection is
     //

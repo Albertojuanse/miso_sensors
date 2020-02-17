@@ -92,7 +92,7 @@
 //   (···)
 //  ]
 //
-//            // METAMODEL DATA //
+//               // TYPES DATA //
 //
 // The schema of typesData collection is
 //
@@ -2176,7 +2176,7 @@
 }
 
 #pragma mark - Metamodel data specific getters
-//            // METAMODEL DATA //
+//               // TYPES DATA //
 //
 // The schema of typesData collection is
 //
@@ -3175,7 +3175,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 }
 
 #pragma mark - Metamodel data specific setters
-//            // METAMODEL DATA //
+//               // TYPES DATA //
 //
 // The schema of typesData collection is
 //
