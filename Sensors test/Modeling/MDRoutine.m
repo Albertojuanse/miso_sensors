@@ -20,8 +20,8 @@
     if (self) {
         name = [[NSString alloc] init];
         description = [[NSString alloc] init];
-        modes = [[NSMutableDictionary alloc] init];
-        metamodels = [[NSMutableDictionary alloc] init];
+        modes = [[NSMutableArray alloc] init];
+        metamodels = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -49,8 +49,8 @@
  */
 - (instancetype)initWithName:(NSString *)initName
                  description:(NSString *)initDescription
-                       modes:(NSMutableDictionary *)initModes
-               andMetamodels:(NSMutableDictionary *)initMetamodels
+                       modes:(NSMutableArray *)initModes
+               andMetamodels:(NSMutableArray *)initMetamodels
 {
     self = [self initWithName:initName andDescription:description];
     if (self) {
@@ -100,7 +100,7 @@
  @method getModes
  @discussion Getter of the 'modes' NSMutableArray object.
  */
-- (NSMutableDictionary *)getModes {
+- (NSMutableArray *)getModes {
     return modes;
 }
 
@@ -108,7 +108,7 @@
  @method getMetamodels
  @discussion Getter of the 'metamodels' NSMutableArray object.
  */
-- (NSMutableDictionary *)getMetamodels {
+- (NSMutableArray *)getMetamodels {
     return metamodels;
 }
 
@@ -130,18 +130,36 @@
 
 /*!
  @method setModes
- @discussion Setter of the 'modes' NSMutableDictionary object.
+ @discussion Setter of the 'modes' NSMutableArray object.
  */
-- (void)setModes:(NSMutableDictionary *)givenModes {
+- (void)setModes:(NSMutableArray *)givenModes {
     modes = givenModes;
 }
 
 /*!
  @method setMetamodels
- @discussion Setter of the 'metamodels' NSMutableDictionary object.
+ @discussion Setter of the 'metamodels' NSMutableArray object.
  */
-- (void)setMetamodels:(NSMutableDictionary *)givenMetamodels {
+- (void)setMetamodels:(NSMutableArray *)givenMetamodels {
     metamodels = givenMetamodels;
+}
+
+/*!
+ @method addMetamodel
+ @discussion Setter of a single metamodel MDMetamodel if is not yet.
+ */
+- (BOOL)addMetamodel:(MDMetamodel *)givenMetamodel {
+    
+    BOOL metamodelNew = YES;
+    for (MDMetamodel * eachMetamodel in metamodels) {
+        if ([eachMetamodel isEqualToMDMetamodel:givenMetamodel]) {
+            metamodelNew = NO;
+        }
+    }
+    if (metamodelNew) {
+        [metamodels addObject:givenMetamodel];
+    }
+    return metamodelNew;
 }
 
 /*!

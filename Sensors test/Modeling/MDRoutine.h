@@ -17,8 +17,8 @@
 @interface MDRoutine: NSObject <NSCoding> {
     NSString * name;
     NSString * description;
-    NSMutableDictionary * modes;
-    NSMutableDictionary * metamodels;
+    NSMutableArray * modes;
+    NSMutableArray * metamodels;
     
 }
 
@@ -27,16 +27,17 @@
               andDescription:(NSString *)initDescription;
 - (instancetype)initWithName:(NSString *)initName
                  description:(NSString *)initDescription
-                       modes:(NSMutableDictionary *)initModes
-               andMetamodels:(NSMutableDictionary *)initMetamodels;
+                       modes:(NSMutableArray *)initModes
+               andMetamodels:(NSMutableArray *)initMetamodels;
 - (void)setName:(NSString *)givenName;
 - (void)setDescription:(NSString *)givenDescription;
-- (void)setModes:(NSMutableDictionary *)givenModes;
-- (void)setMetamodels:(NSMutableDictionary *)givenMetamodels;
+- (void)setModes:(NSMutableArray *)givenModes;
+- (void)setMetamodels:(NSMutableArray *)givenMetamodels;
 - (NSString *)getName;
 - (NSString *)getDescription;
-- (NSMutableDictionary *)getModes;
-- (NSMutableDictionary *)getMetamodels;
+- (NSMutableArray *)getModes;
+- (NSMutableArray *)getMetamodels;
+- (BOOL)addMetamodel:(MDMetamodel *)givenMetamodel;
 - (BOOL)isEqual:(id)object;
 - (BOOL)isEqualToMDRoutine:(MDRoutine *)type;
 - (NSString *)description;
