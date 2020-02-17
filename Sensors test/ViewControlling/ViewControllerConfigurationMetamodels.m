@@ -160,7 +160,7 @@
     if([self askUserToCreateRoutine]) {
         
         // Get all the information saved in device
-        NSLog(@"[INFO][VCCT] Creating routine after configuration.");
+        NSLog(@"[INFO][VCCM] Creating routine after configuration.");
         NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
         NSMutableArray * routineTypes;
         NSMutableArray * routineMetamodels;
@@ -180,7 +180,7 @@
             NSData * typesData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/types"];
             routineTypes = [NSKeyedUnarchiver unarchiveObjectWithData:typesData];
             
-            NSLog(@"[INFO][VCCT] -> Added %tu ontologycal types found.", routineTypes.count);
+            NSLog(@"[INFO][VCCM] -> Added %tu ontologycal types found.", routineTypes.count);
         } else {
             routineTypes = nil;
         }
@@ -202,7 +202,7 @@
             NSData * metamodelsData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/metamodels"];
             routineMetamodels = [NSKeyedUnarchiver unarchiveObjectWithData:metamodelsData];
             
-            NSLog(@"[INFO][VCCT] -> Added %tu metamodels found.", routineMetamodels.count);
+            NSLog(@"[INFO][VCCM] -> Added %tu metamodels found.", routineMetamodels.count);
         } else {
             routineMetamodels = nil;
         }
@@ -230,7 +230,7 @@
                 [routineItems addObject:itemDic];
             }
             
-            NSLog(@"[INFO][VCCT] -> Added %tu items found.", routineItems.count);
+            NSLog(@"[INFO][VCCM] -> Added %tu items found.", routineItems.count);
         } else {
             routineItems = nil;
             
