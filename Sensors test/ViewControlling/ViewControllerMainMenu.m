@@ -53,6 +53,7 @@
     //               "pass": (NSString *)pass1;
     //               "role": (NSString *)role1;
     //             }
+    //     "modes": (NSMutableArray *)modes;
     //     "mode": (NSString *)mode1;
     //     "state": (NSString *)state1;
     //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
@@ -325,14 +326,42 @@
             
             
             // Set items in data shared
-            for (MDType * type in types) {
-                registerCorrect = registerCorrect && [sharedData inTypesDataAddType:type withCredentialsUserDic:credentialsUserDic];
+            for (MDType * eachType in types) {
+                registerCorrect = registerCorrect && [sharedData inTypesDataAddType:eachType withCredentialsUserDic:credentialsUserDic];
             }
             NSLog(@"[INFO][VCMM] -> %tu ontological types found in routine.", types.count);
             
             // Metamodels
+            for (MDMetamodel * eachMetamodel in metamodels) {
+                registerCorrect = registerCorrect && [sharedData inMetamodelsDataAddMetamodel:eachMetamodel                                                                        withCredentialsUserDic:credentialsUserDic];
+            }
+            NSLog(@"[INFO][VCMM] -> %tu metamodels found in routine.", metamodels.count);
             
-            // Modes
+            // Modes; from each metamodel, get the modes
+            NSMutableArray * modes = [[NSMutableArray alloc] init];
+            for  (MDMetamodel * eachMetamodel in metamodels) {
+                
+                NSMutableArray * eachModes = [eachMetamodel getModes];
+                
+                // Search them and only save the non repeating ones
+                for (MDMode * eachMode in eachModes) {
+                    
+                    BOOL modeFound = NO;
+                    for (MDMode * existingMode in modes) {
+                        if ([existingMode isEqualToMDMode:eachMode]) {
+                            modeFound = YES;
+                        }
+                    }
+                    if (!modeFound) {
+                        [modes addObject:eachMode];
+                    }
+                    
+                }
+                
+            }
+            registerCorrect = registerCorrect && [sharedData inSessionDataSetModes:modes
+                                                                 toUserWithUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic];
             
             // Set items data in data shared
             registerCorrect = registerCorrect && [sharedData setItemsData:items

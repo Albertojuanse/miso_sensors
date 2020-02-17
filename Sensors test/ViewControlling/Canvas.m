@@ -262,6 +262,7 @@
     //               "pass": (NSString *)pass1;
     //               "role": (NSString *)role1;
     //             }
+    //     "modes": (NSMutableArray *)modes;
     //     "mode": (NSString *)mode1;
     //     "state": (NSString *)state1;
     //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic

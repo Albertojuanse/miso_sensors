@@ -32,6 +32,7 @@
 //               "pass": (NSString *)pass1;
 //               "role": (NSString *)role1;
 //             }
+//     "modes": (NSMutableArray *)modes;
 //     "mode": (NSString *)mode1;
 //     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
@@ -554,6 +555,7 @@
 //               "pass": (NSString *)pass1;
 //               "role": (NSString *)role1;
 //             }
+//     "modes": (NSMutableArray *)modes;
 //     "mode": (NSString *)mode1;
 //     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
@@ -672,6 +674,26 @@
  */
 - (MDMode *)fromSessionDataGetModeFromUserWithUserName:(NSString *)userName
                                  andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self fromSessionDataGetKey:@"mode" fromUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method fromSessionDataGetModesFromUserWithUserName:andCredentialsUserDic:
+ @discussion This method returns the modes NSMutableArray from the session data collection given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromSessionDataGetModesFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                                         andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self fromSessionDataGetKey:@"modes" fromUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method fromSessionDataGetModesFromUserWithUserName:andCredentialsUserDic:
+ @discussion This method returns the modes NSMutableArray from the session data collection given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromSessionDataGetModesFromUserWithUserName:(NSString *)userName
+                                          andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     return [self fromSessionDataGetKey:@"mode" fromUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
 }
@@ -2529,6 +2551,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 //               "pass": (NSString *)pass1;
 //               "role": (NSString *)role1;
 //             }
+//     "modes": (NSMutableArray *)modes;
 //     "mode": (NSString *)mode1;
 //     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
@@ -2623,6 +2646,28 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
        andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
         return [self inSessionDataSetObject:givenMode forKey:@"mode" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method inSessionDataSetModes:toUserWithUserDic:andCredentialsUserDic:
+ @discussion This method sets in session data collection the user's NSMutableArray modes given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL)inSessionDataSetModes:(NSMutableArray *)givenModes
+            toUserWithUserDic:(NSMutableDictionary *)userDic
+        andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self inSessionDataSetObject:givenModes forKey:@"modes" toUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method inSessionDataSetModes:toUserWithUserName:andCredentialsUserDic:
+ @discussion This method sets in session data collection the user's NSMutableArray modes given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL)inSessionDataSetModes:(NSMutableArray *)givenModes
+           toUserWithUserName:(NSString *)userName
+        andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self inSessionDataSetObject:givenModes forKey:@"modes" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
 }
 
 /*!

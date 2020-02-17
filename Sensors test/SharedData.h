@@ -75,10 +75,14 @@
                                                          andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableDictionary *)fromSessionDataGetItemChosenByUserFromUserWithUserName:(NSString *)userName
                                                           andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
-- (MDMode *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary *)userDic
-                                  andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (MDMode *)fromSessionDataGetModeFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                                andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (MDMode *)fromSessionDataGetModeFromUserWithUserName:(NSString *)userName
                                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray *)fromSessionDataGetModesFromUserWithUserName:(NSString *)userName
+                                          andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray *)fromSessionDataGetModesFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                                         andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSString *)fromSessionDataGetStateFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
                                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSString *)fromSessionDataGetStateFromUserWithUserName:(NSString *)userName
@@ -261,6 +265,12 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
            toUserWithUserDic:(NSMutableDictionary *)userDic
        andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)inSessionDataSetMode:(MDMode *)givenMode
+          toUserWithUserName:(NSString *)userName
+       andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL)inSessionDataSetModes:(NSMutableArray *)givenModes
+            toUserWithUserDic:(NSMutableDictionary *)userDic
+        andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL)inSessionDataSetModes:(NSMutableArray *)givenModes
           toUserWithUserName:(NSString *)userName
        andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)inSessionDataSetState:(NSString *)givenState

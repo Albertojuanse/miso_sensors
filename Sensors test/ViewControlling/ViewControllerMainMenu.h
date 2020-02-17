@@ -10,6 +10,9 @@
 #import <UIKit/UIKit.h>
 #import "SharedData.h"
 #import "MDRoutine.h"
+#import "MDMetamodel.h"
+#import "MDType.h"
+#import "MDMode.h"
 #import "ViewControllerLogin.h"
 #import "ViewControllerAddBeaconMenu.h"
 #import "ViewControllerSelectPositions.h"
