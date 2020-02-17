@@ -725,7 +725,7 @@
         
         // If the remove transaction is succesful it returns YES
         if (
-            [sharedData inTypesDataRemoveItemWithName:typeToRemoveName
+            [sharedData inTypesDataRemoveTypeWithName:typeToRemoveName
                                 andCredentialsUserDic:credentialsUserDic]
             )
         {

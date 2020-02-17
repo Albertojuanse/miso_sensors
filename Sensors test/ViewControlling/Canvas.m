@@ -330,6 +330,14 @@
     //    (···)
     //  ]
     //
+    //            // METAMODEL DATA //
+    //
+    // The schema of metamodelsData collection is
+    //
+    //  [ (MDMetamodel *)metamodel1,
+    //    (···)
+    //  ]
+    //
     //              // MODEL DATA //
     //
     // The schema of modelData collection is is

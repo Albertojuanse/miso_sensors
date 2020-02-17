@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "RDPosition.h"
 #import "MDType.h"
+#import "MDMetamodel.h"
 #import "MDMode.h"
 #import "MDReference.h"
 #import "NSMutableArray+Printable.h"
@@ -25,7 +26,7 @@
     NSMutableArray * itemsData;      // Set of dictionaries with the information of every position, beacon... submitted by the user
     NSMutableArray * measuresData;   // Set of dictionaries with the measures taken
     NSMutableArray * typesData;      // Set of metamodeling MDTypes types
-    NSMutableArray * metamodelsData; // Set of metamodeling MDMetamodels 
+    NSMutableArray * metamodelsData; // Set of metamodeling MDMetamodels metamodels
     NSMutableArray * modelData;      // Set of dictionaries with the models generated or imported
     
     // Declare the inner dictionaries; they will be created or gotten if they already exists each use
@@ -49,6 +50,7 @@
 - (NSMutableArray *)getItemsDataWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)getMeasuresDataWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)getTypesDataWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray *)getMetamodelsDataWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)getModelDataWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 - (BOOL)isUserDataEmptyWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
@@ -56,6 +58,7 @@
 - (BOOL)isItemsDataEmptyWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)isMeasuresDataEmptyWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)isTypesDataEmptyWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL)isMetamodelsDataEmptyWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)isModelDataEmptyWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific user data getters
@@ -228,6 +231,11 @@
 - (BOOL) fromTypesDataIsTypeWithName:(NSString *)givenName
            andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
+// Specific metamodels data specific getters
+- (NSMutableArray *)fromMetamodelsDataGetMetamodelsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL) fromMetamodelsDataIsMetamodelsWithName:(NSString *)givenName
+                      andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+
 // Specific model data specific getters
 - (NSMutableArray *)fromModelDataGetModelDicsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)fromModelDataGetModelDicWithName:(NSString *)name
@@ -323,8 +331,12 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
         andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific types data specific setters
-- (BOOL) inTypesDataAddType:(MDType *)type
-         withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL) inTypesDataAddType:(MDType *)givenType
+     withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+
+// Specific metamodels data specific setters
+- (BOOL) inMetamodelsDataAddMetamodel:(MDMetamodel *)givenMetamodel
+               withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific model data specific setters
 - (BOOL) inModelDataAddModelWithName:(NSString *)name
@@ -360,8 +372,12 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 // Specific measures data specific removers
 
 // Specific types data specific removers
-- (BOOL) inTypesDataRemoveItemWithName:(NSString *)givenName
+- (BOOL) inTypesDataRemoveTypeWithName:(NSString *)givenName
                  andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+
+// Specific metamodels data specific removers
+- (BOOL) inMetamodelsDataRemoveMetamodelWithName:(NSString *)givenName
+                           andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific model data specific removers
 
