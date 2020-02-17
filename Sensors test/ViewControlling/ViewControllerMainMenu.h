@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "SharedData.h"
+#import "MDRoutine.h"
 #import "ViewControllerLogin.h"
 #import "ViewControllerAddBeaconMenu.h"
 #import "ViewControllerSelectPositions.h"
@@ -28,7 +29,6 @@
     NSMutableDictionary * userDic;
     
     // Modes
-    NSMutableArray * modes;
     MDMode * chosenMode;
     
     // Beacons' region identifiers

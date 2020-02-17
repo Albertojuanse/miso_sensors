@@ -161,7 +161,8 @@
     // TO DO: Pass this in every view and call the modes by index, not by string. Alberto J. 2020/01/14.
     
     // Load any saved component or model in device's persistent memory or create the demo ones if is the first time that user logs in.
-    [self loadComponents];
+    [self loadRoutine];
+    [self loadModels];
     
     // Load the saved variables
     [self loadVariables];
@@ -281,275 +282,55 @@
 }
 
 /*!
- @method loadComponents
+ @method loadRoutine
  @discussion This method loads any saved component or model in device's persistent memory or create the demo ones if is the first time that user logs in
  */
-- (void)loadComponents
+- (void)loadRoutine
 {
     if (userDidLogIn) {
         // Search for current information saved in system; if not, register them as first time
         BOOL registerCorrect = YES;
         NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-        NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
-        NSData * areMetamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/areMetamodels"];
-        NSData * areModelsData = [userDefaults objectForKey:@"es.uam.miso/data/models/areModels"];
-        NSString * areItems;
-        NSString * areMetamodel;
-        NSString * areModels;
-        if (areItemsData) {
-            areItems = [NSKeyedUnarchiver unarchiveObjectWithData:areItemsData];
+        
+        // Load the MDRoutine object
+        NSData * isRoutineData = [userDefaults objectForKey:@"es.uam.miso/data/routines/isRoutine"];
+        NSString * isRoutine;
+        MDRoutine * routine;
+        if (isRoutineData) {
+            isRoutine = [NSKeyedUnarchiver unarchiveObjectWithData:isRoutineData];
         }
-        if (areMetamodelData) {
-            areMetamodel = [NSKeyedUnarchiver unarchiveObjectWithData:areMetamodelData];
-        }
-        if (areModelsData) {
-            areModels = [NSKeyedUnarchiver unarchiveObjectWithData:areModelsData];
+        if (isRoutineData && isRoutine && [isRoutine isEqualToString:@"YES"]) {
+            NSData * routineData = [userDefaults objectForKey:@"es.uam.miso/data/routines/routine"];
+            routine = [NSKeyedUnarchiver unarchiveObjectWithData:routineData];
+        } else {
+            NSLog(@"[ERROR][VCMM] No routine found in device.");
+            return;
         }
         
-        // Retrieve or create each category of information
-        if (areItemsData && areItems && [areItems isEqualToString:@"YES"]) {
-            // Existing saved data
-            // Retrieve the items using the index and save them in shared data
+        if (routine) {
+            // Routine found
+            NSLog(@"[INFO][VCMM] Loading routine from device.");
             
-            // Get the index...
-            NSData * itemsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/items/index"];
-            NSMutableArray * itemsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:itemsIndexData];
-            // ...and retrieve each item
-            NSMutableArray * items = [[NSMutableArray alloc] init];
-            for (NSString * itemIdentifier in itemsIndex) {
-                NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
-                NSData * itemData = [userDefaults objectForKey:itemKey];
-                NSMutableDictionary * itemDic = [NSKeyedUnarchiver unarchiveObjectWithData:itemData];
-                [items addObject:itemDic];
-            }
+            NSMutableArray * types = [routine getTypes];
+            NSMutableArray * metamodels = [routine getMetamodels];
+            NSMutableArray * items = [routine getItems];
             
-            // Set them as items data in data shared
-            [sharedData setItemsData:items withCredentialsUserDic:credentialsUserDic];
             
-            NSLog(@"[INFO][VCMM] %tu items found in device.", items.count);
-        } else {
-            // No saved data
-            
-            // Register some items
-            if ([sharedData isItemsDataEmptyWithCredentialsUserDic:credentialsUserDic]) {
-                
-                // Create types for items
-                MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
-                MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
-                
-                // Create the items and add them to shared data collections
-                NSMutableDictionary * infoDic0 = [[NSMutableDictionary alloc] init];
-                RDPosition * position0 = [[RDPosition alloc] init];
-                position0.x = [NSNumber numberWithFloat:1.0];
-                position0.y = [NSNumber numberWithFloat:1.0];
-                position0.z = [NSNumber numberWithFloat:0.0];
-                [infoDic0 setValue:position0 forKey:@"position"];
-                [infoDic0 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-                [infoDic0 setValue:deviceType forKey:@"type"];
-                
-                registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
-                                                                          withIdentifier:@"device@miso.uam.es"
-                                                                             withInfoDic:infoDic0
-                                                               andWithCredentialsUserDic:credentialsUserDic];
-                
-                NSMutableDictionary * infoDic1 = [[NSMutableDictionary alloc] init];
-                RDPosition * position1 = [[RDPosition alloc] init];
-                position1.x = [NSNumber numberWithFloat:0.0];
-                position1.y = [NSNumber numberWithFloat:0.0];
-                position1.z = [NSNumber numberWithFloat:0.0];
-                [infoDic1 setValue:position1 forKey:@"position"];
-                [infoDic1 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-                [infoDic1 setValue:cornerType forKey:@"type"];
-                
-                registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
-                                                                          withIdentifier:@"position1@miso.uam.es"
-                                                                             withInfoDic:infoDic1
-                                                               andWithCredentialsUserDic:credentialsUserDic];
-                
-                NSMutableDictionary * infoDic2 = [[NSMutableDictionary alloc] init];
-                RDPosition * position2 = [[RDPosition alloc] init];
-                position2.x = [NSNumber numberWithFloat:3.5];
-                position2.y = [NSNumber numberWithFloat:0.0];
-                position2.z = [NSNumber numberWithFloat:0.0];
-                [infoDic2 setValue:position2 forKey:@"position"];
-                [infoDic2 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-                [infoDic2 setValue:cornerType forKey:@"type"];
-                
-                registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
-                                                                          withIdentifier:@"position2@miso.uam.es"
-                                                                             withInfoDic:infoDic2
-                                                               andWithCredentialsUserDic:credentialsUserDic];
-                
-                NSMutableDictionary * infoDic3 = [[NSMutableDictionary alloc] init];
-                RDPosition * position3 = [[RDPosition alloc] init];
-                position3.x = [NSNumber numberWithFloat:3.5];
-                position3.y = [NSNumber numberWithFloat:-13.0];
-                position3.z = [NSNumber numberWithFloat:0.0];
-                [infoDic3 setValue:position3 forKey:@"position"];
-                [infoDic3 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-                [infoDic3 setValue:cornerType forKey:@"type"];
-                
-                registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
-                                                                          withIdentifier:@"position3@miso.uam.es"
-                                                                             withInfoDic:infoDic3
-                                                               andWithCredentialsUserDic:credentialsUserDic];
-                
-                NSMutableDictionary * infoDic4 = [[NSMutableDictionary alloc] init];
-                RDPosition * position4 = [[RDPosition alloc] init];
-                position4.x = [NSNumber numberWithFloat:0.0];
-                position4.y = [NSNumber numberWithFloat:-13.0];
-                position4.z = [NSNumber numberWithFloat:0.0];
-                [infoDic4 setValue:position4 forKey:@"position"];
-                [infoDic4 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-                [infoDic4 setValue:cornerType forKey:@"type"];
-                
-                registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"position"
-                                                                          withIdentifier:@"position4@miso.uam.es"
-                                                                             withInfoDic:infoDic4
-                                                               andWithCredentialsUserDic:credentialsUserDic];
-                
-                NSMutableDictionary * infoRegionRaspiDic = [[NSMutableDictionary alloc] init];
-                [infoRegionRaspiDic setValue:@"25DC8A73-F3C9-4111-A7DD-C39CD4B828C7" forKey:@"uuid"];
-                [infoRegionRaspiDic setValue:@"1" forKey:@"major"];
-                [infoRegionRaspiDic setValue:@"0" forKey:@"minor"];
-                
-                registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
-                                                                          withIdentifier:@"raspi@miso.uam.es"
-                                                                             withInfoDic:infoRegionRaspiDic
-                                                               andWithCredentialsUserDic:credentialsUserDic];
-                
-                NSMutableDictionary * infoItemBeacon1Dic = [[NSMutableDictionary alloc] init];
-                [infoItemBeacon1Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825" forKey:@"uuid"];
-                [infoItemBeacon1Dic setValue:@"1" forKey:@"major"];
-                [infoItemBeacon1Dic setValue:@"1" forKey:@"minor"];
-                
-                registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
-                                                                          withIdentifier:@"beacon1@miso.uam.es"
-                                                                             withInfoDic:infoItemBeacon1Dic
-                                                               andWithCredentialsUserDic:credentialsUserDic];
-                
-                NSMutableDictionary * infoItemBeacon2Dic = [[NSMutableDictionary alloc] init];
-                [infoItemBeacon2Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824" forKey:@"uuid"];
-                [infoItemBeacon2Dic setValue:@"1" forKey:@"major"];
-                [infoItemBeacon2Dic setValue:@"1" forKey:@"minor"];
-                
-                registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
-                                                                          withIdentifier:@"beacon2@miso.uam.es"
-                                                                             withInfoDic:infoItemBeacon2Dic
-                                                               andWithCredentialsUserDic:credentialsUserDic];
-                
-                NSMutableDictionary * infoItemBeacon3Dic = [[NSMutableDictionary alloc] init];
-                [infoItemBeacon3Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823" forKey:@"uuid"];
-                [infoItemBeacon3Dic setValue:@"1" forKey:@"major"];
-                [infoItemBeacon3Dic setValue:@"1" forKey:@"minor"];
-                
-                registerCorrect = registerCorrect && [sharedData inItemDataAddItemOfSort:@"beacon"
-                                                                          withIdentifier:@"beacon3@miso.uam.es"
-                                                                             withInfoDic:infoItemBeacon3Dic
-                                                               andWithCredentialsUserDic:credentialsUserDic];
-                // PERSISTENT: SAVE ITEM
-                // Save them in persistent memory
-                // TO DO: Assign items by user. Alberto J. 15/11/2019.
-                // Now there are items
-                areItemsData = nil; // ARC disposing
-                areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-                [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
-                
-                // Create de index in which names if items will be saved for retrieve them later
-                NSMutableArray * itemsIndex = [[NSMutableArray alloc] init];
-                
-                NSMutableArray * allSavedItems = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
-                // For every item saved, create a NSData for it, save it using its name and save the name in the index...
-                for (NSMutableDictionary * item in allSavedItems) {
-                    // Item's name
-                    NSString * itemIdentifier = item[@"identifier"];
-                    // Save the name in the index
-                    [itemsIndex addObject:itemIdentifier];
-                    // Create the item's data and archive it
-                    NSData * itemData = [NSKeyedArchiver archivedDataWithRootObject:item];
-                    NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
-                    [userDefaults setObject:itemData forKey:itemKey];
-                }
-                // ...and save the key
-                NSData * itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
-                [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
-                // END PERSISTENT: SAVE ITEM
-                
-                NSLog(@"[INFO][VCMM] No items found in device; demo items saved.");
-            }
-            
-        }
-        if (areMetamodelData && areMetamodel && [areMetamodel isEqualToString:@"YES"]) {
-            // TO DO: Save the types using its name and no in an array. Alberto J. 15/11/2019.
-            // TO DO: Save several metamodels and no only one. Alberto J. 15/11/2019.
-            // Existing saved data
-            
-            // Retrieve the metamodel array
-            NSData * metamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/metamodel"];
-            NSMutableArray * types = [NSKeyedUnarchiver unarchiveObjectWithData:metamodelData];
-            
-            // Add them in shared data
+            // Set items in data shared
             for (MDType * type in types) {
                 registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:type withCredentialsUserDic:credentialsUserDic];
             }
+            NSLog(@"[INFO][VCMM] -> %tu ontological types found in routine.", types.count);
             
-            NSLog(@"[INFO][VCMM] %tu metamodel types found in device.", types.count);
-        } else {
-            // No saved data
+            // Metamodels
             
-            // Create the types
-            MDType * noType = [[MDType alloc] initWithName:@"<No type>"];
-            MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
-            MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
-            MDType * wallType = [[MDType alloc] initWithName:@"Wall"];
+            // Modes
             
-            // Add them in shared data
-            if ([sharedData isMetamodelDataEmptyWithCredentialsUserDic:credentialsUserDic]) {
-                registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:noType withCredentialsUserDic:credentialsUserDic];
-                registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:cornerType withCredentialsUserDic:credentialsUserDic];
-                registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:deviceType withCredentialsUserDic:credentialsUserDic];
-                registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:wallType withCredentialsUserDic:credentialsUserDic];
-            }
+            // Set items data in data shared
+            registerCorrect = registerCorrect && [sharedData setItemsData:items
+                                                   withCredentialsUserDic:credentialsUserDic];
+            NSLog(@"[INFO][VCMM] -> %tu items found in routine.", items.count);
             
-            // Save them in persistent memory
-            areMetamodelData = nil; // ARC disposing
-            areMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-            [userDefaults setObject:areMetamodelData forKey:@"es.uam.miso/data/metamodels/areMetamodels"];
-            
-            NSMutableArray * types = [[NSMutableArray alloc] init];
-            [types addObject:noType];
-            [types addObject:cornerType];
-            [types addObject:deviceType];
-            [types addObject:wallType];
-            NSData * metamodelData = [NSKeyedArchiver archivedDataWithRootObject:types];
-            [userDefaults setObject:metamodelData forKey:@"es.uam.miso/data/metamodels/metamodel"];
-            
-            NSLog(@"[INFO][VCMM] No metamodel found in device; demo metamodel saved.");
-        }
-        if (areModelsData && areModels && [areModels isEqualToString:@"YES"]) {
-            // Existing saved data
-            // Retrieve the models using the index and save them in shared data
-            
-            // Get the index...
-            NSData * modelsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/models/index"];
-            NSMutableArray * modelsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:modelsIndexData];
-            // ...and retrieve each model
-            NSMutableArray * models = [[NSMutableArray alloc] init];
-            for (NSString * modelIdentifier in modelsIndex) {
-                NSString * modelKey = [@"es.uam.miso/data/models/models/" stringByAppendingString:modelIdentifier];
-                NSData * modelData = [userDefaults objectForKey:modelKey];
-                NSMutableDictionary * modelDic = [NSKeyedUnarchiver unarchiveObjectWithData:modelData];
-                [models addObject:modelDic];
-            }
-            
-            // Set them as items data in data shared
-            [sharedData setModelsData:models withCredentialsUserDic:credentialsUserDic];
-            
-            NSLog(@"[INFO][VCMM] %tu models found in device.", models.count);
-        } else {
-            // No saved data
-            
-            NSLog(@"[INFO][VCMM] No model found in device.");
         }
         
         if (!registerCorrect) {
@@ -558,6 +339,46 @@
         
         // That way, when a logged in user returns to main manu this routine is not repited.
         userDidLogIn = NO;
+    }
+}
+
+/*!
+ @method loadModels
+ @discussion This method loads any saved model in device's persistent memory.
+ */
+- (void)loadModels
+{
+    // Existing models
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    NSData * areModelsData = [userDefaults objectForKey:@"es.uam.miso/data/models/areModels"];
+    NSString * areModels;
+    if (areModelsData) {
+        areModels = [NSKeyedUnarchiver unarchiveObjectWithData:areModelsData];
+    }
+    if (areModelsData && areModels && [areModels isEqualToString:@"YES"]) {
+        // Existing saved data
+        // Retrieve the models using the index and save them in shared data
+        
+        // Get the index...
+        NSData * modelsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/models/index"];
+        NSMutableArray * modelsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:modelsIndexData];
+        // ...and retrieve each model
+        NSMutableArray * models = [[NSMutableArray alloc] init];
+        for (NSString * modelIdentifier in modelsIndex) {
+            NSString * modelKey = [@"es.uam.miso/data/models/models/" stringByAppendingString:modelIdentifier];
+            NSData * modelData = [userDefaults objectForKey:modelKey];
+            NSMutableDictionary * modelDic = [NSKeyedUnarchiver unarchiveObjectWithData:modelData];
+            [models addObject:modelDic];
+        }
+        
+        // Set them as items data in data shared
+        [sharedData setModelsData:models withCredentialsUserDic:credentialsUserDic];
+        
+        NSLog(@"[INFO][VCMM] %tu models found in device.", models.count);
+    } else {
+        // No saved data
+        
+        NSLog(@"[INFO][VCMM] No model found in device.");
     }
 }
 
