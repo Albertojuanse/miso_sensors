@@ -381,7 +381,7 @@
         return itemsCount;
     }
     if (tableView == self.tableTypes) {
-        return [[sharedData fromMetamodelDataGetTypesWithCredentialsUserDic:credentialsUserDic] count];
+        return [[sharedData fromTypesDataGetTypesWithCredentialsUserDic:credentialsUserDic] count];
     }
     return 0;
 }
@@ -591,7 +591,7 @@
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
         
         MDType * type = [
-                         [sharedData fromMetamodelDataGetTypesWithCredentialsUserDic:credentialsUserDic]
+                         [sharedData fromTypesDataGetTypesWithCredentialsUserDic:credentialsUserDic]
                          objectAtIndex:indexPath.row
                          ];
         cell.textLabel.numberOfLines = 0; // Means any number
@@ -666,7 +666,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         if (tableView == self.tableTypes) {
             
             MDType * typeSelected = [
-                                     [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                                     [sharedData getTypesDataWithCredentialsUserDic:credentialsUserDic]
                                      objectAtIndex:indexPath.row
                                      ];
             

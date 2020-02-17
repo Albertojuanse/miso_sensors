@@ -139,7 +139,7 @@
         sessionData = [[NSMutableArray alloc] init];
         itemsData = [[NSMutableArray alloc] init];
         measuresData = [[NSMutableArray alloc] init];
-        metamodelData = [[NSMutableArray alloc] init];
+        typesData = [[NSMutableArray alloc] init];
         modelData = [[NSMutableArray alloc] init];
         
     }
@@ -196,7 +196,7 @@
         //sessionData = nil;
         //itemsData = nil;
         measuresData = nil;
-        //metamodelData = nil;
+        //typesData = nil;
         //modelData = nil;
         
         // Colections of data
@@ -205,7 +205,7 @@
         //sessionData = [[NSMutableArray alloc] init];
         //itemsData = [[NSMutableArray alloc] init];
         measuresData = [[NSMutableArray alloc] init];
-        //metamodelData = [[NSMutableArray alloc] init];
+        //typesData = [[NSMutableArray alloc] init];
         //modelData = [[NSMutableArray alloc] init];
     } else {
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
@@ -298,13 +298,13 @@
 }
 
 /*!
- @method getMetamodelDataWithCredentialsUserDic:
+ @method getTypesDataWithCredentialsUserDic:
  @discussion This method returns the 'NSMutableArray' object with the the metamodeling types use; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (NSMutableArray *)getMetamodelDataWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+- (NSMutableArray *)getTypesDataWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
-        return metamodelData;
+        return typesData;
     } else {
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
@@ -416,13 +416,13 @@
 }
 
 /*!
- @method isMetamodelDataEmptyWithCredentialsUserDic:
+ @method isTypesDataEmptyWithCredentialsUserDic:
  @discussion This method returns YES if the collection 'Metamodel data' is empty; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (BOOL)isMetamodelDataEmptyWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+- (BOOL)isTypesDataEmptyWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
-        if (metamodelData.count == 0) {
+        if (typesData.count == 0) {
             return YES;
         } else {
             return NO;
@@ -2186,14 +2186,14 @@
 //
 
 /*!
- @method fromMetamodelDataGetTypesWithCredentialsUserDic:
+ @method fromTypesDataGetTypesWithCredentialsUserDic:
  @discussion This method returns the 'NSMutableArray' with all 'MDTypes' stored; if is not found, an empty array is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (NSMutableArray *)fromMetamodelDataGetTypesWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+- (NSMutableArray *)fromTypesDataGetTypesWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         NSMutableArray * metamodel = [[NSMutableArray alloc] init];
-        for (MDType * type in metamodelData) {
+        for (MDType * type in typesData) {
             [metamodel addObject:type];
         }
         return metamodel;
@@ -2204,15 +2204,15 @@
 }
 
 /*!
- @method fromMetamodelDataIsTypeWithName:andWithCredentialsUserDic:
+ @method fromTypesDataIsTypeWithName:andWithCredentialsUserDic:
  @discussion This method returns YES if there is stored a type with the given name; if is not found, NO is returned; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
-- (BOOL) fromMetamodelDataIsTypeWithName:(NSString *)givenName
-               andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+- (BOOL) fromTypesDataIsTypeWithName:(NSString *)givenName
+           andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         // Search the type
-        for (MDType * eachType in metamodelData) {
+        for (MDType * eachType in typesData) {
             NSString * name = [eachType getName];
             if ([name isEqualToString:givenName]) {
                 return YES;
@@ -3185,17 +3185,17 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 //
 
 /*!
- @method inMetamodelDataAddType:withCredentialsUserDic:
+ @method inTypesDataAddType:withCredentialsUserDic:
  @discussion This method saves in the metamodel collection data a new MDType type if it does not exist; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (BOOL) inMetamodelDataAddType:(MDType *)type
-         withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+- (BOOL) inTypesDataAddType:(MDType *)type
+     withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
         
         // Check if it exists
         BOOL typeFound = NO;
-        for (MDType * savedType in metamodelData) {
+        for (MDType * savedType in typesData) {
             
             if ([savedType isEqualToMDType:type]) {
                 typeFound = YES;
@@ -3206,7 +3206,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
         
         // If type did not be found, add it
         if (!typeFound) {
-            [metamodelData addObject:type];
+            [typesData addObject:type];
         }
         
         
@@ -3558,10 +3558,10 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 #pragma mark - Metamodel data specific removers
 /*!
- @method inMetamodelDataRemoveItemWithName:andCredentialsUserDic:
+ @method inTypesDataRemoveItemWithName:andCredentialsUserDic:
  @discussion This method removes the MDType stored whose name is equals to the given one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (BOOL) inMetamodelDataRemoveItemWithName:(NSString *)givenName
+- (BOOL) inTypesDataRemoveItemWithName:(NSString *)givenName
                      andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
@@ -3569,7 +3569,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
         // Search for the type called as the given name
         MDType * typeToRemove;
         BOOL typeToRemoveFound = NO;
-        for (MDType * eachType in metamodelData) {
+        for (MDType * eachType in typesData) {
             NSString * eachTypeName = [eachType getName];
             if ([eachTypeName isEqualToString:givenName]) {
                 typeToRemove = eachType;
@@ -3579,7 +3579,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
         
         // If found, remove it; if not, return NO;
         if (typeToRemoveFound) {
-            [metamodelData removeObject:typeToRemove];
+            [typesData removeObject:typeToRemove];
             return YES;
         } else {
             return NO;

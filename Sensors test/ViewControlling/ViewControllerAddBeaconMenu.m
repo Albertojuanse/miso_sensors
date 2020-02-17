@@ -632,12 +632,12 @@
     NSString * newTypeName = [self.textType text];
     
     // Search if the MDType with this name is not already registered and submit it; if it is so, alert the user.
-    if (![sharedData fromMetamodelDataIsTypeWithName:newTypeName andWithCredentialsUserDic:credentialsUserDic]) {
+    if (![sharedData fromTypesDataIsTypeWithName:newTypeName andWithCredentialsUserDic:credentialsUserDic]) {
         MDType * newType = [[MDType alloc] initWithName:newTypeName];
         
         // If the remove transaction is succesful it returns YES
         if (
-            [sharedData inMetamodelDataAddType:newType withCredentialsUserDic:credentialsUserDic]
+            [sharedData inTypesDataAddType:newType withCredentialsUserDic:credentialsUserDic]
             )
         {
             
@@ -652,17 +652,17 @@
             areMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
             [userDefaults setObject:areMetamodelData forKey:@"es.uam.miso/data/metamodels/areMetamodels"];
             // Save the type
-            NSData * metamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/metamodel"];
+            NSData * typesData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/metamodel"];
             NSMutableArray * types;
-            if (metamodelData) {
-                types = [NSKeyedUnarchiver unarchiveObjectWithData:metamodelData];
+            if (typesData) {
+                types = [NSKeyedUnarchiver unarchiveObjectWithData:typesData];
                 NSLog(@"[INFO][VCAB] Metamodel types were found in the device.");
             } else {
                 NSLog(@"[INFO][VCAB] No metamodel type was found in the device.");
                 types = [[NSMutableArray alloc] init];
             }
             [types addObject:newType];
-            metamodelData = nil;  // ARC disposing
+            typesData = nil;  // ARC disposing
             NSData * newMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:types];
             [userDefaults setObject:newMetamodelData forKey:@"es.uam.miso/data/metamodels/metamodel"];
             
@@ -721,19 +721,20 @@
     
     // Search it and remove it.
     NSString * typeToRemoveName = [typeToRemove getName];
-    if ([sharedData fromMetamodelDataIsTypeWithName:typeToRemoveName andWithCredentialsUserDic:credentialsUserDic]) {
+    if ([sharedData fromTypesDataIsTypeWithName:typeToRemoveName andWithCredentialsUserDic:credentialsUserDic]) {
         
         // If the remove transaction is succesful it returns YES
         if (
-            [sharedData inMetamodelDataRemoveItemWithName:typeToRemoveName andCredentialsUserDic:credentialsUserDic]
+            [sharedData inTypesDataRemoveItemWithName:typeToRemoveName
+                                andCredentialsUserDic:credentialsUserDic]
             )
         {
             // Once removed in shared data, remove it from the device persistent memory
             NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-            NSData * metamodelData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/metamodel"];
+            NSData * typesData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/metamodel"];
             NSMutableArray * types;
-            if (metamodelData) {
-                types = [NSKeyedUnarchiver unarchiveObjectWithData:metamodelData];
+            if (typesData) {
+                types = [NSKeyedUnarchiver unarchiveObjectWithData:typesData];
                 NSLog(@"[INFO][VCAB] Metamodel types were found in the device.");
             } else {
                 NSLog(@"[ERROR][VCAB] No metamodel type was found in the device.");
@@ -749,7 +750,7 @@
             if (types) {
                 // [2] Remove old metamodel and save the new one
                 [types removeObject:typeToRemove];
-                metamodelData = nil;  // ARC disposing
+                typesData = nil;  // ARC disposing
                 NSData * newMetamodelData = [NSKeyedArchiver archivedDataWithRootObject:types];
                 [userDefaults setObject:newMetamodelData forKey:@"es.uam.miso/data/metamodels/metamodel"];
                 
@@ -1010,7 +1011,7 @@
             [sharedData validateCredentialsUserDic:credentialsUserDic]
             )
         {
-            return [[sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic] count];
+            return [[sharedData getTypesDataWithCredentialsUserDic:credentialsUserDic] count];
         } else { // Type not found
             [self alertUserWithTitle:@"Types won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
@@ -1047,7 +1048,7 @@
             )
         {
             MDType * type = [
-                             [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                             [sharedData getTypesDataWithCredentialsUserDic:credentialsUserDic]
                              objectAtIndex:indexPath.row
                              ];
             cell.textLabel.numberOfLines = 0; // Means any number
@@ -1082,7 +1083,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         {
             
             MDType * typeChosenByUser = [
-                                         [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                                         [sharedData getTypesDataWithCredentialsUserDic:credentialsUserDic]
                                          objectAtIndex:indexPath.row
                                          ];
             
@@ -1100,7 +1101,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                 } else { // Deselect the old one and select the new one
                     
                     NSInteger oldIndex = [
-                                          [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic]
+                                          [sharedData getTypesDataWithCredentialsUserDic:credentialsUserDic]
                                           indexOfObject:typeChosenByUserStored
                                           ];
                     // Deselect

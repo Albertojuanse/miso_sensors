@@ -341,7 +341,7 @@
         }
     }
     if (tableView == self.tableTypes) {
-        return [[sharedData fromMetamodelDataGetTypesWithCredentialsUserDic:credentialsUserDic] count];
+        return [[sharedData fromTypesDataGetTypesWithCredentialsUserDic:credentialsUserDic] count];
     }
     return 0;
 }
@@ -522,7 +522,7 @@
     // Configure individual cells
     if (tableView == self.tableTypes) {
         MDType * type = [
-                         [sharedData fromMetamodelDataGetTypesWithCredentialsUserDic:credentialsUserDic]
+                         [sharedData fromTypesDataGetTypesWithCredentialsUserDic:credentialsUserDic]
                          objectAtIndex:indexPath.row
                          ];
         cell.textLabel.numberOfLines = 0; // Means any number

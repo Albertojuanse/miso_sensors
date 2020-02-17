@@ -318,7 +318,7 @@
             
             // Set items in data shared
             for (MDType * type in types) {
-                registerCorrect = registerCorrect && [sharedData inMetamodelDataAddType:type withCredentialsUserDic:credentialsUserDic];
+                registerCorrect = registerCorrect && [sharedData inTypesDataAddType:type withCredentialsUserDic:credentialsUserDic];
             }
             NSLog(@"[INFO][VCMM] -> %tu ontological types found in routine.", types.count);
             

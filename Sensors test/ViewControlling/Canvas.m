@@ -711,7 +711,7 @@
     // Draw the type
     // Get its color...
     NSUInteger typeIndex = 5;
-    NSMutableArray * types = [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic];
+    NSMutableArray * types = [sharedData getTypesDataWithCredentialsUserDic:credentialsUserDic];
     for (MDType * eachType in types) {
         typeIndex++;
         if ([eachType isEqualToMDType:type]) {
@@ -805,7 +805,7 @@
     // Draw the type
     // Get its color...
     NSUInteger typeIndex = 5;
-    NSMutableArray * types = [sharedData getMetamodelDataWithCredentialsUserDic:credentialsUserDic];
+    NSMutableArray * types = [sharedData getTypesDataWithCredentialsUserDic:credentialsUserDic];
     for (MDType * eachType in types) {
         typeIndex++;
         if ([eachType isEqualToMDType:referenceType]) {

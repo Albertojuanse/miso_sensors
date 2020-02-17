@@ -114,7 +114,7 @@
     
     // Check if name exists
     NSString * name = [self.nameText text];
-    if ([sharedData fromMetamodelDataIsTypeWithName:name andWithCredentialsUserDic:credentialsUserDic]) {
+    if ([sharedData fromTypesDataIsTypeWithName:name andWithCredentialsUserDic:credentialsUserDic]) {
         
         if (userDidTrySubmit) { // If it es the second try
             self.statusLabel.text = [NSString stringWithFormat:@"The components of new model have been merged in %@@miso.uam.es", name];
