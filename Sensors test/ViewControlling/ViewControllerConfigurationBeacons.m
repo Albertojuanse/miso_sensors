@@ -316,6 +316,7 @@
         infoDic[@"uuid"] = [[NSUUID UUID] UUIDString];
         NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
         itemPositionIdNumber = [NSNumber numberWithInteger:[itemPositionIdNumber integerValue] + 1];
+        [self updatePersistentVariables];
         positionId = [positionId stringByAppendingString:@"@miso.uam.es"];
         infoDic[@"identifier"] = positionId;
     }
@@ -326,6 +327,7 @@
         infoDic[@"minor"] = [self.textMinor text];
         NSString * beaconId = [@"beacon" stringByAppendingString:[itemBeaconIdNumber stringValue]];
         itemBeaconIdNumber = [NSNumber numberWithInteger:[itemBeaconIdNumber integerValue] + 1];
+        [self updatePersistentVariables];
         beaconId = [beaconId stringByAppendingString:@"@miso.uam.es"];
         infoDic[@"identifier"] = beaconId;
     }
@@ -612,6 +614,28 @@
     }
     
     return isDuplicated;
+}
+
+/*!
+ @method updatePersistentVariables
+ @discussion This method is called when user creates new items and ask variables like 'itemPositionIdNumber' or 'itemBeaconIdNumber' to be saved.
+ */
+- (BOOL)updatePersistentVariables
+{
+    // Remove previous collection
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
+    [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+    [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
+    
+    // Save information
+    NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+    [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
+    NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
+    NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
+    [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+    [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
+    return YES;
 }
 
 /*!
