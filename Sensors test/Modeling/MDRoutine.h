@@ -19,6 +19,8 @@
     NSString * description;
     NSMutableArray * modes;
     NSMutableArray * metamodels;
+    NSMutableArray * types;
+    NSMutableArray * items;
     
 }
 
@@ -28,15 +30,21 @@
 - (instancetype)initWithName:(NSString *)initName
                  description:(NSString *)initDescription
                        modes:(NSMutableArray *)initModes
-               andMetamodels:(NSMutableArray *)initMetamodels;
+                  metamodels:(NSMutableArray *)initMetamodels
+                       types:(NSMutableArray *)initTypes
+                    andItems:(NSMutableArray *)initItems;
 - (void)setName:(NSString *)givenName;
 - (void)setDescription:(NSString *)givenDescription;
 - (void)setModes:(NSMutableArray *)givenModes;
 - (void)setMetamodels:(NSMutableArray *)givenMetamodels;
+- (void)setTypes:(NSMutableArray *)givenTypes;
+- (void)setItems:(NSMutableArray *)givenItems;
 - (NSString *)getName;
 - (NSString *)getDescription;
 - (NSMutableArray *)getModes;
 - (NSMutableArray *)getMetamodels;
+- (NSMutableArray *)getTypes;
+- (NSMutableArray *)getItems;
 - (BOOL)addMetamodel:(MDMetamodel *)givenMetamodel;
 - (BOOL)isEqual:(id)object;
 - (BOOL)isEqualToMDRoutine:(MDRoutine *)type;
