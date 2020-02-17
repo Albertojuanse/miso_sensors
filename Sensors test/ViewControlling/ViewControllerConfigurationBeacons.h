@@ -32,6 +32,8 @@
     NSMutableDictionary * chosenItem;    
     // User selection in main manu
     NSInteger selectedSegmentIndex;
+    // Creation routine
+    BOOL userWantsToSetRoutine;
     
 }
 

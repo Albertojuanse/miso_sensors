@@ -30,6 +30,8 @@
     
     // Creation and removing of models and metamodels
     BOOL removingFirstCell;
+    // Creation routine
+    BOOL userWantsToSetRoutine;
     
 }
 

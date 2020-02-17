@@ -29,6 +29,8 @@
     // Varibles
     NSMutableArray * types;
     MDType * chosenType;
+    // Creation routine
+    BOOL userWantsToSetRoutine;
     
 }
 

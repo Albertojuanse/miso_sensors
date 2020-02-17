@@ -34,6 +34,8 @@
     UITextField * metamodelTextField;
     BOOL removingFirstCell;
     NSString * nameTypeToRemove;
+    // Creation routine
+    BOOL userWantsToSetRoutine;
     
 }
 

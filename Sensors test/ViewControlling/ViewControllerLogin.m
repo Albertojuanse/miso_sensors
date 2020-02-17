@@ -85,6 +85,28 @@
         [alertUsersNotFound addAction:okButton];
         [self presentViewController:alertUsersNotFound animated:YES completion:nil];
     }
+    
+    // Check if in this device exists any routine
+    BOOL isRoutine = [self isAnyRoutine];
+    
+    // Alert the user that must create an user if no other is found
+    if (!areUsers){
+        UIAlertController * alertUsersNotFound = [UIAlertController
+                                                  alertControllerWithTitle:@"No routine found"
+                                                  message:@"Software producer did not create a routine for this app. Please, configure a routine in 'configuration' menu."
+                                                  preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction * okButton = [UIAlertAction
+                                    actionWithTitle:@"Ok"
+                                    style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * action) {
+                                        [self.buttonLogin setEnabled:NO];
+                                        [self.buttonSignin setEnabled:NO];
+                                    }];
+        
+        [alertUsersNotFound addAction:okButton];
+        [self presentViewController:alertUsersNotFound animated:YES completion:nil];
+    }
 }
 
 /*!
@@ -511,6 +533,34 @@
     } else {
         // It does not exists
         NSLog(@"[INFO][VCL] User %@ not found when deleting it.", userDic[@"name"]);
+        return NO;
+    }
+}
+
+/*!
+ @method isAnyRoutine
+ @discussion This method checks if there is any routine configured.
+ */
+- (BOOL)isAnyRoutine
+{
+    // Checks the saved data
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    NSData * data = [userDefaults objectForKey:@"es.uam.miso/data/routines/isRoutine"];
+    if (data) {
+        NSString * isRoutine = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        if (isRoutine) {
+            if ([isRoutine isEqualToString:@"NO"]) {
+                NSLog(@"[INFO][VCL] No configured routine found.");
+                return NO;
+            } else {
+                NSLog(@"[INFO][VCL] Configured routine found.");
+                return YES;
+            }
+        } else {
+            NSLog(@"[INFO][VCL] No configured routine found.");
+            return NO;
+        }
+    } else {
         return NO;
     }
 }
