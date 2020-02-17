@@ -319,6 +319,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
                 infoDic[@"sort"] = @"position";
                 NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
                 itemPositionIdNumber = [NSNumber numberWithInteger:[itemPositionIdNumber integerValue] + 1];
+                
                 positionId = [positionId stringByAppendingString:@"@miso.uam.es"];
                 infoDic[@"identifier"] = positionId;
                 infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
@@ -352,6 +353,22 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
              object:nil];
             
         }
+        
+        // Save variables in device memory
+        // TO DO: Session control to prevent data loss. Alberto J. 2020/02/17.
+        // Remove previous collection
+        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+        [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
+        [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+        [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
+        
+        // Save information
+        NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+        [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
+        NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
+        NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
+        [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+        [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
         
     } else { // If is idle...
         // Do nothing
