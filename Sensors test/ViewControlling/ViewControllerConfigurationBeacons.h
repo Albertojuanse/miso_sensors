@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "RDPosition.h"
 #import "VCToolbar.h"
+#import "MDRoutine.h"
 
 /*!
  @class ViewControllerConfigurationBeacons

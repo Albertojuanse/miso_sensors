@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "MDMode.h"
 #import "MDMetamodel.h"
+#import "MDRoutine.h"
 #import "VCToolbar.h"
 
 /*!

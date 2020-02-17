@@ -163,54 +163,8 @@
     // Load any saved component or model in device's persistent memory or create the demo ones if is the first time that user logs in.
     [self loadComponents];
     
-    // Variables
-    // Variables for naming porpuses; each new component created increases this counters to generate unique names.
-    // TO DO: These variables to session dic in shared data. Alberto J. 2020/01/20.
-    if (!itemBeaconIdNumber) {
-        // Search for variables from device memory
-        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-        NSData * areIdNumbersData = [userDefaults objectForKey:@"es.uam.miso/variables/areIdNumbers"];
-        NSString * areIdNumbers;
-        if (areIdNumbersData) {
-            areIdNumbers = [NSKeyedUnarchiver unarchiveObjectWithData:areIdNumbersData];
-        }
-        if (areIdNumbersData && areIdNumbers && [areIdNumbers isEqualToString:@"YES"]) {
-            
-            // Existing saved data
-            // Retrieve the items using the index
-            
-            // Retrieve the variables
-            NSData * itemBeaconIdNumberData = [userDefaults objectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-            // ...and retrieve each item
-            itemBeaconIdNumber = [NSKeyedUnarchiver unarchiveObjectWithData:itemBeaconIdNumberData];
-            
-            NSLog(@"[INFO][VCMM] Variable itemBeaconIdNumber found in device.");
-            
-        }
-    }
-    
-    if (!itemPositionIdNumber) {
-        // Search for variables from device memory
-        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-        NSData * areIdNumbersData = [userDefaults objectForKey:@"es.uam.miso/variables/areIdNumbers"];
-        NSString * areIdNumbers;
-        if (areIdNumbersData) {
-            areIdNumbers = [NSKeyedUnarchiver unarchiveObjectWithData:areIdNumbersData];
-        }
-        if (areIdNumbersData && areIdNumbers && [areIdNumbers isEqualToString:@"YES"]) {
-            
-            // Existing saved data
-            // Retrieve the items using the index
-            
-            // Retrieve the variables
-            NSData * itemPositionIdNumberData = [userDefaults objectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-            // ...and retrieve each item
-            itemPositionIdNumber = [NSKeyedUnarchiver unarchiveObjectWithData:itemPositionIdNumberData];
-            
-            NSLog(@"[INFO][VCMM] Variable itemPositionIdNumber found in device.");
-            
-        }
-    }
+    // Load the saved variables
+    [self loadVariables];
     
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -269,6 +223,61 @@
 {
     self.loginText.text = [self.loginText.text stringByAppendingString:@" "];
     self.loginText.text = [self.loginText.text stringByAppendingString:userDic[@"name"]];
+}
+
+/*!
+ @method loadVariables
+ @discussion This method loads any saved variable in device's persistent memory
+ */
+- (void)loadVariables
+{
+    // Variables for naming porpuses; each new component created increases this counters to generate unique names.
+    // TO DO: These variables to session dic in shared data. Alberto J. 2020/01/20.
+    if (!itemBeaconIdNumber) {
+        // Search for variables from device memory
+        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+        NSData * areIdNumbersData = [userDefaults objectForKey:@"es.uam.miso/variables/areIdNumbers"];
+        NSString * areIdNumbers;
+        if (areIdNumbersData) {
+            areIdNumbers = [NSKeyedUnarchiver unarchiveObjectWithData:areIdNumbersData];
+        }
+        if (areIdNumbersData && areIdNumbers && [areIdNumbers isEqualToString:@"YES"]) {
+            
+            // Existing saved data
+            // Retrieve the items using the index
+            
+            // Retrieve the variables
+            NSData * itemBeaconIdNumberData = [userDefaults objectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+            // ...and retrieve each item
+            itemBeaconIdNumber = [NSKeyedUnarchiver unarchiveObjectWithData:itemBeaconIdNumberData];
+            
+            NSLog(@"[INFO][VCMM] Variable itemBeaconIdNumber found in device.");
+            
+        }
+    }
+    
+    if (!itemPositionIdNumber) {
+        // Search for variables from device memory
+        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+        NSData * areIdNumbersData = [userDefaults objectForKey:@"es.uam.miso/variables/areIdNumbers"];
+        NSString * areIdNumbers;
+        if (areIdNumbersData) {
+            areIdNumbers = [NSKeyedUnarchiver unarchiveObjectWithData:areIdNumbersData];
+        }
+        if (areIdNumbersData && areIdNumbers && [areIdNumbers isEqualToString:@"YES"]) {
+            
+            // Existing saved data
+            // Retrieve the items using the index
+            
+            // Retrieve the variables
+            NSData * itemPositionIdNumberData = [userDefaults objectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
+            // ...and retrieve each item
+            itemPositionIdNumber = [NSKeyedUnarchiver unarchiveObjectWithData:itemPositionIdNumberData];
+            
+            NSLog(@"[INFO][VCMM] Variable itemPositionIdNumber found in device.");
+            
+        }
+    }
 }
 
 /*!

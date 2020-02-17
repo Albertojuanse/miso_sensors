@@ -11,6 +11,7 @@
 #import "VCToolbar.h"
 #import "MDType.h"
 #import "MDAttribute.h"
+#import "MDRoutine.h"
 
 /*!
  @class ViewControllerConfigurationTypes

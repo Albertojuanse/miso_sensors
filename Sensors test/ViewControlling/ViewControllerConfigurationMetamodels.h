@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "VCToolbar.h"
 #import "MDType.h"
+#import "MDRoutine.h"
 
 /*!
  @class ViewControllerConfigurationMetamodels

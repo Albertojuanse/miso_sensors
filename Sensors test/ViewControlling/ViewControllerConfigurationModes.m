@@ -121,7 +121,112 @@
  */
 - (IBAction)handleBackButton:(id)sender
 {
+    // Create and save the configurations
+    [self createAndSaveConfigurations];
     [tabBar performSegueWithIdentifier:@"fromConfigurationToLogin" sender:sender];
+}
+
+/*!
+ @method createAndSaveConfigurations
+ @discussion This method is called when user wants to finish the configuration procces and creates the routine MDRoutine object in device.
+ */
+- (void)createAndSaveConfigurations
+{
+    
+    // Get all the information saved in device
+    NSLog(@"[INFO][VCCT] Creating routine after configuration.");
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    NSMutableArray * routineTypes;
+    NSMutableArray * routineMetamodels;
+    NSMutableArray * routineModes;
+    NSMutableArray * routineItems;
+    
+    // Search for 'areTypes' boolean and if so, load the MDType array
+    NSData * areTypesData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/areTypes"];
+    NSString * areTypes;
+    if (areTypesData) {
+        areTypes = [NSKeyedUnarchiver unarchiveObjectWithData:areTypesData];
+    }
+    if (areTypesData && areTypes && [areTypes isEqualToString:@"YES"]) {
+        // Existing saved types
+        
+        // Retrieve the types MDType array
+        NSData * typesData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/types"];
+        routineTypes = [NSKeyedUnarchiver unarchiveObjectWithData:typesData];
+        
+        NSLog(@"[INFO][VCCT] -> Added %tu ontologycal types found.", routineTypes.count);
+    } else {
+        routineTypes = nil;
+    }
+    
+    // Modes in metamodels
+    // TO DO: Is another way? Alberto J. 2020/02/17.
+    routineModes = nil;
+    
+    // Search for 'areMetamodels' boolean and if so, load the MDMetamodel array
+    NSData * areMetamodelsData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/areMetamodels"];
+    NSString * areMetamodels;
+    if (areMetamodelsData) {
+        areMetamodels = [NSKeyedUnarchiver unarchiveObjectWithData:areMetamodelsData];
+    }
+    if (areMetamodelsData && areMetamodels && [areMetamodels isEqualToString:@"YES"]) {
+        // Existing saved metamodsels
+        
+        // Retrieve the metamodels array
+        NSData * metamodelsData = [userDefaults objectForKey:@"es.uam.miso/data/metamodels/metamodels"];
+        routineMetamodels = [NSKeyedUnarchiver unarchiveObjectWithData:metamodelsData];
+        
+        NSLog(@"[INFO][VCCT] -> Added %tu metamodels found.", routineMetamodels.count);
+    } else {
+        routineMetamodels = nil;
+    }
+    
+    // Search for 'areItems' boolean and if so, load the items' NSMutableDictionary array
+    NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
+    NSString * areItems;
+    if (areItemsData) {
+        areItems = [NSKeyedUnarchiver unarchiveObjectWithData:areItemsData];
+    }
+    // Retrieve or create each category of information
+    if (areItemsData && areItems && [areItems isEqualToString:@"YES"]) {
+        // Existing saved data
+        // Retrieve the items using the index
+        
+        // Get the index...
+        NSData * itemsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/items/index"];
+        NSMutableArray * itemsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:itemsIndexData];
+        // ...and retrieve each item
+        routineItems = [[NSMutableArray alloc] init];
+        for (NSString * itemIdentifier in itemsIndex) {
+            NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
+            NSData * itemData = [userDefaults objectForKey:itemKey];
+            NSMutableDictionary * itemDic = [NSKeyedUnarchiver unarchiveObjectWithData:itemData];
+            [routineItems addObject:itemDic];
+        }
+        
+        NSLog(@"[INFO][VCCT] -> Added %tu items found.", routineItems.count);
+    } else {
+        routineItems = nil;
+    }
+    
+    // Create the routine ans save it
+    MDRoutine * routine = [[MDRoutine alloc] initWithName:@"Routine"
+                                              description:@"Modelling routine"
+                                                    modes:routineModes
+                                               metamodels:routineMetamodels
+                                                    types:routineTypes
+                                                 andItems:routineItems];
+    // Remove previous MDRoutine
+    [userDefaults removeObjectForKey:@"es.uam.miso/data/routines/routine"];
+    [userDefaults removeObjectForKey:@"es.uam.miso/data/routines/isRoutine"];
+    
+    // Save information
+    NSData * isRoutineData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+    [userDefaults setObject:isRoutineData forKey:@"es.uam.miso/data/routines/isRoutine"];
+    NSData * routineData = [NSKeyedArchiver archivedDataWithRootObject:routine];
+    [userDefaults setObject:routineData forKey:@"es.uam.miso/data/routines/routine"];
+
+    
 }
 
 #pragma mark - UItableView data delegate methods
