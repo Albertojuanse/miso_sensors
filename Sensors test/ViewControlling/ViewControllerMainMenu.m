@@ -344,16 +344,17 @@
                 NSMutableArray * eachModes = [eachMetamodel getModes];
                 
                 // Search them and only save the non repeating ones
-                for (MDMode * eachMode in eachModes) {
+                // In metamodels, modes are saved like NSNumbers, since primitives cannot be coded; here an MDMode class is instanciated when needed
+                for (NSNumber * eachMode in eachModes) {
                     
                     BOOL modeFound = NO;
                     for (MDMode * existingMode in modes) {
-                        if ([existingMode isEqualToMDMode:eachMode]) {
+                        if ([existingMode getMode] == [eachMode intValue]) {
                             modeFound = YES;
                         }
                     }
                     if (!modeFound) {
-                        [modes addObject:eachMode];
+                        [modes addObject:[[MDMode alloc] initWithModeKey:[eachMode intValue]]];
                     }
                     
                 }
@@ -362,6 +363,7 @@
             registerCorrect = registerCorrect && [sharedData inSessionDataSetModes:modes
                                                                  toUserWithUserDic:userDic
                                                              andCredentialsUserDic:credentialsUserDic];
+            NSLog(@"[INFO][VCMM] -> %tu modes found in routine.", modes.count);
             
             // Set items data in data shared
             registerCorrect = registerCorrect && [sharedData setItemsData:items
