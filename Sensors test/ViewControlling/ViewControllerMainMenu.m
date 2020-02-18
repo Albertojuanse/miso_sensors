@@ -21,7 +21,15 @@
     [super viewDidLoad];
     
     // Visualization
-    [self showUser];
+    [self showUser];    
+    // Toolbar layout
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                   alpha:0.5
+                                    ];
     
     // Other components; only inizialated if they didn't be so
     // Init the shared data collection with the credentials of the device user.
@@ -827,7 +835,9 @@
         return itemsCount + modelCount;
     }
     if (tableView == self.tableModes) {
-        return kModesCount;
+        NSMutableArray * modes = [sharedData fromSessionDataGetModesFromUserWithUserDic:userDic
+                                                                  andCredentialsUserDic:credentialsUserDic];
+        return modes.count;
     }
     return 0;
 }
@@ -979,7 +989,10 @@
         }
     }
     if (tableView == self.tableModes) {
-        MDMode * mode = [[MDMode alloc] initWithModeKey:(int)indexPath.row];
+        NSMutableArray * modes = [sharedData fromSessionDataGetModesFromUserWithUserDic:userDic
+                                                                  andCredentialsUserDic:credentialsUserDic];
+        
+        MDMode * mode = [modes objectAtIndex:indexPath.row];
         cell.textLabel.text = [mode description];
         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
     }
@@ -1032,7 +1045,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
     }
     if (tableView == self.tableModes) {
-        chosenMode = [[MDMode alloc] initWithModeKey:(int)indexPath.row];
+        NSMutableArray * modes = [sharedData fromSessionDataGetModesFromUserWithUserDic:userDic
+                                                                  andCredentialsUserDic:credentialsUserDic];
+        chosenMode = [modes objectAtIndex:indexPath.row];
     }
 }
 

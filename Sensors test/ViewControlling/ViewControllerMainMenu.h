@@ -13,6 +13,7 @@
 #import "MDMetamodel.h"
 #import "MDType.h"
 #import "MDMode.h"
+#import "VCToolbar.h"
 #import "ViewControllerLogin.h"
 #import "ViewControllerAddBeaconMenu.h"
 #import "ViewControllerSelectPositions.h"
@@ -44,6 +45,7 @@
     BOOL userDidLogIn;
 }
 
+@property (weak, nonatomic) IBOutlet VCToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UITableView *tableModes;
 @property (weak, nonatomic) IBOutlet UITableView *tableItems;
 @property (weak, nonatomic) IBOutlet UILabel *loginText;
