@@ -100,6 +100,7 @@
                                         style:UIAlertActionStyleDefault
                                         handler:^(UIAlertAction * action) {
                                             [self.buttonLogin setEnabled:NO];
+                                            [self.buttonSignin setEnabled:YES];
                                         }];
             
             [alertUsersNotFound addAction:okButton];
