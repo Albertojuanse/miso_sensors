@@ -64,33 +64,11 @@
  */
 - (void)viewDidAppear:(BOOL)animated
 {
-    
-    // Check if in this device exists any user
-    BOOL areUsers = [self isAnyUserRegistered];
-    
-    // Alert the user that must create an user if no other is found
-    if (!areUsers){
-        UIAlertController * alertUsersNotFound = [UIAlertController
-                                                  alertControllerWithTitle:@"No user found"
-                                                  message:@"No user credentials were found. Please, sign in as a new user."
-                                                  preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction * okButton = [UIAlertAction
-                                    actionWithTitle:@"Ok"
-                                    style:UIAlertActionStyleDefault
-                                    handler:^(UIAlertAction * action) {
-                                        [self.buttonLogin setEnabled:NO];
-                                    }];
-        
-        [alertUsersNotFound addAction:okButton];
-        [self presentViewController:alertUsersNotFound animated:YES completion:nil];
-    }
-    
     // Check if in this device exists any routine
     BOOL isRoutine = [self isAnyRoutine];
     
     // Alert the user that must create an user if no other is found
-    if (!areUsers){
+    if (!isRoutine){
         UIAlertController * alertUsersNotFound = [UIAlertController
                                                   alertControllerWithTitle:@"No routine found"
                                                   message:@"Software producer did not create a routine for this app. Please, configure a routine in 'configuration' menu."
@@ -106,6 +84,27 @@
         
         [alertUsersNotFound addAction:okButton];
         [self presentViewController:alertUsersNotFound animated:YES completion:nil];
+    } else {
+        // Check if in this device exists any user
+        BOOL areUsers = [self isAnyUserRegistered];
+        
+        // Alert the user that must create an user if no other is found
+        if (!areUsers){
+            UIAlertController * alertUsersNotFound = [UIAlertController
+                                                      alertControllerWithTitle:@"No user found"
+                                                      message:@"No user credentials were found. Please, sign in as a new user."
+                                                      preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction * okButton = [UIAlertAction
+                                        actionWithTitle:@"Ok"
+                                        style:UIAlertActionStyleDefault
+                                        handler:^(UIAlertAction * action) {
+                                            [self.buttonLogin setEnabled:NO];
+                                        }];
+            
+            [alertUsersNotFound addAction:okButton];
+            [self presentViewController:alertUsersNotFound animated:YES completion:nil];
+        }
     }
 }
 
