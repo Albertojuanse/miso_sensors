@@ -145,9 +145,8 @@
  */
 - (IBAction)handleBackButton:(id)sender
 {
-    // Create and save the configurations
-    [self createAndSaveConfigurations];
-    [tabBar performSegueWithIdentifier:@"fromConfigurationToLogin" sender:sender];
+    // Ask user if a routine must be created
+    [self askUserToCreateRoutine];
 }
 
 /*!
@@ -507,13 +506,15 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                                              message:@"The submitted information is saved for future use, but is not set as main modelling routine. ¿Must this configurations be the main modelling routine?"
                                              preferredStyle:UIAlertControllerStyleAlert
                                              ];
-    
+    userWantsToSetRoutine = NO;
     UIAlertAction * yesButton = [UIAlertAction
                                  actionWithTitle:@"yes"
                                  style:UIAlertActionStyleDefault
                                  handler:^(UIAlertAction * _Nonnull action) {
                                      
-                                     userWantsToSetRoutine = YES;
+                                     // Create and save the configurations
+                                     [self createAndSaveConfigurations];
+                                     [tabBar performSegueWithIdentifier:@"fromConfigurationToLogin" sender:nil];
                                      
                                  }
                                  ];
@@ -521,7 +522,12 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     UIAlertAction * cancelButton = [UIAlertAction
                                     actionWithTitle:@"No"
                                     style:UIAlertActionStyleCancel
-                                    handler:nil
+                                    handler:^(UIAlertAction * _Nonnull action) {
+                                        
+                                        // No create and save the configurations
+                                        [tabBar performSegueWithIdentifier:@"fromConfigurationToLogin" sender:nil];
+                                        
+                                    }
                                     ];
     
     [alertAddMetamodel addAction:yesButton];
