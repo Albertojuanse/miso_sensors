@@ -11,7 +11,6 @@
 @implementation ViewControllerMainMenu
 
 #pragma mark - UIViewController delegated methods
-
 /*!
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.

@@ -221,12 +221,12 @@
                                     <constraint firstItem="dwG-Vz-UA7" firstAttribute="top" secondItem="YnX-CR-lc7" secondAttribute="bottom" constant="16" id="0Aw-6J-MQW"/>
                                     <constraint firstItem="pMp-QA-YHA" firstAttribute="top" secondItem="YnX-CR-lc7" secondAttribute="bottom" constant="16" id="5Gh-E0-ocw"/>
                                     <constraint firstItem="qvM-wf-f09" firstAttribute="leading" secondItem="Nro-qx-VM6" secondAttribute="leading" constant="32" id="5cS-S2-vbq"/>
+                                    <constraint firstAttribute="trailing" secondItem="YnX-CR-lc7" secondAttribute="trailing" constant="32" id="Ess-7D-hFr"/>
                                     <constraint firstItem="PxJ-qY-PCa" firstAttribute="top" secondItem="Nro-qx-VM6" secondAttribute="top" constant="8" id="GSD-Ox-AKS"/>
                                     <constraint firstAttribute="trailing" secondItem="rcc-iK-FNe" secondAttribute="trailing" constant="32" id="H6U-mS-9FS"/>
                                     <constraint firstItem="RbC-qr-Qzv" firstAttribute="top" secondItem="rcc-iK-FNe" secondAttribute="bottom" constant="8" id="Noj-qq-9E1"/>
                                     <constraint firstItem="RbC-qr-Qzv" firstAttribute="top" secondItem="XAd-5l-cgu" secondAttribute="bottom" constant="16" id="SKc-cm-30z"/>
                                     <constraint firstItem="YnX-CR-lc7" firstAttribute="top" secondItem="UMS-xX-nJw" secondAttribute="bottom" constant="32" id="THb-Tr-dvY"/>
-                                    <constraint firstAttribute="trailing" secondItem="YnX-CR-lc7" secondAttribute="trailing" constant="32" id="bem-hK-3y0"/>
                                     <constraint firstItem="YnX-CR-lc7" firstAttribute="leading" secondItem="Nro-qx-VM6" secondAttribute="leading" constant="32" id="c7A-bu-lcG"/>
                                     <constraint firstAttribute="trailing" secondItem="pMp-QA-YHA" secondAttribute="trailing" constant="32" id="dNe-CZ-9dk"/>
                                     <constraint firstAttribute="bottom" secondItem="RbC-qr-Qzv" secondAttribute="bottom" constant="32" id="f7z-jn-NiT"/>
@@ -267,6 +267,7 @@
                         <outlet property="loginText" destination="qvM-wf-f09" id="jku-NG-MkC"/>
                         <outlet property="tableItems" destination="RbC-qr-Qzv" id="aHP-09-xlO"/>
                         <outlet property="tableModes" destination="YnX-CR-lc7" id="ysR-ld-hYb"/>
+                        <outlet property="toolbar" destination="sfN-Pe-qNc" id="2qG-I8-jsp"/>
                         <segue destination="1M1-iA-J20" kind="show" identifier="fromMainToRHO_THETA_MODELING" id="ZVX-zW-HeN"/>
                         <segue destination="zBC-hA-n0a" kind="show" identifier="fromMainToSelectPositions" id="DJm-0E-zOi"/>
                         <segue destination="QfP-rI-9YT" kind="show" identifier="fromMainToLogin" id="R4c-cp-jPI"/>

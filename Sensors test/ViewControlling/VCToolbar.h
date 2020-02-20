@@ -10,8 +10,8 @@
 #import <UIKit/UIKit.h>
 
 /*!
- @class UIView
- @discussion This class extends UIToolbar and creates a bar for title and option buttons.
+ @class VCToolbar
+ @discussion This class extends UIView and creates a bar for title and option buttons.
  */
 @interface VCToolbar: UIView {
     

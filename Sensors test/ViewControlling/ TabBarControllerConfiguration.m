@@ -100,10 +100,10 @@
         // TO DO: Ask user if demo metamodels have to be loaded. Alberto J. 2020/01/27.
         
         // Create some modes to use the metamodels
-        NSNumber * mode1 = [NSNumber numberWithInt:1];
-        NSNumber * mode2 = [NSNumber numberWithInt:2];
-        NSNumber * mode3 = [NSNumber numberWithInt:3];
-        NSNumber * mode4 = [NSNumber numberWithInt:4];
+        NSNumber * mode1 = [NSNumber numberWithInt:0];
+        NSNumber * mode2 = [NSNumber numberWithInt:3];
+        NSNumber * mode3 = [NSNumber numberWithInt:6];
+        NSNumber * mode4 = [NSNumber numberWithInt:7];
         NSMutableArray * metamodelModes = [[NSMutableArray alloc] init];
         [metamodelModes addObject:mode1];
         [metamodelModes addObject:mode2];
