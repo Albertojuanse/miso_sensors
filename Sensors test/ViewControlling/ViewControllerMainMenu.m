@@ -51,6 +51,7 @@
                              forState:UIControlStateNormal];
     [self.logOutButton setTitleColor:[UIColor whiteColor]
                             forState:UIControlStateNormal];
+    [self.loginText setTextColor:[UIColor whiteColor]];
     
     
     // Other components; only inizialated if they didn't be so
