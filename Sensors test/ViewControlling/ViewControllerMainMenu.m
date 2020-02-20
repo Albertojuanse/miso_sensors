@@ -27,8 +27,31 @@
     self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:0.5
+                                                   alpha:1.0
                                     ];
+    [self.goButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                   alpha:1.0
+                                    ]
+                        forState:UIControlStateNormal];
+    [self.startButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                   alpha:1.0
+                                    ]
+                           forState:UIControlStateNormal];
+    [self.calibrateButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                        green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                         blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                        alpha:1.0
+                                         ]
+                               forState:UIControlStateNormal];
+    [self.signOutButton setTitleColor:[UIColor whiteColor]
+                             forState:UIControlStateNormal];
+    [self.logOutButton setTitleColor:[UIColor whiteColor]
+                            forState:UIControlStateNormal];
+    
     
     // Other components; only inizialated if they didn't be so
     // Init the shared data collection with the credentials of the device user.
@@ -530,15 +553,6 @@
 }
 
 /*!
- @method handleButtonAdd:
- @discussion This method handles the 'add' button action and ask the add view to show; 'prepareForSegue:sender:' method is called before.
- */
-- (IBAction)handleButonAdd:(id)sender
-{
-    [self performSegueWithIdentifier:@"fromMainToAdd" sender:sender];
-}
-
-/*!
  @method handleButtonCalibrate:
  @discussion This method handles the 'calibrate' button action and ask the Location Manager to do so.
  */
@@ -591,9 +605,18 @@
 
 /*!
  @method handleButonStart:
- @discussion This method handles the 'start' button action and asks to segue to the user's mode selection.
+ @discussion This method handles the 'start' button action and start routine.
  */
 - (IBAction)handleButonStart:(id)sender
+{
+    
+}
+
+/*!
+ @method handleButonGo:
+ @discussion This method handles the 'go' button action and asks to segue to the user's mode selection.
+ */
+- (IBAction)handleButonGo:(id)sender
 {
     // Register the current mode
     if (

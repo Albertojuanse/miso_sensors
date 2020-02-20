@@ -28,7 +28,7 @@
     self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:0.5
+                                                   alpha:1.0
                                     ];
     
     // View layout
@@ -38,6 +38,20 @@
     [[self.textModel layer] setBorderColor:[[UIColor lightGrayColor] CGColor]];
     [[self.textModel layer] setBorderWidth:.4];
     [[self.textModel layer] setCornerRadius:8.0f];
+    [self.buttonSave setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                   alpha:1.0
+                                    ]
+                          forState:UIControlStateNormal];
+    [self.buttonEdit setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                   alpha:1.0
+                                    ]
+                          forState:UIControlStateNormal];
+    [self.buttonBack setTitleColor:[UIColor whiteColor]
+                          forState:UIControlStateNormal];
     
     // Variables
     userWantsToSetRoutine = NO;    

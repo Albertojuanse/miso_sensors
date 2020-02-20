@@ -40,6 +40,7 @@
 }
 
 @property (weak, nonatomic) IBOutlet VCToolbar *toolbar;
+@property (weak, nonatomic) IBOutlet UIButton *buttonBack;
 @property (weak, nonatomic) IBOutlet UITableView *tableMetamodels;
 @property (weak, nonatomic) IBOutlet UITableView *tableTypes;
 

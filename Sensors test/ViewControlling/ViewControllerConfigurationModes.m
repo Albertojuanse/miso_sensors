@@ -27,8 +27,12 @@
     self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:0.5
+                                                   alpha:1.0
                                     ];
+    
+    // View layout
+    [self.buttonBack setTitleColor:[UIColor whiteColor]
+                          forState:UIControlStateNormal];
     
     // Variables
     userWantsToSetRoutine = NO;    
