@@ -133,6 +133,7 @@
                         <viewLayoutGuide key="safeArea" id="vOc-ui-ecN"/>
                     </view>
                     <connections>
+                        <outlet property="buttonConfiguration" destination="11f-ay-VYk" id="Xmn-8T-EBS"/>
                         <outlet property="buttonLogin" destination="th7-R7-hHM" id="izD-mq-agM"/>
                         <outlet property="buttonSignin" destination="UUy-IL-nKs" id="YFf-yp-a39"/>
                         <outlet property="passText" destination="qVE-ED-hWC" id="42Z-va-IDg"/>

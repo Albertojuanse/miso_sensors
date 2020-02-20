@@ -25,8 +25,26 @@
     self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1
+                                                   alpha:1.0
                                     ];
+    [self.buttonLogin setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                    alpha:1.0
+                                     ]
+                           forState:UIControlStateNormal];
+    [self.buttonSignin setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                      blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                     alpha:1.0
+                                      ]
+                            forState:UIControlStateNormal];
+    [self.buttonConfiguration setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                      blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                     alpha:1.0
+                                      ]
+                                   forState:UIControlStateNormal];
     
     if (userDidAskSignOut) {
         NSLog(@"[INFO][VCL] User did asked to sign out.");

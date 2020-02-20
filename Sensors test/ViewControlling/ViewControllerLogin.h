@@ -33,6 +33,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *passText;
 @property (weak, nonatomic) IBOutlet UIButton *buttonLogin;
 @property (weak, nonatomic) IBOutlet UIButton *buttonSignin;
+@property (weak, nonatomic) IBOutlet UIButton *buttonConfiguration;
 
 // Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
