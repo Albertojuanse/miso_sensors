@@ -101,7 +101,7 @@
         
         // Create some modes to use the metamodels
         NSNumber * mode1 = [NSNumber numberWithInt:0];
-        NSNumber * mode2 = [NSNumber numberWithInt:3];
+        NSNumber * mode2 = [NSNumber numberWithInt:2];
         NSNumber * mode3 = [NSNumber numberWithInt:6];
         NSNumber * mode4 = [NSNumber numberWithInt:7];
         NSMutableArray * metamodelModes = [[NSMutableArray alloc] init];
