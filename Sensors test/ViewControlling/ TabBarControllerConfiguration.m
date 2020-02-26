@@ -258,24 +258,24 @@
                                                                    andTypes:securityTypes];
         [securityMetamodel setModes:securityModes];
         
-        NSMutableArray * organitazionTypes = [[NSMutableArray alloc] init];
-        [securityTypes addObject:leisureAreaType];
-        [securityTypes addObject:equipmentType];
-        [securityTypes addObject:graphicalElementType];
-        NSMutableArray * organitazionModes = [[NSMutableArray alloc] init];
-        [securityModes addObject:modeSelfRhoRho];
-        MDMetamodel * organitazionMetamodel = [[MDMetamodel alloc] initWithName:@"Organitazion"
-                                                                    description:@"Organitazion"
-                                                                       andTypes:organitazionTypes];
-        [organitazionMetamodel setModes:organitazionModes];
+        NSMutableArray * organizationTypes = [[NSMutableArray alloc] init];
+        [organizationTypes addObject:leisureAreaType];
+        [organizationTypes addObject:equipmentType];
+        [organizationTypes addObject:graphicalElementType];
+        NSMutableArray * organizationModes = [[NSMutableArray alloc] init];
+        [organizationModes addObject:modeSelfRhoRho];
+        MDMetamodel * organizationMetamodel = [[MDMetamodel alloc] initWithName:@"Organization"
+                                                                    description:@"Organization"
+                                                                       andTypes:organizationTypes];
+        [organizationMetamodel setModes:organizationModes];
         
         NSMutableArray * attendantsTypes = [[NSMutableArray alloc] init];
         [attendantsTypes addObject:deviceType];
         [attendantsTypes addObject:attendantType];
         NSMutableArray * attendantsModes = [[NSMutableArray alloc] init];
         [attendantsModes addObject:modeSelfThetaTheta];
-        MDMetamodel * attendantsMetamodel = [[MDMetamodel alloc] initWithName:@"Organitazion"
-                                                                    description:@"Organitazion"
+        MDMetamodel * attendantsMetamodel = [[MDMetamodel alloc] initWithName:@"Attendants"
+                                                                    description:@"Attendants"
                                                                        andTypes:attendantsTypes];
         [attendantsMetamodel setModes:attendantsModes];
         
@@ -286,6 +286,8 @@
         metamodels = [[NSMutableArray alloc] init];
         [metamodels addObject:buildingMetamodel];
         [metamodels addObject:securityMetamodel];
+        [metamodels addObject:organizationMetamodel];
+        [metamodels addObject:attendantsMetamodel];
         NSData * metamodelsData = [NSKeyedArchiver archivedDataWithRootObject:metamodels];
         [userDefaults setObject:metamodelsData forKey:@"es.uam.miso/data/metamodels/metamodels"];
         
