@@ -33,12 +33,24 @@
                                                     alpha:1.0
                                      ]
                            forState:UIControlStateNormal];
+    [self.buttonLogin setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                    alpha:0.3
+                                     ]
+                           forState:UIControlStateDisabled];
     [self.buttonSignin setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
                                                      green:[layoutDic[@"navbar/green"] floatValue]/255.0
                                                       blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
                                                      alpha:1.0
                                       ]
                             forState:UIControlStateNormal];
+    [self.buttonSignin setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                      blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                     alpha:0.3
+                                      ]
+                            forState:UIControlStateDisabled];
     [self.buttonConfiguration setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
                                                      green:[layoutDic[@"navbar/green"] floatValue]/255.0
                                                       blue:[layoutDic[@"navbar/blue"] floatValue]/255.0

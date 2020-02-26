@@ -65,11 +65,108 @@
         // No saved data
         // TO DO: Ask user if demo types have to be loaded. Alberto J. 2020/01/27.
         
-        // Create the types
+        // Create the types and its attributes
         MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
-        MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
+        
         MDType * wallType = [[MDType alloc] initWithName:@"Wall"];
+        NSMutableArray * wallAttributes = [[NSMutableArray alloc] init];
+        MDAttribute * wallHeightAttribute = [[MDAttribute alloc] initWithName:@"Height"];
+        MDAttribute * wallWidthAttribute = [[MDAttribute alloc] initWithName:@"Width"];
+        [wallAttributes addObject:wallHeightAttribute];
+        [wallAttributes addObject:wallWidthAttribute];
+        [wallType setAttributes:wallAttributes];
+        
         MDType * doorType = [[MDType alloc] initWithName:@"Door"];
+        NSMutableArray * doorAttributes = [[NSMutableArray alloc] init];
+        MDAttribute * doorHeightAttribute = [[MDAttribute alloc] initWithName:@"Height"];
+        MDAttribute * doorWidthAttribute = [[MDAttribute alloc] initWithName:@"Width"];
+        [doorAttributes addObject:doorHeightAttribute];
+        [doorAttributes addObject:doorWidthAttribute];
+        [doorType setAttributes:doorAttributes];
+        
+        MDType * gatewayType = [[MDType alloc] initWithName:@"Gateway"];
+        NSMutableArray * gatewayAttributes = [[NSMutableArray alloc] init];
+        MDAttribute * gatewayHeightAttribute = [[MDAttribute alloc] initWithName:@"Height"];
+        MDAttribute * gatewayWidthAttribute = [[MDAttribute alloc] initWithName:@"Width"];
+        [gatewayAttributes addObject:gatewayHeightAttribute];
+        [gatewayAttributes addObject:gatewayWidthAttribute];
+        [gatewayType setAttributes:gatewayAttributes];
+        
+        MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
+        NSMutableArray * deviceAttributes = [[NSMutableArray alloc] init];
+        MDAttribute * deviceOwnerAttribute = [[MDAttribute alloc] initWithName:@"Owner"];
+        MDAttribute * deviceBrandAttribute = [[MDAttribute alloc] initWithName:@"Brand"];
+        [deviceAttributes addObject:deviceOwnerAttribute];
+        [deviceAttributes addObject:deviceBrandAttribute];
+        [deviceType setAttributes:deviceAttributes];
+        
+        MDType * attendantType = [[MDType alloc] initWithName:@"Attendant"];
+        NSMutableArray * attendantAttributes = [[NSMutableArray alloc] init];
+        MDAttribute * attendantNameAttribute = [[MDAttribute alloc] initWithName:@"Name"];
+        MDAttribute * attendantCredentialsAttribute = [[MDAttribute alloc] initWithName:@"Credentials"];
+        [attendantAttributes addObject:attendantNameAttribute];
+        [attendantAttributes addObject:attendantCredentialsAttribute];
+        [attendantType setAttributes:attendantAttributes];
+        
+        MDType * entranceType = [[MDType alloc] initWithName:@"Entrance Gateway"];
+        NSMutableArray * entranceAttributes = [[NSMutableArray alloc] init];
+        MDAttribute * entranceHeightAttribute = [[MDAttribute alloc] initWithName:@"Width"];
+        MDAttribute * entranceWidthAttribute = [[MDAttribute alloc] initWithName:@"Height"];
+        MDAttribute * entranceScheduleAttribute = [[MDAttribute alloc] initWithName:@"Schedule"];
+        [entranceAttributes addObject:entranceHeightAttribute];
+        [entranceAttributes addObject:entranceWidthAttribute];
+        [entranceAttributes addObject:entranceScheduleAttribute];
+        [entranceType setAttributes:entranceAttributes];
+        
+        MDType * emergencyType = [[MDType alloc] initWithName:@"Emergency Gateway"];
+        NSMutableArray * emergencyAttributes = [[NSMutableArray alloc] init];
+        MDAttribute * emergencyHeightAttribute = [[MDAttribute alloc] initWithName:@"Width"];
+        MDAttribute * emergencyWidthAttribute = [[MDAttribute alloc] initWithName:@"Height"];
+        MDAttribute * emergencySecuredAttribute = [[MDAttribute alloc] initWithName:@"Secured"];
+        [emergencyAttributes addObject:emergencyHeightAttribute];
+        [emergencyAttributes addObject:emergencyWidthAttribute];
+        [emergencyAttributes addObject:emergencySecuredAttribute];
+        [emergencyType setAttributes:emergencyAttributes];
+        
+        MDType * securedAreaType = [[MDType alloc] initWithName:@"Secured Area"];
+        NSMutableArray * securedAreaAttributes = [[NSMutableArray alloc] init];
+        MDAttribute * securedAreaSecuredAttribute = [[MDAttribute alloc] initWithName:@"Secured"];
+        [securedAreaAttributes addObject:securedAreaSecuredAttribute];
+        [securedAreaType setAttributes:securedAreaAttributes];
+        
+        MDType * accessControlledAreaType = [[MDType alloc] initWithName:@"Access Controlled Area"];
+        NSMutableArray * accessControlledAreaAttributes = [[NSMutableArray alloc] init];
+        MDAttribute * capacityAttribute = [[MDAttribute alloc] initWithName:@"Capacity"];
+        MDAttribute * accessControlledAreaAttribute = [[MDAttribute alloc] initWithName:@"Secured"];
+        [accessControlledAreaAttributes addObject:capacityAttribute];
+        [accessControlledAreaAttributes addObject:accessControlledAreaAttribute];
+        [accessControlledAreaType setAttributes:accessControlledAreaAttributes];
+        
+        MDType * leisureAreaType = [[MDType alloc] initWithName:@"Leisure Area"];
+        NSMutableArray * leisureAreaAttributes = [[NSMutableArray alloc] init];
+        MDAttribute * activityAttribute = [[MDAttribute alloc] initWithName:@"Activity"];
+        [leisureAreaAttributes addObject:activityAttribute];
+        [leisureAreaType setAttributes:leisureAreaAttributes];
+        
+        MDType * equipmentType = [[MDType alloc] initWithName:@"Equipment"];
+        NSMutableArray * equipmentAttributes = [[NSMutableArray alloc] init];
+        MDAttribute * equipmentHeightAttribute = [[MDAttribute alloc] initWithName:@"Width"];
+        MDAttribute * equipmentWidthAttribute = [[MDAttribute alloc] initWithName:@"Height"];
+        MDAttribute * providerAttribute = [[MDAttribute alloc] initWithName:@"Provider"];
+        [equipmentAttributes addObject:equipmentHeightAttribute];
+        [equipmentAttributes addObject:equipmentWidthAttribute];
+        [equipmentAttributes addObject:providerAttribute];
+        [equipmentType setAttributes:equipmentAttributes];
+        
+        MDType * graphicalElementType = [[MDType alloc] initWithName:@"Graphical Element"];
+        NSMutableArray * graphicalElementAttributes = [[NSMutableArray alloc] init];
+        MDAttribute * graphicalElementHeightAttribute = [[MDAttribute alloc] initWithName:@"Width"];
+        MDAttribute * graphicalElementWidthAttribute = [[MDAttribute alloc] initWithName:@"Height"];
+        MDAttribute * textAttribute = [[MDAttribute alloc] initWithName:@"Text"];
+        [graphicalElementAttributes addObject:graphicalElementHeightAttribute];
+        [graphicalElementAttributes addObject:graphicalElementWidthAttribute];
+        [graphicalElementAttributes addObject:textAttribute];
+        [graphicalElementType setAttributes:graphicalElementAttributes];
         
         // Save them in persistent memory
         areTypesData = nil; // ARC disposing
@@ -78,9 +175,18 @@
         
         types = [[NSMutableArray alloc] init];
         [types addObject:cornerType];
-        [types addObject:deviceType];
         [types addObject:wallType];
         [types addObject:doorType];
+        [types addObject:gatewayType];
+        [types addObject:deviceType];
+        [types addObject:attendantType];
+        [types addObject:entranceType];
+        [types addObject:emergencyType];
+        [types addObject:securedAreaType];
+        [types addObject:accessControlledAreaType];
+        [types addObject:leisureAreaType];
+        [types addObject:equipmentType];
+        [types addObject:graphicalElementType];
         NSData * typesData = [NSKeyedArchiver archivedDataWithRootObject:types];
         [userDefaults setObject:typesData forKey:@"es.uam.miso/data/metamodels/types"];
         
@@ -100,33 +206,78 @@
         // TO DO: Ask user if demo metamodels have to be loaded. Alberto J. 2020/01/27.
         
         // Create some modes to use the metamodels
-        NSNumber * mode1 = [NSNumber numberWithInt:0];
-        NSNumber * mode2 = [NSNumber numberWithInt:2];
-        NSNumber * mode3 = [NSNumber numberWithInt:6];
-        NSNumber * mode4 = [NSNumber numberWithInt:7];
-        NSMutableArray * metamodelModes = [[NSMutableArray alloc] init];
-        [metamodelModes addObject:mode1];
-        [metamodelModes addObject:mode2];
-        [metamodelModes addObject:mode3];
-        [metamodelModes addObject:mode4];
+        NSNumber * modeMonitorig = [NSNumber numberWithInt:0];
+        NSNumber * modeRhoRho = [NSNumber numberWithInt:1];
+        NSNumber * modeRhoTheta = [NSNumber numberWithInt:2];
+        NSNumber * modeThetaTheta = [NSNumber numberWithInt:3];
+        NSNumber * modeSelfRhoRho = [NSNumber numberWithInt:4];
+        NSNumber * modeSelfRhoTheta = [NSNumber numberWithInt:5];
+        NSNumber * modeSelfThetaTheta = [NSNumber numberWithInt:6];
+        NSNumber * modeGPS = [NSNumber numberWithInt:7];
+        NSNumber * modeHeading = [NSNumber numberWithInt:8];
+        
+        // Get types;
+        MDType * cornerType = [types objectAtIndex:0];
+        MDType * wallType = [types objectAtIndex:1];
+        MDType * doorType = [types objectAtIndex:2];
+        MDType * gatewayType = [types objectAtIndex:3];
+        MDType * deviceType = [types objectAtIndex:4];
+        MDType * attendantType = [types objectAtIndex:5];
+        MDType * entranceType = [types objectAtIndex:6];
+        MDType * emergencyType = [types objectAtIndex:7];
+        MDType * securedAreaType = [types objectAtIndex:8];
+        MDType * accessControlledAreaType = [types objectAtIndex:9];
+        MDType * leisureAreaType = [types objectAtIndex:10];
+        MDType * equipmentType = [types objectAtIndex:11];
+        MDType * graphicalElementType = [types objectAtIndex:12];
         
         // Create the metamodel with a copy of types
-        NSMutableArray * metamodelTypes = [[NSMutableArray alloc] init];
-        for (MDType * type in types) {
-            [metamodelTypes addObject:type];
-        }
+        NSMutableArray * buildingTypes = [[NSMutableArray alloc] init];
+        [buildingTypes addObject:cornerType];
+        [buildingTypes addObject:wallType];
+        [buildingTypes addObject:doorType];
+        [buildingTypes addObject:gatewayType];
+        NSMutableArray * buildingModes = [[NSMutableArray alloc] init];
+        [buildingModes addObject:modeSelfRhoRho];
+        [buildingModes addObject:modeGPS];
+        [buildingModes addObject:modeHeading];
         MDMetamodel * buildingMetamodel = [[MDMetamodel alloc] initWithName:@"Building"
                                                                 description:@"Building"
-                                                                   andTypes:metamodelTypes];
-        [buildingMetamodel setModes:metamodelModes];
-        NSMutableArray * securityTypes = [metamodelTypes mutableCopy];
-        NSMutableArray * securityModes = [metamodelModes mutableCopy];
-        [securityTypes removeLastObject];
-        [securityModes removeLastObject];
+                                                                   andTypes:buildingTypes];
+        [buildingMetamodel setModes:buildingModes];
+        
+        NSMutableArray * securityTypes = [[NSMutableArray alloc] init];
+        [securityTypes addObject:entranceType];
+        [securityTypes addObject:emergencyType];
+        [securityTypes addObject:securedAreaType];
+        [securityTypes addObject:accessControlledAreaType];
+        NSMutableArray * securityModes = [[NSMutableArray alloc] init];
+        [securityModes addObject:modeSelfRhoRho];
         MDMetamodel * securityMetamodel = [[MDMetamodel alloc] initWithName:@"Security"
-                                                                 description:@"Security"
-                                                                    andTypes:securityTypes];
+                                                                description:@"Security"
+                                                                   andTypes:securityTypes];
         [securityMetamodel setModes:securityModes];
+        
+        NSMutableArray * organitazionTypes = [[NSMutableArray alloc] init];
+        [securityTypes addObject:leisureAreaType];
+        [securityTypes addObject:equipmentType];
+        [securityTypes addObject:graphicalElementType];
+        NSMutableArray * organitazionModes = [[NSMutableArray alloc] init];
+        [securityModes addObject:modeSelfRhoRho];
+        MDMetamodel * organitazionMetamodel = [[MDMetamodel alloc] initWithName:@"Organitazion"
+                                                                    description:@"Organitazion"
+                                                                       andTypes:organitazionTypes];
+        [organitazionMetamodel setModes:organitazionModes];
+        
+        NSMutableArray * attendantsTypes = [[NSMutableArray alloc] init];
+        [attendantsTypes addObject:deviceType];
+        [attendantsTypes addObject:attendantType];
+        NSMutableArray * attendantsModes = [[NSMutableArray alloc] init];
+        [attendantsModes addObject:modeSelfThetaTheta];
+        MDMetamodel * attendantsMetamodel = [[MDMetamodel alloc] initWithName:@"Organitazion"
+                                                                    description:@"Organitazion"
+                                                                       andTypes:attendantsTypes];
+        [attendantsMetamodel setModes:attendantsModes];
         
         // Save them in persistent memory
         areMetamodelsData = nil; // ARC disposing
