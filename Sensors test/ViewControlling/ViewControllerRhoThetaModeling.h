@@ -38,12 +38,18 @@
     MDMode * mode;
     
 }
-
+@property (weak, nonatomic) IBOutlet VCToolbar *toolbar;
+@property (weak, nonatomic) IBOutlet UILabel *loginText;
+@property (weak, nonatomic) IBOutlet UIButton *signOutButton;
+@property (weak, nonatomic) IBOutlet UIButton *logOutButton;
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;
 @property (weak, nonatomic) IBOutlet UITableView *tableItems;
 @property (weak, nonatomic) IBOutlet UITableView *tableTypes;
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
+@property (weak, nonatomic) IBOutlet UIButton *buttonModel;
+@property (weak, nonatomic) IBOutlet UIButton *buttonNext;
+@property (weak, nonatomic) IBOutlet UIButton *buttonBack;
 
 // Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;

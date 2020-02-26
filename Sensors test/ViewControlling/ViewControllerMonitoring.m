@@ -20,6 +20,46 @@
 {
     [super viewDidLoad];
     
+    // Visualization
+    [self showUser];
+    // Toolbar layout
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                   alpha:1.0
+                                    ];
+    [self.buttonFinish setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                   alpha:1.0
+                                    ]
+                          forState:UIControlStateNormal];
+    [self.buttonFinish setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                   alpha:0.3
+                                    ]
+                          forState:UIControlStateDisabled];
+    [self.backButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                   alpha:1.0
+                                    ]
+                          forState:UIControlStateNormal];
+    [self.backButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                   alpha:0.3
+                                    ]
+                          forState:UIControlStateDisabled];
+    [self.signOutButton setTitleColor:[UIColor whiteColor]
+                             forState:UIControlStateNormal];
+    [self.logOutButton setTitleColor:[UIColor whiteColor]
+                            forState:UIControlStateNormal];
+    [self.loginText setTextColor:[UIColor whiteColor]];
+    
     // Register the current mode
     mode = [[MDMode alloc] initWithModeKey:kModeMonitoring];
     if (
@@ -96,6 +136,16 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+/*!
+ @method showUser
+ @discussion This method defines how user name is shown once logged.
+ */
+- (void)showUser
+{
+    self.loginText.text = [self.loginText.text stringByAppendingString:@" "];
+    self.loginText.text = [self.loginText.text stringByAppendingString:userDic[@"name"]];
 }
 
 #pragma mark - Notifications events handlers
