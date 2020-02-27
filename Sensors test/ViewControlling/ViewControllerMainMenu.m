@@ -629,7 +629,25 @@
         
         if ([isRoutine isEqualToString:@"YES"]) {
             
+            // Find the mode that is not finished
+            MDMode * foundMode;
+            NSMutableArray * modes = [sharedData fromSessionDataGetModesFromUserWithUserDic:userDic
+                                                                      andCredentialsUserDic:credentialsUserDic];
+            for (MDMode * mode in modes) {
+                if (![mode isFinished]) {
+                    foundMode = mode;
+                }
+            }
             
+            if (foundMode) {
+                
+                chosenMode = foundMode;
+                [self startButton];
+                
+            } else {
+                NSLog(@"[INFO][CVMM] Routine finished.");
+                // TO DO: Alert the user.
+            }
             
         } else {
             // Nothing happens
@@ -1047,6 +1065,10 @@
         MDMode * mode = [modes objectAtIndex:indexPath.row];
         cell.textLabel.text = [mode description];
         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+        
+        if ([mode isFinished]) {
+            [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+        }
     }
     return cell;
 }
