@@ -60,6 +60,32 @@
                             forState:UIControlStateNormal];
     [self.loginText setTextColor:[UIColor whiteColor]];
     
+    // Check if in routine
+    NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic];
+    if (isRoutine) {
+        if ([isRoutine isEqualToString:@"YES"]) {
+            MDMode * foundMode;
+            NSMutableArray * modes = [sharedData fromSessionDataGetModesFromUserWithUserDic:userDic
+                                                                      andCredentialsUserDic:credentialsUserDic];
+            for (MDMode * eachMode in modes) {
+                if (![eachMode isFinished]) {
+                    NSLog(@"[INFO][VCFM] Evaluating next mode in routine \"%@\".", [eachMode description]);
+                    foundMode = eachMode;
+                    break;
+                }
+            }
+        
+            if (foundMode) {
+                [self.nameText setText:@"temp_routine"];
+                [self.buttonSubmit setEnabled:NO];
+                [self handleButonSubmit:nil];
+            } else {
+                
+            }
+        }
+    }
+    
 }
 
 /*!

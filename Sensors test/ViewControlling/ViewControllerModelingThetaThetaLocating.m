@@ -254,7 +254,30 @@
 - (IBAction)handleBackFinish:(id)sender
 {
     // TO DO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
-    [self performSegueWithIdentifier:@"fromModelingTHETA_THETA_LOCATINGToFinalModel" sender:sender];
+    // Check if in routine
+    NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic];
+    if (isRoutine) {
+        if ([isRoutine isEqualToString:@"YES"]) {
+            
+            // Find the mode that is not finished
+            NSMutableArray * modes = [sharedData fromSessionDataGetModesFromUserWithUserDic:userDic
+                                                                      andCredentialsUserDic:credentialsUserDic];
+            
+            // Mode finished
+            for (MDMode * eachMode in modes) {
+                if (![eachMode isModeKey:kModeThetaThetaLocating]) {
+                    [eachMode setFinished:YES];
+                    break;
+                }
+            }
+            
+            [self performSegueWithIdentifier:@"fromModelingTHETA_THETA_LOCATINGToFinalModel" sender:sender];
+            
+        } else {
+            [self performSegueWithIdentifier:@"fromModelingTHETA_THETA_LOCATINGToFinalModel" sender:sender];
+        }
+    }
 }
 
 /*!
@@ -423,6 +446,18 @@
         [viewControllerFinalModel setSharedData:sharedData];
         [viewControllerFinalModel setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerFinalModel setItemPositionIdNumber:itemPositionIdNumber];
+        return;
+    }
+    if ([[segue identifier] isEqualToString:@"fromModelingTHETA_THETA_LOCATINGToMain"]) {
+        
+        // Get destination view
+        ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
+        // Set the variables
+        [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerMainMenu setUserDic:userDic];
+        [viewControllerMainMenu setSharedData:sharedData];
+        [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
         return;
     }
     

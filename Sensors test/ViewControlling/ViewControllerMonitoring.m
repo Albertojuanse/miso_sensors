@@ -216,44 +216,63 @@
  */
 - (IBAction)handleButtonFinish:(id)sender
 {
-    // First, validate the access to the data shared collection
-    if (
-        [sharedData validateCredentialsUserDic:credentialsUserDic]
-        )
-    {
-        // TO DO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
-        
-        // Stop measuring
-        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
-                                   andWithCredentialsUserDic:credentialsUserDic];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMonitoringMeasures" object:nil];
-        NSLog(@"[NOTI][VCM] Notification \"stopMonitoringMeasures\" posted.");
-        
-        // Set registered items as located and reference with the registering item
-        MDType * type = [[MDType alloc] initWithName:@"Register"];
-        NSMutableArray * rangedUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
-                                                                 withCredentialsUserDic:credentialsUserDic];
-        for (NSString * uuid in rangedUUID) {
-            NSMutableDictionary * itemDic = [[sharedData fromItemDataGetItemsWithUUID:uuid
-                                                                andCredentialsUserDic:credentialsUserDic] objectAtIndex:0];
-            itemDic[@"located"] = @"YES";
+    // TO DO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
+    // Check if in routine
+    NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic];
+    if (isRoutine) {
+        if ([isRoutine isEqualToString:@"YES"]) {
             
-            // Reference
-            MDReference * reference = [[MDReference alloc] initWithType:type
-                                                           sourceItemId:itemChosenByUserAsDevicePosition[@"identifier"]
-                                                        andTargetItemId:itemDic[@"identifier"]
-                                       ];
-            NSLog(@"[INFO][VCM] Created reference %@", reference);
-            [sharedData inSessionDataAddReference:reference
-                                toUserWithUserDic:userDic
-                           withCredentialsUserDic:credentialsUserDic];
+            // Find the mode that is not finished
+            NSMutableArray * modes = [sharedData fromSessionDataGetModesFromUserWithUserDic:userDic
+                                                                      andCredentialsUserDic:credentialsUserDic];
+            
+            // Mode finished
+            for (MDMode * eachMode in modes) {
+                if (![eachMode isModeKey:kModeThetaThetaLocating]) {
+                    [eachMode setFinished:YES];
+                    break;
+                }
+            }
+            // First, validate the access to the data shared collection
+            if (
+                [sharedData validateCredentialsUserDic:credentialsUserDic]
+                )
+            {
+                // TO DO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
+                
+                // Stop measuring
+                [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                                      andWithCredentialsUserDic:credentialsUserDic];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMonitoringMeasures" object:nil];
+                NSLog(@"[NOTI][VCM] Notification \"stopMonitoringMeasures\" posted.");
+                
+                // Set registered items as located and reference with the registering item
+                MDType * type = [[MDType alloc] initWithName:@"Register"];
+                NSMutableArray * rangedUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
+                                                                         withCredentialsUserDic:credentialsUserDic];
+                for (NSString * uuid in rangedUUID) {
+                    NSMutableDictionary * itemDic = [[sharedData fromItemDataGetItemsWithUUID:uuid
+                                                                        andCredentialsUserDic:credentialsUserDic] objectAtIndex:0];
+                    itemDic[@"located"] = @"YES";
+                    
+                    // Reference
+                    MDReference * reference = [[MDReference alloc] initWithType:type
+                                                                   sourceItemId:itemChosenByUserAsDevicePosition[@"identifier"]
+                                                                andTargetItemId:itemDic[@"identifier"]
+                                               ];
+                    NSLog(@"[INFO][VCM] Created reference %@", reference);
+                    [sharedData inSessionDataAddReference:reference
+                                        toUserWithUserDic:userDic
+                                   withCredentialsUserDic:credentialsUserDic];
+                }
+                location = nil;
+            } else {
+                
+            }
         }
-        location = nil;
         [self performSegueWithIdentifier:@"fromMONITORINGToFinalModel" sender:sender];
-    } else {
-        
     }
-    return;
 }
 
 /*!
@@ -262,6 +281,7 @@
  */
 - (IBAction)handleButtonBack:(id)sender
 {
+    // TO DO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
     [self performSegueWithIdentifier:@"fromMONITORINGToSelectPosition" sender:sender];
 }
 
@@ -329,6 +349,26 @@
         [viewControllerFinalModel setSharedData:sharedData];
         [viewControllerFinalModel setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerFinalModel setItemPositionIdNumber:itemPositionIdNumber];
+        return;
+    }
+    if ([[segue identifier] isEqualToString:@"fromRHO_THETA_MODELINGToMain"]) {
+        
+        // Get destination view
+        ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
+        // Set the variables
+        [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerMainMenu setUserDic:userDic];
+        [viewControllerMainMenu setSharedData:sharedData];
+        [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
+        
+        // Ask Location manager to clean the measures taken and reset its position.
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMonitoringMeasures"
+                                                            object:nil];
+        NSLog(@"[NOTI][VCM] Notification \"stopMonitoringMeasures\" posted.");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
+                                                            object:nil];
+        NSLog(@"[NOTI][VCM] Notification \"resetLocationAndMeasures\" posted.");
         return;
     }
 }

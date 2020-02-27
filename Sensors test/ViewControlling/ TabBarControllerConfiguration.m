@@ -238,9 +238,8 @@
         [buildingTypes addObject:doorType];
         [buildingTypes addObject:gatewayType];
         NSMutableArray * buildingModes = [[NSMutableArray alloc] init];
-        [buildingModes addObject:modeSelfRhoRho];
-        [buildingModes addObject:modeGPS];
-        [buildingModes addObject:modeHeading];
+        [buildingModes addObject:modeSelfThetaTheta];
+        [buildingModes addObject:modeMonitorig];
         MDMetamodel * buildingMetamodel = [[MDMetamodel alloc] initWithName:@"Building"
                                                                 description:@"Building"
                                                                    andTypes:buildingTypes];
@@ -252,7 +251,7 @@
         [securityTypes addObject:securedAreaType];
         [securityTypes addObject:accessControlledAreaType];
         NSMutableArray * securityModes = [[NSMutableArray alloc] init];
-        [securityModes addObject:modeSelfRhoRho];
+        [securityModes addObject:modeSelfThetaTheta];
         MDMetamodel * securityMetamodel = [[MDMetamodel alloc] initWithName:@"Security"
                                                                 description:@"Security"
                                                                    andTypes:securityTypes];
@@ -263,7 +262,7 @@
         [organizationTypes addObject:equipmentType];
         [organizationTypes addObject:graphicalElementType];
         NSMutableArray * organizationModes = [[NSMutableArray alloc] init];
-        [organizationModes addObject:modeSelfRhoRho];
+        [organizationModes addObject:modeSelfThetaTheta];
         MDMetamodel * organizationMetamodel = [[MDMetamodel alloc] initWithName:@"Organization"
                                                                     description:@"Organization"
                                                                        andTypes:organizationTypes];

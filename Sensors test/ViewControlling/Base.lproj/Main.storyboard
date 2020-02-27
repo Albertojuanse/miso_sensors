@@ -1551,6 +1551,7 @@
                         <outlet property="tableTypes" destination="ucz-ve-aVR" id="HZi-pD-zow"/>
                         <outlet property="toolbar" destination="ltf-gi-aAj" id="8T4-qC-TS0"/>
                         <segue destination="Yt7-Vj-vjk" kind="show" identifier="fromModelingTHETA_THETA_LOCATINGToFinalModel" id="0gd-2s-P4L"/>
+                        <segue destination="lVP-jp-YaV" kind="show" identifier="fromModelingTHETA_THETA_LOCATINGToMain" id="aIU-6f-Y47"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YrL-1w-GUs" sceneMemberID="firstResponder"/>
@@ -1665,6 +1666,7 @@
                         <outlet property="tableRegister" destination="j3a-GT-JWI" id="C96-C3-Faq"/>
                         <outlet property="toolbar" destination="bWl-5d-bi5" id="F3O-I2-fNw"/>
                         <segue destination="Yt7-Vj-vjk" kind="show" identifier="fromMONITORINGToFinalModel" id="crr-mq-j8Q"/>
+                        <segue destination="lVP-jp-YaV" kind="show" identifier="fromRHO_THETA_MODELINGToMain" id="CHu-gR-KED"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AAF-tR-vr4" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2371,11 +2373,11 @@
         <image name="miso.png" width="280" height="225"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="GXt-pt-FwK"/>
+        <segue reference="crr-mq-j8Q"/>
         <segue reference="NKP-hK-ln4"/>
         <segue reference="ZVX-zW-HeN"/>
-        <segue reference="DJm-0E-zOi"/>
-        <segue reference="jUo-Ud-pm0"/>
+        <segue reference="UlT-NL-5Yu"/>
+        <segue reference="CHu-gR-KED"/>
         <segue reference="R4c-cp-jPI"/>
     </inferredMetricsTieBreakers>
 </document>

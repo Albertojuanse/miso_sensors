@@ -626,7 +626,6 @@
     NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
                                                              andCredentialsUserDic:credentialsUserDic];
     if (isRoutine) {
-        
         if ([isRoutine isEqualToString:@"YES"]) {
             
             // Find the mode that is not finished
@@ -635,14 +634,16 @@
                                                                       andCredentialsUserDic:credentialsUserDic];
             for (MDMode * mode in modes) {
                 if (![mode isFinished]) {
+                    NSLog(@"[INFO][CVMM] Evaluating next mode in routine \"%@\".", [mode description]);
                     foundMode = mode;
+                    break;
                 }
             }
             
             if (foundMode) {
-                
+                NSLog(@"[INFO][CVMM] Next mode in routine \"%@\".", [foundMode description]);
                 chosenMode = foundMode;
-                [self startButton];
+                [self handleButonGo:nil];
                 
             } else {
                 NSLog(@"[INFO][CVMM] Routine finished.");
@@ -1066,9 +1067,10 @@
         cell.textLabel.text = [mode description];
         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         
-        if ([mode isFinished]) {
-            [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-        }
+        //if ([mode isFinished]) {
+        //    [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+        //    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+        //}
     }
     return cell;
 }
@@ -1121,7 +1123,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     if (tableView == self.tableModes) {
         NSMutableArray * modes = [sharedData fromSessionDataGetModesFromUserWithUserDic:userDic
                                                                   andCredentialsUserDic:credentialsUserDic];
-        chosenMode = [modes objectAtIndex:indexPath.row];
+        UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
+        if(cell.selectionStyle == UITableViewCellSelectionStyleNone){
+            return;
+        } else {
+            chosenMode = [modes objectAtIndex:indexPath.row];
+        }
+        
     }
 }
 
