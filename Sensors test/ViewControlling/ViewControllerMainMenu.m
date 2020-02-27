@@ -402,6 +402,17 @@
                                                    withCredentialsUserDic:credentialsUserDic];
             NSLog(@"[INFO][VCMM] -> %tu items found in routine.", items.count);
             
+            // Set routine mode in shared data
+            [sharedData inSessionDataSetIsRoutine:@"YES"
+                                toUserWithUserDic:userDic
+                            andCredentialsUserDic:credentialsUserDic];
+            
+        } else {
+            // Routine not found
+            NSLog(@"[INFO][VCMM] Routine not found");
+            [sharedData inSessionDataSetIsRoutine:@"NO"
+                                toUserWithUserDic:userDic
+                            andCredentialsUserDic:credentialsUserDic];
         }
         
         if (!registerCorrect) {
@@ -611,7 +622,24 @@
  */
 - (IBAction)handleButonStart:(id)sender
 {
-    
+    // Check if in routine
+    NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic];
+    if (isRoutine) {
+        
+        if ([isRoutine isEqualToString:@"YES"]) {
+            
+            
+            
+        } else {
+            // Nothing happens
+            return;
+        }
+        
+    } else {
+        NSLog(@"[ERROR][VCMM] No data about if in routine found.");
+    }
+    return;
 }
 
 /*!
