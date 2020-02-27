@@ -86,6 +86,7 @@
     //             }
     //     "modes": (NSMutableArray *)modes;
     //     "mode": (NSString *)mode1;
+    //     "routine": (BOOL)routine;
     //     "state": (NSString *)state1;
     //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
     //     "itemsChosenByUser": (NSMutableArray *)items1;

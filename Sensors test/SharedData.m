@@ -34,6 +34,7 @@
 //             }
 //     "modes": (NSMutableArray *)modes;
 //     "mode": (NSString *)mode1;
+//     "routine": (BOOL)routine;
 //     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
 //     "itemsChosenByUser": (NSMutableArray *)items1;
@@ -557,6 +558,7 @@
 //             }
 //     "modes": (NSMutableArray *)modes;
 //     "mode": (NSString *)mode1;
+//     "routine": (BOOL)routine;
 //     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
 //     "itemsChosenByUser": (NSMutableArray *)items1;
@@ -696,6 +698,26 @@
                                           andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     return [self fromSessionDataGetKey:@"mode" fromUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method fromSessionDataIsRoutineFromUserWithUserName:andCredentialsUserDic:
+ @discussion This method returns the 'routine' flag BOOL from the session data collection given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSString *)fromSessionDataIsRoutineFromUserWithUserName:(NSString *)userName
+                                     andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self fromSessionDataGetKey:@"routine" fromUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method fromSessionDataIsRoutineFromUserWithUserDic:andCredentialsUserDic:
+ @discussion This method returns the 'routine' flag BOOL from the session data collection given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSString *)fromSessionDataIsRoutineFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self fromSessionDataGetKey:@"routine" fromUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
 }
 
 /*!
@@ -2553,6 +2575,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 //             }
 //     "modes": (NSMutableArray *)modes;
 //     "mode": (NSString *)mode1;
+//     "routine": (BOOL)routine;
 //     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
 //     "itemsChosenByUser": (NSMutableArray *)items1;
@@ -2668,6 +2691,28 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
         andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     return [self inSessionDataSetObject:givenModes forKey:@"modes" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method inSessionDataSetIsRoutine:toUserWithUserDic:andCredentialsUserDic:
+ @discussion This method sets in session data collection the user's 'routine' flag given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL)inSessionDataSetIsRoutine:(NSString *)givenIsRoutine
+               toUserWithUserName:(NSString *)userName
+            andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self inSessionDataSetObject:givenIsRoutine forKey:@"routine" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method inSessionDataSetIsRoutine:toUserWithUserName:andCredentialsUserDic:
+ @discussion This method sets in session data collection the user's 'routine' flag given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL)inSessionDataSetIsRoutine:(NSString *)givenIsRoutine
+                toUserWithUserDic:(NSMutableDictionary *)givenUserDic
+            andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self inSessionDataSetObject:givenIsRoutine forKey:@"routine" toUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
 }
 
 /*!

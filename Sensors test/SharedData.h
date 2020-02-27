@@ -83,6 +83,10 @@
                                           andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)fromSessionDataGetModesFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
                                          andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSString *)fromSessionDataIsRoutineFromUserWithUserName:(NSString *)userName
+                                     andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSString *)fromSessionDataIsRoutineFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSString *)fromSessionDataGetStateFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
                                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSString *)fromSessionDataGetStateFromUserWithUserName:(NSString *)userName
@@ -271,8 +275,14 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
             toUserWithUserDic:(NSMutableDictionary *)userDic
         andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)inSessionDataSetModes:(NSMutableArray *)givenModes
-          toUserWithUserName:(NSString *)userName
-       andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+           toUserWithUserName:(NSString *)userName
+        andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL)inSessionDataSetIsRoutine:(NSString *)givenIsRoutine
+               toUserWithUserName:(NSString *)userName
+            andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL)inSessionDataSetIsRoutine:(NSString *)givenIsRoutine
+                toUserWithUserDic:(NSMutableDictionary *)givenUserDic
+            andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)inSessionDataSetState:(NSString *)givenState
             toUserWithUserDic:(NSMutableDictionary *)givenUserDic
         andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
