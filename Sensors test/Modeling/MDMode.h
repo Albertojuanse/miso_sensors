@@ -41,6 +41,7 @@ typedef NS_ENUM(int, MDModes){
  */
 @interface MDMode: NSObject <NSCoding, NSItemProviderReading, NSItemProviderWriting> {
     int mode;
+    BOOL finished;
     NSMutableArray * metamodels;
 }
 
@@ -49,6 +50,8 @@ typedef NS_ENUM(int, MDModes){
 - (MDModes)getMode;
 - (NSMutableArray *)getMetamodels;
 - (void)setMode:(MDModes)givenMode;
+- (void)setFinished:(BOOL)givenFinished;
+- (BOOL)isFinished;
 - (BOOL)isModeKey:(MDModes)key;
 - (BOOL)isEqual:(id)object;
 - (BOOL)isEqualToMDMode:(MDMode *)reference;

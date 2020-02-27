@@ -32,6 +32,7 @@
     self = [self init];
     if (self) {
         mode = initMode;
+        finished = NO;
     }
     return self;
 }
@@ -60,6 +61,24 @@
  */
 - (void)setMode:(enum MDModes)givenMode {
     mode = givenMode;
+}
+
+/*!
+ @method setFinished:
+ @discussion Setter of the 'finished' attribute.
+ */
+- (void)setFinished:(BOOL)givenFinished
+{
+    finished = givenFinished;
+}
+
+/*!
+ @method isFinished
+ @discussion Getter of the 'finished' attribute.
+ */
+- (BOOL)isFinished
+{
+    return finished;
 }
 
 /*!
