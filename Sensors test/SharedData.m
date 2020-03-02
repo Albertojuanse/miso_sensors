@@ -35,6 +35,7 @@
 //     "modes": (NSMutableArray *)modes;
 //     "mode": (NSString *)mode1;
 //     "routine": (BOOL)routine;
+//     "routineModel": (NSMutableDictionary *)routineModelDic;
 //     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
 //     "itemsChosenByUser": (NSMutableArray *)items1;
@@ -559,6 +560,7 @@
 //     "modes": (NSMutableArray *)modes;
 //     "mode": (NSString *)mode1;
 //     "routine": (BOOL)routine;
+//     "routineModel": (NSMutableDictionary *)routineModelDic;
 //     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
 //     "itemsChosenByUser": (NSMutableArray *)items1;
@@ -718,6 +720,26 @@
                                     andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     return [self fromSessionDataGetKey:@"routine" fromUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method fromSessionDataGetRoutineModelFromUserWithUserName:andCredentialsUserDic:
+ @discussion This method returns the 'routineModelDic' NSMutableDictionay model from the session data collection given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableDictionary *)fromSessionDataGetRoutineModelFromUserWithUserName:(NSString *)userName
+                                                      andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self fromSessionDataGetKey:@"routineModelDic" fromUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method fromSessionDataGetRoutineModelFromUserWithUserDic:andCredentialsUserDic:
+ @discussion This method returns the 'routineModelDic' NSMutableDictionay model from the session data collection given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableDictionary *)fromSessionDataGetRoutineModelFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                                                     andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self fromSessionDataGetKey:@"routineModelDic" fromUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
 }
 
 /*!
@@ -2576,6 +2598,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 //     "modes": (NSMutableArray *)modes;
 //     "mode": (NSString *)mode1;
 //     "routine": (BOOL)routine;
+//     "routineModel": (NSMutableDictionary *)routineModelDic;
 //     "state": (NSString *)state1;
 //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
 //     "itemsChosenByUser": (NSMutableArray *)items1;
@@ -2694,8 +2717,8 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 }
 
 /*!
- @method inSessionDataSetIsRoutine:toUserWithUserDic:andCredentialsUserDic:
- @discussion This method sets in session data collection the user's 'routine' flag given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ @method inSessionDataSetIsRoutine:toUserWithUserName:andCredentialsUserDic:
+ @discussion This method sets in session data collection the user's 'routine' flag given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL)inSessionDataSetIsRoutine:(NSString *)givenIsRoutine
                toUserWithUserName:(NSString *)userName
@@ -2705,14 +2728,36 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 }
 
 /*!
- @method inSessionDataSetIsRoutine:toUserWithUserName:andCredentialsUserDic:
- @discussion This method sets in session data collection the user's 'routine' flag given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ @method inSessionDataSetIsRoutine:toUserWithUserDic:andCredentialsUserDic:
+ @discussion This method sets in session data collection the user's 'routine' flag given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
 - (BOOL)inSessionDataSetIsRoutine:(NSString *)givenIsRoutine
                 toUserWithUserDic:(NSMutableDictionary *)givenUserDic
             andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     return [self inSessionDataSetObject:givenIsRoutine forKey:@"routine" toUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method inSessionDataSetRoutineModel:toUserWithUserName:andCredentialsUserDic:
+ @discussion This method sets in session data collection the user's 'routineModelDic' flag given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL)inSessionDataSetRoutineModel:(NSMutableDictionary *)givenRoutineModelDic
+                  toUserWithUserName:(NSString *)userName
+               andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self inSessionDataSetObject:givenRoutineModelDic forKey:@"routineModelDic" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+ @method inSessionDataSetRoutineModel:toUserWithUserDic:andCredentialsUserDic:
+ @discussion This method sets in session data collection the user's 'routineModelDic' flag given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+ */
+- (BOOL)inSessionDataSetRoutineModel:(NSMutableDictionary *)givenRoutineModelDic
+                   toUserWithUserDic:(NSMutableDictionary *)givenUserDic
+               andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self inSessionDataSetObject:givenRoutineModelDic forKey:@"routineModelDic" toUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
 }
 
 /*!

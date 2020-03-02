@@ -87,6 +87,10 @@
                                      andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSString *)fromSessionDataIsRoutineFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
                                     andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableDictionary *)fromSessionDataGetRoutineModelFromUserWithUserName:(NSString *)userName
+                                                      andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableDictionary *)fromSessionDataGetRoutineModelFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                                                     andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSString *)fromSessionDataGetStateFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
                                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSString *)fromSessionDataGetStateFromUserWithUserName:(NSString *)userName
@@ -283,6 +287,12 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)inSessionDataSetIsRoutine:(NSString *)givenIsRoutine
                 toUserWithUserDic:(NSMutableDictionary *)givenUserDic
             andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL)inSessionDataSetRoutineModel:(NSMutableDictionary *)givenRoutineModelDic
+                  toUserWithUserName:(NSString *)userName
+               andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL)inSessionDataSetRoutineModel:(NSMutableDictionary *)givenRoutineModelDic
+                   toUserWithUserDic:(NSMutableDictionary *)givenUserDic
+               andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)inSessionDataSetState:(NSString *)givenState
             toUserWithUserDic:(NSMutableDictionary *)givenUserDic
         andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
