@@ -65,6 +65,12 @@
                                                              andCredentialsUserDic:credentialsUserDic];
     if (isRoutine) {
         if ([isRoutine isEqualToString:@"YES"]) {
+            
+            // In any case, delete previous temporal model
+            [sharedData inModelDataRemoveModelDicWithName:@"temp_routine"
+                                   withCredentialsUserDic:credentialsUserDic];
+            
+            // Check if this is the las iteration in routine
             MDMode * foundMode;
             NSMutableArray * modes = [sharedData fromSessionDataGetModesFromUserWithUserDic:userDic
                                                                       andCredentialsUserDic:credentialsUserDic];
