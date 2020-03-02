@@ -400,5 +400,6 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
                            andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific model data specific removers
-
+- (BOOL)inModelDataRemoveModelDicWithName:(NSString *)name
+                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 @end

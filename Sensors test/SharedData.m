@@ -3850,5 +3850,38 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 }
     
 #pragma mark - Model data specific removers
+/*!
+ @method inModelDataRemoveModelDicWithName:withCredentialsUserDic:
+ @discussion This method removes the NSDictionary models stored whose name is equals to the given one; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (BOOL)inModelDataRemoveModelDicWithName:(NSString *)name
+                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        // Search for the models called as the given name
+        NSMutableArray * modelsToRemove = [[NSMutableArray alloc] init];
+        BOOL modelsToRemoveFound = NO;
+        for (modelDic in modelData) {
+            if ([name isEqualToString:modelDic[@"name"]]) {
+                [modelsToRemove addObject:modelDic];
+                modelsToRemoveFound = YES;
+            }
+        }
+        
+        // If found, remove it; if not, return NO;
+        if (modelsToRemoveFound) {
+            for (NSMutableDictionary * eachModelDic in modelsToRemove) {
+                [modelData removeObject:eachModelDic];
+            }
+            return YES;
+        } else {
+            return NO;
+        }
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return NO;
+    }
+}
 
 @end
