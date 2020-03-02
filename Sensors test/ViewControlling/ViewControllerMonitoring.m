@@ -229,7 +229,7 @@
             
             // Mode finished
             for (MDMode * eachMode in modes) {
-                if (![eachMode isModeKey:kModeThetaThetaLocating]) {
+                if ([eachMode isModeKey:kModeMonitoring]) {
                     [eachMode setFinished:YES];
                     break;
                 }
@@ -271,8 +271,10 @@
                 
             }
         }
-        [self performSegueWithIdentifier:@"fromMONITORINGToFinalModel" sender:sender];
+
     }
+
+    [self performSegueWithIdentifier:@"fromMONITORINGToFinalModel" sender:sender];
 }
 
 /*!

@@ -1067,10 +1067,10 @@
         cell.textLabel.text = [mode description];
         cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
         
-        //if ([mode isFinished]) {
-        //    [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-        //    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-        //}
+        if ([mode isFinished]) {
+            [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+        }
     }
     return cell;
 }

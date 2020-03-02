@@ -266,18 +266,16 @@
             
             // Mode finished
             for (MDMode * eachMode in modes) {
-                if (![eachMode isModeKey:kModeThetaThetaLocating]) {
+                if ([eachMode isModeKey:kModeThetaThetaLocating]) {
                     [eachMode setFinished:YES];
                     break;
                 }
             }
             
-            [self performSegueWithIdentifier:@"fromModelingTHETA_THETA_LOCATINGToFinalModel" sender:sender];
-            
-        } else {
-            [self performSegueWithIdentifier:@"fromModelingTHETA_THETA_LOCATINGToFinalModel" sender:sender];
         }
     }
+    
+    [self performSegueWithIdentifier:@"fromModelingTHETA_THETA_LOCATINGToFinalModel" sender:sender];
 }
 
 /*!
