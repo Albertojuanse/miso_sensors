@@ -242,6 +242,26 @@
 - (IBAction)handleBackFinish:(id)sender
 {
     // TO DO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
+    // Check if in routine
+    NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic];
+    if (isRoutine) {
+        if ([isRoutine isEqualToString:@"YES"]) {
+            
+            // Find the mode that is not finished
+            NSMutableArray * modes = [sharedData fromSessionDataGetModesFromUserWithUserDic:userDic
+                                                                      andCredentialsUserDic:credentialsUserDic];
+            
+            // Mode finished
+            for (MDMode * eachMode in modes) {
+                if ([eachMode isModeKey:kModeRhoThetaModelling]) {
+                    [eachMode setFinished:YES];
+                    break;
+                }
+            }
+            
+        }
+    }
     [self performSegueWithIdentifier:@"fromModellingRHO_THETA_MODELINGToFinalModel" sender:sender];
 }
 
