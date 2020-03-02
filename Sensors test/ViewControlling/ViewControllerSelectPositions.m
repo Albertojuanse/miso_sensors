@@ -83,6 +83,30 @@
         NSLog(@"[ERROR][VCSP] Shared data could not be accessed while loading select position view.");
     }
     
+    // Check if in routine
+    NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic];
+    if (isRoutine) {
+        if ([isRoutine isEqualToString:@"YES"]) {
+            
+            // Get temporal model
+            NSMutableDictionary * routineModelDic = [sharedData fromSessionDataGetRoutineModelFromUserWithUserDic:userDic
+                                                                                       andCredentialsUserDic:credentialsUserDic
+                                           ];
+            
+            // Set each component as chosen one
+            if (routineModelDic) {
+                NSMutableArray * components = routineModelDic[@"components"];
+                for (NSMutableDictionary * eachComponent in components) {
+                    [sharedData  inSessionDataSetAsChosenItem:eachComponent
+                                            toUserWithUserDic:userDic
+                                       withCredentialsUserDic:credentialsUserDic];
+                }
+            }
+            
+        }
+    }
+    
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableItems.delegate = self;
     self.tableItems.dataSource = self;
@@ -484,6 +508,7 @@
             
             // If it is a model
             if ([@"model" isEqualToString:itemDic[@"sort"]]) {
+                
                 cell.textLabel.text = [NSString stringWithFormat:@"%@",
                                        itemDic[@"name"]
                                        ];

@@ -66,10 +66,6 @@
     if (isRoutine) {
         if ([isRoutine isEqualToString:@"YES"]) {
             
-            // In any case, delete previous temporal model
-            [sharedData inModelDataRemoveModelDicWithName:@"temp_routine"
-                                   withCredentialsUserDic:credentialsUserDic];
-            
             // Check if this is the las iteration in routine
             MDMode * foundMode;
             NSMutableArray * modes = [sharedData fromSessionDataGetModesFromUserWithUserDic:userDic
@@ -83,9 +79,7 @@
             }
         
             if (foundMode) {
-                [self.nameText setText:@"temp_routine"];
-                [self.buttonSubmit setEnabled:NO];
-                [self handleButonSubmit:nil];
+                [self submitTemporalModel];
             } else {
                 
             }
@@ -196,7 +190,7 @@
     
     // Check if name exists
     NSString * name = [self.nameText text];
-    if ([sharedData fromTypesDataIsTypeWithName:name andWithCredentialsUserDic:credentialsUserDic]) {
+    if ([sharedData fromModelDataIsModelWithName:name withCredentialsUserDic:credentialsUserDic]) {
         
         if (userDidTrySubmit) { // If it es the second try
             self.statusLabel.text = [NSString stringWithFormat:@"The components of new model have been merged in %@@miso.uam.es", name];
@@ -332,6 +326,75 @@
         self.modelText.text = @"Model could not be saved in device memory. Please, try again";
         return;
     }
+}
+
+/*!
+ @method submitTemporalModel
+ @discussion This method is called when in a routine and when it is not the last routine mode; a temporal model is saved in session data.
+ */
+- (void) submitTemporalModel
+{
+    // TO DO: Model must be a COPY of the items and the references must be removed. Alberto J. 2019/10/18
+    
+    // Check if name exists
+    NSString * name = @"temp_model";
+    
+    // Retrieve the model components
+    NSMutableArray * components = [[NSMutableArray alloc] init];
+    NSMutableArray * items = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                          andCredentialsUserDic:credentialsUserDic];
+    for (NSMutableDictionary * itemDic in items) {
+        [components addObject:itemDic];
+    }
+    NSMutableArray * locations = [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                         andCredentialsUserDic:credentialsUserDic];
+    for (NSMutableDictionary * locatedDic in locations) {
+        [components addObject:locatedDic];
+    }
+    NSLog(@"[INFO][VCFM] Temporal model composing with components");
+    for (NSMutableDictionary * comp in components) {
+        NSLog(@"[INFO][VCFM] -> %@", comp);
+    }
+    
+    // Retrieve the model references
+    NSMutableArray * references = [sharedData fromSessionDataGetReferencesByUserDic:userDic
+                                                             withCredentialsUserDic:credentialsUserDic];
+    
+    NSLog(@"[INFO][VCFM] and references");
+    for (MDReference * ref in references) {
+        NSLog(@"[INFO][VCFM] -> %@", ref);
+    }
+    
+    // Check for coordinates
+    NSNumber * latitude = [sharedData fromMeasuresDataGetMeanMeasureOfSort:@"devicelatitude"
+                                                    withCredentialsUserDic:credentialsUserDic];
+    NSNumber * longitude = [sharedData fromMeasuresDataGetMeanMeasureOfSort:@"devicelongitude"
+                                                     withCredentialsUserDic:credentialsUserDic];
+    // Check for heading
+    NSNumber * heading = [sharedData fromMeasuresDataGetMeanMeasureOfSort:@"deviceheading"
+                                                   withCredentialsUserDic:credentialsUserDic];
+    if (heading) { // radians to degrees
+        heading = [NSNumber numberWithFloat:[heading floatValue]*180.0/M_PI];
+    }
+    
+    // Make a new name for saving
+    NSString * savingName = [NSString stringWithFormat:@"%@@miso.uam.es", name];
+    
+    // Save the model
+    NSMutableDictionary * modelDic = [[NSMutableDictionary alloc] init];
+    modelDic[@"name"] = savingName;
+    modelDic[@"sort"] = @"temporal_model";
+    modelDic[@"components"] = components;
+    modelDic[@"references"] = references;
+    modelDic[@"latitude"] = latitude;
+    modelDic[@"longitude"] = longitude;
+    modelDic[@"heading"] = heading;
+    [sharedData inSessionDataSetRoutineModel:modelDic
+                           toUserWithUserDic:userDic
+                       andCredentialsUserDic:credentialsUserDic];
+    
+    // Segue to main
+    [self performSegueWithIdentifier:@"fromFinalModelToMain" sender:nil];
 }
 
 /*!

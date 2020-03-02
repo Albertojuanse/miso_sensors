@@ -87,6 +87,7 @@
     //     "modes": (NSMutableArray *)modes;
     //     "mode": (NSString *)mode1;
     //     "routine": (BOOL)routine;
+    //     "routineModel": (NSMutableDictionary *)routineModelDic;
     //     "state": (NSString *)state1;
     //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
     //     "itemsChosenByUser": (NSMutableArray *)items1;
