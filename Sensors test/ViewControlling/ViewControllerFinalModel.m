@@ -79,6 +79,7 @@
             }
         
             if (foundMode) {
+                [self.buttonSubmit setEnabled:NO];
                 [self submitTemporalModel];
             } else {
                 
@@ -393,8 +394,18 @@
                            toUserWithUserDic:userDic
                        andCredentialsUserDic:credentialsUserDic];
     
-    // Segue to main
-    [self performSegueWithIdentifier:@"fromFinalModelToMain" sender:nil];
+    // Show the model
+    // Display configurations
+    [[self.modelText layer] setBorderColor:[[UIColor lightGrayColor] CGColor]];
+    [[self.modelText layer] setBorderWidth:.4];
+    [[self.modelText layer] setCornerRadius:8.0f];
+    NSString * modelString = [NSString stringWithFormat:@"%@", modelDic];
+    self.modelText.text = modelString;
+    
+    // Reset the measures and location componentes
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
+                                                        object:nil];
+    NSLog(@"[NOTI][VCFM] Notification \"resetLocationAndMeasures\" posted.");
 }
 
 /*!
