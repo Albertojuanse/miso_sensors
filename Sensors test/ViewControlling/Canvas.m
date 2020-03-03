@@ -78,7 +78,14 @@
     
     // Canvas configurations
     [self setUserInteractionEnabled:NO];
-    self.backgroundColor = [UIColor colorWithRed:218/255.0 green:224/255.0 blue:235/255.0 alpha:0.6];
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    UIColor * canvasColor = [UIColor colorWithRed:[layoutDic[@"canvas/red"] floatValue]/255.0
+                                            green:[layoutDic[@"canvas/green"] floatValue]/255.0
+                                             blue:[layoutDic[@"canvas/blue"] floatValue]/255.0
+                                            alpha:0.6
+                             ];
+    self.backgroundColor = canvasColor;
     
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
