@@ -14,6 +14,7 @@
 #import <float.h>
 #import "MDReference.h"
 #import "VCPosition.h"
+#import "VCType.h"
 
 /*!
  @class Canvas

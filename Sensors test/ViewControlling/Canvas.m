@@ -677,8 +677,8 @@
     // Draw the point
     VCPosition *positionView = [[VCPosition alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue],
                                                                             [canvasPosition.y floatValue],
-                                                                            15,
-                                                                            15)];
+                                                                            20,
+                                                                            20)];
     [self addSubview:positionView];
     
     // Text of real position but in canvas position
@@ -735,20 +735,15 @@
         }
     }
     UIColor * color = [self getColorForIndex:typeIndex];
+    VCType * typeView = [[VCType alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue] + 5.0,
+                                                                 [canvasPosition.y floatValue] - 10.0,
+                                                                 100,
+                                                                 20)
+                                                color:color
+                                              andName:[type getName]];
     
-    // ...and draw it
-    CATextLayer *typeTextLayer = [CATextLayer layer];
-    typeTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] - 10.0);
-    typeTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 5.0,
-                                     [canvasPosition.y floatValue] - 10.0,
-                                     100,
-                                     20);
-    typeTextLayer.string = [NSString stringWithFormat:@"%@", type];
-    typeTextLayer.fontSize = 12;
-    typeTextLayer.alignmentMode = kCAAlignmentCenter;
-    typeTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-    typeTextLayer.foregroundColor = [color CGColor];
-    [[self layer] addSublayer:typeTextLayer];
+    
+    [self  addSubview:typeView];
 }
 
 /*!
