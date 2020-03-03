@@ -14,7 +14,6 @@
  @class VCPosition
  @discussion This class extends UIView and creates an area in which a position on screen is drawn.
  */
-IB_DESIGNABLE
 @interface VCPosition: UIView {
 }
 

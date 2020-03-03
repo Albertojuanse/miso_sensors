@@ -61,7 +61,7 @@
     UIColor * canvasColor = [UIColor colorWithRed:[layoutDic[@"canvas/red"] floatValue]/255.0
                                             green:[layoutDic[@"canvas/green"] floatValue]/255.0
                                              blue:[layoutDic[@"canvas/blue"] floatValue]/255.0
-                                            alpha:0.6
+                                            alpha:1.0
                              ];
     
     // Draw the path

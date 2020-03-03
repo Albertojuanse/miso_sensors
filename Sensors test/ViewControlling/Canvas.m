@@ -83,7 +83,7 @@
     UIColor * canvasColor = [UIColor colorWithRed:[layoutDic[@"canvas/red"] floatValue]/255.0
                                             green:[layoutDic[@"canvas/green"] floatValue]/255.0
                                              blue:[layoutDic[@"canvas/blue"] floatValue]/255.0
-                                            alpha:0.6
+                                            alpha:1.0
                              ];
     self.backgroundColor = canvasColor;
     
@@ -675,13 +675,11 @@
               andUUID:(NSString *)uuid
 {
     // Draw the point
-    UIBezierPath *positionBezierPath = [UIBezierPath bezierPath];
-    [positionBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
-    CAShapeLayer *positionLayer = [[CAShapeLayer alloc] init];
-    [positionLayer setPath:positionBezierPath.CGPath];
-    [positionLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-    [positionLayer setFillColor:[UIColor clearColor].CGColor];
-    [[self layer] addSublayer:positionLayer];
+    VCPosition *positionView = [[VCPosition alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue],
+                                                                            [canvasPosition.y floatValue],
+                                                                            15,
+                                                                            15)];
+    [self addSubview:positionView];
     
     // Text of real position but in canvas position
     CATextLayer *positionTextLayer = [CATextLayer layer];

@@ -13,10 +13,10 @@
 	<key>navbar/blue</key>
 	<integer>106</integer>
 	<key>canvas/red</key>
-	<string>218</string>
+	<string>240</string>
 	<key>canvas/green</key>
-	<string>224</string>
+	<string>240</string>
 	<key>canvas/blue</key>
-	<string>235</string>
+	<string>240</string>
 </dict>
 </plist>

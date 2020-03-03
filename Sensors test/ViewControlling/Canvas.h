@@ -13,6 +13,7 @@
 #import "SharedData.h"
 #import <float.h>
 #import "MDReference.h"
+#import "VCPosition.h"
 
 /*!
  @class Canvas
