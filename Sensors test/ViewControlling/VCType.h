@@ -18,13 +18,15 @@
 @interface VCType: UIView {
     
     UIColor * color;
+    NSString * name;
     
 }
 
 -(instancetype)init;
 -(instancetype)initWithFrame:(CGRect)frame;
 -(instancetype)initWithFrame:(CGRect)frame
-                    andColor:(UIColor *)initColor;
+                       color:(UIColor *)initColor
+                     andName:(NSString *)initName;
 
 @end
 

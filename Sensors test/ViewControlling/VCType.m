@@ -41,11 +41,13 @@
  @discussion Constructor with a given specific frame in which be embedded.
  */
 -(instancetype)initWithFrame:(CGRect)frame
-                    andColor:(UIColor *)initColor
+                       color:(UIColor *)initColor
+                     andName:(NSString *)initName
 {
     self = [self initWithFrame:frame];
     if (self) {
         color = initColor;
+        name = initName;
     }
     return self;
 }
@@ -64,12 +66,14 @@
     CGPoint rectOrigin = rect.origin;
     
     // Draw the point
-    UIBezierPath * typeBezierPath = [UIBezierPath bezierPath];
-    [typeBezierPath addArcWithCenter:rectOrigin
-                              radius:10.0
-                          startAngle:0
-                            endAngle:2 * M_PI
-                           clockwise:YES];
+    CATextLayer *typeTextLayer = [CATextLayer layer];
+    typeTextLayer.frame = rect;
+    typeTextLayer.string = [NSString stringWithFormat:@"<%@>", name];
+    typeTextLayer.fontSize = 14;
+    typeTextLayer.alignmentMode = kCAAlignmentCenter;
+    typeTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
+    typeTextLayer.foregroundColor = [color CGColor];
+    [[self layer] addSublayer:typeTextLayer];
 }
 
 
