@@ -165,7 +165,12 @@
     [realPoints addObject:point7];
     [realPoints addObject:point8];
 
-    NSMutableArray * canvasPoints = [self transformRealPointsToCanvasPoints:realPoints];
+    
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSNumber * safeAreaRatio = layoutDic[@"canvas/safeAreaRatio"];
+    NSMutableArray * canvasPoints = [self transformRealPointsToCanvasPoints:realPoints
+                                                          withSafeAreaRatio:[NSNumber numberWithFloat:[safeAreaRatio floatValue]/100.0]];
 
     for (RDPosition * canvasPoint in canvasPoints) {
         UIBezierPath *bezierPath = [UIBezierPath bezierPath];
@@ -1104,10 +1109,12 @@
 }
 
 /*!
- @method transformRealPointsToCanvasPoints:
+ @method transformRealPointsToCanvasPoints:withSafeAreaRatio:
  @discussion This method transform a 3D RDPosition that represents a physical location to a canvas point; z coordinate is not transformed.
  */
-- (NSMutableArray *) transformRealPointsToCanvasPoints:(NSMutableArray *)realPoints {
+- (NSMutableArray *) transformRealPointsToCanvasPoints:(NSMutableArray *)realPoints
+                                     withSafeAreaRatio:(NSNumber *)safeAreaRatio
+{
     
     // Result array initialization
     NSMutableArray * canvasPoints = [[NSMutableArray alloc] init];
@@ -1134,8 +1141,8 @@
     } else {
     
         // Define a safe area
-        float widthSafe = canvasWidth * 0.4;
-        float heightSafe = canvasHeight * 0.4;
+        float widthSafe = canvasWidth * [safeAreaRatio floatValue];
+        float heightSafe = canvasHeight * [safeAreaRatio floatValue];
         float widthSafeMin = 0 + widthSafe;
         float widthSafeMax = canvasWidth - widthSafe;
         float heightSafeMin = 0 + heightSafe;
