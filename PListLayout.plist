@@ -13,10 +13,16 @@
 	<key>navbar/blue</key>
 	<integer>106</integer>
 	<key>canvas/red</key>
-	<string>240</string>
+	<integer>240</integer>
 	<key>canvas/green</key>
-	<string>240</string>
+	<integer>240</integer>
 	<key>canvas/blue</key>
-	<string>240</string>
+	<integer>240</integer>
+	<key>canvas/position/height</key>
+	<integer>30</integer>
+	<key>canvas/position/width</key>
+	<integer>30</integer>
+	<key>canvas/safeAreaRatio</key>
+	<integer>25</integer>
 </dict>
 </plist>

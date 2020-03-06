@@ -397,8 +397,11 @@
     // Transform the real positions to an apropiate canvas ones, with the barycenter of the set of points in the center of the canvas
     // This method also sets the ratios in the class variables 'rWidth' and 'rHeight'; then, they will be used for transform every single point
     // TO DO: make the SafeAreaRatio configurable (zoom). Alberto J. 2019/09/16.
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSNumber * safeAreaRatio = layoutDic[@"canvas/safeAreaRatio"];
     [self calculateRatiosOfTransformationFromRealPointsToCanvasPoints:realPositions
-                                                    withSafeAreaRatio:[NSNumber numberWithFloat:0.35]];
+                                                    withSafeAreaRatio:[NSNumber numberWithFloat:[safeAreaRatio floatValue]/100.0]];
     NSLog(@"[INFO][CA] Calculated trasformation ratio rWith: %.2f", rWidth);
     NSLog(@"[INFO][CA] Calculated trasformation ratio rHeight: %.2f", rHeight);
     
@@ -675,10 +678,14 @@
               andUUID:(NSString *)uuid
 {
     // Draw the point
-    VCPosition *positionView = [[VCPosition alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue],
-                                                                            [canvasPosition.y floatValue],
-                                                                            20,
-                                                                            20)];
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSNumber * positionWidth = layoutDic[@"canvas/position/width"];
+    NSNumber * positionHeight = layoutDic[@"canvas/position/height"];
+    VCPosition *positionView = [[VCPosition alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue] - [positionWidth floatValue]/2,
+                                                                            [canvasPosition.y floatValue] - [positionHeight floatValue],
+                                                                            [positionWidth floatValue],
+                                                                            [positionHeight floatValue])];
     [self addSubview:positionView];
     
     // Text of real position but in canvas position
