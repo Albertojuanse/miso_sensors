@@ -69,7 +69,7 @@
     CATextLayer *typeTextLayer = [CATextLayer layer];
     typeTextLayer.frame = rect;
     typeTextLayer.string = [NSString stringWithFormat:@"<%@>", name];
-    typeTextLayer.fontSize = 14;
+    typeTextLayer.fontSize = 16;
     typeTextLayer.alignmentMode = kCAAlignmentCenter;
     typeTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
     typeTextLayer.foregroundColor = [color CGColor];
