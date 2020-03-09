@@ -308,7 +308,7 @@
  @discussion This method is called when user is prepared for modeling.
  */
 - (IBAction)handleModelButton:(id)sender {
-    [self performSegueWithIdentifier:@"fromRHO_RHO_LOCATINGToFinalModel" sender:sender];
+    [self performSegueWithIdentifier:@"fromRHO_RHO_LOCATINGToModellingRHO_RHO_LOCATING" sender:sender];
 }
 
 /*!

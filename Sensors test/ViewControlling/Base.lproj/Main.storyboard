@@ -925,7 +925,7 @@
                         <segue destination="iCa-UJ-9hQ" kind="presentation" identifier="fromSelectPositionsToTHETA_THETA_LOCATING" modalPresentationStyle="fullScreen" id="QxI-WS-XJS"/>
                         <segue destination="1M1-iA-J20" kind="presentation" identifier="fromSelectPositionsToRHO_THETA_MODELING" modalPresentationStyle="fullScreen" id="A3y-43-nSw"/>
                         <segue destination="kSl-V8-bhM" kind="presentation" identifier="fromSelectPositionsToMONITORING" modalPresentationStyle="fullScreen" id="GqH-ez-bNl"/>
-                        <segue destination="04n-E6-oj0" kind="presentation" identifier="fromSelectPositionToRHO_RHO_LOCATING" modalPresentationStyle="fullScreen" id="x22-tD-Meu"/>
+                        <segue destination="04n-E6-oj0" kind="presentation" identifier="fromSelectPositionsToRHO_RHO_LOCATING" modalPresentationStyle="fullScreen" id="x22-tD-Meu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ewG-5j-Hqc" userLabel="First Responder" sceneMemberID="firstResponder"/>
