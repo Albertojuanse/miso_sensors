@@ -948,6 +948,45 @@
 }
 
 /*!
+@method fromSessionDataIsChosenItemByUser:byUserWithUserDic:andCredentialsUserDic:
+@discussion This method returns true if the user did choose the provided 'item chosen by user' given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+*/
+- (BOOL)fromSessionDataIsChosenItemByUser:(NSMutableDictionary *)itemChosenByUser
+                        byUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    NSMutableArray * itemsChosenByUser = [self fromSessionDataGetItemsChosenByUserDic:givenUserDic
+                                                                andCredentialsUserDic:credentialsUserDic];
+    BOOL itemFound = NO;
+    for (NSMutableDictionary * eachChosenItem in itemsChosenByUser) {
+        if ([eachChosenItem isEqualToDictionary:itemsChosenByUser]) {
+            itemFound = YES;
+        }
+    }
+    return itemFound;
+}
+
+/*!
+@method fromSessionDataIsChosenItemByUser:byUserWithUserName:andCredentialsUserDic:
+@discussion This method returns true if the user did choose the provided 'item chosen by user' given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+*/
+- (BOOL)fromSessionDataIsChosenItemByUser:(NSMutableDictionary *)itemChosenByUser
+                       byUserWithUserName:(NSString *)userName
+                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    NSMutableArray * itemsChosenByUser = [self fromSessionDataGetItemsChosenByUserName:userName
+                                                                andCredentialsUserDic:credentialsUserDic];
+    BOOL itemFound = NO;
+    for (NSMutableDictionary * eachChosenItem in itemsChosenByUser) {
+        if ([eachChosenItem isEqualToDictionary:itemsChosenByUser]) {
+            itemFound = YES;
+        }
+    }
+    return itemFound;
+    
+}
+
+/*!
  @method fromSessionDataGetItemsChosenByUserDic:andCredentialsUserDic:
  @discussion This method returns the 'NSMutableArray' collection with the items chosen by the user given its user dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */

@@ -115,6 +115,12 @@
                                             andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (MDType *)fromSessionDataGetTypeChosenByUserFromUserWithUserName:(NSString *)userName
                                              andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL)fromSessionDataIsChosenItemByUser:(NSMutableDictionary *)itemChosenByUser
+                        byUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL)fromSessionDataIsChosenItemByUser:(NSMutableDictionary *)itemChosenByUser
+                       byUserWithUserName:(NSString *)userName
+                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)fromSessionDataGetItemsChosenByUserDic:(NSMutableDictionary *)givenUserDic
                                      andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)fromSessionDataGetItemsChosenByUserName:(NSString *)givenUserName
