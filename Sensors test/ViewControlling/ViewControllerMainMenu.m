@@ -652,7 +652,7 @@
             }
             
         } else {
-            // Nothing happens
+            NSLog(@"[INFO][VCMM] Not in a routine.");
             return;
         }
         
@@ -705,7 +705,7 @@
                 [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:userDic];
-                // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+                [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
                 return;
             }
             if ([chosenMode isModeKey:kModeRhoThetaLocating]) { // RHO_THETA_LOCATING

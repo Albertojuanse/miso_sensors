@@ -59,6 +59,7 @@
 		42BE9E9F23DB0922002D08FA /*  TabBarControllerConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BE9E9E23DB0922002D08FA /*  TabBarControllerConfiguration.m */; };
 		42BE9EA223DB0BD2002D08FA /* ViewControllerConfigurationMetamodels.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BE9EA123DB0BD2002D08FA /* ViewControllerConfigurationMetamodels.m */; };
 		42CEBE2E234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */; };
+		42D43E0C24164432008C45D3 /* ViewControllerModellingRhoRhoLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42D43E0B24164432008C45D3 /* ViewControllerModellingRhoRhoLocating.m */; };
 		42E4B7E523D8BCDD003888C0 /* MDRoutine.m in Sources */ = {isa = PBXBuildFile; fileRef = 42E4B7E423D8BCDD003888C0 /* MDRoutine.m */; };
 		42E4B7E823D8BE03003888C0 /* MDMetamodel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42E4B7E723D8BE03003888C0 /* MDMetamodel.m */; };
 		42ED9F6A23D73ECB00537FE6 /* ViewControllerRhoRhoLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42ED9F6923D73ECB00537FE6 /* ViewControllerRhoRhoLocating.m */; };
@@ -163,6 +164,8 @@
 		42BE9EA123DB0BD2002D08FA /* ViewControllerConfigurationMetamodels.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerConfigurationMetamodels.m; sourceTree = "<group>"; };
 		42CEBE2C2345009D0094B1BA /* ViewControllerModelingThetaThetaLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerModelingThetaThetaLocating.h; sourceTree = "<group>"; };
 		42CEBE2D234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerModelingThetaThetaLocating.m; sourceTree = "<group>"; };
+		42D43E0A2416440C008C45D3 /* ViewControllerModellingRhoRhoLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerModellingRhoRhoLocating.h; sourceTree = "<group>"; };
+		42D43E0B24164432008C45D3 /* ViewControllerModellingRhoRhoLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerModellingRhoRhoLocating.m; sourceTree = "<group>"; };
 		42E4B7E323D8BCBD003888C0 /* MDRoutine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDRoutine.h; sourceTree = "<group>"; };
 		42E4B7E423D8BCDD003888C0 /* MDRoutine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDRoutine.m; sourceTree = "<group>"; };
 		42E4B7E623D8BDEE003888C0 /* MDMetamodel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDMetamodel.h; sourceTree = "<group>"; };
@@ -278,6 +281,8 @@
 				422798872271F37800E07C39 /* ViewControllerRhoRhoModeling.m */,
 				42ED9F6823D73E8300537FE6 /* ViewControllerRhoRhoLocating.h */,
 				42ED9F6923D73ECB00537FE6 /* ViewControllerRhoRhoLocating.m */,
+				42D43E0A2416440C008C45D3 /* ViewControllerModellingRhoRhoLocating.h */,
+				42D43E0B24164432008C45D3 /* ViewControllerModellingRhoRhoLocating.m */,
 				4275ED5822D5E88E00A5CAB7 /* ViewControllerRhoThetaModeling.h */,
 				4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m */,
 				42B676F223D607F6005E3CBD /* ViewControllerModellingRhoThetaModeling.h */,
@@ -451,6 +456,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42D43E0C24164432008C45D3 /* ViewControllerModellingRhoRhoLocating.m in Sources */,
 				42B676EE23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m in Sources */,
 				42E4B7E823D8BE03003888C0 /* MDMetamodel.m in Sources */,
 				428B7C6022E089B200B0C660 /* RDThetaThetaSystem.m in Sources */,

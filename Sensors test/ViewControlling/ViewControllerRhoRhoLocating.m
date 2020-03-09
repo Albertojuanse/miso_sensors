@@ -365,17 +365,17 @@
         return;
     }
     
-    if ([[segue identifier] isEqualToString:@"fromRHO_RHO_LOCATINGToFinalModel"]) {
+    if ([[segue identifier] isEqualToString:@"fromRHO_RHO_LOCATINGToModellingRHO_RHO_LOCATING"]) {
         
         // Get destination view
-        ViewControllerFinalModel * viewControllerFinalModel = [segue destinationViewController];
+        ViewControllerModellingRhoRhoLocating * viewControllerModellingRhoRhoLocating = [segue destinationViewController];
         // Set the variables
-        [viewControllerFinalModel setCredentialsUserDic:credentialsUserDic];
-        [viewControllerFinalModel setUserDic:userDic];
-        [viewControllerFinalModel setSharedData:sharedData];
-        [viewControllerFinalModel setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerFinalModel setItemPositionIdNumber:itemPositionIdNumber];
-        //[viewControllerFinalModel setDeviceUUID:deviceUUID];
+        [viewControllerModellingRhoRhoLocating setCredentialsUserDic:credentialsUserDic];
+        [viewControllerModellingRhoRhoLocating setUserDic:userDic];
+        [viewControllerModellingRhoRhoLocating setSharedData:sharedData];
+        [viewControllerModellingRhoRhoLocating setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerModellingRhoRhoLocating setItemPositionIdNumber:itemPositionIdNumber];
+        [viewControllerModellingRhoRhoLocating setDeviceUUID:deviceUUID];
         return;
     }
 }

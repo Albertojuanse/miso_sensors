@@ -1,24 +1,24 @@
 //
-//  ViewControllerRhoRhoLocating.h
+//  ViewControllerModellingRhoRhoLocating.h
 //  Sensors test
 //
-//  Created by Alberto J. on 21/1/20.
+//  Created by Alberto J. on 09/03/2020.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "ViewControllerSelectPositions.h"
-#import "ViewControllerModellingRhoRhoLocating.h"
+#import "ViewControllerRhoRhoLocating.h"
+#import "ViewControllerFinalModel.h"
 #import "LMDelegateRhoRhoLocating.h"
 #import "RDRhoRhoSystem.h"
 #import "Canvas.h"
 
 /*!
- @class ViewControllerRhoRhoLocating
- @discussion This class extends UIViewController and controls the interface for modeling with the rho theta location system.
+ @class ViewControllerModellingRhoRhoLocating
+ @discussion This class extends UIViewController and controls the interface for locating beacons with the rho rho location system.
  */
-@interface ViewControllerRhoRhoLocating : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+@interface ViewControllerModellingRhoRhoLocating : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
     // Other components
     SharedData * sharedData;
@@ -30,10 +30,15 @@
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
     
-    // Variables
+    // Reference; this flag is set 'true' when the user has chosen the item from refenrece from.
+    NSMutableDictionary * sourceItem;
+    NSMutableDictionary * targetItem;
+    BOOL flagReference;
+    
     // Beacons' region identifiers
     NSNumber * itemBeaconIdNumber;
     NSNumber * itemPositionIdNumber;
+    NSString * locatedPositionUUID; // This one changes when the user measures and generates a new position for the device.
     NSString * deviceUUID;
     MDMode * mode;
     
@@ -43,12 +48,12 @@
 @property (weak, nonatomic) IBOutlet UIButton *signOutButton;
 @property (weak, nonatomic) IBOutlet UIButton *logOutButton;
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;
-@property (weak, nonatomic) IBOutlet UITableView *tableItems;
+@property (weak, nonatomic) IBOutlet UITableView *tableItemsChosen;
 @property (weak, nonatomic) IBOutlet UITableView *tableTypes;
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
-@property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
-@property (weak, nonatomic) IBOutlet UIButton *buttonModel;
-@property (weak, nonatomic) IBOutlet UIButton *buttonNext;
+@property (weak, nonatomic) IBOutlet UIButton *buttonReference;
+@property (weak, nonatomic) IBOutlet UIButton *buttonModify;
+@property (weak, nonatomic) IBOutlet UIButton *buttonFinish;
 @property (weak, nonatomic) IBOutlet UIButton *buttonBack;
 
 // Methods for passing volatile variables that disappear when segue between views
