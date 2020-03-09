@@ -308,7 +308,7 @@
     itemPositionIdNumber = givenItemPositionIdNumber;
 }
 
-#pragma mark - Buttons event handles
+#pragma mark - Buttons event handlers
 
 /*!
  @method handleButtonDelete:

@@ -254,7 +254,7 @@
     deviceUUID = givenDeviceUUID;
 }
 
-#pragma mark - Buttons event handles
+#pragma mark - Buttons event handlers
 
 /*!
  @method handleButtonMeasure:

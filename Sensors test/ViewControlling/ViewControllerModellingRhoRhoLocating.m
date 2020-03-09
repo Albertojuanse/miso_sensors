@@ -225,7 +225,7 @@
     deviceUUID = givenDeviceUUID;
 }
 
-#pragma mark - Buttons event handles
+#pragma mark - Buttons event handlers
 /*!
  @method handleBackButton:
  @discussion This method dismiss this view and ask main menu view to be displayed; 'prepareForSegue:sender:' method is called before.
