@@ -521,7 +521,10 @@
             NSLog(@"[VCMM][ERROR] No items found for showing.");
             if (indexPath.row == 0) {
                 cell.textLabel.text = @"No items found.";
-                cell.textLabel.textColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:0.2];
+                cell.textLabel.textColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0];
+            } else {
+                cell.textLabel.text = @"Error loading item";
+                cell.textLabel.textColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0];
             }
         }
     }
