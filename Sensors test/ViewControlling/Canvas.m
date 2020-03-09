@@ -213,13 +213,24 @@
 {
     // Delete previus layers
     if (self.layer.sublayers.count > 0) {
-        NSArray *oldLayers = [NSArray arrayWithArray:self.layer.sublayers];
-        for (CALayer *oldLayer in oldLayers) {
+        NSArray * oldLayers = [NSArray arrayWithArray:self.layer.sublayers];
+        for (CALayer * oldLayer in oldLayers) {
             if ([oldLayer isKindOfClass:[CAShapeLayer class]] ||[oldLayer isKindOfClass:[CATextLayer class]] ) {
                 [oldLayer removeFromSuperlayer];
             }
         }
     }
+    if (self.subviews.count > 0) {
+        NSArray * oldViews = [NSArray arrayWithArray:self.subviews];
+        for (UIView * oldView in oldViews) {
+            if ([oldView isKindOfClass:[VCType class]] ||
+                [oldView isKindOfClass:[VCPosition class]]
+                ) {
+                [oldView removeFromSuperview];
+            }
+        }
+    }
+    
     
     NSLog(@"[INFO][CA] Old layers removing; layers displayed: %ld", self.layer.sublayers.count);
 }
@@ -701,7 +712,7 @@
                                          100,
                                          20);
     positionTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)", [realPosition.x floatValue], [realPosition.y floatValue]];
-    positionTextLayer.fontSize = 10;
+    positionTextLayer.fontSize = 14;
     positionTextLayer.alignmentMode = kCAAlignmentCenter;
     positionTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
     positionTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
@@ -715,7 +726,7 @@
                                      100,
                                      20);
     uuidTextLayer.string = [NSString stringWithFormat:@"%@", [uuid substringFromIndex:30]];
-    uuidTextLayer.fontSize = 10;
+    uuidTextLayer.fontSize = 14;
     uuidTextLayer.alignmentMode = kCAAlignmentCenter;
     uuidTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
     uuidTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
@@ -777,7 +788,7 @@
                                 )
                            ];
     // and the desired distance is 20 (pixels)
-    NSNumber * desired_distance = [NSNumber numberWithDouble:[distance floatValue] - 20];
+    NSNumber * desired_distance = [NSNumber numberWithDouble:[distance floatValue] - 0];
     // so the ratio is
     NSNumber * ratio = [NSNumber numberWithFloat:[desired_distance floatValue]/[distance floatValue]];
     // and the two points are
@@ -847,18 +858,13 @@
     CGPoint middlePoint = CGPointMake([middleX floatValue],[middleY floatValue]);
     
     // ...and draw it
-    CATextLayer *typeTextLayer = [CATextLayer layer];
-    typeTextLayer.position = middlePoint;
-    typeTextLayer.frame = CGRectMake(middlePoint.x,
-                                     middlePoint.y,
-                                     100,
-                                     20);
-    typeTextLayer.string = [NSString stringWithFormat:@"%@", referenceType];
-    typeTextLayer.fontSize = 12;
-    typeTextLayer.alignmentMode = kCAAlignmentCenter;
-    typeTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-    typeTextLayer.foregroundColor = [color CGColor];
-    [[self layer] addSublayer:typeTextLayer];
+    VCType * typeView = [[VCType alloc] initWithFrame:CGRectMake([middleX floatValue] + 5.0,
+                                                                 [middleY floatValue] - 10.0,
+                                                                 200,
+                                                                 20)
+                                                color:color
+                                              andName:[referenceType getName]];
+    [self addSubview:typeView];
     
     return;
 }
@@ -944,31 +950,31 @@
     UIColor *color;
     switch (index % 8) {
         case 0:
-            color = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:1.0];
+            color = [UIColor colorWithRed:204.0/255.0 green:0.0 blue:0.0 alpha:1.0];
             break;
         case 1:
-            color = [UIColor colorWithRed:0.0 green:0.0 blue:255/255.0 alpha:1.0];
+            color = [UIColor colorWithRed:204.0/255.0 green:102.0/255.0 blue:255/255.0 alpha:1.0];
             break;
         case 2:
-            color = [UIColor colorWithRed:0.0 green:255/255.0 blue:0.0 alpha:1.0];
+            color = [UIColor colorWithRed:204.0/255.0 green:204.0/255.0 blue:0.0 alpha:1.0];
             break;
         case 3:
-            color = [UIColor colorWithRed:127.0/255.0 green:128.0/255.0 blue:0.0 alpha:1.0];
+            color = [UIColor colorWithRed:0.0 green:204.0/255.0 blue:0.0 alpha:1.0];
             break;
         case 4:
-            color = [UIColor colorWithRed:127.0/255.0 green:0.0 blue:128.0/255.0 alpha:1.0];
+            color = [UIColor colorWithRed:0.0 green:204.0/255.0 blue:204.0/255.0 alpha:1.0];
             break;
         case 5:
-            color = [UIColor colorWithRed:0.0 green:127.0/255.0 blue:128.0/255.0 alpha:1.0];
+            color = [UIColor colorWithRed:0.0 green:0.0 blue:204.0/255.0 alpha:1.0];
             break;
         case 6:
-            color = [UIColor colorWithRed:127.0/255.0 green:64.0 blue:64.0 alpha:1.0];
+            color = [UIColor colorWithRed:102.0/255.0 green:0.0 blue:204.0/255.0 alpha:1.0];
             break;
         case 7:
-            color = [UIColor colorWithRed:64.0 green:127.0/255.0 blue:64.0 alpha:1.0];
+            color = [UIColor colorWithRed:204.0/255.0 green:0.0 blue:102.0/255.0 alpha:1.0];
             break;
         default:
-            color = [UIColor colorWithRed:255/255.0 green:0.0 blue:0.0 alpha:1.0];
+            color = [UIColor colorWithRed:204.0/255.0 green:102.0/255.0 blue:255/255.0 alpha:1.0];
             break;
     }
     return color;
