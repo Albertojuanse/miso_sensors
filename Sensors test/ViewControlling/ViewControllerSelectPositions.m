@@ -83,6 +83,15 @@
         NSLog(@"[ERROR][VCSP] Shared data could not be accessed while loading select position view.");
     }
     
+    // Uncheck as Chosen all tehe items
+    NSMutableArray * items = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                          andCredentialsUserDic:credentialsUserDic];
+    for (NSMutableDictionary * eachItemChosenByUser in items) {
+        [sharedData inSessionDataSetAsNotChosenItem:eachItemChosenByUser
+                                  toUserWithUserDic:userDic
+                             withCredentialsUserDic:credentialsUserDic];
+    }
+    
     // Check if in routine
     NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
                                                              andCredentialsUserDic:credentialsUserDic];
@@ -410,6 +419,14 @@
         // The itemDic variable can be null or NO if access is not granted or there are not items stored.
         if (itemDic) {
             cell.textLabel.numberOfLines = 0; // Means any number
+            
+            // Check if the item is already selected; when in a routine it happens
+            BOOL selected = [sharedData fromSessionDataIsChosenItemByUser:itemDic
+                                                        byUserWithUserDic:userDic
+                                                    andCredentialsUserDic:userDic];
+            if (selected) {
+                [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+            }
             
             // Only if the item have a position can be selected; not prevent selecting models
             if (!itemDic[@"position"]) {

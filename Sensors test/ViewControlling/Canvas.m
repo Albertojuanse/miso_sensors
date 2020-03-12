@@ -705,32 +705,13 @@
     [self addSubview:positionView];
     
     // Text of real position but in canvas position
-    CATextLayer *positionTextLayer = [CATextLayer layer];
-    positionTextLayer.position = CGPointMake([canvasPosition.x floatValue] + 5.0, [canvasPosition.y floatValue] + 5.0);
-    positionTextLayer.frame = CGRectMake([canvasPosition.x floatValue] + 0.0,
-                                         [canvasPosition.y floatValue] + 5.0,
-                                         100,
-                                         20);
-    positionTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)", [realPosition.x floatValue], [realPosition.y floatValue]];
-    positionTextLayer.fontSize = 14;
-    positionTextLayer.alignmentMode = kCAAlignmentCenter;
-    positionTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-    positionTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
-    [[self layer] addSublayer:positionTextLayer];
-    
-    // Text of UUID in canvas position
-    CATextLayer * uuidTextLayer = [CATextLayer layer];
-    uuidTextLayer.position = CGPointMake([canvasPosition.x floatValue] - 0.0, [canvasPosition.y floatValue] + 15.0);
-    uuidTextLayer.frame = CGRectMake([canvasPosition.x floatValue] - 0.0,
-                                     [canvasPosition.y floatValue] + 15.0,
-                                     100,
-                                     20);
-    uuidTextLayer.string = [NSString stringWithFormat:@"%@", [uuid substringFromIndex:30]];
-    uuidTextLayer.fontSize = 14;
-    uuidTextLayer.alignmentMode = kCAAlignmentCenter;
-    uuidTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-    uuidTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
-    [[self layer] addSublayer:uuidTextLayer];
+    VCPositionInfo * positionTextView = [[VCPositionInfo alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue],
+                                                                                         [canvasPosition.y floatValue],
+                                                                                         100,
+                                                                                         20)
+                                                                 realPosition:realPosition
+                                                                      andUUID:uuid];
+    [self addSubview:positionTextView];
     
     return;
 }
