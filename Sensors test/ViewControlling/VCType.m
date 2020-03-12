@@ -66,14 +66,13 @@
     CGPoint rectOrigin = rect.origin;
     
     // Draw the point
-    CATextLayer *typeTextLayer = [CATextLayer layer];
-    typeTextLayer.frame = rect;
-    typeTextLayer.string = [NSString stringWithFormat:@"<%@>", name];
-    typeTextLayer.fontSize = 16;
-    typeTextLayer.alignmentMode = kCAAlignmentCenter;
-    typeTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-    typeTextLayer.foregroundColor = [color CGColor];
-    [[self layer] addSublayer:typeTextLayer];
+    UILabel * typeTextView = [[UILabel alloc] initWithFrame:rect];
+    [typeTextView setText:[NSString stringWithFormat:@"<%@>", name]];
+    [typeTextView setFont:[UIFont systemFontOfSize:16]];
+    [typeTextView setTextAlignment:NSTextAlignmentCenter];
+    [typeTextView setBackgroundColor:[UIColor clearColor]];
+    [typeTextView setTextColor:color];
+    [self addSubview:typeTextView];
 }
 
 
