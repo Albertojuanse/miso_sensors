@@ -20,6 +20,8 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Please, authorize this MISO's app for using the camera</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Please, authorize this MISO's app for using location services</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -28,6 +30,8 @@
 	<string>This MISO's app uses location services for iBeacon devices location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Please, authorize this MISO's app for using location services</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Please, authorize this MISO's app for using the photo library</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

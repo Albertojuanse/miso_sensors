@@ -2279,7 +2279,12 @@
                                 </connections>
                             </button>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="rvF-sA-os9">
-                                <rect key="frame" x="32" y="534" width="704" height="34"/>
+                                <rect key="frame" x="32" y="534" width="274" height="34"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1K0-aC-gva">
+                                <rect key="frame" x="338" y="534" width="274" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
@@ -2309,20 +2314,44 @@
                                     <action selector="handleEditButton:" destination="it5-Xe-lJv" eventType="touchUpInside" id="hhj-yf-y2x"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1HC-H2-Dzz">
+                                <rect key="frame" x="706" y="538" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="YWa-h8-7hj"/>
+                                </constraints>
+                                <state key="normal" title="📷"/>
+                                <connections>
+                                    <action selector="handleCamButton:" destination="it5-Xe-lJv" eventType="touchUpInside" id="fAc-S5-BWc"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wIq-D7-iSt">
+                                <rect key="frame" x="644" y="538" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="qZa-U5-Pi1"/>
+                                </constraints>
+                                <state key="normal" title="📁"/>
+                                <connections>
+                                    <action selector="handleIconButton:" destination="it5-Xe-lJv" eventType="touchUpInside" id="hWu-1e-TeE"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="hSB-R5-syz" firstAttribute="trailing" secondItem="LCd-sB-2pk" secondAttribute="trailing" id="1df-8A-vXP"/>
+                            <constraint firstItem="wIq-D7-iSt" firstAttribute="leading" secondItem="1K0-aC-gva" secondAttribute="trailing" constant="32" id="2hZ-kS-OWm"/>
                             <constraint firstItem="LCd-sB-2pk" firstAttribute="trailing" secondItem="VwF-nv-lH9" secondAttribute="trailing" constant="32" id="3XH-tM-2pS"/>
+                            <constraint firstItem="LCd-sB-2pk" firstAttribute="trailing" secondItem="1HC-H2-Dzz" secondAttribute="trailing" constant="32" id="3YW-nQ-YDw"/>
                             <constraint firstItem="U7L-wm-EoO" firstAttribute="centerY" secondItem="wwm-Pt-ogm" secondAttribute="centerY" id="5Xj-JS-Z4y"/>
                             <constraint firstItem="LCd-sB-2pk" firstAttribute="trailing" secondItem="COn-9w-41X" secondAttribute="trailing" constant="32" id="9dI-ha-xLJ"/>
-                            <constraint firstItem="LCd-sB-2pk" firstAttribute="trailing" secondItem="rvF-sA-os9" secondAttribute="trailing" constant="32" id="C9b-ur-NDe"/>
                             <constraint firstItem="rvF-sA-os9" firstAttribute="leading" secondItem="LCd-sB-2pk" secondAttribute="leading" constant="32" id="DIf-gQ-reU"/>
+                            <constraint firstItem="COn-9w-41X" firstAttribute="top" secondItem="1HC-H2-Dzz" secondAttribute="bottom" constant="32" id="GQB-Pd-QhB"/>
                             <constraint firstItem="hSB-R5-syz" firstAttribute="leading" secondItem="LCd-sB-2pk" secondAttribute="leading" id="UOg-E9-YGn"/>
                             <constraint firstItem="COn-9w-41X" firstAttribute="leading" secondItem="LCd-sB-2pk" secondAttribute="leading" constant="32" id="Vrx-yV-6oF"/>
                             <constraint firstItem="rvF-sA-os9" firstAttribute="top" secondItem="U7L-wm-EoO" secondAttribute="bottom" constant="32" id="WI2-YU-nph"/>
+                            <constraint firstItem="1HC-H2-Dzz" firstAttribute="leading" secondItem="wIq-D7-iSt" secondAttribute="trailing" constant="32" id="WeR-ml-ACP"/>
                             <constraint firstItem="VwF-nv-lH9" firstAttribute="top" secondItem="COn-9w-41X" secondAttribute="bottom" constant="32" id="Y3i-wK-qEz"/>
                             <constraint firstItem="COn-9w-41X" firstAttribute="top" secondItem="rvF-sA-os9" secondAttribute="bottom" constant="32" id="Z2F-0x-qQ3"/>
+                            <constraint firstItem="1K0-aC-gva" firstAttribute="leading" secondItem="rvF-sA-os9" secondAttribute="trailing" constant="32" id="ZT0-y3-pzQ"/>
                             <constraint firstItem="hSB-R5-syz" firstAttribute="top" secondItem="4Ez-1k-t7Z" secondAttribute="top" id="aPQ-Rg-2qP"/>
                             <constraint firstItem="U7L-wm-EoO" firstAttribute="leading" secondItem="wwm-Pt-ogm" secondAttribute="trailing" constant="64" id="aS0-fE-LKI"/>
                             <constraint firstItem="I1a-7L-BAP" firstAttribute="leading" secondItem="LCd-sB-2pk" secondAttribute="leading" constant="32" id="blo-LB-tlg"/>
@@ -2330,10 +2359,13 @@
                             <constraint firstItem="U7L-wm-EoO" firstAttribute="width" secondItem="wwm-Pt-ogm" secondAttribute="width" id="ddy-Dd-kLe"/>
                             <constraint firstItem="LCd-sB-2pk" firstAttribute="trailing" secondItem="I1a-7L-BAP" secondAttribute="trailing" constant="32" id="far-R0-YR8"/>
                             <constraint firstItem="VwF-nv-lH9" firstAttribute="leading" secondItem="LCd-sB-2pk" secondAttribute="leading" constant="32" id="jet-C1-pTf"/>
+                            <constraint firstItem="COn-9w-41X" firstAttribute="top" secondItem="1K0-aC-gva" secondAttribute="bottom" constant="32" id="mWO-zV-fjT"/>
                             <constraint firstItem="LCd-sB-2pk" firstAttribute="bottom" secondItem="VwF-nv-lH9" secondAttribute="bottom" constant="32" id="nco-yX-YhL"/>
                             <constraint firstItem="U7L-wm-EoO" firstAttribute="height" secondItem="wwm-Pt-ogm" secondAttribute="height" id="sPm-IM-3TI"/>
                             <constraint firstItem="wwm-Pt-ogm" firstAttribute="leading" secondItem="LCd-sB-2pk" secondAttribute="leading" constant="64" id="teG-PE-w1c"/>
+                            <constraint firstItem="1K0-aC-gva" firstAttribute="width" secondItem="rvF-sA-os9" secondAttribute="width" id="tty-Xy-W3i"/>
                             <constraint firstItem="wwm-Pt-ogm" firstAttribute="top" secondItem="I1a-7L-BAP" secondAttribute="bottom" constant="32" id="xhf-GN-N98"/>
+                            <constraint firstItem="COn-9w-41X" firstAttribute="top" secondItem="wIq-D7-iSt" secondAttribute="bottom" constant="32" id="z0v-El-xIi"/>
                             <constraint firstItem="U7L-wm-EoO" firstAttribute="top" secondItem="I1a-7L-BAP" secondAttribute="bottom" constant="32" id="zKj-cS-TQo"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="LCd-sB-2pk"/>
@@ -2341,10 +2373,13 @@
                     <tabBarItem key="tabBarItem" title="Item" id="Htn-Mn-mlT"/>
                     <connections>
                         <outlet property="buttonBack" destination="j1T-UH-hmf" id="3Te-9S-qdp"/>
+                        <outlet property="buttonCam" destination="1HC-H2-Dzz" id="MWx-n6-Qo3"/>
                         <outlet property="buttonEdit" destination="wwm-Pt-ogm" id="860-iC-p6y"/>
+                        <outlet property="buttonIcon" destination="1HC-H2-Dzz" id="OKX-ad-kV0"/>
                         <outlet property="buttonSave" destination="U7L-wm-EoO" id="5sO-Dp-Z4X"/>
                         <outlet property="tableTypes" destination="I1a-7L-BAP" id="zjf-rv-M0n"/>
                         <outlet property="textAttributes" destination="COn-9w-41X" id="soc-Jc-qR9"/>
+                        <outlet property="textIcon" destination="1K0-aC-gva" id="3qM-kE-9f0"/>
                         <outlet property="textModel" destination="VwF-nv-lH9" id="1o5-n8-AFi"/>
                         <outlet property="textName" destination="rvF-sA-os9" id="A04-Gf-BX9"/>
                         <outlet property="toolbar" destination="hSB-R5-syz" id="tzD-Ap-23v"/>

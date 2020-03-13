@@ -34,6 +34,8 @@
     // View layout
     [self.textName setPlaceholder:@"Type's name"];
     [self.textAttributes setPlaceholder:@"List of attributes' names"];
+    [self.textIcon setPlaceholder:@"Type's icon"];
+    [self.textIcon setEnabled:NO];
     [self.textModel setText:@""];
     [[self.textModel layer] setBorderColor:[[UIColor lightGrayColor] CGColor]];
     [[self.textModel layer] setBorderWidth:.4];
@@ -54,7 +56,7 @@
                           forState:UIControlStateNormal];
     
     // Variables
-    userWantsToSetRoutine = NO;    
+    userWantsToSetRoutine = NO;
     // Get types if they exist
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
     // Search for 'areTypes' boolean and if so, load the MDType array
@@ -72,6 +74,10 @@
         
         NSLog(@"[INFO][VCCT] %tu ontologycal types found in device.", types.count);
     }
+    
+    // Images picker controller
+    imagePicker = [[UIImagePickerController alloc] init];
+    imagePicker.delegate = self;
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableTypes.delegate = self;
@@ -160,6 +166,13 @@
         }
         [self.textAttributes setText:attributesString];
         
+        // Set icon
+        if ([chosenType isIcon]) {
+            [self.textIcon setText:@"Custom icon"];
+        } else {
+            [self.textIcon setText:@"No icon set"];
+        }
+        
         // Upload layout
         [self.textModel setText:@""];
         
@@ -240,12 +253,53 @@
     // Upload layout
     [self.textName setText:@""];
     [self.textAttributes setText:@""];
+    [self.textIcon setText:@""];
     NSArray * selectedRows = [self.tableTypes indexPathsForSelectedRows];
     for (NSIndexPath * eachIndexPath in selectedRows) {
         [self.tableTypes deselectRowAtIndexPath:eachIndexPath animated:nil];
     }
     [self.tableTypes reloadData];
     
+}
+
+/*!
+ @method handleIconButton:
+ @discussion This method handles the 'icon' button action and ask the user to chose an icon from gallery.
+ */
+- (IBAction)handleIconButton:(id)sender
+{
+    // Error management
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+        NSLog(@"[INFO][VCCT] Image picker available.");
+    }else{
+        NSLog(@"[ERROR][VCCT] Image picker not available.");
+        return;
+    }
+    
+    // Aks the image picker
+    [imagePicker  setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+    imagePicker.mediaTypes = [[NSArray alloc] initWithObjects: (NSString *)kUTTypeImage, nil];
+    [self presentViewController:imagePicker animated:YES completion:nil];
+    
+}
+
+/*!
+ @method handleCamButton:
+ @discussion This method handles the 'cam' button action and ask the user to take a picture using the cam.
+ */
+- (IBAction)handleCamButton:(id)sender
+{
+    // Error management
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        NSLog(@"[INFO][VCCT] Camera available.");
+    }else{
+        NSLog(@"[ERROR][VCCT] Camera not available.");
+        return;
+    }
+    
+    // Aks the image picker
+    [imagePicker setSourceType:UIImagePickerControllerSourceTypeCamera];
+    [self presentViewController:imagePicker animated:YES completion:nil];
 }
 
 /*!
@@ -441,6 +495,60 @@
     [alertAddMetamodel addAction:cancelButton];
     [self presentViewController:alertAddMetamodel animated:YES completion:nil];
     return userWantsToSetRoutine;
+}
+
+#pragma mark - UIImagePickerController delegate methods
+/*!
+@method imagePickerController:didFinishPickingMediaWithInfo:
+@discussion Handles the action of selecting an image using the image picker view.
+*/
+- (void)imagePickerController:(UIImagePickerController *)picker
+didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info
+{
+    NSLog(@"[INFO][VCCT] User did pick an image. Asked to dismiss picker");
+    
+    // Get the type of media selected
+    NSString * mediaType = [info objectForKey:UIImagePickerControllerMediaType];
+    
+    // If an image is taken from album
+    if ([mediaType isEqualToString:(NSString *)kUTTypeImage] && picker.sourceType == UIImagePickerControllerSourceTypePhotoLibrary) {
+
+        // Set the picked icon
+        UIImage * imagePicked = [info valueForKey:UIImagePickerControllerOriginalImage];
+        [chosenType setIcon:imagePicked];
+
+    }
+    
+    // If an image is taken from camera
+    if ([mediaType isEqualToString:(NSString *)kUTTypeImage] && picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
+
+        // Set the picked icon
+        UIImage * imagePicked = [info valueForKey:UIImagePickerControllerOriginalImage];
+        [chosenType setIcon:imagePicked];
+
+    }
+
+    // When a video is taken
+    // if ([mediaType isEqualToString:(NSString *)kUTTypeMovie] && picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
+    //     Grab the URL for the video just taken
+    //    NSURL * video = [info objectForKey:UIImagePickerControllerMediaURL];
+    //    UISaveVideoAtPathToSavedPhotosAlbum([video path], nil, nil, nil);
+    //}
+    
+    // Upload layout
+    [self handleEditButton:nil];
+    
+    // Dismiss image picker
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+/*!
+@method imagePickerControllerDidCancel:
+@discussion Handles the calcel action in image picker view.
+*/
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    return;
 }
 
 #pragma mark - UItableView data delegate methods
