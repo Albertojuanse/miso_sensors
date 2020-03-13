@@ -7,6 +7,7 @@
 //
 
 #include <Foundation/Foundation.h>
+#include <UIKit/UIKit.h>
 
 /*!
  @protocol MDType
@@ -36,6 +37,7 @@
     
     NSString * name;
     NSMutableArray * attributes;
+    UIImage * icon;
     
 }
 
@@ -50,6 +52,9 @@
 - (NSString *)getName;
 - (void)setAttributes:(NSMutableArray *)givenAttributes;
 - (NSMutableArray *)getAttributes;
+- (void)setIcon:(UIImage *)givenIcon;
+- (UIImage *)getIcon;
+- (BOOL)isIcon;
 - (BOOL)isEqual:(id)object;
 - (BOOL)isEqualToMDType:(MDType *)type;
 - (NSString *)description;

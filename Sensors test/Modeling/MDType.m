@@ -91,6 +91,37 @@
 }
 
 /*!
+@method setIcon
+@discussion Setter of the 'icon' UIImage object.
+*/
+- (void)setIcon:(UIImage *)givenIcon
+{
+    icon = givenIcon;
+}
+
+/*!
+@method getIcon
+@discussion Getter of the 'icon' UIImage object.
+*/
+- (UIImage *)getIcon
+{
+    return icon;
+}
+
+/*!
+@method isIcon
+@discussion Asker of the 'icon' UIImage object.
+*/
+- (BOOL)isIcon
+{
+    if (icon) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+/*!
   @method isEqual
   @discussion This method overwrites the isEqual super method.
   */
