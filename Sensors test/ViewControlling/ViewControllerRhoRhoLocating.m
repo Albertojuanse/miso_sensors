@@ -501,7 +501,7 @@
         }
     }
     if (tableView == self.tableTypes) {
-        return [[sharedData fromTypesDataGetTypesWithCredentialsUserDic:credentialsUserDic] count];
+        return [modeTypes count];
     }
     return 0;
 }
@@ -681,10 +681,7 @@
     
     // Configure individual cells
     if (tableView == self.tableTypes) {
-        MDType * type = [
-                         [sharedData fromTypesDataGetTypesWithCredentialsUserDic:credentialsUserDic]
-                         objectAtIndex:indexPath.row
-                         ];
+        MDType * type = [modeTypes objectAtIndex:indexPath.row];
         cell.textLabel.numberOfLines = 0; // Means any number
         
         cell.textLabel.text = [NSString stringWithFormat:@"%@", [type getName]];
