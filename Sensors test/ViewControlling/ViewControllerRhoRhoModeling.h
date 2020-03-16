@@ -33,6 +33,11 @@
     NSNumber * itemBeaconIdNumber;
     NSNumber * itemPositionIdNumber;
     
+    // Variables
+    MDMode * mode;
+    NSMutableArray * modeMetamodels;
+    NSMutableArray * modeTypes;
+    
 }
 
 @property (weak, nonatomic) IBOutlet VCToolbar *toolbar;
