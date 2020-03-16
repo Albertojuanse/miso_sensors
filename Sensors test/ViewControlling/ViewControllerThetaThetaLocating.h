@@ -39,6 +39,8 @@
     NSString * locatedPositionUUID; // This one changes when the user measures and generates a new position for the device.
     NSString * deviceUUID;
     MDMode * mode;
+    NSMutableArray * modeMetamodels;
+    NSMutableArray * modeTypes;
     
 }
 @property (weak, nonatomic) IBOutlet VCToolbar *toolbar;

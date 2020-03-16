@@ -152,6 +152,7 @@
         measuresData = [[NSMutableArray alloc] init];
         typesData = [[NSMutableArray alloc] init];
         modelData = [[NSMutableArray alloc] init];
+        metamodelsData = [[NSMutableArray alloc] init];
         
     }
     return self;
@@ -209,6 +210,7 @@
         measuresData = nil;
         //typesData = nil;
         //modelData = nil;
+        //metamodelsData = nil;
         
         // Colections of data
         //userData = [[NSMutableArray alloc] init];
@@ -218,6 +220,7 @@
         measuresData = [[NSMutableArray alloc] init];
         //typesData = [[NSMutableArray alloc] init];
         //modelData = [[NSMutableArray alloc] init];
+        //metamodelsData = [[NSMutableArray alloc] init];
     } else {
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
     }
@@ -2373,7 +2376,7 @@
     }
 }
 
-#pragma mark - Metamodeñs data specific getters
+#pragma mark - Metamodels data specific getters
 //            // METAMODEL DATA //
 //
 // The schema of metamodelsData collection is

@@ -356,17 +356,18 @@
             NSMutableArray * types = [routine getTypes];
             NSMutableArray * metamodels = [routine getMetamodels];
             NSMutableArray * items = [routine getItems];
-            
-            
+                        
             // Set items in data shared
             for (MDType * eachType in types) {
-                registerCorrect = registerCorrect && [sharedData inTypesDataAddType:eachType withCredentialsUserDic:credentialsUserDic];
+                registerCorrect = registerCorrect && [sharedData inTypesDataAddType:eachType
+                                                             withCredentialsUserDic:credentialsUserDic];
             }
             NSLog(@"[INFO][VCMM] -> %tu ontological types found in routine.", types.count);
             
             // Metamodels
             for (MDMetamodel * eachMetamodel in metamodels) {
-                registerCorrect = registerCorrect && [sharedData inMetamodelsDataAddMetamodel:eachMetamodel                                                                        withCredentialsUserDic:credentialsUserDic];
+                registerCorrect = registerCorrect && [sharedData inMetamodelsDataAddMetamodel:eachMetamodel
+                                                                       withCredentialsUserDic:credentialsUserDic];
             }
             NSLog(@"[INFO][VCMM] -> %tu metamodels found in routine.", metamodels.count);
             

@@ -11,7 +11,6 @@
 @implementation ViewControllerThetaThetaLocating
 
 #pragma mark - UIViewController delegated methods
-
 /*!
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
@@ -139,6 +138,11 @@
     
     // Variables; used for new positions located by this view and renewed every time.
     locatedPositionUUID = [[NSUUID UUID] UUIDString];
+    // Load metamodels for this mode
+    modeMetamodels = [[NSMutableArray alloc] init];
+    modeTypes = [[NSMutableArray alloc] init];
+    [self loadModeMetamodels];
+    [self loadModeTypes];
     
     // Ask canvas to initialize
     [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic
@@ -178,8 +182,86 @@
     self.loginText.text = [self.loginText.text stringByAppendingString:userDic[@"name"]];
 }
 
-#pragma mark - Instance methods
+/*!
+@method loadModeMetamodels
+@discussion This method loads the metamodels for this mode.
+*/
+- (void)loadModeMetamodels
+{
+    NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic];
+    if (isRoutine) {
+        if ([isRoutine isEqualToString:@"YES"]) {
+            
+            // Get all metamodels
+            NSMutableArray * metamodels = [sharedData fromMetamodelsDataGetMetamodelsWithCredentialsUserDic:credentialsUserDic];
+            
+            // Find the metamodels used in this mode
+            for (MDMetamodel * eachMetamodel in metamodels) {
+                
+                NSMutableArray * eachMetamodelModes = [eachMetamodel getModes];
+                
+                // Modes are saved as NSNumbers with each key
+                for (NSNumber * eachModeKey in eachMetamodelModes){
+                    
+                    MDMode * eachMode = [[MDMode alloc] initWithModeKey:[eachModeKey intValue]];
+                    
+                    if ([eachMode isEqualToMDMode:mode]) {
+                        [modeMetamodels addObject:eachMetamodel];
+                    }
+                    
+                }
+                
+            }
+            
+        }
+    } else {
+        return;
+    }
+    NSLog(@"[INFO][VCTTL] Loaded %tu metamodels for this mode.", modeMetamodels.count);
+}
 
+/*!
+@method loadModeTypes
+@discussion This method loads the types for this mode from the metamodels.
+*/
+- (void)loadModeTypes
+{
+    NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic];
+    if (isRoutine) {
+        if ([isRoutine isEqualToString:@"YES"]) {
+            
+            // Find in the metamodels the types used
+            for (MDMetamodel * eachMetamodel in modeMetamodels) {
+                
+                NSMutableArray * eachMetamodelTypes = [eachMetamodel getTypes];
+                
+                // Get the types of the metamodel and check if they are already got.
+                for (MDType * eachMetamodelType in eachMetamodelTypes){
+                    
+                    BOOL typeFound = NO;
+                    for (MDType * eachType in modeTypes){
+                        if ([eachType isEqualToMDType:eachMetamodelType]) {
+                            typeFound = YES;
+                        }
+                    }
+                    if (!typeFound) {
+                        [modeTypes addObject:eachMetamodelType];
+                    }
+                    
+                }
+                
+            }
+            
+        }
+    } else {
+        return;
+    }
+    NSLog(@"[INFO][VCTTL] Loaded %tu ontologycal types for this mode.", modeTypes.count);
+}
+
+#pragma mark - Instance methods
 /*!
  @method setCredentialsUserDic:
  @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
@@ -253,7 +335,6 @@
 }
 
 #pragma mark - Buttons event handlers
-
 /*!
  @method handleButtonMeasure:
  @discussion This method handles the action in which the Measure button is pressed; it must disable 'Travel' control buttons and ask location manager delegate to start measuring.
@@ -422,7 +503,6 @@
 }
 
 #pragma mark - UItableView delegate methods
-
 /*!
  @method numberOfSectionsInTableView:
  @discussion Handles the upload of tables; returns the number of sections in them.
@@ -448,7 +528,7 @@
         return itemsCount;
     }
     if (tableView == self.tableTypes) {
-        return [[sharedData fromTypesDataGetTypesWithCredentialsUserDic:credentialsUserDic] count];
+        return [modeTypes count];
     }
     return 0;
 }
@@ -636,10 +716,7 @@
     
     // Configure individual cells
     if (tableView == self.tableTypes) {
-        MDType * type = [
-                         [sharedData fromTypesDataGetTypesWithCredentialsUserDic:credentialsUserDic]
-                         objectAtIndex:indexPath.row
-                         ];
+        MDType * type = [modeTypes objectAtIndex:indexPath.row];
         cell.textLabel.numberOfLines = 0; // Means any number
         
         cell.textLabel.text = [NSString stringWithFormat:@"%@", [type getName]];
@@ -712,10 +789,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         }
     }
     if (tableView == self.tableTypes) {
-        MDType * typeSelected = [
-                                 [sharedData getTypesDataWithCredentialsUserDic:credentialsUserDic]
-                                 objectAtIndex:indexPath.row
-                                 ];
+        MDType * typeSelected = [modeTypes objectAtIndex:indexPath.row];
         [sharedData inSessionDataSetTypeChosenByUser:typeSelected
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
