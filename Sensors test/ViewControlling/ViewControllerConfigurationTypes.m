@@ -413,7 +413,7 @@
         
     }
     
-    // Create the routine ans save it
+    // Create the routine and save it
     MDRoutine * routine = [[MDRoutine alloc] initWithName:@"Routine"
                                               description:@"Modelling routine"
                                                     modes:routineModes
