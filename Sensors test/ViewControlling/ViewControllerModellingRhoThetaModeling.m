@@ -119,6 +119,11 @@
     flagReference = false;
     sourceItem = nil;
     targetItem = nil;
+    // Load metamodels for this mode
+    modeMetamodels = [[NSMutableArray alloc] init];
+    modeTypes = [[NSMutableArray alloc] init];
+    [self loadModeMetamodels];
+    [self loadModeTypes];
     
     // Ask canvas to initialize
     [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic
@@ -158,6 +163,85 @@
 {
     self.loginText.text = [self.loginText.text stringByAppendingString:@" "];
     self.loginText.text = [self.loginText.text stringByAppendingString:userDic[@"name"]];
+}
+
+/*!
+@method loadModeMetamodels
+@discussion This method loads the metamodels for this mode.
+*/
+- (void)loadModeMetamodels
+{
+    NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic];
+    if (isRoutine) {
+        if ([isRoutine isEqualToString:@"YES"]) {
+            
+            // Get all metamodels
+            NSMutableArray * metamodels = [sharedData fromMetamodelsDataGetMetamodelsWithCredentialsUserDic:credentialsUserDic];
+            
+            // Find the metamodels used in this mode
+            for (MDMetamodel * eachMetamodel in metamodels) {
+                
+                NSMutableArray * eachMetamodelModes = [eachMetamodel getModes];
+                
+                // Modes are saved as NSNumbers with each key
+                for (NSNumber * eachModeKey in eachMetamodelModes){
+                    
+                    MDMode * eachMode = [[MDMode alloc] initWithModeKey:[eachModeKey intValue]];
+                    
+                    if ([eachMode isEqualToMDMode:mode]) {
+                        [modeMetamodels addObject:eachMetamodel];
+                    }
+                    
+                }
+                
+            }
+            
+        }
+    } else {
+        return;
+    }
+    NSLog(@"[INFO][VCTTL] Loaded %tu metamodels for this mode.", modeMetamodels.count);
+}
+
+/*!
+@method loadModeTypes
+@discussion This method loads the types for this mode from the metamodels.
+*/
+- (void)loadModeTypes
+{
+    NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic];
+    if (isRoutine) {
+        if ([isRoutine isEqualToString:@"YES"]) {
+            
+            // Find in the metamodels the types used
+            for (MDMetamodel * eachMetamodel in modeMetamodels) {
+                
+                NSMutableArray * eachMetamodelTypes = [eachMetamodel getTypes];
+                
+                // Get the types of the metamodel and check if they are already got.
+                for (MDType * eachMetamodelType in eachMetamodelTypes){
+                    
+                    BOOL typeFound = NO;
+                    for (MDType * eachType in modeTypes){
+                        if ([eachType isEqualToMDType:eachMetamodelType]) {
+                            typeFound = YES;
+                        }
+                    }
+                    if (!typeFound) {
+                        [modeTypes addObject:eachMetamodelType];
+                    }
+                    
+                }
+                
+            }
+            
+        }
+    } else {
+        return;
+    }
+    NSLog(@"[INFO][VCTTL] Loaded %tu ontologycal types for this mode.", modeTypes.count);
 }
 
 #pragma mark - Instance methods
@@ -462,7 +546,7 @@
         return itemsCount;
     }
     if (tableView == self.tableTypes) {
-        return [[sharedData fromTypesDataGetTypesWithCredentialsUserDic:credentialsUserDic] count];
+        return [modeTypes count];
     }
     return 0;
 }
@@ -671,10 +755,7 @@
         [cell setAccessoryType:UITableViewCellAccessoryNone];
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
         
-        MDType * type = [
-                         [sharedData fromTypesDataGetTypesWithCredentialsUserDic:credentialsUserDic]
-                         objectAtIndex:indexPath.row
-                         ];
+        MDType * type = [modeTypes objectAtIndex:indexPath.row];
         cell.textLabel.numberOfLines = 0; // Means any number
         
         cell.textLabel.text = [NSString stringWithFormat:@"%@", [type getName]];
@@ -746,10 +827,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         }
         if (tableView == self.tableTypes) {
             
-            MDType * typeSelected = [
-                                     [sharedData getTypesDataWithCredentialsUserDic:credentialsUserDic]
-                                     objectAtIndex:indexPath.row
-                                     ];
+            MDType * typeSelected = [modeTypes objectAtIndex:indexPath.row];
             
             // The table was set in 'viewDidLoad' as multiple-selecting
             // Manage multi-selection
