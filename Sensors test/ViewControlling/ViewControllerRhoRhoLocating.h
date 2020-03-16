@@ -36,6 +36,8 @@
     NSNumber * itemPositionIdNumber;
     NSString * deviceUUID;
     MDMode * mode;
+    NSMutableArray * modeMetamodels;
+    NSMutableArray * modeTypes;
     
 }
 @property (weak, nonatomic) IBOutlet VCToolbar *toolbar;
