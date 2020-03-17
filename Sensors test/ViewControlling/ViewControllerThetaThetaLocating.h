@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "ViewControllerMainMenu.h"
 #import "ViewControllerModelingThetaThetaLocating.h"
+#import "ViewControllerEditComponent.h"
 #import "LMDelegateThetaThetaLocating.h"
 #import "RDThetaThetaSystem.h"
 #import "MotionManager.h"

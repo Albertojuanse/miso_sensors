@@ -82,6 +82,8 @@
     [self.logOutButton setTitleColor:[UIColor whiteColor]
                             forState:UIControlStateNormal];
     [self.loginText setTextColor:[UIColor whiteColor]];
+    [self.buttonMeasure setEnabled:YES];
+    [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
     
     // Register the current mode
     mode = [[MDMode alloc] initWithModeKey:kModeThetaThetaLocating];
@@ -148,9 +150,11 @@
     [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic
                        andCredentialsUserDic:credentialsUserDic];
     
-    // Visualization
-    [self.buttonMeasure setEnabled:YES];
-    [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
+    // This object must listen to this events
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(presentEditComponentView:)
+                                                 name:@"presentEditComponentView"
+                                               object:nil];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableItemsChosen.delegate = self;
@@ -259,6 +263,40 @@
         return;
     }
     NSLog(@"[INFO][VCTTL] Loaded %tu ontologycal types for this mode.", modeTypes.count);
+}
+
+#pragma mark - Notifications events handlers
+/*!
+ @method presentEditComponentView:
+ @discussion This method is called when user taps over and component on canvas and presents modally the pop up view to edit that component.
+ */
+- (void) presentEditComponentView:(NSNotification *) notification
+{
+    if ([[notification name] isEqualToString:@"presentEditComponentView"]){
+        NSLog(@"[NOTI][VC] Notification \"presentEditComponentView\" recived.");
+        
+        // User did choose an item; get it...
+        NSDictionary * dataDic = notification.userInfo;
+        NSString * chosenItemUUID = dataDic[@"uuid"];
+        NSMutableArray * itemsChosenByUser = [sharedData fromItemDataGetItemsWithUUID:chosenItemUUID
+                                                                andCredentialsUserDic:credentialsUserDic];
+        if (itemsChosenByUser.count == 0) {
+            NSLog(@"[ERROR][VCTTL] User did choose an unknown item: %@", chosenItemUUID);
+            return;
+        }
+        else if (itemsChosenByUser.count > 1) {
+            NSLog(@"[ERROR][VCTTL] User did choose an item whose UUID is repeated: %@", chosenItemUUID);
+        }
+        NSMutableDictionary * itemChosenByUser = [itemsChosenByUser objectAtIndex:0];
+
+        NSLog(@"[INFO][VCTTL] The user asked pop up view to edit %@", itemChosenByUser[@"uuid"]);
+        
+        // ...and set it as item chosen by user in shared data.
+        [sharedData inSessionDataSetItemChosenByUser:itemChosenByUser
+                                   toUserWithUserDic:userDic
+                               andCredentialsUserDic:credentialsUserDic];
+        [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToEditComponent" sender:nil];
+    }
 }
 
 #pragma mark - Instance methods
@@ -498,6 +536,19 @@
         [viewControllerModelingThetaThetaLocating setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerModelingThetaThetaLocating setItemPositionIdNumber:itemPositionIdNumber];
         [viewControllerModelingThetaThetaLocating setDeviceUUID:deviceUUID];
+        return;
+    }
+    
+    if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToEditComponent"]) {
+        
+        // Get destination view
+        ViewControllerEditComponent * viewControllerEditComponent = [segue destinationViewController];
+        // Set the variables
+        [viewControllerEditComponent setCredentialsUserDic:credentialsUserDic];
+        [viewControllerEditComponent setUserDic:userDic];
+        [viewControllerEditComponent setSharedData:sharedData];
+        [viewControllerEditComponent setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerEditComponent setItemPositionIdNumber:itemPositionIdNumber];
         return;
     }
 }
