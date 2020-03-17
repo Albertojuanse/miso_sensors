@@ -77,7 +77,7 @@
     barycenter.z = [NSNumber numberWithFloat:0.0];
     
     // Canvas configurations
-    [self setUserInteractionEnabled:NO];
+    [self setUserInteractionEnabled:YES];
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
     UIColor * canvasColor = [UIColor colorWithRed:[layoutDic[@"canvas/red"] floatValue]/255.0

@@ -14,7 +14,9 @@
  @class VCPosition
  @discussion This class extends UIView and creates an area in which a position on screen is drawn.
  */
-@interface VCPosition: UIView {
+@interface VCPosition: UIView <UIGestureRecognizerDelegate> {
+    // User gestures
+    UITapGestureRecognizer * tapGestureRecognizer;
 }
 
 -(instancetype)init;

@@ -32,6 +32,12 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self setOpaque:NO];
+        // Add the gesture recognizers needed
+        tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                       action:@selector(handleTap:)];
+        tapGestureRecognizer.delegate = self;
+        [self addGestureRecognizer:tapGestureRecognizer];
+        [self setUserInteractionEnabled:YES];
     }
     return self;
 }
@@ -95,5 +101,14 @@
 
 }
 
+#pragma mark Handle gestures methods
+/*!
+ @method handleTap:
+ @discussion This method handles the tap gesture.
+ */
+-(void)handleTap:(UITapGestureRecognizer *)recog
+{
+    NSLog(@"[INFO][VCP] User did tap a position.");
+}
 
 @end
