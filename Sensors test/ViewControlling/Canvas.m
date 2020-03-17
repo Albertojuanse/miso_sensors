@@ -701,7 +701,9 @@
     VCPosition *positionView = [[VCPosition alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue] - [positionWidth floatValue]/2,
                                                                             [canvasPosition.y floatValue] - [positionHeight floatValue],
                                                                             [positionWidth floatValue],
-                                                                            [positionHeight floatValue])];
+                                                                            [positionHeight floatValue])
+                                                    realPosition:realPosition
+                                                         andUUID:uuid];
     [self addSubview:positionView];
     
     // Text of real position but in canvas position

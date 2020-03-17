@@ -38,6 +38,7 @@
 		426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C222A03B5200BE20B7 /* RDRhoRhoSystem.m */; };
 		42673BA0234336E3004E46A8 /* VCType.m in Sources */ = {isa = PBXBuildFile; fileRef = 42673B9F234336E3004E46A8 /* VCType.m */; };
 		426AD1C923FD3DEE00565D65 /* VCModesTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 426AD1C823FD3DEE00565D65 /* VCModesTable.m */; };
+		426AE1FF2421630F00E01D9F /* ViewControllerEditComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = 426AE1FE2421630F00E01D9F /* ViewControllerEditComponent.m */; };
 		4275ED5A22D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m in Sources */ = {isa = PBXBuildFile; fileRef = 4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m */; };
 		4275ED5D22D5F84300A5CAB7 /* RDRhoThetaSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 4275ED5C22D5F84300A5CAB7 /* RDRhoThetaSystem.m */; };
 		4276127422C0EE91007BDED8 /* SharedData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4276127322C0EE91007BDED8 /* SharedData.m */; };
@@ -127,6 +128,8 @@
 		42673B9F234336E3004E46A8 /* VCType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCType.m; sourceTree = "<group>"; };
 		426AD1C723FD3DDC00565D65 /* VCModesTable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCModesTable.h; sourceTree = "<group>"; };
 		426AD1C823FD3DEE00565D65 /* VCModesTable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCModesTable.m; sourceTree = "<group>"; };
+		426AE1FD242162FA00E01D9F /* ViewControllerEditComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerEditComponent.h; sourceTree = "<group>"; };
+		426AE1FE2421630F00E01D9F /* ViewControllerEditComponent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerEditComponent.m; sourceTree = "<group>"; };
 		4275ED5822D5E88E00A5CAB7 /* ViewControllerRhoThetaModeling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerRhoThetaModeling.h; sourceTree = "<group>"; };
 		4275ED5922D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerRhoThetaModeling.m; sourceTree = "<group>"; };
 		4275ED5B22D5F83000A5CAB7 /* RDRhoThetaSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDRhoThetaSystem.h; sourceTree = "<group>"; };
@@ -278,6 +281,8 @@
 				4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */,
 				428AF6BE22D7912400BE5374 /* ViewControllerSelectPositions.h */,
 				428AF6BF22D7915000BE5374 /* ViewControllerSelectPositions.m */,
+				426AE1FD242162FA00E01D9F /* ViewControllerEditComponent.h */,
+				426AE1FE2421630F00E01D9F /* ViewControllerEditComponent.m */,
 				429093DE23AA4B1E000CEA6E /* ViewControllerMonitoring.h */,
 				429093DF23AA4B3C000CEA6E /* ViewControllerMonitoring.m */,
 				422798862271F37800E07C39 /* ViewControllerRhoRhoModeling.h */,
@@ -474,6 +479,7 @@
 				4275ED5D22D5F84300A5CAB7 /* RDRhoThetaSystem.m in Sources */,
 				42673BA0234336E3004E46A8 /* VCType.m in Sources */,
 				422798882271F37800E07C39 /* ViewControllerRhoRhoModeling.m in Sources */,
+				426AE1FF2421630F00E01D9F /* ViewControllerEditComponent.m in Sources */,
 				425124292320F3840096D0A8 /* ViewControllerLogin.m in Sources */,
 				424F576B234C9D1D00826B27 /* ViewControllerFinalModel.m in Sources */,
 				421550F823D9F3AB00945294 /* VCToolbar.m in Sources */,

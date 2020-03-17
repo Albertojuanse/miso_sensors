@@ -42,6 +42,22 @@
     return self;
 }
 
+/*!
+@method initWithFrame:initRealPosition:andUUID
+@discussion Constructor with a given specific frame in which be embedded, real position and UUID identifier.
+*/
+-(instancetype)initWithFrame:(CGRect)frame
+                realPosition:(RDPosition *)initRealPosition
+                     andUUID:(NSString *)initUUID
+{
+    self = [self initWithFrame:frame];
+    if (self) {
+        realPosition = initRealPosition;
+        uuid = initUUID;
+    }
+    return self;
+}
+
 #pragma mark - Drawing methods
 /*!
  @method drawRect:
@@ -104,11 +120,19 @@
 #pragma mark Handle gestures methods
 /*!
  @method handleTap:
- @discussion This method handles the tap gesture.
+ @discussion This method handles the tap gesture and asks the view to present the edit component pop up view.
  */
 -(void)handleTap:(UITapGestureRecognizer *)recog
 {
-    NSLog(@"[INFO][VCP] User did tap a position.");
+    // When user taps this view, the edit component view must be presented
+    NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
+    [dataDic setObject:realPosition forKey:@"realPosition"];
+    [dataDic setObject:uuid forKey:@"uuid"];
+    // And send the notification
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"presentEditComponentView"
+                                                        object:nil
+                                                      userInfo:dataDic];
+    NSLog(@"[NOTI][LM] Notification \"presentEditComponentView\" posted.");
 }
 
 @end

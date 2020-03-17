@@ -15,11 +15,19 @@
  @discussion This class extends UIView and creates an area in which a position on screen is drawn.
  */
 @interface VCPosition: UIView <UIGestureRecognizerDelegate> {
+    
+    // Variables
+    RDPosition * realPosition;
+    NSString * uuid;
+    
     // User gestures
     UITapGestureRecognizer * tapGestureRecognizer;
 }
 
 -(instancetype)init;
 -(instancetype)initWithFrame:(CGRect)frame;
+-(instancetype)initWithFrame:(CGRect)frame
+                realPosition:(RDPosition *)initRealPosition
+                     andUUID:(NSString *)initUUID;
 
 @end
