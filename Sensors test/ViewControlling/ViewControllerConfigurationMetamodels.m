@@ -187,7 +187,7 @@
     }
     
     // Modes in metamodels
-    // TO DO: Is another way? Alberto J. 2020/02/17.
+    // TODO: Is another way? Alberto J. 2020/02/17.
     routineModes = nil;
     
     // Search for 'areMetamodels' boolean and if so, load the MDMetamodel array
@@ -833,7 +833,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             // If the metamodels get empty, the dummy cell must be placed there
             if (typesToModify.count < 2) {
                 
-                // TO DO: Not wotking. Alberto J. 2020/02/06
+                // TODO: Not wotking. Alberto J. 2020/02/06
                 removingFirstCell = YES;
                 // Remove the cell's type
                 [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];

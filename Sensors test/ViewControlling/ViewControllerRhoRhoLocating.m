@@ -94,7 +94,7 @@
                        toUserWithUserDic:userDic
                    andCredentialsUserDic:credentialsUserDic];
     } else {
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
     }
     
     // Components
@@ -328,7 +328,7 @@
         [self alertUserWithTitle:@"Measure won't be started."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
         NSLog(@"[ERROR][VCRRL] Shared data could not be accessed before start measuring.");
@@ -372,7 +372,7 @@
     [self alertUserWithTitle:@"Component added to the model."
                      message:[NSString stringWithFormat:@"Please, move to a new location. UUID: %@.", deviceUUID]
                   andHandler:^(UIAlertAction * action) {
-                      // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                      // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                   }
      ];
     deviceUUID = [[NSUUID UUID] UUIDString];
@@ -494,7 +494,7 @@
             [self alertUserWithTitle:@"Items won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCRRL] Shared data could not be accessed while loading items.");
@@ -672,7 +672,7 @@
             [self alertUserWithTitle:@"Items won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCRRL] Shared data could not be accessed while loading cells' item.");

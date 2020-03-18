@@ -165,7 +165,7 @@
     }
     
     // Modes in metamodels
-    // TO DO: Is another way? Alberto J. 2020/02/17.
+    // TODO: Is another way? Alberto J. 2020/02/17.
     routineModes = nil;
     
     // Search for 'areMetamodels' boolean and if so, load the MDMetamodel array
@@ -565,7 +565,7 @@ performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
                                 [tableView deleteRowsAtIndexPaths:@[currentCellIndexPath]
                                                  withRowAnimation:UITableViewRowAnimationAutomatic];
                                 
-                                // TO DO: Not Working. Alberto J. 2020/02/06.
+                                // TODO: Not Working. Alberto J. 2020/02/06.
                                 removingFirstCell = NO;
                                 // Add new mode
                                 BOOL newMode = [userDropMetamodel addModeKey:[cellMode getMode]];

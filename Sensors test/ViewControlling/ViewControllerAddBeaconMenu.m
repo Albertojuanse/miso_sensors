@@ -349,7 +349,7 @@
             // PERSISTENT: REMOVE ITEM
             // Remove it from the persistent memory
             NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-            // TO DO: Assign items by user. Alberto J. 15/11/2019.
+            // TODO: Assign items by user. Alberto J. 15/11/2019.
             
             // Create a NSData for the item and save it using its name
             // Item's name
@@ -393,7 +393,7 @@
             [self alertUserWithTitle:@"Item won't be removed."
                              message:[NSString stringWithFormat:@"Type could not be found; please, try again or check for multiuser interferences."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCAB] Item could not be removed.");
@@ -403,7 +403,7 @@
         [self alertUserWithTitle:@"Type won't be removed."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
         NSLog(@"[ERROR][VCAB] Shared data could not be accessed while removing a type.");
@@ -570,7 +570,7 @@
             
             // Save them in persistent memory
             NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-            // TO DO: Assign items by user. Alberto J. 15/11/2019.
+            // TODO: Assign items by user. Alberto J. 15/11/2019.
             // Now there are items
             NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
             if (areItemsData) {
@@ -672,7 +672,7 @@
             [self alertUserWithTitle:@"Type won't be registered."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCAB] Shared data could not be accessed while registering type.");
@@ -712,7 +712,7 @@
         [self alertUserWithTitle:@"Type won't be removed."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again."]
                       andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
         NSLog(@"[ERROR][VCAB] Shared data could not be accessed while removing type.");
@@ -775,7 +775,7 @@
             [self alertUserWithTitle:@"Type won't be removed."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCAB] Shared data could not be accessed while removing type.");
@@ -1016,7 +1016,7 @@
             [self alertUserWithTitle:@"Types won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCAB] Shared data could not be accessed while loading types.");
@@ -1059,7 +1059,7 @@
             [self alertUserWithTitle:@"Types won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCAB] Shared data could not be accessed while loading cells' type.");
@@ -1124,7 +1124,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             [self alertUserWithTitle:@"Types won't be selected."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCAB] Shared data could not be accessed while selecting a cells' type.");

@@ -288,11 +288,11 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          [self alertUserWithTitle:@"Beacon ranged won't be procesed."
          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
          andHandler:^(UIAlertAction * action) {
-         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+         // TODO: handle intrusion situations. Alberto J. 2019/09/10.
          }
          ];
          */
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
         NSLog(@"[ERROR][LMRRL] Shared data could not be accessed when beacon ranged.");
         return;
     }
@@ -316,8 +316,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     // ...get its information...
                     NSString * uuid = [[beacon proximityUUID] UUIDString];
                     NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
-                    // TO DO. Calibration. Alberto J. 2019/11/14.
-                    // TO DO: Get the 1 meter RSSI from CLBeacon. Alberto J. 2019/11/14.
+                    // TODO. Calibration. Alberto J. 2019/11/14.
+                    // TODO: Get the 1 meter RSSI from CLBeacon. Alberto J. 2019/11/14.
                     // Absolute values of speed of light, frecuency, and antenna's join gain
                     float C = 299792458.0;
                     float F = 2440000000.0; // 2400 - 2480 MHz
@@ -334,7 +334,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     NSMutableDictionary * locatedPositions;
                     
                     // Precision is arbitrary set to 10 cm
-                    // TO DO: Make this configurable. Alberto J. 2019/09/12.
+                    // TODO: Make this configurable. Alberto J. 2019/09/12.
                     NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
                                                  [NSNumber numberWithFloat:0.1], @"xPrecision",
                                                  [NSNumber numberWithFloat:0.1], @"yPrecision",
@@ -402,7 +402,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         
         
         // Save variables in device memory
-        // TO DO: Session control to prevent data loss. Alberto J. 2020/02/17.
+        // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
         // Remove previous collection
         NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
         [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
@@ -444,7 +444,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
              [self alertUserWithTitle:@"Beacon ranged won't be procesed."
              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
              andHandler:^(UIAlertAction * action) {
-             // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+             // TODO: handle intrusion situations. Alberto J. 2019/09/10.
              }
              ];
              */
@@ -518,7 +518,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 - (void) stopBeaconRangingMeasuring:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"stopBeaconRangingMeasuring"]){
         NSLog(@"[NOTI][LMRRL] Notification \"stopBeaconRangingMeasuring\" recived.");
-        // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
+        // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         [self stopRoutine];
