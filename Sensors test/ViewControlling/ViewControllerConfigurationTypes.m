@@ -363,7 +363,7 @@
     }
     
     // Modes in metamodels
-    // TO DO: Is another way? Alberto J. 2020/02/17.
+    // TODO: Is another way? Alberto J. 2020/02/17.
     routineModes = nil;
     
     // Search for 'areMetamodels' boolean and if so, load the MDMetamodel array

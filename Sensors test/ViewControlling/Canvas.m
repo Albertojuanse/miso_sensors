@@ -108,7 +108,7 @@
 {
     if ([[notification name] isEqualToString:@"refreshCanvas"]){
         NSLog(@"[NOTI][VC] Notification \"refreshCanvas\" recived.");
-        // TO DO. Logic. Alberto J. 2019/09/13.
+        // TODO. Logic. Alberto J. 2019/09/13.
     }
     [self setNeedsDisplay];
 }
@@ -412,7 +412,7 @@
     
     // Transform the real positions to an apropiate canvas ones, with the barycenter of the set of points in the center of the canvas
     // This method also sets the ratios in the class variables 'rWidth' and 'rHeight'; then, they will be used for transform every single point
-    // TO DO: make the SafeAreaRatio configurable (zoom). Alberto J. 2019/09/16.
+    // TODO: make the SafeAreaRatio configurable (zoom). Alberto J. 2019/09/16.
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
     NSNumber * safeAreaRatio = layoutDic[@"canvas/safeAreaRatio"];
@@ -469,7 +469,7 @@
                     itemUUID = itemDicSelected[@"uuid"];
                 } else {  // More than one items found
                     NSLog(@"[ERROR][CA] Too items types found when getting types for some item's position; using first one.");
-                    // TO DO: Manage this. Alberto J. 2019/10/1.
+                    // TODO: Manage this. Alberto J. 2019/10/1.
                     NSMutableDictionary * itemDicSelected = [itemsInRealItemPosition objectAtIndex:0];
                     itemType = itemDicSelected[@"type"];
                     itemUUID = itemDicSelected[@"uuid"];
@@ -521,7 +521,7 @@
                     itemUUID = itemDicSelected[@"uuid"];
                 } else {  // More than one items found
                     NSLog(@"[ERROR][CA] Too items types found when getting types for some located position; using first one.");
-                    // TO DO: Manage this. Alberto J. 2019/10/1.
+                    // TODO: Manage this. Alberto J. 2019/10/1.
                 }
             } else {  // Items not found
                 NSLog(@"[ERROR][CA] No items found when getting types for some located position; empty array returned.");

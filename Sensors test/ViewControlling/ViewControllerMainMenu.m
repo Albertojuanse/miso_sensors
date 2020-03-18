@@ -200,7 +200,7 @@
     }
     
     // Variables; only inizialated if they didn't be so.
-    // TO DO: Pass this in every view and call the modes by index, not by string. Alberto J. 2020/01/14.
+    // TODO: Pass this in every view and call the modes by index, not by string. Alberto J. 2020/01/14.
     
     // Load any saved component or model in device's persistent memory or create the demo ones if is the first time that user logs in.
     [self loadRoutine];
@@ -240,11 +240,11 @@
         [self alertUserWithTitle:@"User not allowed."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
         NSLog(@"[ERROR][VCMM] Shared data could not be accessed after view loading.");
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
     }
 }
 
@@ -275,7 +275,7 @@
 - (void)loadVariables
 {
     // Variables for naming porpuses; each new component created increases this counters to generate unique names.
-    // TO DO: These variables to session dic in shared data. Alberto J. 2020/01/20.
+    // TODO: These variables to session dic in shared data. Alberto J. 2020/01/20.
     if (!itemBeaconIdNumber) {
         // Search for variables from device memory
         NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
@@ -523,7 +523,7 @@
     userDidAskSignOut = YES;
     
     // Save variables in device memory
-    // TO DO: Session control to prevent data loss. Alberto J. 2020/02/17.
+    // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
     // Remove previous collection
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
@@ -549,7 +549,7 @@
     userDidAskLogOut = YES;
     
     // Save variables in device memory
-    // TO DO: Session control to prevent data loss. Alberto J. 2020/02/17.
+    // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
     // Remove previous collection
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
@@ -578,7 +578,7 @@
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        // TO DO: Create a location manager for this. Alberto J. 2020/01/20.
+        // TODO: Create a location manager for this. Alberto J. 2020/01/20.
         // Get the item chosen by user; only beacons can be calibrated
         NSMutableDictionary * itemChosenByUser = [sharedData
                                                   fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
@@ -606,7 +606,7 @@
         }
         
     } else {
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
     }
 }
 
@@ -649,7 +649,7 @@
                 
             } else {
                 NSLog(@"[INFO][CVMM] Routine finished.");
-                // TO DO: Alert the user.
+                // TODO: Alert the user.
             }
             
         } else {
@@ -722,7 +722,7 @@
                            andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
-            // TO DO: A view for this. Alberto J. 2020/01/20
+            // TODO: A view for this. Alberto J. 2020/01/20
             if ([chosenMode isModeKey:kModeGPSSelfLocating]) { // GPS_SELF_LOCATING
                 MDMode * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                                          andCredentialsUserDic:credentialsUserDic];
@@ -759,7 +759,7 @@
                 }
                 
             }
-            // TO DO: A view for this. Alberto J. 2020/01/20
+            // TODO: A view for this. Alberto J. 2020/01/20
             if ([chosenMode isModeKey:kModeCompassSelfLocating]) { // COMPASS_SELF_LOCATING
                 MDMode * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                                        andCredentialsUserDic:credentialsUserDic];
@@ -801,7 +801,7 @@
             return;
         }
     } else {
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
     }
 }
 

@@ -70,11 +70,11 @@
                        toUserWithUserDic:userDic
                    andCredentialsUserDic:credentialsUserDic];
     } else {
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
     }
     
     // Components
-    // TO DO: Use UUID from component 'device'. Alberto J. 2020/01/20.
+    // TODO: Use UUID from component 'device'. Alberto J. 2020/01/20.
     NSString * deviceUUID = [[NSUUID UUID] UUIDString];
     location = [[LMDelegateMonitoring alloc] initWithSharedData:sharedData
                                                         userDic:userDic
@@ -216,7 +216,7 @@
  */
 - (IBAction)handleButtonFinish:(id)sender
 {
-    // TO DO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
+    // TODO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
     // Check if in routine
     NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
                                                              andCredentialsUserDic:credentialsUserDic];
@@ -239,7 +239,7 @@
                 [sharedData validateCredentialsUserDic:credentialsUserDic]
                 )
             {
-                // TO DO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
+                // TODO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
                 
                 // Stop measuring
                 [sharedData inSessionDataSetIdleUserWithUserDic:userDic
@@ -283,7 +283,7 @@
  */
 - (IBAction)handleButtonBack:(id)sender
 {
-    // TO DO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
+    // TODO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
     [self performSegueWithIdentifier:@"fromMONITORINGToSelectPosition" sender:sender];
 }
 
@@ -449,7 +449,7 @@
             [self alertUserWithTitle:@"Items won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCM] Shared data could not be accessed while loading cells' item.");

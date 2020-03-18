@@ -285,11 +285,11 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          [self alertUserWithTitle:@"Beacon ranged won't be procesed."
          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
          andHandler:^(UIAlertAction * action) {
-         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+         // TODO: handle intrusion situations. Alberto J. 2019/09/10.
          }
          ];
          */
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
         NSLog(@"[ERROR][LMM] Shared data could not be accessed when ranged a beacon.");
         return;
     }
@@ -388,7 +388,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
              [self alertUserWithTitle:@"Beacon ranged won't be procesed."
              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
              andHandler:^(UIAlertAction * action) {
-             // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+             // TODO: handle intrusion situations. Alberto J. 2019/09/10.
              }
              ];
              */

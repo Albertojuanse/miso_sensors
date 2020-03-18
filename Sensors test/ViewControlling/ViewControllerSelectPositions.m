@@ -77,7 +77,7 @@
         [self alertUserWithTitle:@"Items won't be loaded."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
         NSLog(@"[ERROR][VCSP] Shared data could not be accessed while loading select position view.");
@@ -220,7 +220,7 @@
         // Get the current mode
         MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                           andCredentialsUserDic:credentialsUserDic];
-        // TO DO: Different behavior depending on mode. Alberto J. 2020/01/20.
+        // TODO: Different behavior depending on mode. Alberto J. 2020/01/20.
         // This button can segue with different views depending on the mode chosen by the user in the main menu
         if ([mode isModeKey:kModeMonitoring]) {
             NSLog(@"[INFO][VCSP] Chosen mode is kModeMonitoring.");
@@ -243,7 +243,7 @@
             return;
         }
         if ([mode isModeKey:kModeThetaThetaLocating]) {
-            // TO DO: Go is only allowed if the user did choose at least one position in the table. Alberto J. 2020/01/20.
+            // TODO: Go is only allowed if the user did choose at least one position in the table. Alberto J. 2020/01/20.
             NSLog(@"[INFO][VCSP] Chosen mode is kModeThetaThetaLocating.");
             [self performSegueWithIdentifier:@"fromSelectPositionsToTHETA_THETA_LOCATING" sender:sender];
         }
@@ -252,7 +252,7 @@
         [self alertUserWithTitle:@"Mode won't load."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
         NSLog(@"[ERROR][VCSP] Shared data could not be accessed when tapped 'go' button item.");
@@ -616,7 +616,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                             // PERSISTENT: SAVE ITEM
                             // Save them in persistent memory
                             NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-                            // TO DO: Assign items by user. Alberto J. 15/11/2019.
+                            // TODO: Assign items by user. Alberto J. 15/11/2019.
                             // Now there are items
                             NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
                             if (areItemsData) {

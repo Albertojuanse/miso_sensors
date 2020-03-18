@@ -95,11 +95,11 @@
                        toUserWithUserDic:userDic
                    andCredentialsUserDic:credentialsUserDic];
     } else {
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
     }
     
     // Components
-    // TO DO: Use UUID from component 'device'. Alberto J. 2020/01/20.
+    // TODO: Use UUID from component 'device'. Alberto J. 2020/01/20.
     if (!deviceUUID) {
         deviceUUID = [[NSUUID UUID] UUIDString];
     }
@@ -125,7 +125,7 @@
                                                 deviceUUID:deviceUUID
                                      andCredentialsUserDic:credentialsUserDic];
         
-        // TO DO: make this configurable or properties. Alberto J. 2019/09/13.
+        // TODO: make this configurable or properties. Alberto J. 2019/09/13.
         motion.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
         motion.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
         motion.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
@@ -389,7 +389,7 @@
         [self alertUserWithTitle:@"Measure won't be started."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
         NSLog(@"[ERROR][VCTTL] Shared data could not be accessed while starting travel.");
@@ -411,7 +411,7 @@
             [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
             
             // And send the notification
-            // TO DO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
+            // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
             // [[NSNotificationCenter defaultCenter] postNotificationName:@"startCompassHeadingMeasuring" object:nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
             NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopes\" posted.");
@@ -758,7 +758,7 @@
             [self alertUserWithTitle:@"Items won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCTTL] Shared data could not be accessed while loading cells' item.");
@@ -833,7 +833,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             [self alertUserWithTitle:@"Items won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCTTL] Shared data could not be accessed while selecting a cell.");

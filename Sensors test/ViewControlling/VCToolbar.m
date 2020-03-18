@@ -13,7 +13,7 @@
 - (void)drawRect:(CGRect)rect
 {
     // Layout
-    // TO DO: This is not working. Alberto J. 2020/01/23.
+    // TODO: This is not working. Alberto J. 2020/01/23.
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
     self.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0

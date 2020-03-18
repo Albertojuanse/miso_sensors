@@ -216,7 +216,7 @@
         ![sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
         NSLog(@"[ERROR][RR] Shared data could not be accessed before use grid aproximation.");
     }
     
@@ -237,7 +237,7 @@
                                                    andPrecisions:precisions];
         
         // It is also needed the info about the UUID that must be located; in this case the beacons.
-        // TO DO: Multiuser measures. Alberto J. 2019/09/24.
+        // TODO: Multiuser measures. Alberto J. 2019/09/24.
         NSMutableArray * everyUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
                                                                 withCredentialsUserDic:credentialsUserDic];
         
@@ -287,7 +287,7 @@
                                                                                                   ofSort:@"rssi"
                                                                                   withCredentialsUserDic:credentialsUserDic];
                             // ...and for every measure calculate its mean average.
-                            // TO DO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
+                            // TODO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
                             
                             if (measures.count == 0) {
                                 // Not evaluate
@@ -385,7 +385,7 @@
                                                    andPrecisions:precisions];
         
         // It is also needed the info about the UUID that must be located; in this case the device's UUID.
-        // TO DO: Multiuser measures. Alberto J. 2019/09/24.
+        // TODO: Multiuser measures. Alberto J. 2019/09/24.
         NSMutableArray * everyUUID = [[NSMutableArray alloc] initWithObjects:deviceUUID, nil];
         
         // And thus, for every device that must be located with its unique UUID, get from every item where measures were generated its measures and use them.
@@ -424,7 +424,7 @@
                                                                                         ofSort:@"rssi"
                                                                         withCredentialsUserDic:credentialsUserDic];
                     // ...and for every measure calculate its mean average.
-                    // TO DO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
+                    // TODO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
                     
                     
                     if (measures.count == 0) {

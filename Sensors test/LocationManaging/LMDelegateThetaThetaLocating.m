@@ -258,7 +258,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
          [self alertUserWithTitle:@"Beacon ranged won't be procesed."
          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
          andHandler:^(UIAlertAction * action) {
-         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+         // TODO: handle intrusion situations. Alberto J. 2019/09/10.
          }
          ];
          */
@@ -302,7 +302,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
             NSMutableDictionary * locatedPositions;
             
             // Precision is arbitrary set to 10 cm
-            // TO DO: Make this configurable. Alberto J. 2019/09/12.
+            // TODO: Make this configurable. Alberto J. 2019/09/12.
             NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
                                          [NSNumber numberWithFloat:0.1], @"xPrecision",
                                          [NSNumber numberWithFloat:0.1], @"yPrecision",
@@ -355,7 +355,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         }
         
         // Save variables in device memory
-        // TO DO: Session control to prevent data loss. Alberto J. 2020/02/17.
+        // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
         // Remove previous collection
         NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
         [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
@@ -395,7 +395,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 - (void) startCompassHeadingMeasuring:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"startCompassHeadingMeasuring"]){
         NSLog(@"[NOTI][LMTTL] Notification \"startCompassHeadingMeasuring\" recived.");
-        // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
+        // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                    andWithCredentialsUserDic:credentialsUserDic];        
         
@@ -413,7 +413,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
              [self alertUserWithTitle:@"Beacon ranged won't be procesed."
              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
              andHandler:^(UIAlertAction * action) {
-             // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+             // TODO: handle intrusion situations. Alberto J. 2019/09/10.
              }
              ];
              */

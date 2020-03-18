@@ -94,7 +94,7 @@
                        toUserWithUserDic:userDic
                    andCredentialsUserDic:credentialsUserDic];
     } else {
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
     }
     
     // Components and variables error management; they must be initialized in theta theta locating view
@@ -337,7 +337,7 @@
  */
 - (IBAction)handleBackFinish:(id)sender
 {
-    // TO DO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
+    // TODO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
     // Check if in routine
     NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
                                                              andCredentialsUserDic:credentialsUserDic];
@@ -396,7 +396,7 @@
         [self alertUserWithTitle:@"Items won't be loaded."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
         NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed before handle the 'modify' button.");
@@ -465,7 +465,7 @@
         [self alertUserWithTitle:@"Items won't be loaded."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
         NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed before handle the 'reference' button.");
@@ -765,7 +765,7 @@
             [self alertUserWithTitle:@"Items won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed while loading cells' item.");
@@ -881,7 +881,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         [self alertUserWithTitle:@"Items won't be loaded."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
         NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed while selecting a cell.");

@@ -19,7 +19,7 @@
     self = [super init];
     if (self) {
         
-        // TO DO: Calibration. Alberto J. 2019/11/20
+        // TODO: Calibration. Alberto J. 2019/11/20
         calibrationYvalue = [NSNumber numberWithFloat:0.01];
         // Components
         sharedData = initSharedData;
@@ -310,7 +310,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
        didRangeBeacons:(NSArray *)beacons
               inRegion:(CLBeaconRegion *)region
 {
-    // TO DO: Calibration. Alberto J. 2019/11/20
+    // TODO: Calibration. Alberto J. 2019/11/20
     calibrationYvalue = [NSNumber numberWithFloat:0.01];
     // First, validate the access to the data shared collection
     if (
@@ -323,11 +323,11 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          [self alertUserWithTitle:@"Beacon ranged won't be procesed."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
          */
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
         NSLog(@"[ERROR][LM] Shared data could not be accessed while starting travel.");
         return;
     }
@@ -370,7 +370,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 CLBeacon * beacon = [beacons objectAtIndex:0];
                 NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
                 //NSNumber * rawRSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue]];
-                // TO DO: Get the 1 meter RSSI from CLBeacon. 2019/11/14.
+                // TODO: Get the 1 meter RSSI from CLBeacon. 2019/11/14.
                 // Absolute values of speed of light, frecuency, and antenna's join gain
                 float C = 299792458.0;
                 float F = 2440000000.0; // 2400 - 2480 MHz
@@ -489,9 +489,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                         measurePosition.y = position.y;
                         measurePosition.z = position.z;
                         
-                        // TO DO. Calibration. Alberto J.
+                        // TODO. Calibration. Alberto J.
                         //NSNumber * rawRSSIdistance = [RDRhoRhoSystem calculateDistanceWithRssi:-[rssi integerValue]];
-                        // TO DO: Get the 1 meter RSSI from CLBeacon. 2019/11/14.
+                        // TODO: Get the 1 meter RSSI from CLBeacon. 2019/11/14.
                         // Absolute values of speed of light, frecuency, and antenna's join gain
                         float C = 299792458.0;
                         float F = 2440000000.0; // 2400 - 2480 MHz
@@ -502,7 +502,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                         NSMutableDictionary * locatedPositions;
                         
                         // Precision is arbitrary set to 10 cm
-                        // TO DO: Make this configurable. Alberto J. 2019/09/12.
+                        // TODO: Make this configurable. Alberto J. 2019/09/12.
                         NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
                                                      [NSNumber numberWithFloat:0.1], @"xPrecision",
                                                      [NSNumber numberWithFloat:0.1], @"yPrecision",
@@ -511,7 +511,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                         
                         // ...and save it in dictionary 'measuresDic'.
                         // Minimum sensibility 5 cm; Ipad often gives unreal values near to cero
-                        // TO DO: Make this configurable. Alberto J. 2019/09/12.
+                        // TODO: Make this configurable. Alberto J. 2019/09/12.
                         if ([RSSIdistance floatValue] > 0.05) {
                             
                             // Different behave depending on the current mode
@@ -676,7 +676,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          [self alertUserWithTitle:@"Beacon ranged won't be procesed."
          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
          andHandler:^(UIAlertAction * action) {
-         // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+         // TODO: handle intrusion situations. Alberto J. 2019/09/10.
          }
          ];
          */
@@ -734,14 +734,14 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             [mode isEqualToString:@"RHO_THETA_LOCATING"]
             )
         {
-            // TO DO: RHO_THETA_MODELING mode. Alberto J. 2019/07/18.
+            // TODO: RHO_THETA_MODELING mode. Alberto J. 2019/07/18.
         }
         
         if (
             [mode isEqualToString:@"THETA_THETA_MODELING"]
             )
         {
-            // TO DO: THETA_THETA_MODELING mode. Alberto J. 2019/07/18.
+            // TODO: THETA_THETA_MODELING mode. Alberto J. 2019/07/18.
         }
         
         if (
@@ -774,7 +774,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             NSMutableDictionary * locatedPositions;
             
             // Precision is arbitrary set to 10 cm
-            // TO DO: Make this configurable. Alberto J. 2019/09/12.
+            // TODO: Make this configurable. Alberto J. 2019/09/12.
             NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
                                          [NSNumber numberWithFloat:0.1], @"xPrecision",
                                          [NSNumber numberWithFloat:0.1], @"yPrecision",
@@ -909,7 +909,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 - (void) startUpdatingLocation:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"startUpdatingLocation"]){
         NSLog(@"[NOTI][LM] Notification \"startUpdatingLocation\" recived.");
-        // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
+        // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                    andWithCredentialsUserDic:credentialsUserDic];
         
@@ -980,7 +980,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
              [self alertUserWithTitle:@"Beacon ranged won't be procesed."
              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
              andHandler:^(UIAlertAction * action) {
-             // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+             // TODO: handle intrusion situations. Alberto J. 2019/09/10.
              }
              ];
              */
@@ -1018,7 +1018,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 - (void) stopUpdatingLocation:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"stopUpdatingLocation"]){
         NSLog(@"[NOTI][LM] Notification \"stopUpdatingLocation\" recived.");
-        // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
+        // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         [locationManager stopUpdatingLocation];
@@ -1033,7 +1033,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 - (void) startUpdatingHeading:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"startUpdatingHeading"]){
         NSLog(@"[NOTI][VCMM] Notification \"startUpdatingHeading\" recived.");
-        // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
+        // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                    andWithCredentialsUserDic:credentialsUserDic];
         
@@ -1105,7 +1105,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
              [self alertUserWithTitle:@"Beacon ranged won't be procesed."
              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
              andHandler:^(UIAlertAction * action) {
-             // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+             // TODO: handle intrusion situations. Alberto J. 2019/09/10.
              }
              ];
              */
@@ -1143,7 +1143,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 - (void) stopUpdatingHeading:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"stopUpdatingHeading"]){
         NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingHeading\" recived.");
-        // TO DO: Valorate this next sentence. Alberto J. 2019/12/11.
+        // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         [locationManager stopUpdatingHeading];
@@ -1300,7 +1300,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
              [self alertUserWithTitle:@"Beacon ranged won't be procesed."
              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
              andHandler:^(UIAlertAction * action) {
-             // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+             // TODO: handle intrusion situations. Alberto J. 2019/09/10.
              }
              ];
              */

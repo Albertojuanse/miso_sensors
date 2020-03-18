@@ -63,7 +63,7 @@
         
     } else {
         // No saved data
-        // TO DO: Ask user if demo types have to be loaded. Alberto J. 2020/01/27.
+        // TODO: Ask user if demo types have to be loaded. Alberto J. 2020/01/27.
         
         // Create the types and its attributes
         MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
@@ -203,7 +203,7 @@
         
     } else {
         // No saved data
-        // TO DO: Ask user if demo metamodels have to be loaded. Alberto J. 2020/01/27.
+        // TODO: Ask user if demo metamodels have to be loaded. Alberto J. 2020/01/27.
         
         // Create some modes to use the metamodels
         NSNumber * modeMonitorig = [NSNumber numberWithInt:0];

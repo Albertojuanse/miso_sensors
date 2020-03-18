@@ -104,7 +104,7 @@
         ![sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
         NSLog(@"[ERROR][RT] Shared data could not be accessed before use barycenter aproximation.");
     }
     
@@ -120,7 +120,7 @@
         // In a modeling mode the items must be located using the measures taken by the device or devices from items and the headings aginst them. That implies that, each UUID groups the measures taken from a certain beacon and so, for every one of them a RDPosition would be found.
         
         // It is also needed the info about the UUID that must be located; in this case the beacons.
-        // TO DO: Multiuser measures. Alberto J. 2019/09/24.
+        // TODO: Multiuser measures. Alberto J. 2019/09/24.
         NSMutableArray * everyUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
                                                                 withCredentialsUserDic:credentialsUserDic];
         
@@ -134,7 +134,7 @@
             BOOL isRSSIMeasure = NO;
             
             // For every position where measures were taken, which is usually only one,...
-            // TO DO: Device can move slightly without being in a new position. Alberto J. 2019/09/234.
+            // TODO: Device can move slightly without being in a new position. Alberto J. 2019/09/234.
             NSMutableArray * measurePositions = [sharedData fromMeasuresDataGetPositionsWithMeasuresOfUserDic:userDic
                                                                                        withCredentialsUserDic:credentialsUserDic];
             for (RDPosition * measurePosition in measurePositions) {
@@ -151,7 +151,7 @@
                                                                                              ofSort:@"heading"
                                                                              withCredentialsUserDic:credentialsUserDic];
                 // ...and for every measure calculate its mean average.
-                // TO DO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
+                // TODO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
                 NSLog(@"[INFO]][RT] rssiMeasures.count %.2f", [[NSNumber numberWithInteger:rssiMeasures.count] floatValue]);
                 NSLog(@"[INFO]][RT] headingMeasures.count %.2f", [[NSNumber numberWithInteger:headingMeasures.count] floatValue]);
                 if (!(rssiMeasures.count == 0) && !(headingMeasures.count == 0)) {
@@ -241,12 +241,12 @@
         // In a locating mode the device must be located using the measures from items and the headings aginst them. That implies that, each UUID groups the measures taken from a certain beacon and the device position must be calculed using all of them.
         
         // It is also needed the info about the UUID that must be located; in this case the beacons.
-        // TO DO: Multiuser measures. Alberto J. 2019/09/24.
+        // TODO: Multiuser measures. Alberto J. 2019/09/24.
         NSMutableArray * everyUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
                                                                 withCredentialsUserDic:credentialsUserDic];
         
         // And thus, for every beacon that is used to location with its unique UUID, get the measures that come from every item or that aim it; the measure position is unknown, but the items positions are so. The located item is the device.
-        // TO DO: Multiuser measures. Alberto J. 2019/09/24.
+        // TODO: Multiuser measures. Alberto J. 2019/09/24.
         NSString * uuid = deviceUUID; // In this mode it is known.
         
         // And thus, for every item used for locating with it unique UUID.
@@ -258,7 +258,7 @@
             BOOL isRSSIMeasure = NO;
             
             // Get the measures taken from the UUID that must be located.
-            // TO DO: Multiuser measures. Alberto J. 2019/09/24.
+            // TODO: Multiuser measures. Alberto J. 2019/09/24.
             NSMutableArray * rssiMeasures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
                                                                            takenFromItemUUID:UUIDusedToLocate
                                                                                       ofSort:@"rssi"
@@ -269,7 +269,7 @@
                                                                          withCredentialsUserDic:credentialsUserDic];
             
             // ...and for every measure calculate its mean average.
-            // TO DO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
+            // TODO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
             
             NSNumber * measuresRSSIAcumulation = [NSNumber numberWithFloat:0.0];
             NSInteger measureRSSIIndex = 0;
@@ -340,7 +340,7 @@
                 
                 if (itemPosition) {
                     // Perform the calculus
-                    // TO DO: Z coordinate. Alberto J. 2019/09/24.
+                    // TODO: Z coordinate. Alberto J. 2019/09/24.
                     RDPosition * locatedPosition = [[RDPosition alloc] init];
                     locatedPosition.x = [NSNumber numberWithFloat:[itemPosition.x floatValue] -
                                          [measuresRSSIAverage floatValue] *

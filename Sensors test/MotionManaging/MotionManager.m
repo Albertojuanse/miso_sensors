@@ -976,11 +976,11 @@
              [self alertUserWithTitle:@"Beacon ranged won't be procesed."
              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
              andHandler:^(UIAlertAction * action) {
-             // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+             // TODO: handle intrusion situations. Alberto J. 2019/09/10.
              }
              ];
              */
-            // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+            // TODO: handle intrusion situations. Alberto J. 2019/09/10.
             NSLog(@"[ERROR][VCRRM] Shared data could not be accessed while starting travel.");
             return;
         }
@@ -1008,7 +1008,7 @@
             [mode isModeKey:kModeRhoThetaLocating]
             )
         {
-            // TO DO: Alberto J. 2019/10/15.
+            // TODO: Alberto J. 2019/10/15.
         }
         
         // If a theta theta type system; it is supposed that in this case gyroscopes are used to get the heading
@@ -1047,7 +1047,7 @@
             NSMutableDictionary * locatedPositions;
             
             // Precision is arbitrary set to 10 cm
-            // TO DO: Make this configurable. Alberto J. 2019/09/12.
+            // TODO: Make this configurable. Alberto J. 2019/09/12.
             NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
                                          [NSNumber numberWithFloat:0.1], @"xPrecision",
                                          [NSNumber numberWithFloat:0.1], @"yPrecision",

@@ -104,11 +104,11 @@
         [self alertUserWithTitle:@"User not allowed."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
         NSLog(@"[ERROR][VCFM] Shared data could not be accessed after view loading.");
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
     }
 }
 
@@ -187,7 +187,7 @@
  */
 - (IBAction)handleButonSubmit:(id)sender
 {
-    // TO DO: Model must be a COPY of the items and the references must be removed. Alberto J. 2019/10/18
+    // TODO: Model must be a COPY of the items and the references must be removed. Alberto J. 2019/10/18
     
     // Check if name exists
     NSString * name = [self.nameText text];
@@ -263,7 +263,7 @@
         // PERSISTENT: SAVE MODEL
         // Save it in persistent memory
         NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-        // TO DO: Assign items by user. Alberto J. 15/11/2019.
+        // TODO: Assign items by user. Alberto J. 15/11/2019.
         // Now there are models
         NSData * areModelsData = [userDefaults objectForKey:@"es.uam.miso/data/models/areModels"];
         if (areModelsData) {
@@ -335,7 +335,7 @@
  */
 - (void) submitTemporalModel
 {
-    // TO DO: Model must be a COPY of the items and the references must be removed. Alberto J. 2019/10/18
+    // TODO: Model must be a COPY of the items and the references must be removed. Alberto J. 2019/10/18
     
     // Check if name exists
     NSString * name = @"temp_model";

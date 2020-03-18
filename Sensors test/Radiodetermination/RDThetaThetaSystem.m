@@ -104,7 +104,7 @@
         ![sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
         NSLog(@"[ERROR][TT] Shared data could not be accessed before use barycenter aproximation.");
     }
     
@@ -120,7 +120,7 @@
         // In theta theta based systems each UUID represents a position that must be located using the headings measures against to it, and so, for every one of them a RDPosition would be found.
         
         // It is also needed the info about the UUID that must be located.
-        // TO DO: Multiuser measures. Alberto J. 2019/09/24.
+        // TODO: Multiuser measures. Alberto J. 2019/09/24.
         NSMutableArray * everyUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
                                                                 withCredentialsUserDic:credentialsUserDic];
         
@@ -164,7 +164,7 @@
                         measureDicDic = uuidDic[@"uuidMeasures"];
                         
                         // ...and for every measure calculate its mean average.
-                        // TO DO Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
+                        // TODO Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
                         
                         // But only do this if the 'measureDicDic' exists
                         if (measureDicDic.count == 0) {
@@ -361,7 +361,7 @@
         // In theta theta locating systems each UUID represents an item that the user aims to measure the header against it. Using those measures the device position must be located.
         
         // Get the info about the items UUID used for the location.
-        // TO DO: Multiuser measures. Alberto J. 2019/09/24.
+        // TODO: Multiuser measures. Alberto J. 2019/09/24.
         NSMutableArray * everyItemUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
                                                                 withCredentialsUserDic:credentialsUserDic];
         
@@ -415,7 +415,7 @@
                                                                              withCredentialsUserDic:credentialsUserDic];
                 
                 // ...and calculate its mean average.
-                // TO DO Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
+                // TODO Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
                 NSNumber * measuresHeadingAcumulation = [NSNumber numberWithFloat:0.0];
                 // Measures are only feasible if there are heading type measures.
                 NSInteger measureHeadingIndex = 0;
@@ -563,7 +563,7 @@
                         lastPosition = nil;
                         lastPosition = eachPosition;
                         
-                        // TO DO: Z coordinate. Alberto J. 2019/09/24.
+                        // TODO: Z coordinate. Alberto J. 2019/09/24.
                         solution.z = [NSNumber numberWithFloat:0.0];
                         
                         NSLog(@"[INFO][TT] Solution %@", solution);

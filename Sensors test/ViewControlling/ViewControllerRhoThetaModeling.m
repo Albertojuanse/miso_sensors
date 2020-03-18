@@ -94,11 +94,11 @@
                        toUserWithUserDic:userDic
                    andCredentialsUserDic:credentialsUserDic];
     } else {
-        // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
     }
     
     // Components
-    // TO DO: Use position and UUID from component 'device'. Alberto J. 2020/01/20.
+    // TODO: Use position and UUID from component 'device'. Alberto J. 2020/01/20.
     // Get chosen item and set as device position and UUID
     if (!rhoThetaSystem) {
         rhoThetaSystem = [[RDRhoThetaSystem alloc] initWithSharedData:sharedData
@@ -358,7 +358,7 @@
         [self alertUserWithTitle:@"Measure won't be started."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                       andHandler:^(UIAlertAction * action) {
-                          // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
         NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while starting travel.");
@@ -512,7 +512,7 @@
             [self alertUserWithTitle:@"Items won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while loading items.");
@@ -690,7 +690,7 @@
             [self alertUserWithTitle:@"Items won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while loading cells' item.");
@@ -744,7 +744,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
             [self alertUserWithTitle:@"Items won't be loaded."
                              message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
                           andHandler:^(UIAlertAction * action) {
-                              // TO DO: handle intrusion situations. Alberto J. 2019/09/10.
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
             NSLog(@"[ERROR][VCRTM] Shared data could not be accessed while selecting a cell.");
