@@ -49,8 +49,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *signOutButton;
 @property (weak, nonatomic) IBOutlet UIButton *logOutButton;
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;
-@property (weak, nonatomic) IBOutlet UITableView *tableItemsChosen;
-@property (weak, nonatomic) IBOutlet UITableView *tableTypes;
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
 @property (weak, nonatomic) IBOutlet UIButton *buttonMeasure;
 @property (weak, nonatomic) IBOutlet UIButton *buttonModel;
