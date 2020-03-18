@@ -43,19 +43,78 @@
 }
 
 /*!
-@method initWithFrame:initRealPosition:andUUID
+@method initWithFrame:realPosition:canvasPosition:andUUID
 @discussion Constructor with a given specific frame in which be embedded, real position and UUID identifier.
 */
 -(instancetype)initWithFrame:(CGRect)frame
                 realPosition:(RDPosition *)initRealPosition
+              canvasPosition:(RDPosition *)initCanvasPosition
                      andUUID:(NSString *)initUUID
 {
     self = [self initWithFrame:frame];
     if (self) {
         realPosition = initRealPosition;
+        canvasPosition = initCanvasPosition;
         uuid = initUUID;
     }
     return self;
+}
+
+#pragma mark - Instance methods
+/*!
+ @method getRealPosition
+ @discussion Getter of the 'realPosition' attribute.
+ */
+- (RDPosition *)getRealPosition
+{
+    return realPosition;
+}
+
+/*!
+ @method setRealPosition
+ @discussion Setter of the 'realPosition' attribute.
+ */
+- (void)setRealPosition:(RDPosition *)givenRealPosition
+{
+    realPosition = givenRealPosition;
+    
+}
+
+/*!
+ @method getCanvasPosition
+ @discussion Getter of the 'canvasPosition' attribute.
+ */
+- (RDPosition *)getCanvasPosition
+{
+    return canvasPosition;
+}
+
+/*!
+ @method setCanvasPosition
+ @discussion Setter of the 'canvasPosition' attribute.
+ */
+- (void)setCanvasPosition:(RDPosition *)givenCanvasPosition
+{
+    canvasPosition = givenCanvasPosition;
+    
+}
+
+/*!
+ @method getUUID
+ @discussion Getter of the 'uuid' attribute.
+ */
+- (NSString *)getUUID
+{
+    return uuid;
+}
+
+/*!
+ @method setUUID
+ @discussion Setter of the 'uuid' attribute.
+ */
+- (void)setUUID:(NSString *)givenUUID
+{
+    uuid = givenUUID;
 }
 
 #pragma mark - Drawing methods

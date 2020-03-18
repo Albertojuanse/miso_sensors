@@ -703,6 +703,7 @@
                                                                             [positionWidth floatValue],
                                                                             [positionHeight floatValue])
                                                     realPosition:realPosition
+                                                  canvasPosition:canvasPosition
                                                          andUUID:uuid];
     [self addSubview:positionView];
     
