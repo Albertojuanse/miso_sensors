@@ -31,11 +31,17 @@
                             <action selector="handleButtonEdit:" destination="4yF-2f-Nb7" eventType="touchUpInside" id="y8R-pe-d7M"/>
                         </connections>
                     </button>
+                    <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BtA-hw-ygG">
+                        <rect key="frame" x="0.0" y="96" width="320" height="216"/>
+                    </pickerView>
                 </subviews>
                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                 <constraints>
                     <constraint firstItem="jKY-L8-rgU" firstAttribute="top" secondItem="VEH-bw-Kjg" secondAttribute="top" constant="32" id="050-8M-LAf"/>
                     <constraint firstItem="xlt-Ub-b80" firstAttribute="top" secondItem="VEH-bw-Kjg" secondAttribute="top" constant="32" id="1z0-Df-26z"/>
+                    <constraint firstItem="BtA-hw-ygG" firstAttribute="top" secondItem="jKY-L8-rgU" secondAttribute="bottom" constant="16" id="SUg-Ff-5kX"/>
+                    <constraint firstItem="BtA-hw-ygG" firstAttribute="leading" secondItem="VEH-bw-Kjg" secondAttribute="leading" id="r0T-H5-xK6"/>
+                    <constraint firstItem="BtA-hw-ygG" firstAttribute="trailing" secondItem="VEH-bw-Kjg" secondAttribute="trailing" id="vTZ-MA-Xb8"/>
                     <constraint firstItem="VEH-bw-Kjg" firstAttribute="trailing" secondItem="xlt-Ub-b80" secondAttribute="trailing" constant="32" id="xJJ-T2-pLM"/>
                     <constraint firstItem="jKY-L8-rgU" firstAttribute="leading" secondItem="VEH-bw-Kjg" secondAttribute="leading" constant="32" id="xp6-Ql-jOd"/>
                 </constraints>
@@ -44,6 +50,7 @@
             <connections>
                 <outlet property="cancelButton" destination="jKY-L8-rgU" id="3Gk-sp-Y9f"/>
                 <outlet property="editButton" destination="xlt-Ub-b80" id="FUY-Rg-qhG"/>
+                <outlet property="typePicker" destination="BtA-hw-ygG" id="UQf-Z4-exX"/>
             </connections>
             <point key="canvasLocation" x="78.75" y="73.75"/>
         </viewController>

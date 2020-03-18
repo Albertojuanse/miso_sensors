@@ -35,7 +35,10 @@
                                                     alpha:1.0
                                     ]
                           forState:UIControlStateNormal];
-    [self.itemView setUserInteractionEnabled:NO];
+    
+    // Picker delegates
+    self.typePicker.dataSource = self;
+    self.typePicker.delegate = self;
 }
 
 /*!
@@ -105,6 +108,15 @@
     itemPositionIdNumber = givenItemPositionIdNumber;
 }
 
+/*!
+ @method setModeTypes:
+ @discussion This method sets the NSMutableArray variable 'modeTypes'.
+ */
+- (void) setModeTypes:(NSMutableArray *)givenModeTypes
+{
+    modeTypes = givenModeTypes;
+}
+
 #pragma mark - Buttons event handlers
 
 /*!
@@ -124,9 +136,14 @@
 - (IBAction)handleButtonEdit:(id)sender
 {
     // Dismiss the popover view
+    itemChosenByUser[@"type"] = nil; // ARC dispose
+    itemChosenByUser[@"type"] = typeChosenByUser; // ARC dispose
+    NSLog(@"[NOTI][VCEC] Notification \"refreshCanvas\" posted.");
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:@"refreshCanvas"
+     object:nil];
     [self dismissViewControllerAnimated:YES completion:Nil];
 }
-
 
 /*!
  @method alertUserWithTitle:andMessage:
@@ -152,7 +169,7 @@
     return;
 }
 
-#pragma mark - UIPopoverPresentationControllerDelegate mwthods
+#pragma mark - UIPopoverPresentationControllerDelegate methods
 /*!
 @method adaptivePresentationStyleForPresentationController:
 @discussion This method is called by the UIPopoverPresentationControllerDelegate protocol.
@@ -162,4 +179,71 @@
     return UIModalPresentationNone;
 }
 
+#pragma mark - UIPickerViewDelegate methods
+/*!
+@method numberOfComponentsInPickerView
+@discussion Called by the picker view when it needs the number of components.
+*/
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+/*!
+@method pickerView:numberOfRowsInComponent:
+@discussion Called by the picker view when it needs the number of rows for a specified component.
+*/
+- (NSInteger)pickerView:(UIPickerView *)pickerView
+numberOfRowsInComponent:(NSInteger)component
+{
+    NSInteger numberOfRows = modeTypes.count;
+    return numberOfRows;
+}
+
+/*!
+@method pickerView:rowHeightForComponent:
+@discussion Called by the picker view when it needs the row height to use for drawing row content.
+*/
+- (CGFloat)pickerView:(UIPickerView *)pickerView
+rowHeightForComponent:(NSInteger)component
+{
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+       NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSNumber * rowHeight = layoutDic[@"pickers/rowHeight"];
+    return [rowHeight floatValue];
+}
+
+/*!
+@method pickerView:widthForComponent:
+@discussion Called by the picker view when it needs the row width to use for drawing row content.
+*/
+- (CGFloat)pickerView:(UIPickerView *)pickerView
+    widthForComponent:(NSInteger)component
+{
+    CGRect selfViewFrame = [self.view frame];
+    return selfViewFrame.size.width;
+}
+
+/*!
+@method pickerView:widthForComponent:
+@discussion Called by the picker view when it needs the title to use for a given row in a given component.
+*/
+- (NSString *)pickerView:(UIPickerView *)pickerView
+             titleForRow:(NSInteger)row
+            forComponent:(NSInteger)component
+{
+    return [[modeTypes objectAtIndex:row] getName];
+}
+
+/*!
+@method pickerView:didSelectRow:inComponent:
+@discussion Called by the picker view when the user selects a row in a component.
+*/
+- (void)pickerView:(UIPickerView *)pickerView
+      didSelectRow:(NSInteger)row
+       inComponent:(NSInteger)component
+{
+    NSLog(@"[INFO][VCEC] User did pick the type %@", [modeTypes objectAtIndex:row]);
+    typeChosenByUser = [modeTypes objectAtIndex:row];
+}
 @end

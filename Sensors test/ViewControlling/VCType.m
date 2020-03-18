@@ -69,7 +69,7 @@
     UILabel * typeTextView = [[UILabel alloc] initWithFrame:rect];
     [typeTextView setText:[NSString stringWithFormat:@"<%@>", name]];
     [typeTextView setFont:[UIFont systemFontOfSize:16]];
-    [typeTextView setTextAlignment:NSTextAlignmentCenter];
+    [typeTextView setTextAlignment:NSTextAlignmentLeft];
     [typeTextView setBackgroundColor:[UIColor clearColor]];
     [typeTextView setTextColor:color];
     [self addSubview:typeTextView];

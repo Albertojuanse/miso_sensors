@@ -24,5 +24,9 @@
 	<integer>30</integer>
 	<key>canvas/safeAreaRatio</key>
 	<integer>25</integer>
+	<key>pickers/rowHeight</key>
+	<integer>20</integer>
+	<key>pickers/rowWidth</key>
+	<integer>200</integer>
 </dict>
 </plist>

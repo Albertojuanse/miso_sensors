@@ -132,7 +132,7 @@
                                   ];
     [positionTextView setText:[NSString stringWithFormat:@"(%.2f, %.2f)", [realPosition.x floatValue], [realPosition.y floatValue]]];
     [positionTextView setFont:[UIFont systemFontOfSize:14]];
-    [positionTextView setTextAlignment:NSTextAlignmentCenter];
+    [positionTextView setTextAlignment:NSTextAlignmentLeft];
     [positionTextView setBackgroundColor:[UIColor clearColor]];
     [positionTextView setTextColor:[UIColor blackColor]];
     [self addSubview:positionTextView];
@@ -145,7 +145,7 @@
                               ];
     [uuidTextView setText:[NSString stringWithFormat:@"%@", [uuid substringFromIndex:30]]];
     [uuidTextView setFont:[UIFont systemFontOfSize:14]];
-    [uuidTextView setTextAlignment:NSTextAlignmentCenter];
+    [uuidTextView setTextAlignment:NSTextAlignmentLeft];
     [uuidTextView setBackgroundColor:[UIColor clearColor]];
     [uuidTextView setTextColor:[UIColor blackColor]];
     [self addSubview:uuidTextView];

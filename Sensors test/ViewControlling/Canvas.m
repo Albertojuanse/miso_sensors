@@ -745,7 +745,7 @@
     UIColor * color = [self getColorForIndex:typeIndex];
     VCType * typeView = [[VCType alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue] + 5.0,
                                                                  [canvasPosition.y floatValue] - 10.0,
-                                                                 100,
+                                                                 400,
                                                                  20)
                                                 color:color
                                               andName:[type getName]];
@@ -845,7 +845,7 @@
     // ...and draw it
     VCType * typeView = [[VCType alloc] initWithFrame:CGRectMake([middleX floatValue] + 5.0,
                                                                  [middleY floatValue] - 10.0,
-                                                                 200,
+                                                                 400,
                                                                  20)
                                                 color:color
                                               andName:[referenceType getName]];

@@ -315,6 +315,7 @@
         [viewControllerEditComponent setSharedData:sharedData];
         [viewControllerEditComponent setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerEditComponent setItemPositionIdNumber:itemPositionIdNumber];
+        [viewControllerEditComponent setModeTypes:modeTypes];
         // Configure popover layout
         NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
         NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];

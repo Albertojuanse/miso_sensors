@@ -18,7 +18,7 @@
  @class ViewControllerEditComponent
  @discussion This class extends UIViewController and controls the menu to edit any positioned component of the model.
  */
-@interface ViewControllerEditComponent : UIViewController <UIPopoverPresentationControllerDelegate> {
+@interface ViewControllerEditComponent : UIViewController <UIPopoverPresentationControllerDelegate, UIPickerViewDataSource, UIPickerViewDelegate> {
     
     // Other components
     SharedData * sharedData;
@@ -34,12 +34,14 @@
     
     // Variables
     NSMutableDictionary * itemChosenByUser;
+    NSMutableArray * modeTypes;
+    MDType * typeChosenByUser;
     
 }
 
 @property (weak, nonatomic) IBOutlet UIButton * cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton * editButton;
-@property (weak, nonatomic) IBOutlet UIView *itemView;
+@property (weak, nonatomic) IBOutlet UIPickerView * typePicker;
 
 
 // Methods for passing volatile variables that disappear when segue between views
@@ -48,5 +50,6 @@
 - (void) setSharedData:(SharedData *)givenSharedData;
 - (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void) setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
+- (void) setModeTypes:(NSMutableArray *)givenModeTypes;
 
 @end
