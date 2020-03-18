@@ -1088,7 +1088,6 @@
                         <outlet property="tableTypes" destination="0wa-2x-dpD" id="moV-2U-eMv"/>
                         <segue destination="zBC-hA-n0a" kind="presentation" identifier="fromRHO_THETA_MODELINGToSelectPosition" modalPresentationStyle="fullScreen" id="ARI-Cn-mJV"/>
                         <segue destination="uPa-6T-tLt" kind="presentation" identifier="fromRHO_THETA_MODELINGToModellingRHO_THETA_MODELLING" modalPresentationStyle="fullScreen" id="vq0-hE-yY9"/>
-                        <segue destination="mrd-V7-rF9" kind="show" identifier="fromRHO_THETA_MODELINGToEditComponent" id="Ae2-6j-T9t"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AZT-QR-dYO" sceneMemberID="firstResponder"/>
@@ -1255,7 +1254,6 @@
                         <outlet property="toolbar" destination="L59-Ls-pzL" id="M4e-Di-WBV"/>
                         <segue destination="zBC-hA-n0a" kind="presentation" identifier="fromTHETA_THETA_LOCATINGToSelectPosition" modalPresentationStyle="fullScreen" id="2AF-RI-iGH"/>
                         <segue destination="fiB-CG-Opu" kind="presentation" identifier="fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING" modalPresentationStyle="fullScreen" id="Ul9-9n-vjH"/>
-                        <segue destination="mrd-V7-rF9" kind="show" identifier="fromTHETA_THETA_LOCATINGToEditComponent" id="H3J-80-Abf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="O8n-DL-srm" sceneMemberID="firstResponder"/>
@@ -1995,7 +1993,6 @@
                         <outlet property="tableTypes" destination="jFv-aP-gql" id="7iB-iL-xeX"/>
                         <outlet property="toolbar" destination="3DG-e0-ZrV" id="U3I-uJ-aRx"/>
                         <segue destination="zBC-hA-n0a" kind="presentation" identifier="fromRHO_RHO_LOCATINGToSelectPosition" modalPresentationStyle="fullScreen" id="mQN-zE-pLX"/>
-                        <segue destination="mrd-V7-rF9" kind="show" identifier="fromRHO_RHO_LOCATINGToEditComponent" id="13e-BO-CaB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gQy-G9-4cL" sceneMemberID="firstResponder"/>
@@ -2563,7 +2560,7 @@
             <objects>
                 <viewController id="mrd-V7-rF9" customClass="ViewControllerEditComponent" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="4QN-GX-Jla">
-                        <rect key="frame" x="0.0" y="0.0" width="712" height="984"/>
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YiZ-EB-y3w">
@@ -2581,9 +2578,6 @@
                     <navigationItem key="navigationItem" id="5q7-rC-i36"/>
                     <connections>
                         <outlet property="backButton" destination="YiZ-EB-y3w" id="Uxy-VS-aUW"/>
-                        <segue destination="04n-E6-oj0" kind="presentation" identifier="fromEditComponentToRHO_RHO_LOCATING" modalPresentationStyle="fullScreen" id="4Ji-9w-eTc"/>
-                        <segue destination="1M1-iA-J20" kind="presentation" identifier="fromEditComponentToRHO_THETA_MODELING" modalPresentationStyle="fullScreen" id="KWB-o7-J3V"/>
-                        <segue destination="iCa-UJ-9hQ" kind="presentation" identifier="fromEditComponentToTHETA_THETA_LOCATING" modalPresentationStyle="fullScreen" id="Lss-AE-Y9T"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oUA-oi-eYN" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2596,11 +2590,11 @@
         <image name="miso.png" width="134.39999389648438" height="108"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="13e-BO-CaB"/>
-        <segue reference="4Ji-9w-eTc"/>
+        <segue reference="Ul9-9n-vjH"/>
+        <segue reference="x22-tD-Meu"/>
         <segue reference="V1q-Xa-Ew3"/>
-        <segue reference="Lss-AE-Y9T"/>
-        <segue reference="KWB-o7-J3V"/>
+        <segue reference="NKP-hK-ln4"/>
+        <segue reference="ZVX-zW-HeN"/>
         <segue reference="2AF-RI-iGH"/>
         <segue reference="OWJ-G0-Y79"/>
         <segue reference="Eai-Xz-BxM"/>

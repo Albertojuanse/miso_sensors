@@ -77,6 +77,10 @@
                                                    alpha:0.3
                                     ]
                           forState:UIControlStateDisabled];
+    // Pop up view
+    [self.popupView setBackgroundColor:[UIColor clearColor]];
+    [self.popupView setUserInteractionEnabled:NO];
+    // Other components
     [self.signOutButton setTitleColor:[UIColor whiteColor]
                              forState:UIControlStateNormal];
     [self.logOutButton setTitleColor:[UIColor whiteColor]
@@ -277,7 +281,8 @@
         
         // User did choose an item; get it...
         NSDictionary * dataDic = notification.userInfo;
-        NSString * chosenItemUUID = dataDic[@"uuid"];
+        VCPosition * sourceViewChosenByUser = dataDic[@"sourceView"];
+        NSString * chosenItemUUID = [sourceViewChosenByUser getUUID];
         NSMutableArray * itemsChosenByUser = [sharedData fromItemDataGetItemsWithUUID:chosenItemUUID
                                                                 andCredentialsUserDic:credentialsUserDic];
         if (itemsChosenByUser.count == 0) {
@@ -295,7 +300,32 @@
         [sharedData inSessionDataSetItemChosenByUser:itemChosenByUser
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
-        [self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToEditComponent" sender:nil];
+        
+        // Present the view as a pop up
+        //[self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToEditComponent" sender:nil];
+        ViewControllerEditComponent * viewControllerEditComponent = [[ViewControllerEditComponent alloc] init];
+        [viewControllerEditComponent setModalPresentationStyle:UIModalPresentationPopover];
+        // Set the variables
+        [viewControllerEditComponent setCredentialsUserDic:credentialsUserDic];
+        [viewControllerEditComponent setUserDic:userDic];
+        [viewControllerEditComponent setSharedData:sharedData];
+        [viewControllerEditComponent setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerEditComponent setItemPositionIdNumber:itemPositionIdNumber];
+        // Configure popover layout
+        NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+        NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+        NSNumber * positionWidth = layoutDic[@"canvas/position/width"];
+        NSNumber * positionHeight = layoutDic[@"canvas/position/height"];
+        UIPopoverPresentationController * popoverEditComponent =  viewControllerEditComponent.popoverPresentationController;
+        [popoverEditComponent setDelegate:viewControllerEditComponent];
+        [popoverEditComponent setSourceView:sourceViewChosenByUser];
+        [popoverEditComponent setSourceRect:CGRectMake([positionWidth floatValue]/2.0,
+                                                       [positionHeight floatValue],
+                                                       1,
+                                                       1)];
+        [popoverEditComponent setPermittedArrowDirections:UIPopoverArrowDirectionAny];
+        // Show the view
+        [self presentViewController:viewControllerEditComponent animated:YES completion:nil];
     }
 }
 
@@ -539,18 +569,6 @@
         return;
     }
     
-    if ([[segue identifier] isEqualToString:@"fromTHETA_THETA_LOCATINGToEditComponent"]) {
-        
-        // Get destination view
-        ViewControllerEditComponent * viewControllerEditComponent = [segue destinationViewController];
-        // Set the variables
-        [viewControllerEditComponent setCredentialsUserDic:credentialsUserDic];
-        [viewControllerEditComponent setUserDic:userDic];
-        [viewControllerEditComponent setSharedData:sharedData];
-        [viewControllerEditComponent setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerEditComponent setItemPositionIdNumber:itemPositionIdNumber];
-        return;
-    }
 }
 
 #pragma mark - UItableView delegate methods

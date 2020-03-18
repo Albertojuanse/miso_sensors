@@ -163,4 +163,14 @@
     return;
 }
 
+#pragma mark - UIPopoverPresentationControllerDelegate mwthods
+/*!
+@method adaptivePresentationStyleForPresentationController:
+@discussion This method is called by the UIPopoverPresentationControllerDelegate protocol.
+*/
+- (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller
+{
+    return UIModalPresentationNone;
+}
+
 @end

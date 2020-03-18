@@ -16,7 +16,7 @@
  @class ViewControllerEditComponent
  @discussion This class extends UIViewController and controls the menu to edit any positioned component of the model.
  */
-@interface ViewControllerEditComponent : UIViewController {
+@interface ViewControllerEditComponent : UIViewController <UIPopoverPresentationControllerDelegate> {
     
     // Other components
     SharedData * sharedData;

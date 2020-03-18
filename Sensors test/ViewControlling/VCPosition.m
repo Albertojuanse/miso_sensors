@@ -185,8 +185,7 @@
 {
     // When user taps this view, the edit component view must be presented
     NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
-    [dataDic setObject:realPosition forKey:@"realPosition"];
-    [dataDic setObject:uuid forKey:@"uuid"];
+    [dataDic setObject:self forKey:@"sourceView"];
     // And send the notification
     [[NSNotificationCenter defaultCenter] postNotificationName:@"presentEditComponentView"
                                                         object:nil

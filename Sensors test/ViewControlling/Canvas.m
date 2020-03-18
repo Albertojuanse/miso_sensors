@@ -713,6 +713,7 @@
                                                                                          100,
                                                                                          20)
                                                                  realPosition:realPosition
+                                                               canvasPosition:canvasPosition
                                                                       andUUID:uuid];
     [self addSubview:positionTextView];
     
