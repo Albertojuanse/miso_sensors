@@ -17,13 +17,23 @@
 @interface VCPositionInfo: UIView {
     
     RDPosition * realPosition;
+    RDPosition * canvasPosition;
     NSString * uuid;
     
 }
 
 -(instancetype)init;
+-(instancetype)initWithFrame:(CGRect)frame;
 -(instancetype)initWithFrame:(CGRect)frame
                 realPosition:(RDPosition *)initRealPosition
+              canvasPosition:(RDPosition *)initCanvasPosition
                      andUUID:(NSString *)initUUID;
+- (RDPosition *)getRealPosition;
+- (void)setRealPosition:(RDPosition *)givenRealPosition;
+- (RDPosition *)getCanvasPosition;
+- (void)setCanvasPosition:(RDPosition *)givenCanvasPosition;
+- (NSString *)getUUID;
+- (void)setUUID:(NSString *)givenUUID;
+
 
 @end
