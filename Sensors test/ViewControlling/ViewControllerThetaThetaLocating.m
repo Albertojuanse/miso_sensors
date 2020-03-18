@@ -77,9 +77,6 @@
                                                    alpha:0.3
                                     ]
                           forState:UIControlStateDisabled];
-    // Pop up view
-    [self.popupView setBackgroundColor:[UIColor clearColor]];
-    [self.popupView setUserInteractionEnabled:NO];
     // Other components
     [self.signOutButton setTitleColor:[UIColor whiteColor]
                              forState:UIControlStateNormal];
@@ -280,8 +277,11 @@
         NSLog(@"[NOTI][VC] Notification \"presentEditComponentView\" recived.");
         
         // User did choose an item; get it...
-        NSDictionary * dataDic = notification.userInfo;
-        VCPosition * sourceViewChosenByUser = dataDic[@"sourceView"];
+        VCPosition * sourceViewChosenByUser = [notification object];
+        if (!sourceViewChosenByUser) {
+            NSLog(@"[ERROR][VCTTL] Object VCPosition not found in notification.");
+            return;
+        }
         NSString * chosenItemUUID = [sourceViewChosenByUser getUUID];
         NSMutableArray * itemsChosenByUser = [sharedData fromItemDataGetItemsWithUUID:chosenItemUUID
                                                                 andCredentialsUserDic:credentialsUserDic];

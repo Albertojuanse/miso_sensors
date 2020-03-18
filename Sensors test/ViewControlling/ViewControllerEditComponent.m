@@ -18,6 +18,24 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // Visualization
+    // Toolbar layout
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    [self.cancelButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                      blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                     alpha:1.0
+                                      ]
+                            forState:UIControlStateNormal];
+    [self.editButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                    alpha:1.0
+                                    ]
+                          forState:UIControlStateNormal];
+    [self.itemView setUserInteractionEnabled:NO];
 }
 
 /*!
@@ -48,8 +66,6 @@
  */
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic
 {
-    
-    NSLog(@"[HOLA][VCEC] Setting credentials %", givenCredentialsUserDic);
     credentialsUserDic = givenCredentialsUserDic;
 }
 
@@ -92,13 +108,25 @@
 #pragma mark - Buttons event handlers
 
 /*!
- @method handleButtonBack:
- @discussion This method handles the 'back' button action and segue back to the main menu; 'prepareForSegue:sender:' method is called before.
+ @method handleButtonCancel:
+ @discussion This method handles the 'cancel' button action and segues back.
  */
-- (IBAction)handleButtonBack:(id)sender
+- (IBAction)handleButtonCancel:(id)sender
 {
+    // Dismiss the popover view
     [self dismissViewControllerAnimated:YES completion:Nil];
 }
+
+/*!
+@method handleButtonCancel:
+@discussion This method handles the 'edit' button action, save the changes, and segues back.
+*/
+- (IBAction)handleButtonEdit:(id)sender
+{
+    // Dismiss the popover view
+    [self dismissViewControllerAnimated:YES completion:Nil];
+}
+
 
 /*!
  @method alertUserWithTitle:andMessage:
@@ -121,55 +149,6 @@
     
     [alertUsersNotFound addAction:okButton];
     [self presentViewController:alertUsersNotFound animated:YES completion:nil];
-    return;
-}
-
-/*!
- @method prepareForSegue:sender:
- @discussion This method is called before any segue and it is used for pass other views variables.
- */
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    NSLog(@"[INFO][VCSP] Asked segue %@", [segue identifier]);
-    
-    // This view can segue with different views depending on the mode chosen by the user in the main menu
-    
-    if ([[segue identifier] isEqualToString:@"fromEditComponentToRHO_RHO_LOCATING"]) {
-        
-        // Get destination view
-        ViewControllerRhoRhoLocating * viewControllerRhoRhoLocating = [segue destinationViewController];
-        // Set the variables
-        [viewControllerRhoRhoLocating setCredentialsUserDic:credentialsUserDic];
-        [viewControllerRhoRhoLocating setUserDic:userDic];
-        [viewControllerRhoRhoLocating setSharedData:sharedData];
-        [viewControllerRhoRhoLocating setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerRhoRhoLocating setItemPositionIdNumber:itemPositionIdNumber];
-        
-    }
-    if ([[segue identifier] isEqualToString:@"fromEditComponentToTHETA_THETA_LOCATING"]) {
-        
-        // Get destination view
-        ViewControllerThetaThetaLocating * viewControllerThetaThetaLocating = [segue destinationViewController];
-        // Set the variables
-        [viewControllerThetaThetaLocating setCredentialsUserDic:credentialsUserDic];
-        [viewControllerThetaThetaLocating setUserDic:userDic];
-        [viewControllerThetaThetaLocating setSharedData:sharedData];
-        [viewControllerThetaThetaLocating setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerThetaThetaLocating setItemPositionIdNumber:itemPositionIdNumber];
-        
-    }
-    if ([[segue identifier] isEqualToString:@"fromEditComponentToRHO_THETA_MODELING"]) {
-        
-        // Get destination view
-        ViewControllerRhoThetaModeling * viewControllerRhoThetaModeling = [segue destinationViewController];
-        // Set the variables
-        [viewControllerRhoThetaModeling setCredentialsUserDic:credentialsUserDic];
-        [viewControllerRhoThetaModeling setUserDic:userDic];
-        [viewControllerRhoThetaModeling setSharedData:sharedData];
-        [viewControllerRhoThetaModeling setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerRhoThetaModeling setItemPositionIdNumber:itemPositionIdNumber];
-        
-    }
     return;
 }
 

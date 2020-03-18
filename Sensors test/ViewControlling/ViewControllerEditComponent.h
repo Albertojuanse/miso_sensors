@@ -11,6 +11,8 @@
 #import "ViewControllerThetaThetaLocating.h"
 #import "ViewControllerRhoRhoLocating.h"
 #import "ViewControllerRhoThetaModeling.h"
+#import "VCPosition.h"
+#import "VCPositionInfo.h"
 
 /*!
  @class ViewControllerEditComponent
@@ -35,7 +37,10 @@
     
 }
 
-@property (weak, nonatomic) IBOutlet UIButton *backButton;
+@property (weak, nonatomic) IBOutlet UIButton * cancelButton;
+@property (weak, nonatomic) IBOutlet UIButton * editButton;
+@property (weak, nonatomic) IBOutlet UIView *itemView;
+
 
 // Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;

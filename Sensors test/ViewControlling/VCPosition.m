@@ -184,12 +184,10 @@
 -(void)handleTap:(UITapGestureRecognizer *)recog
 {
     // When user taps this view, the edit component view must be presented
-    NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
-    [dataDic setObject:self forKey:@"sourceView"];
     // And send the notification
     [[NSNotificationCenter defaultCenter] postNotificationName:@"presentEditComponentView"
-                                                        object:nil
-                                                      userInfo:dataDic];
+                                                        object:self
+                                                      userInfo:nil];
     NSLog(@"[NOTI][LM] Notification \"presentEditComponentView\" posted.");
 }
 
