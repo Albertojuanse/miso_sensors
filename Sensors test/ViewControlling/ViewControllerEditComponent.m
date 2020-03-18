@@ -18,9 +18,17 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSMutableDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                                                         andCredentialsUserDic:credentialsUserDic];
-    NSLog(@"[HOLA][VCEC] The user is editing %@", itemChosenByUser[@"uuid"]);
+}
+
+/*!
+@method viewDidLoad
+@discussion This method is called when the view is going to be shown.
+*/
+- (void)viewWillAppear:(BOOL)animated
+{
+    itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                                   andCredentialsUserDic:credentialsUserDic];
+    NSLog(@"[INFO][VCEC] The user is editing %@", itemChosenByUser[@"uuid"]);
 }
 
 /*!
@@ -40,6 +48,8 @@
  */
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic
 {
+    
+    NSLog(@"[HOLA][VCEC] Setting credentials %", givenCredentialsUserDic);
     credentialsUserDic = givenCredentialsUserDic;
 }
 

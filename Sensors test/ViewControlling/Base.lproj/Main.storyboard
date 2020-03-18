@@ -2555,46 +2555,16 @@
             </objects>
             <point key="canvasLocation" x="761" y="-733"/>
         </scene>
-        <!--View Controller Edit Component-->
-        <scene sceneID="65R-JK-NtE">
-            <objects>
-                <viewController id="mrd-V7-rF9" customClass="ViewControllerEditComponent" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="4QN-GX-Jla">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YiZ-EB-y3w">
-                                <rect key="frame" x="339" y="477" width="34" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Back"/>
-                                <connections>
-                                    <action selector="handleButtonBack:" destination="mrd-V7-rF9" eventType="touchUpInside" id="X9U-dy-ocY"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <viewLayoutGuide key="safeArea" id="azU-Sg-5nt"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="5q7-rC-i36"/>
-                    <connections>
-                        <outlet property="backButton" destination="YiZ-EB-y3w" id="Uxy-VS-aUW"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="oUA-oi-eYN" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1763" y="794"/>
-        </scene>
     </scenes>
     <resources>
         <image name="icon.png" width="3036" height="1844"/>
         <image name="miso.png" width="134.39999389648438" height="108"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Ul9-9n-vjH"/>
         <segue reference="x22-tD-Meu"/>
         <segue reference="V1q-Xa-Ew3"/>
-        <segue reference="NKP-hK-ln4"/>
-        <segue reference="ZVX-zW-HeN"/>
+        <segue reference="QxI-WS-XJS"/>
+        <segue reference="A3y-43-nSw"/>
         <segue reference="2AF-RI-iGH"/>
         <segue reference="OWJ-G0-Y79"/>
         <segue reference="Eai-Xz-BxM"/>

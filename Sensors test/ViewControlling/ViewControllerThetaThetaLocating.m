@@ -303,7 +303,11 @@
         
         // Present the view as a pop up
         //[self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToEditComponent" sender:nil];
-        ViewControllerEditComponent * viewControllerEditComponent = [[ViewControllerEditComponent alloc] init];
+        ViewControllerEditComponent * viewControllerEditComponent = [[[NSBundle mainBundle]
+                                                                      loadNibNamed:@"ViewControllerEditComponent"
+                                                                      owner:self
+                                                                      options:nil]
+                                                                     objectAtIndex:0];
         [viewControllerEditComponent setModalPresentationStyle:UIModalPresentationPopover];
         // Set the variables
         [viewControllerEditComponent setCredentialsUserDic:credentialsUserDic];
@@ -327,6 +331,7 @@
         // Show the view
         [self presentViewController:viewControllerEditComponent animated:YES completion:nil];
     }
+    return;
 }
 
 #pragma mark - Instance methods

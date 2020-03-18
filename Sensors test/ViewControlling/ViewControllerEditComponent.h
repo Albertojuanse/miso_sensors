@@ -30,10 +30,12 @@
     NSNumber * itemBeaconIdNumber;
     NSNumber * itemPositionIdNumber;
     
+    // Variables
+    NSMutableDictionary * itemChosenByUser;
+    
 }
 
 @property (weak, nonatomic) IBOutlet UIButton *backButton;
-
 
 // Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
