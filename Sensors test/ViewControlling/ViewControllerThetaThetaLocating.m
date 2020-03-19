@@ -424,10 +424,6 @@
             NSMutableDictionary * targetItem = [targetItems objectAtIndex:0];
 
             NSLog(@"[INFO][VCTTL] The user asked to crate a reference between %@ and %@", sourceItem[@"uuid"], targetItem[@"uuid"]);
-            
-            // Get the user selection
-            NSMutableDictionary * itemDic = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                                                        andCredentialsUserDic:credentialsUserDic];
 
             // And create and add the reference
             MDReference * reference = [[MDReference alloc] initWithsourceItemId:sourceItem[@"identifier"]
