@@ -59,6 +59,21 @@
 }
 
 /*!
+ @method initWithsourceItemIdandTargetItemId:
+ @discussion Constructor
+ */
+- (instancetype)initWithsourceItemId:(NSString*)initSourceItemId
+                     andTargetItemId:(NSString*)initTargetItemId
+{
+    self = [self init];
+    if (self) {
+        sourceItemId = initSourceItemId;
+        targetItemId = initTargetItemId;
+    }
+    return self;
+}
+
+/*!
  @method initWithCoder:
  @discussion Constructor called when an object must be initiated with the data stored, shared... with a coding way.
  */

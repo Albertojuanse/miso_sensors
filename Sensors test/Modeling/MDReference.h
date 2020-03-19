@@ -49,6 +49,8 @@
 - (instancetype)initWithType:(MDType *)initType
                 sourceItemId:(NSString*)initSourceItemId
              andTargetItemId:(NSString*)initTargetItemId;
+- (instancetype)initWithsourceItemId:(NSString*)initSourceItemId
+                     andTargetItemId:(NSString*)initTargetItemId;
 - (void)setSourceItemId:(NSString *)givenId;
 - (NSString *)getSourceItemId;
 - (void)setTargetItemId:(NSString *)givenId;

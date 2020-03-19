@@ -160,6 +160,10 @@
                                              selector:@selector(presentEditComponentView:)
                                                  name:@"presentEditComponentView"
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(createReference:)
+                                                 name:@"createReference"
+                                               object:nil];
 }
 
 /*!
@@ -363,6 +367,86 @@
         [popoverEditComponent setPermittedArrowDirections:UIPopoverArrowDirectionAny];
         // Show the view
         [self presentViewController:viewControllerEditComponent animated:YES completion:nil];
+    }
+    return;
+}
+
+/*!
+ @method handleReferenceButton:
+ @discussion This method creates a reference between teo components in the model.
+ */
+- (void)createReference:(NSNotification *) notification
+{
+    if ([[notification name] isEqualToString:@"createReference"]){
+        NSLog(@"[NOTI][VCTTL] Notification \"createReference\" recived.");
+    
+        // Retrieve notification data
+        NSMutableDictionary * dataDic = [notification userInfo];
+        VCPosition * sourceView = dataDic[@"sourceView"];
+        VCPosition * targetView = dataDic[@"targetView"];
+        
+        // Database could not be accessed.
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            // Get both items from shared data
+            if (!sourceView) {
+                NSLog(@"[ERROR][VCTTL] Source VCPosition not found in notification.");
+                return;
+            }
+            if (!targetView) {
+                NSLog(@"[ERROR][VCTTL] Target VCPosition not found in notification.");
+                return;
+            }
+            NSString * sourceItemUUID = [sourceView getUUID];
+            NSString * targetItemUUID = [targetView getUUID];
+            NSMutableArray * sourceItems = [sharedData fromItemDataGetItemsWithUUID:sourceItemUUID
+                                                              andCredentialsUserDic:credentialsUserDic];
+            
+            NSMutableArray * targetItems = [sharedData fromItemDataGetItemsWithUUID:targetItemUUID
+                                                              andCredentialsUserDic:credentialsUserDic];
+            if (sourceItems.count == 0) {
+                NSLog(@"[ERROR][VCTTL] User did choose an unknown source item: %@", sourceItemUUID);
+                return;
+            }
+            if (targetItems.count == 0) {
+                NSLog(@"[ERROR][VCTTL] User did choose an unknown target item: %@", targetItemUUID);
+                return;
+            }
+            else if (sourceItems.count > 1) {
+                NSLog(@"[ERROR][VCTTL] User did choose a source item whose UUID is repeated: %@", sourceItemUUID);
+            }
+            else if (targetItems.count > 1) {
+                NSLog(@"[ERROR][VCTTL] User did choose a target item whose UUID is repeated: %@", targetItemUUID);
+            }
+            NSMutableDictionary * sourceItem = [sourceItems objectAtIndex:0];
+            NSMutableDictionary * targetItem = [targetItems objectAtIndex:0];
+
+            NSLog(@"[INFO][VCTTL] The user asked to crate a reference between %@ and %@", sourceItem[@"uuid"], targetItem[@"uuid"]);
+            
+            // Get the user selection
+            NSMutableDictionary * itemDic = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                                                        andCredentialsUserDic:credentialsUserDic];
+
+            // And create and add the reference
+            MDReference * reference = [[MDReference alloc] initWithsourceItemId:sourceItem[@"identifier"]
+                                                                andTargetItemId:targetItem[@"identifier"]];
+            NSLog(@"[INFO][VCMTTL] Created reference %@", reference);
+            [sharedData inSessionDataAddReference:reference toUserWithUserDic:userDic withCredentialsUserDic:credentialsUserDic];
+                    
+            
+            [self.canvas setNeedsDisplay];
+            
+        } else {
+            [self alertUserWithTitle:@"Items won't be loaded."
+                             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
+                          andHandler:^(UIAlertAction * action) {
+                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
+                          }
+             ];
+            NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed before handle the 'reference' button.");
+        }
     }
     return;
 }

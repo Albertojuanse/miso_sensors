@@ -400,6 +400,15 @@
             // The object dropped is the VCPosition dragged
             VCPosition * droppedVCPOsition = object;
             NSLog(@"[INFO][VCP] Droppped and copied a VCPosition %@ item.", [droppedVCPOsition getUUID]);
+            
+            // Ask to create the reference
+            NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
+            dataDic[@"sourceView"] = self;
+            dataDic[@"targetView"] = droppedVCPOsition;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"createReference"
+                                                                object:nil
+                                                              userInfo:dataDic];
+            NSLog(@"[NOTI][LM] Notification \"createReference\" posted.");
         }
          ];
     }
