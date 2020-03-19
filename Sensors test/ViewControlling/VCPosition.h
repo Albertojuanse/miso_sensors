@@ -14,7 +14,7 @@
  @class VCPosition
  @discussion This class extends UIView and creates an area in which a position on screen is drawn.
  */
-@interface VCPosition: UIView <UIGestureRecognizerDelegate> {
+@interface VCPosition: UIView <UIGestureRecognizerDelegate, NSCoding, NSItemProviderReading, NSItemProviderWriting, UIDragInteractionDelegate, UIDropInteractionDelegate> {
     
     // Variables
     RDPosition * realPosition;
