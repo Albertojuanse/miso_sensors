@@ -34,9 +34,17 @@
         [self setOpaque:NO];
         // Add the gesture recognizers needed
         tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                       action:@selector(handleTap:)];
+                                                                       action:@selector(handleTapOnView:)];
         tapGestureRecognizer.delegate = self;
         [self addGestureRecognizer:tapGestureRecognizer];
+        
+        doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                             action:@selector(handleDoubleTapOnView:)];
+        [doubleTapGestureRecognizer setNumberOfTapsRequired:2];
+        [doubleTapGestureRecognizer setNumberOfTouchesRequired:1];
+        doubleTapGestureRecognizer.delegate = self;
+        //[tapGestureRecognizer requireGestureRecognizerToFail:doubleTapGestureRecognizer];
+        [self addGestureRecognizer:doubleTapGestureRecognizer];
         [self setUserInteractionEnabled:YES];
     }
     return self;
@@ -178,13 +186,29 @@
 
 #pragma mark Handle gestures methods
 /*!
- @method handleTap:
+ @method handleTapOnView:
  @discussion This method handles the tap gesture and asks the view to present the edit component pop up view.
  */
--(void)handleTap:(UITapGestureRecognizer *)recog
+-(void)handleTapOnView:(UITapGestureRecognizer *)recog
 {
     // When user taps this view, the edit component view must be presented
     // And send the notification
+    NSLog(@"[INFO][VCP] User did tap on the view %@", uuid);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"chooseItem"
+                                                        object:self
+                                                      userInfo:nil];
+    NSLog(@"[NOTI][LM] Notification \"chooseItem\" posted.");
+}
+
+/*!
+ @method handleDoubleTapOnView:
+ @discussion This method handles the double tap gesture and asks the view to present the edit component pop up view.
+ */
+-(void)handleDoubleTapOnView:(UITapGestureRecognizer *)recog
+{
+    // When user taps this view, the edit component view must be presented
+    // And send the notification
+    NSLog(@"[INFO][VCP] User did double tap on the view %@", uuid);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"presentEditComponentView"
                                                         object:self
                                                       userInfo:nil];

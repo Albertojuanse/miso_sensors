@@ -23,6 +23,7 @@
     
     // User gestures
     UITapGestureRecognizer * tapGestureRecognizer;
+    UITapGestureRecognizer * doubleTapGestureRecognizer;
 }
 
 -(instancetype)init;

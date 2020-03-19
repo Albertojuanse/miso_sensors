@@ -153,6 +153,10 @@
     
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(chooseItem:)
+                                                 name:@"chooseItem"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(presentEditComponentView:)
                                                  name:@"presentEditComponentView"
                                                object:nil];
@@ -259,8 +263,45 @@
 
 #pragma mark - Notifications events handlers
 /*!
+ @method chooseItem:
+ @discussion This method is called when user taps over and sets a component as chosen item.
+ */
+- (void) chooseItem:(NSNotification *) notification
+{
+    if ([[notification name] isEqualToString:@"chooseItem"]){
+        NSLog(@"[NOTI][VC] Notification \"chooseItem\" recived.");
+        
+        // User did choose an item; get it...
+        VCPosition * sourceViewChosenByUser = [notification object];
+        if (!sourceViewChosenByUser) {
+            NSLog(@"[ERROR][VCTTL] Object VCPosition not found in notification.");
+            return;
+        }
+        NSString * chosenItemUUID = [sourceViewChosenByUser getUUID];
+        NSMutableArray * itemsChosenByUser = [sharedData fromItemDataGetItemsWithUUID:chosenItemUUID
+                                                                andCredentialsUserDic:credentialsUserDic];
+        if (itemsChosenByUser.count == 0) {
+            NSLog(@"[ERROR][VCTTL] User did choose an unknown item: %@", chosenItemUUID);
+            return;
+        }
+        else if (itemsChosenByUser.count > 1) {
+            NSLog(@"[ERROR][VCTTL] User did choose an item whose UUID is repeated: %@", chosenItemUUID);
+        }
+        NSMutableDictionary * itemChosenByUser = [itemsChosenByUser objectAtIndex:0];
+
+        NSLog(@"[INFO][VCTTL] The user did choose the item %@", itemChosenByUser[@"uuid"]);
+        
+        // ...and set it as item chosen by user in shared data.
+        [sharedData inSessionDataSetItemChosenByUser:itemChosenByUser
+                                   toUserWithUserDic:userDic
+                               andCredentialsUserDic:credentialsUserDic];
+    }
+    return;
+}
+
+/*!
  @method presentEditComponentView:
- @discussion This method is called when user taps over and component on canvas and presents modally the pop up view to edit that component.
+ @discussion This method is called when user double taps over and component on canvas and presents modally the pop up view to edit that component.
  */
 - (void) presentEditComponentView:(NSNotification *) notification
 {
