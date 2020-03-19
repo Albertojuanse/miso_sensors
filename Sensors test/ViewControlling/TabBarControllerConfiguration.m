@@ -536,7 +536,7 @@
         NSMutableDictionary * infoDic95_26 = [[NSMutableDictionary alloc] init];
         RDPosition * position95_26 = [[RDPosition alloc] init];
         position95_26.x = [NSNumber numberWithFloat:9.5];
-        position95_26.y = [NSNumber numberWithFloat:2.6];
+        position95_26.y = [NSNumber numberWithFloat:1.6];
         position95_26.z = [NSNumber numberWithFloat:0.0];
         [infoDic95_26 setValue:@"position" forKey:@"sort"];
         [infoDic95_26 setValue:@"position95_26@miso.uam.es" forKey:@"identifier"];
