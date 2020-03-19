@@ -962,7 +962,7 @@
                                                                 andCredentialsUserDic:credentialsUserDic];
     BOOL itemFound = NO;
     for (NSMutableDictionary * eachChosenItem in itemsChosenByUser) {
-        if ([eachChosenItem isEqualToDictionary:itemsChosenByUser]) {
+        if ([eachChosenItem isEqualToDictionary:itemChosenByUser]) {
             itemFound = YES;
         }
     }
@@ -981,7 +981,7 @@
                                                                 andCredentialsUserDic:credentialsUserDic];
     BOOL itemFound = NO;
     for (NSMutableDictionary * eachChosenItem in itemsChosenByUser) {
-        if ([eachChosenItem isEqualToDictionary:itemsChosenByUser]) {
+        if ([eachChosenItem isEqualToDictionary:itemChosenByUser]) {
             itemFound = YES;
         }
     }
@@ -2948,7 +2948,6 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
                 isItemDicFound = YES;
             }
         }
-        
         // ...and for the user in session...
         BOOL isUserDicFound = NO;
         NSMutableDictionary * userDicFound;
