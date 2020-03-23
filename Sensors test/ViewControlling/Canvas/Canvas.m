@@ -765,6 +765,20 @@
         }
         if ([@"Column" isEqualToString:[type getName]]) {
             
+            // Draw the column
+            NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+            NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+            NSNumber * columnWidth = layoutDic[@"canvas/column/width"];
+            NSNumber * columnHeight = layoutDic[@"canvas/column/height"];
+            VCCorner * columnView = [[VCCorner alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue] - [columnWidth floatValue]/2.0,
+                                                                               [canvasPosition.y floatValue] - [columnHeight floatValue]/2.0,
+                                                                               [columnWidth floatValue],
+                                                                               [columnHeight floatValue])
+                                                       realPosition:realPosition
+                                                     canvasPosition:canvasPosition
+                                                            andUUID:uuid];
+            [self addSubview:columnView];
+            
         }
         
     } else{
@@ -883,13 +897,15 @@
     CGPoint middlePoint = CGPointMake([middleX floatValue],[middleY floatValue]);
     
     // ...and draw it
-    VCType * typeView = [[VCType alloc] initWithFrame:CGRectMake([middleX floatValue] + 5.0,
-                                                                 [middleY floatValue] - 10.0,
-                                                                 400,
-                                                                 20)
-                                                color:color
-                                              andName:[referenceType getName]];
-    [self addSubview:typeView];
+    if (![@"" isEqualToString:[referenceType getName]]) {
+        VCType * typeView = [[VCType alloc] initWithFrame:CGRectMake([middleX floatValue] + 5.0,
+                                                                     [middleY floatValue] - 10.0,
+                                                                     400,
+                                                                     20)
+                                                    color:color
+                                                  andName:[referenceType getName]];
+        [self addSubview:typeView];
+    }
     
     return;
 }

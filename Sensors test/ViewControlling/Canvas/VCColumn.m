@@ -1,14 +1,14 @@
 //
-//  VCCorner.m
+//  VCColumn.m
 //  Sensors test
 //
-//  Created by Alberto J. on 23/03/2020.
+//  Created by MISO on 23/03/2020.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 
-#import "VCCorner.h"
+#import "VCColumn.h"
 
-@implementation VCCorner: VCComponent
+@implementation VCColumn: VCComponent
 
 #pragma mark - Drawing methods
 /*!
@@ -24,17 +24,18 @@
     CGPoint rectOrigin = rect.origin;
     
     // Draw the path
-    UIBezierPath * cornerBezierPath = [UIBezierPath bezierPath];
-    [cornerBezierPath moveToPoint:rectOrigin];
-    [cornerBezierPath addLineToPoint:CGPointMake(rectOrigin.x, rectOrigin.y + rectWidth)];
-    [cornerBezierPath addLineToPoint:CGPointMake(rectOrigin.x + rectHeight, rectOrigin.y + rectWidth)];
-    [cornerBezierPath addLineToPoint:CGPointMake(rectOrigin.x + rectHeight, rectOrigin.y)];
-    [cornerBezierPath addLineToPoint:rectOrigin];
-    CAShapeLayer * cornerLayer = [[CAShapeLayer alloc] init];
-    [cornerLayer setPath:cornerBezierPath.CGPath];
-    [cornerLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-    [cornerLayer setFillColor:[UIColor clearColor].CGColor];
-    [[self layer] addSublayer:cornerLayer];
+    UIBezierPath * columnBezierPath = [UIBezierPath bezierPath];
+    [columnBezierPath addArcWithCenter:CGPointMake(rectOrigin.x + rectWidth/2.0,
+                                                   rectOrigin.y + rectHeight/2.0)
+                                radius:rectWidth/2.0
+                            startAngle:0
+                              endAngle:2 * M_PI
+                             clockwise:YES];
+    CAShapeLayer * columnLayer = [[CAShapeLayer alloc] init];
+    [columnLayer setPath:columnBezierPath.CGPath];
+    [columnLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
+    [columnLayer setFillColor:[UIColor clearColor].CGColor];
+    [[self layer] addSublayer:columnLayer];
 
 }
 

@@ -1,5 +1,5 @@
 //
-//  VCCorner.h
+//  VCColumn.h
 //  Sensors test
 //
 //  Created by Alberto J. on 23/03/2020.
@@ -11,13 +11,13 @@
 #import "RDPosition.h"
 #import "VCComponent.h"
 #import "VCPosition.h"
-#import "VCColumn.h"
+#import "VCCorner.h"
 
 /*!
- @class VCCorner
- @discussion This class extends UIView and creates an area in which a corner on screen is drawn.
+ @class VCColumn
+ @discussion This class extends UIView and creates an area in which a clumn on screen is drawn.
  */
-@interface VCCorner: VCComponent {
+@interface VCColumn: VCComponent {
     
 }
 
