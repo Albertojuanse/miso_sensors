@@ -310,13 +310,13 @@
 {
     // This table can only handle drops of VCComponent classes.
     if (session.items.count == 1) {
-        if([session hasItemsConformingToTypeIdentifiers:[VCComponent readableTypeIdentifiersForItemProvider]]) {
+        //if([session hasItemsConformingToTypeIdentifiers:[VCComponent readableTypeIdentifiersForItemProvider]]) {
             NSLog(@"[INFO][VCC] Allowed to drop provided item in this VCComponent view.");
             return YES;
-        } else {
-            NSLog(@"[INFO][VCC] Only VCComponent class intances can be dropped in this VCComponent view.");
-            return NO;
-        }
+        //} else {
+        //    NSLog(@"[INFO][VCC] Only VCComponent class intances can be dropped in this VCComponent view.");
+        //    return NO;
+        //}
     } else {
         NSLog(@"[INFO][VCC] Only one provided item can be dropped in this VCComponent view.");
         return NO;
