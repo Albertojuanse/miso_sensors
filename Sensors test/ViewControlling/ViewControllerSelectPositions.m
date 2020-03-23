@@ -120,7 +120,7 @@
         for (NSMutableDictionary * itemDic in itemData) {
             NSString * itemIdentifier = itemDic[@"identifier"];
             if ([itemIdentifier isEqualToString:@"position95_33@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position95_26@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"position95_16@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"position85_5@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"position85_0@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"position3_5@miso.uam.es"] ||
@@ -134,12 +134,13 @@
                 [itemIdentifier isEqualToString:@"position0_2@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"position0_0@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"column75_16@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"column75_33@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"column59_33@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"column59_16@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"column45_33@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"column45_16@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"column35_33@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"column35_16@miso.uam.es"]
+                [itemIdentifier isEqualToString:@"column35_16@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"column19_33@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"column19_16@miso.uam.es"]
                 )
             {
                 [sharedData  inSessionDataSetAsChosenItem:itemDic

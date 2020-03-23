@@ -770,7 +770,7 @@
             NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
             NSNumber * columnWidth = layoutDic[@"canvas/column/width"];
             NSNumber * columnHeight = layoutDic[@"canvas/column/height"];
-            VCCorner * columnView = [[VCCorner alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue] - [columnWidth floatValue]/2.0,
+            VCColumn * columnView = [[VCColumn alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue] - [columnWidth floatValue]/2.0,
                                                                                [canvasPosition.y floatValue] - [columnHeight floatValue]/2.0,
                                                                                [columnWidth floatValue],
                                                                                [columnHeight floatValue])
@@ -1333,6 +1333,8 @@
         // Correct the points location.
         barycenter = [self getBarycenterOf:centeredCanvasPoints];
         // NSLog(@"-> [INFO][CA] caculate ratios barycenter %@", barycenter);
+        
+        //rHeight = rWidth;
     }
 }
 

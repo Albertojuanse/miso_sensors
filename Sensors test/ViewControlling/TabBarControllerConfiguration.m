@@ -608,33 +608,9 @@
         [infoDicColumn59_16 setValue:columnType forKey:@"type"];
         [items addObject:infoDicColumn59_16];
         
-        NSMutableDictionary * infoDicColumn45_33 = [[NSMutableDictionary alloc] init];
-        RDPosition * position45_33 = [[RDPosition alloc] init];
-        position45_33.x = [NSNumber numberWithFloat:7.5];
-        position45_33.y = [NSNumber numberWithFloat:3.3];
-        position45_33.z = [NSNumber numberWithFloat:0.0];
-        [infoDicColumn45_33 setValue:@"position" forKey:@"sort"];
-        [infoDicColumn45_33 setValue:@"column45_33@miso.uam.es" forKey:@"identifier"];
-        [infoDicColumn45_33 setValue:position45_33 forKey:@"position"];
-        [infoDicColumn45_33 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDicColumn45_33 setValue:columnType forKey:@"type"];
-        [items addObject:infoDicColumn45_33];
-        
-        NSMutableDictionary * infoDicColumn45_16 = [[NSMutableDictionary alloc] init];
-        RDPosition * position45_16 = [[RDPosition alloc] init];
-        position45_16.x = [NSNumber numberWithFloat:7.5];
-        position45_16.y = [NSNumber numberWithFloat:1.6];
-        position45_16.z = [NSNumber numberWithFloat:0.0];
-        [infoDicColumn45_16 setValue:@"position" forKey:@"sort"];
-        [infoDicColumn45_16 setValue:@"column45_16@miso.uam.es" forKey:@"identifier"];
-        [infoDicColumn45_16 setValue:position45_16 forKey:@"position"];
-        [infoDicColumn45_16 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDicColumn45_16 setValue:columnType forKey:@"type"];
-        [items addObject:infoDicColumn45_16];
-        
         NSMutableDictionary * infoDicColumn35_33 = [[NSMutableDictionary alloc] init];
         RDPosition * position35_33 = [[RDPosition alloc] init];
-        position35_33.x = [NSNumber numberWithFloat:5.9];
+        position35_33.x = [NSNumber numberWithFloat:3.5];
         position35_33.y = [NSNumber numberWithFloat:3.3];
         position35_33.z = [NSNumber numberWithFloat:0.0];
         [infoDicColumn35_33 setValue:@"position" forKey:@"sort"];
@@ -646,7 +622,7 @@
         
         NSMutableDictionary * infoDicColumn35_16 = [[NSMutableDictionary alloc] init];
         RDPosition * position35_16 = [[RDPosition alloc] init];
-        position35_16.x = [NSNumber numberWithFloat:5.9];
+        position35_16.x = [NSNumber numberWithFloat:3.5];
         position35_16.y = [NSNumber numberWithFloat:1.6];
         position35_16.z = [NSNumber numberWithFloat:0.0];
         [infoDicColumn35_16 setValue:@"position" forKey:@"sort"];
@@ -655,6 +631,30 @@
         [infoDicColumn35_16 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
         [infoDicColumn35_16 setValue:columnType forKey:@"type"];
         [items addObject:infoDicColumn35_16];
+        
+        NSMutableDictionary * infoDicColumn19_33 = [[NSMutableDictionary alloc] init];
+        RDPosition * position19_33 = [[RDPosition alloc] init];
+        position19_33.x = [NSNumber numberWithFloat:1.9];
+        position19_33.y = [NSNumber numberWithFloat:3.3];
+        position19_33.z = [NSNumber numberWithFloat:0.0];
+        [infoDicColumn19_33 setValue:@"position" forKey:@"sort"];
+        [infoDicColumn19_33 setValue:@"column19_33@miso.uam.es" forKey:@"identifier"];
+        [infoDicColumn19_33 setValue:position19_33 forKey:@"position"];
+        [infoDicColumn19_33 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDicColumn19_33 setValue:columnType forKey:@"type"];
+        [items addObject:infoDicColumn19_33];
+        
+        NSMutableDictionary * infoDicColumn19_16 = [[NSMutableDictionary alloc] init];
+        RDPosition * position19_16 = [[RDPosition alloc] init];
+        position19_16.x = [NSNumber numberWithFloat:1.9];
+        position19_16.y = [NSNumber numberWithFloat:1.6];
+        position19_16.z = [NSNumber numberWithFloat:0.0];
+        [infoDicColumn19_16 setValue:@"position" forKey:@"sort"];
+        [infoDicColumn19_16 setValue:@"column19_16@miso.uam.es" forKey:@"identifier"];
+        [infoDicColumn19_16 setValue:position19_16 forKey:@"position"];
+        [infoDicColumn19_16 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDicColumn19_16 setValue:columnType forKey:@"type"];
+        [items addObject:infoDicColumn19_16];
         
         // END CASE OF USE PAPER
         
