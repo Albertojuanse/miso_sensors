@@ -14,6 +14,7 @@
 #import <float.h>
 #import "MDReference.h"
 #import "VCComponent.h"
+#import "VCPosition.h"
 #import "VCCorner.h"
 #import "VCComponentInfo.h"
 #import "VCType.h"

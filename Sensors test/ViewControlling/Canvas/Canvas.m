@@ -698,13 +698,13 @@
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
     NSNumber * positionWidth = layoutDic[@"canvas/position/width"];
     NSNumber * positionHeight = layoutDic[@"canvas/position/height"];
-    VCComponent *positionView = [[VCComponent alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue] - [positionWidth floatValue]/2,
-                                                                            [canvasPosition.y floatValue] - [positionHeight floatValue],
-                                                                            [positionWidth floatValue],
-                                                                            [positionHeight floatValue])
-                                                    realPosition:realPosition
-                                                  canvasPosition:canvasPosition
-                                                         andUUID:uuid];
+    VCPosition * positionView = [[VCPosition alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue] - [positionWidth floatValue]/2,
+                                                                             [canvasPosition.y floatValue] - [positionHeight floatValue],
+                                                                             [positionWidth floatValue],
+                                                                             [positionHeight floatValue])
+                                                     realPosition:realPosition
+                                                   canvasPosition:canvasPosition
+                                                          andUUID:uuid];
     [self addSubview:positionView];
     
     // Text of real position but in canvas position
