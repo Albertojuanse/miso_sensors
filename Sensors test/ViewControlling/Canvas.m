@@ -693,7 +693,7 @@
      inCanvasPosition:(RDPosition *)canvasPosition
               andUUID:(NSString *)uuid
 {
-    // Draw the point
+    // Draw the position
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
     NSNumber * positionWidth = layoutDic[@"canvas/position/width"];
@@ -722,36 +722,75 @@
 
 /*!
  @method drawPosition:inCanvasPosition:UUID:andWithType:
- @discussion This method displays a position in space 'realPosition' using its coordinates in the canvas, 'canvasPosition', given its UUID and type.
+ @discussion This method displays a position in space 'realPosition' using its coordinates in the canvas, 'canvasPosition', given its UUID and type; this method makes an special draw for types <Corner> and <Column>.
  */
 - (void) drawPosition:(RDPosition *)realPosition
      inCanvasPosition:(RDPosition *)canvasPosition
                  UUID:(NSString *)uuid
           andWithType:(MDType *)type
 {
-    // Call the position representation
-    [self drawPosition:realPosition inCanvasPosition:canvasPosition andUUID:uuid];
-    
-    // Draw the type
-    // Get its color...
-    NSUInteger typeIndex = 5;
-    NSMutableArray * types = [sharedData getTypesDataWithCredentialsUserDic:credentialsUserDic];
-    for (MDType * eachType in types) {
-        typeIndex++;
-        if ([eachType isEqualToMDType:type]) {
-            break;
+    // TODO: maybe this can be done in other way, not hardcoded. Alberto J. 2020/03/23.
+    if (
+        [@"Corner" isEqualToString:[type getName]] ||
+        [@"Column" isEqualToString:[type getName]]
+        ) {
+        
+        if ([@"Corner" isEqualToString:[type getName]]) {
+            
+            // Draw the corner
+            NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+            NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+            NSNumber * cornerWidth = layoutDic[@"canvas/corner/width"];
+            NSNumber * cornerHeight = layoutDic[@"canvas/corner/height"];
+            VCCorner * cornerView = [[VCCorner alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue] - [cornerWidth floatValue]/2.0,
+                                                                               [canvasPosition.y floatValue] - [cornerHeight floatValue]/2.0,
+                                                                               [cornerWidth floatValue],
+                                                                               [cornerHeight floatValue])
+                                                       realPosition:realPosition
+                                                     canvasPosition:canvasPosition
+                                                            andUUID:uuid];
+            [self addSubview:cornerView];
+            
+            // Text of real position but in canvas position
+            VCPositionInfo * positionTextView = [[VCPositionInfo alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue],
+                                                                                                 [canvasPosition.y floatValue],
+                                                                                                 100,
+                                                                                                 20)
+                                                                         realPosition:realPosition
+                                                                       canvasPosition:canvasPosition
+                                                                              andUUID:uuid];
+            [self addSubview:positionTextView];
+            
         }
+        if ([@"Column" isEqualToString:[type getName]]) {
+            
+        }
+        
+    } else{
+        // Call the position representation
+        [self drawPosition:realPosition inCanvasPosition:canvasPosition andUUID:uuid];
+        
+        // Draw the type
+        // Get its color...
+        NSUInteger typeIndex = 5;
+        NSMutableArray * types = [sharedData getTypesDataWithCredentialsUserDic:credentialsUserDic];
+        for (MDType * eachType in types) {
+            typeIndex++;
+            if ([eachType isEqualToMDType:type]) {
+                break;
+            }
+        }
+        UIColor * color = [self getColorForIndex:typeIndex];
+        VCType * typeView = [[VCType alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue] + 5.0,
+                                                                     [canvasPosition.y floatValue] - 10.0,
+                                                                     400,
+                                                                     20)
+                                                    color:color
+                                                  andName:[type getName]];
+        
+        
+        [self  addSubview:typeView];
     }
-    UIColor * color = [self getColorForIndex:typeIndex];
-    VCType * typeView = [[VCType alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue] + 5.0,
-                                                                 [canvasPosition.y floatValue] - 10.0,
-                                                                 400,
-                                                                 20)
-                                                color:color
-                                              andName:[type getName]];
-    
-    
-    [self  addSubview:typeView];
 }
 
 /*!

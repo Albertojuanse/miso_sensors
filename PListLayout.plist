@@ -22,6 +22,10 @@
 	<integer>30</integer>
 	<key>canvas/position/width</key>
 	<integer>30</integer>
+	<key>canvas/corner/height</key>
+	<integer>15</integer>
+	<key>canvas/corner/width</key>
+	<integer>15</integer>
 	<key>canvas/safeAreaRatio</key>
 	<integer>25</integer>
 	<key>pickers/rowHeight</key>

@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "RDPosition.h"
-#import "VCPosition.h"
 
 /*!
  @class VCPosition
