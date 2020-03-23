@@ -146,49 +146,22 @@
     CGFloat rectWidth = rectSize.width;
     CGPoint rectOrigin = rect.origin;
     
-    // Points for Bezier path
-    CGFloat circlesCenterX = rectOrigin.x + rectWidth/2;
-    CGFloat circlesCenterY = rectOrigin.y + rectHeight/3;
-    CGPoint circlesCenter = CGPointMake(circlesCenterX, circlesCenterY);
-    CGPoint arrowPoint = CGPointMake(rectWidth/2, rectHeight);
-    
-    // Color of canvas
-    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
-    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    UIColor * canvasColor = [UIColor colorWithRed:[layoutDic[@"canvas/red"] floatValue]/255.0
-                                            green:[layoutDic[@"canvas/green"] floatValue]/255.0
-                                             blue:[layoutDic[@"canvas/blue"] floatValue]/255.0
-                                            alpha:1.0
-                             ];
-    
     // Draw the path
-    UIBezierPath * outterRightBezierPath = [UIBezierPath bezierPath];
-    [outterRightBezierPath addArcWithCenter:circlesCenter radius:rectWidth/3 startAngle:3.0*M_PI/2.0 endAngle:5.0*M_PI/6.0 clockwise:NO];
-    [outterRightBezierPath addLineToPoint:arrowPoint];
-    [outterRightBezierPath fill];
-    CAShapeLayer *outterRightLayer = [[CAShapeLayer alloc] init];
-    [outterRightLayer setPath:outterRightBezierPath.CGPath];
-    [outterRightLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-    [outterRightLayer setFillColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-    [[self layer] addSublayer:outterRightLayer];
-    
-    UIBezierPath * outterLeftBezierPath = [UIBezierPath bezierPath];
-    [outterLeftBezierPath addArcWithCenter:circlesCenter radius:rectWidth/3 startAngle:3.0*M_PI/2.0 endAngle:M_PI/6.0 clockwise:YES];
-    [outterLeftBezierPath addLineToPoint:arrowPoint];
-    [outterLeftBezierPath fill];
-    CAShapeLayer *outterLeftLayer = [[CAShapeLayer alloc] init];
-    [outterLeftLayer setPath:outterLeftBezierPath.CGPath];
-    [outterLeftLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-    [outterLeftLayer setFillColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-    [[self layer] addSublayer:outterLeftLayer];
-    
-    UIBezierPath * innerCircleBezierPath = [UIBezierPath bezierPath];
-    [innerCircleBezierPath addArcWithCenter:circlesCenter radius:rectWidth/6 startAngle:0 endAngle:2.0*M_PI clockwise:YES];
-    CAShapeLayer *innerCircleLayer = [[CAShapeLayer alloc] init];
-    [innerCircleLayer setPath:innerCircleBezierPath.CGPath];
-    [innerCircleLayer setStrokeColor:canvasColor.CGColor];
-    [innerCircleLayer setFillColor:canvasColor.CGColor];
-    [[self layer] addSublayer:innerCircleLayer];
+    UIBezierPath * componentBezierPath = [UIBezierPath bezierPath];
+    [componentBezierPath moveToPoint:rectOrigin];
+    [componentBezierPath addLineToPoint:CGPointMake(rectOrigin.x, rectOrigin.y + rectWidth)];
+    [componentBezierPath addLineToPoint:CGPointMake(rectOrigin.x + rectHeight, rectOrigin.y + rectWidth)];
+    [componentBezierPath addLineToPoint:CGPointMake(rectOrigin.x + rectHeight, rectOrigin.y)];
+    [componentBezierPath addLineToPoint:rectOrigin];
+    [componentBezierPath moveToPoint:rectOrigin];
+    [componentBezierPath addLineToPoint:CGPointMake(rectOrigin.x + rectHeight, rectOrigin.y + rectWidth)];
+    [componentBezierPath moveToPoint:CGPointMake(rectOrigin.x, rectOrigin.y + rectWidth)];
+    [componentBezierPath addLineToPoint:CGPointMake(rectOrigin.x + rectHeight, rectOrigin.y)];
+    CAShapeLayer * componentLayer = [[CAShapeLayer alloc] init];
+    [componentLayer setPath:componentBezierPath.CGPath];
+    [componentLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
+    [componentLayer setFillColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
+    [[self layer] addSublayer:componentLayer];
 
 }
 
@@ -201,7 +174,7 @@
 {
     // When user taps this view, the edit component view must be presented
     // And send the notification
-    NSLog(@"[INFO][VCP] User did tap on the view %@", uuid);
+    NSLog(@"[INFO][VCC] User did tap on the view %@", uuid);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"chooseItem"
                                                         object:self
                                                       userInfo:nil];
@@ -216,7 +189,7 @@
 {
     // When user taps this view, the edit component view must be presented
     // And send the notification
-    NSLog(@"[INFO][VCP] User did double tap on the view %@", uuid);
+    NSLog(@"[INFO][VCC] User did double tap on the view %@", uuid);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"presentEditComponentView"
                                                         object:self
                                                       userInfo:nil];
@@ -319,12 +292,12 @@
 - (NSArray<UIDragItem *> *)dragInteraction:(UIDragInteraction *)interaction
                   itemsForBeginningSession:(id<UIDragSession>)session
 {
-    NSLog(@"[INFO][VCP] User did try to start drag and drop of %@.", uuid);
+    NSLog(@"[INFO][VCC] User did try to start drag and drop of %@.", uuid);
     
     // Return the array with the initial set of items to drag
     NSItemProvider * selfItemProvider = [[NSItemProvider alloc] initWithObject:self];
     UIDragItem * typeDragItem = [[UIDragItem alloc] initWithItemProvider:selfItemProvider];
-    NSLog(@"[INFO][VCP] User did start drag and drop; item %@ provided.", uuid);
+    NSLog(@"[INFO][VCC] User did start drag and drop; item %@ provided.", uuid);
     return [[NSArray alloc] initWithObjects:typeDragItem,nil];
 }
 
@@ -337,15 +310,15 @@
 {
     // This table can only handle drops of VCComponent classes.
     if (session.items.count == 1) {
-        if([session canLoadObjectsOfClass:VCComponent.class]) {
-            NSLog(@"[INFO][VCP] Allowed to drop provided item in this VCComponent view.");
+        if([session hasItemsConformingToTypeIdentifiers:[VCComponent readableTypeIdentifiersForItemProvider]]) {
+            NSLog(@"[INFO][VCC] Allowed to drop provided item in this VCComponent view.");
             return YES;
         } else {
-            NSLog(@"[INFO][VCP] Only VCComponent class intances can be dropped in this VCComponent view.");
+            NSLog(@"[INFO][VCC] Only VCComponent class intances can be dropped in this VCComponent view.");
             return NO;
         }
     } else {
-        NSLog(@"[INFO][VCP] Only one provided item can be dropped in this VCComponent view.");
+        NSLog(@"[INFO][VCC] Only one provided item can be dropped in this VCComponent view.");
         return NO;
     }
 }
@@ -357,7 +330,7 @@
 - (UIDropProposal *)dropInteraction:(UIDropInteraction *)interaction
                    sessionDidUpdate:(id<UIDropSession>)session
 {
-    NSLog(@"[INFO][VCP] User wants to drop in VCComponent view %@", uuid);
+    NSLog(@"[INFO][VCC] User wants to drop in VCComponent view %@", uuid);
     
     UIDropProposal * proposal;
                 
@@ -378,7 +351,7 @@
 - (void)dropInteraction:(UIDropInteraction *)interaction
             performDrop:(id<UIDropSession>)session
 {
-    NSLog(@"[INFO][VCP] User did droppped in the VCComponent view %@.", uuid);
+    NSLog(@"[INFO][VCC] User did droppped in the VCComponent view %@.", uuid);
 
     // Different behaviour depending on dropping proposal
     // TODO: Aparently is not possible in this drag and drop session. Alberto J. 2020/03/19.
@@ -393,13 +366,15 @@
         case UIDropOperationCopy:
     }
     */
-    NSLog(@"[INFO][VCP] Droppped provided item being copied.");
+    NSLog(@"[INFO][VCC] Droppped provided item being copied.");
+    
+    // Load every class that can be dropped: VCComponent, VCCorner, VCPosition
     [session loadObjectsOfClass:VCComponent.class completion:^(NSArray<__kindof id<NSItemProviderReading>> * objects) {
         [objects enumerateObjectsUsingBlock:^(__kindof id<NSItemProviderReading>  _Nonnull object, NSUInteger idx, BOOL * _Nonnull stop) {
             
             // The object dropped is the VCComponent dragged
             VCComponent * droppedVCComponent = object;
-            NSLog(@"[INFO][VCP] Droppped and copied a VCComponent %@ item.", [droppedVCComponent getUUID]);
+            NSLog(@"[INFO][VCC] Droppped and copied a VCComponent %@ item.", [droppedVCComponent getUUID]);
             
             // Ask to create the reference
             NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];

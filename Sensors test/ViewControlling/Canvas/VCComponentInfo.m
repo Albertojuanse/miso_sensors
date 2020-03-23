@@ -138,17 +138,19 @@
     [self addSubview:positionTextView];
     
     // Text of UUID in canvas position
-    UILabel * uuidTextView = [[UILabel alloc] initWithFrame:CGRectMake(rectOrigin.x,
-                                                                       rectOrigin.y + 20.0,
-                                                                       rectWidth,
-                                                                       rectHeight)
-                              ];
-    [uuidTextView setText:[NSString stringWithFormat:@"%@", [uuid substringFromIndex:30]]];
-    [uuidTextView setFont:[UIFont systemFontOfSize:14]];
-    [uuidTextView setTextAlignment:NSTextAlignmentLeft];
-    [uuidTextView setBackgroundColor:[UIColor clearColor]];
-    [uuidTextView setTextColor:[UIColor blackColor]];
-    [self addSubview:uuidTextView];
+    if (uuid) { // can be nil
+        UILabel * uuidTextView = [[UILabel alloc] initWithFrame:CGRectMake(rectOrigin.x,
+                                                                           rectOrigin.y + 20.0,
+                                                                           rectWidth,
+                                                                           rectHeight)
+                                  ];
+        [uuidTextView setText:[NSString stringWithFormat:@"%@", [uuid substringFromIndex:30]]];
+        [uuidTextView setFont:[UIFont systemFontOfSize:14]];
+        [uuidTextView setTextAlignment:NSTextAlignmentLeft];
+        [uuidTextView setBackgroundColor:[UIColor clearColor]];
+        [uuidTextView setTextColor:[UIColor blackColor]];
+        [self addSubview:uuidTextView];
+    }
 
 }
 

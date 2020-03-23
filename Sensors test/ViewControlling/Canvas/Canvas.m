@@ -751,15 +751,16 @@
                                                             andUUID:uuid];
             [self addSubview:cornerView];
             
-            // Text of real position but in canvas position
-            VCComponentInfo * positionTextView = [[VCComponentInfo alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue],
-                                                                                                 [canvasPosition.y floatValue],
-                                                                                                 100,
-                                                                                                 20)
-                                                                         realPosition:realPosition
-                                                                       canvasPosition:canvasPosition
-                                                                              andUUID:uuid];
-            [self addSubview:positionTextView];
+            // TODO: Show them if user wants so? Alberto J. 2020/03/23.
+            // Text of real position but in canvas position; not show the UUID
+            // VCComponentInfo * positionTextView = [[VCComponentInfo alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue],
+            //                                                                                        [canvasPosition.y floatValue],
+            //                                                                                        100,
+            //                                                                                        20)
+            //                                                                realPosition:realPosition
+            //                                                              canvasPosition:canvasPosition
+            //                                                                     andUUID:nil];
+            // [self addSubview:positionTextView];
             
         }
         if ([@"Column" isEqualToString:[type getName]]) {
