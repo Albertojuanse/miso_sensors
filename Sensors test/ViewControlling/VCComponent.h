@@ -1,5 +1,5 @@
 //
-//  VCPosition.h
+//  VCComponent.h
 //  Sensors test
 //
 //  Created by Alberto J. on 17/9/19.
@@ -11,10 +11,10 @@
 #import "RDPosition.h"
 
 /*!
- @class VCPosition
+ @class VCComponent
  @discussion This class extends UIView and creates an area in which a position on screen is drawn.
  */
-@interface VCPosition: UIView <UIGestureRecognizerDelegate, NSCoding, NSItemProviderReading, NSItemProviderWriting, UIDragInteractionDelegate, UIDropInteractionDelegate> {
+@interface VCComponent: UIView <UIGestureRecognizerDelegate, NSCoding, NSItemProviderReading, NSItemProviderWriting, UIDragInteractionDelegate, UIDropInteractionDelegate> {
     
     // Variables
     RDPosition * realPosition;

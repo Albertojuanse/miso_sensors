@@ -8,7 +8,7 @@
 
 #import "VCCorner.h"
 
-@implementation VCCorner: VCPosition
+@implementation VCCorner: VCComponent
 
 #pragma mark - Drawing methods
 /*!

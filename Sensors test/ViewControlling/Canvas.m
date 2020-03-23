@@ -224,7 +224,7 @@
         NSArray * oldViews = [NSArray arrayWithArray:self.subviews];
         for (UIView * oldView in oldViews) {
             if ([oldView isKindOfClass:[VCType class]] ||
-                [oldView isKindOfClass:[VCPosition class]]
+                [oldView isKindOfClass:[VCComponent class]]
                 ) {
                 [oldView removeFromSuperview];
             }
@@ -604,7 +604,7 @@
         //NSLog(@"[INFO][CA] Drawing canvas mesure position %@", canvasMeasurePosition);
         // ...and draw it.
         // [self drawPosition:realMeasurePosition inCanvasPosition:canvasMeasurePosition];
-        //VCPosition * positionView = [[VCPosition alloc] initWithFrame:CGRectMake([canvasMeasurePosition.x floatValue],[canvasMeasurePosition.y floatValue],3.0,3.0)];
+        //VCComponent * positionView = [[VCComponent alloc] initWithFrame:CGRectMake([canvasMeasurePosition.x floatValue],[canvasMeasurePosition.y floatValue],3.0,3.0)];
         //[self addSubview:positionView];
         
         
@@ -698,7 +698,7 @@
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
     NSNumber * positionWidth = layoutDic[@"canvas/position/width"];
     NSNumber * positionHeight = layoutDic[@"canvas/position/height"];
-    VCPosition *positionView = [[VCPosition alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue] - [positionWidth floatValue]/2,
+    VCComponent *positionView = [[VCComponent alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue] - [positionWidth floatValue]/2,
                                                                             [canvasPosition.y floatValue] - [positionHeight floatValue],
                                                                             [positionWidth floatValue],
                                                                             [positionHeight floatValue])
@@ -708,7 +708,7 @@
     [self addSubview:positionView];
     
     // Text of real position but in canvas position
-    VCPositionInfo * positionTextView = [[VCPositionInfo alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue],
+    VCComponentInfo * positionTextView = [[VCComponentInfo alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue],
                                                                                          [canvasPosition.y floatValue],
                                                                                          100,
                                                                                          20)
@@ -752,7 +752,7 @@
             [self addSubview:cornerView];
             
             // Text of real position but in canvas position
-            VCPositionInfo * positionTextView = [[VCPositionInfo alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue],
+            VCComponentInfo * positionTextView = [[VCComponentInfo alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue],
                                                                                                  [canvasPosition.y floatValue],
                                                                                                  100,
                                                                                                  20)

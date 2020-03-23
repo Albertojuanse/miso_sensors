@@ -1,14 +1,14 @@
 //
-//  VCPosition.m
+//  VCComponent.m
 //  Sensors test
 //
 //  Created by Alberto J. on 17/9/19.
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
-#import "VCPosition.h"
+#import "VCComponent.h"
 
-@implementation VCPosition: UIView
+@implementation VCComponent: UIView
 
 /*!
  @method init
@@ -307,7 +307,7 @@
                                      typeIdentifier:(nonnull NSString *)typeIdentifier
                                               error:(NSError * _Nullable __autoreleasing * _Nullable)outError
 {
-    VCPosition * position = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    VCComponent * position = [NSKeyedUnarchiver unarchiveObjectWithData:data];
     return position;
 }
 
@@ -335,17 +335,17 @@
 - (BOOL)dropInteraction:(UIDropInteraction *)interaction
        canHandleSession:(id<UIDropSession>)session
 {
-    // This table can only handle drops of VCPosition classes.
+    // This table can only handle drops of VCComponent classes.
     if (session.items.count == 1) {
-        if([session canLoadObjectsOfClass:VCPosition.class]) {
-            NSLog(@"[INFO][VCP] Allowed to drop provided item in this VCPosition view.");
+        if([session canLoadObjectsOfClass:VCComponent.class]) {
+            NSLog(@"[INFO][VCP] Allowed to drop provided item in this VCComponent view.");
             return YES;
         } else {
-            NSLog(@"[INFO][VCP] Only VCPosition class intances can be dropped in this VCPosition view.");
+            NSLog(@"[INFO][VCP] Only VCComponent class intances can be dropped in this VCComponent view.");
             return NO;
         }
     } else {
-        NSLog(@"[INFO][VCP] Only one provided item can be dropped in this VCPosition view.");
+        NSLog(@"[INFO][VCP] Only one provided item can be dropped in this VCComponent view.");
         return NO;
     }
 }
@@ -357,11 +357,11 @@
 - (UIDropProposal *)dropInteraction:(UIDropInteraction *)interaction
                    sessionDidUpdate:(id<UIDropSession>)session
 {
-    NSLog(@"[INFO][VCP] User wants to drop in VCPosition view %@", uuid);
+    NSLog(@"[INFO][VCP] User wants to drop in VCComponent view %@", uuid);
     
     UIDropProposal * proposal;
                 
-    // This table can only handle drops of VCPosition classes.
+    // This table can only handle drops of VCComponent classes.
     if (session.items.count == 1) {
         
         proposal = [[UIDropProposal alloc] initWithDropOperation:UIDropOperationCopy];
@@ -378,7 +378,7 @@
 - (void)dropInteraction:(UIDropInteraction *)interaction
             performDrop:(id<UIDropSession>)session
 {
-    NSLog(@"[INFO][VCP] User did droppped in the VCPosition view %@.", uuid);
+    NSLog(@"[INFO][VCP] User did droppped in the VCComponent view %@.", uuid);
 
     // Different behaviour depending on dropping proposal
     // TODO: Aparently is not possible in this drag and drop session. Alberto J. 2020/03/19.
@@ -394,17 +394,17 @@
     }
     */
     NSLog(@"[INFO][VCP] Droppped provided item being copied.");
-    [session loadObjectsOfClass:VCPosition.class completion:^(NSArray<__kindof id<NSItemProviderReading>> * objects) {
+    [session loadObjectsOfClass:VCComponent.class completion:^(NSArray<__kindof id<NSItemProviderReading>> * objects) {
         [objects enumerateObjectsUsingBlock:^(__kindof id<NSItemProviderReading>  _Nonnull object, NSUInteger idx, BOOL * _Nonnull stop) {
             
-            // The object dropped is the VCPosition dragged
-            VCPosition * droppedVCPOsition = object;
-            NSLog(@"[INFO][VCP] Droppped and copied a VCPosition %@ item.", [droppedVCPOsition getUUID]);
+            // The object dropped is the VCComponent dragged
+            VCComponent * droppedVCComponent = object;
+            NSLog(@"[INFO][VCP] Droppped and copied a VCComponent %@ item.", [droppedVCComponent getUUID]);
             
             // Ask to create the reference
             NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
             dataDic[@"sourceView"] = self;
-            dataDic[@"targetView"] = droppedVCPOsition;
+            dataDic[@"targetView"] = droppedVCComponent;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"createReference"
                                                                 object:nil
                                                               userInfo:dataDic];

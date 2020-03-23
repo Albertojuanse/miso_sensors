@@ -13,9 +13,9 @@
 #import "SharedData.h"
 #import <float.h>
 #import "MDReference.h"
-#import "VCPosition.h"
+#import "VCComponent.h"
 #import "VCCorner.h"
-#import "VCPositionInfo.h"
+#import "VCComponentInfo.h"
 #import "VCType.h"
 
 /*!

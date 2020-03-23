@@ -276,9 +276,9 @@
         NSLog(@"[NOTI][VC] Notification \"chooseItem\" recived.");
         
         // User did choose an item; get it...
-        VCPosition * sourceViewChosenByUser = [notification object];
+        VCComponent * sourceViewChosenByUser = [notification object];
         if (!sourceViewChosenByUser) {
-            NSLog(@"[ERROR][VCTTL] Object VCPosition not found in notification.");
+            NSLog(@"[ERROR][VCTTL] Object VCComponent not found in notification.");
             return;
         }
         NSString * chosenItemUUID = [sourceViewChosenByUser getUUID];
@@ -313,9 +313,9 @@
         NSLog(@"[NOTI][VC] Notification \"presentEditComponentView\" recived.");
         
         // User did choose an item; get it...
-        VCPosition * sourceViewChosenByUser = [notification object];
+        VCComponent * sourceViewChosenByUser = [notification object];
         if (!sourceViewChosenByUser) {
-            NSLog(@"[ERROR][VCTTL] Object VCPosition not found in notification.");
+            NSLog(@"[ERROR][VCTTL] Object VCComponent not found in notification.");
             return;
         }
         NSString * chosenItemUUID = [sourceViewChosenByUser getUUID];
@@ -382,8 +382,8 @@
     
         // Retrieve notification data
         NSMutableDictionary * dataDic = [notification userInfo];
-        VCPosition * sourceView = dataDic[@"sourceView"];
-        VCPosition * targetView = dataDic[@"targetView"];
+        VCComponent * sourceView = dataDic[@"sourceView"];
+        VCComponent * targetView = dataDic[@"targetView"];
         
         // Database could not be accessed.
         if (
@@ -392,11 +392,11 @@
         {
             // Get both items from shared data
             if (!sourceView) {
-                NSLog(@"[ERROR][VCTTL] Source VCPosition not found in notification.");
+                NSLog(@"[ERROR][VCTTL] Source VCComponent not found in notification.");
                 return;
             }
             if (!targetView) {
-                NSLog(@"[ERROR][VCTTL] Target VCPosition not found in notification.");
+                NSLog(@"[ERROR][VCTTL] Target VCComponent not found in notification.");
                 return;
             }
             NSString * sourceItemUUID = [sourceView getUUID];

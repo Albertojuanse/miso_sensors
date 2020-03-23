@@ -1,5 +1,5 @@
 //
-//  VCPositionInfo.h
+//  VCComponentInfo.h
 //  Sensors test
 //
 //  Created by Alberto J. on 12/03/2020.
@@ -11,10 +11,10 @@
 #import "RDPosition.h"
 
 /*!
- @class VCPositionInfo
+ @class VCComponentInfo
  @discussion This class extends UIView and creates an area in which a position's info is shown.
  */
-@interface VCPositionInfo: UIView {
+@interface VCComponentInfo: UIView {
     
     RDPosition * realPosition;
     RDPosition * canvasPosition;

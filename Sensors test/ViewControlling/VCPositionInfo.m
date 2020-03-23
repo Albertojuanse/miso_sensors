@@ -1,14 +1,14 @@
 //
-//  VCPositionInfo.m
+//  VCComponentInfo.m
 //  Sensors test
 //
 //  Created by Alberto J. on 12/03/2020.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 
-#import "VCPositionInfo.h"
+#import "VCComponentInfo.h"
 
-@implementation VCPositionInfo: UIView
+@implementation VCComponentInfo: UIView
 
 /*!
  @method init

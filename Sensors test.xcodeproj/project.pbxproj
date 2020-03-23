@@ -20,7 +20,7 @@
 		422798902271F37800E07C39 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4227988E2271F37800E07C39 /* LaunchScreen.storyboard */; };
 		422798932271F37800E07C39 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798922271F37800E07C39 /* main.m */; };
 		4227989B2271F60700E07C39 /* MotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227989A2271F60700E07C39 /* MotionManager.m */; };
-		42300BDB2330E03000E2385F /* VCPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 42300BDA2330E03000E2385F /* VCPosition.m */; };
+		42300BDB2330E03000E2385F /* VCComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = 42300BDA2330E03000E2385F /* VCComponent.m */; };
 		42364B27236AE0BA00C387E5 /* MDReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 42364B26236AE0BA00C387E5 /* MDReference.m */; };
 		423CE15724226CC100C24DF8 /* ViewControllerEditComponent.xib in Resources */ = {isa = PBXBuildFile; fileRef = 423CE15624226CC100C24DF8 /* ViewControllerEditComponent.xib */; };
 		4240729723E9761700B2C696 /* ViewControllerConfigurationTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 4240729623E9761700B2C696 /* ViewControllerConfigurationTypes.m */; };
@@ -94,8 +94,8 @@
 		422798922271F37800E07C39 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		422798992271F5D600E07C39 /* MotionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MotionManager.h; sourceTree = "<group>"; };
 		4227989A2271F60700E07C39 /* MotionManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MotionManager.m; sourceTree = "<group>"; };
-		42300BD92330DF6D00E2385F /* VCPosition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCPosition.h; sourceTree = "<group>"; };
-		42300BDA2330E03000E2385F /* VCPosition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCPosition.m; sourceTree = "<group>"; };
+		42300BD92330DF6D00E2385F /* VCComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCComponent.h; sourceTree = "<group>"; };
+		42300BDA2330E03000E2385F /* VCComponent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCComponent.m; sourceTree = "<group>"; };
 		42364B25236AE09D00C387E5 /* MDReference.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDReference.h; sourceTree = "<group>"; };
 		42364B26236AE0BA00C387E5 /* MDReference.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDReference.m; sourceTree = "<group>"; };
 		423CE15624226CC100C24DF8 /* ViewControllerEditComponent.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewControllerEditComponent.xib; sourceTree = "<group>"; };
@@ -309,8 +309,8 @@
 				424F576A234C9D1D00826B27 /* ViewControllerFinalModel.m */,
 				426501BB22A03B4000BE20B7 /* Canvas.h */,
 				426501BC22A03B4300BE20B7 /* Canvas.m */,
-				42300BD92330DF6D00E2385F /* VCPosition.h */,
-				42300BDA2330E03000E2385F /* VCPosition.m */,
+				42300BD92330DF6D00E2385F /* VCComponent.h */,
+				42300BDA2330E03000E2385F /* VCComponent.m */,
 				42D610752428CCB000D45EB7 /* VCCorner.h */,
 				42D610762428CD6800D45EB7 /* VCCorner.m */,
 				427A9400241ACB88001FCCCC /* VCPositionInfo.h */,
@@ -509,7 +509,7 @@
 				42CEBE2E234500AE0094B1BA /* ViewControllerModelingThetaThetaLocating.m in Sources */,
 				42B676F123D5E972005E3CBD /* LMDelegateRhoThetaModelling.m in Sources */,
 				42364B27236AE0BA00C387E5 /* MDReference.m in Sources */,
-				42300BDB2330E03000E2385F /* VCPosition.m in Sources */,
+				42300BDB2330E03000E2385F /* VCComponent.m in Sources */,
 				421550F223D9BA5500945294 /* ViewControllerConfigurationModes.m in Sources */,
 				429093E023AA4B3C000CEA6E /* ViewControllerMonitoring.m in Sources */,
 				426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */,

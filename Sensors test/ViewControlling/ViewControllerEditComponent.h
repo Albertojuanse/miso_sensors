@@ -11,8 +11,8 @@
 #import "ViewControllerThetaThetaLocating.h"
 #import "ViewControllerRhoRhoLocating.h"
 #import "ViewControllerRhoThetaModeling.h"
-#import "VCPosition.h"
-#import "VCPositionInfo.h"
+#import "VCComponent.h"
+#import "VCComponentInfo.h"
 
 /*!
  @class ViewControllerEditComponent

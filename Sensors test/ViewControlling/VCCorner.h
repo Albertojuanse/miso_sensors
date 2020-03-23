@@ -9,13 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "RDPosition.h"
-#import "VCPosition.h"
+#import "VCComponent.h"
 
 /*!
  @class VCCorner
  @discussion This class extends UIView and creates an area in which a corner on screen is drawn.
  */
-@interface VCCorner: VCPosition {
+@interface VCCorner: VCComponent {
     
 }
 
