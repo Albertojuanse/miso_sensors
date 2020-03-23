@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "RDPosition.h"
 #import "VCComponent.h"
+#import "VCCorner.h"
 
 /*!
  @class VCPosition
