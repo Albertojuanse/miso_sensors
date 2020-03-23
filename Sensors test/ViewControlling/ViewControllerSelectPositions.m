@@ -132,7 +132,14 @@
                 [itemIdentifier isEqualToString:@"position0_5@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"position0_3@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"position0_2@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position0_0@miso.uam.es"]
+                [itemIdentifier isEqualToString:@"position0_0@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"column75_16@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"column59_33@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"column59_16@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"column45_33@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"column45_16@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"column35_33@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"column35_16@miso.uam.es"]
                 )
             {
                 [sharedData  inSessionDataSetAsChosenItem:itemDic
