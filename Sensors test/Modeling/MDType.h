@@ -21,6 +21,7 @@
 - (void)setName:(NSString *)givenName;
 - (NSString *)getName;
 - (void)setAttributes:(NSMutableArray *)givenAttributes;
+- (void)setAttribute:(MDAttribute *)givenAttribute;
 - (NSMutableArray *)getAttributes;
 
 @optional

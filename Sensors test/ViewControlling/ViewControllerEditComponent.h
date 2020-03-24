@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "MDAttribute.h"
+#import "MDType.h"
 #import "ViewControllerThetaThetaLocating.h"
 #import "ViewControllerRhoRhoLocating.h"
 #import "ViewControllerRhoThetaModeling.h"
@@ -42,7 +44,7 @@
 @property (weak, nonatomic) IBOutlet UIButton * cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton * editButton;
 @property (weak, nonatomic) IBOutlet UIPickerView * typePicker;
-
+@property (weak, nonatomic) IBOutlet UIView * scrolledView;
 
 // Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;

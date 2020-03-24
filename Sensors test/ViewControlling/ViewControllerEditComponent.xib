@@ -34,12 +34,37 @@
                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BtA-hw-ygG">
                         <rect key="frame" x="0.0" y="96" width="320" height="216"/>
                     </pickerView>
+                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YoI-Q1-J8x">
+                        <rect key="frame" x="0.0" y="320" width="320" height="160"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w7S-xi-JzX">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="1000"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1000" id="PeK-ZZ-RVn"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="w7S-xi-JzX" firstAttribute="bottom" secondItem="SK0-Hn-u6W" secondAttribute="bottom" id="Nep-N1-2zb" userLabel="View.bottom = Content Layout Guide.bottom + 0"/>
+                            <constraint firstItem="w7S-xi-JzX" firstAttribute="top" secondItem="SK0-Hn-u6W" secondAttribute="top" id="TDe-SV-TJg" userLabel="View.top = Content Layout Guide.top +0"/>
+                            <constraint firstItem="w7S-xi-JzX" firstAttribute="leading" secondItem="SK0-Hn-u6W" secondAttribute="leading" id="bxr-Es-tKx" userLabel="View.leading = Content Layout Guide.leading + 0"/>
+                            <constraint firstItem="w7S-xi-JzX" firstAttribute="trailing" secondItem="SK0-Hn-u6W" secondAttribute="trailing" id="sAg-vV-yHT" userLabel="View.trailing = Content Layout Guide.trailing + 0"/>
+                            <constraint firstItem="w7S-xi-JzX" firstAttribute="width" secondItem="qnl-vc-0nB" secondAttribute="width" id="xCl-8Q-99X"/>
+                        </constraints>
+                        <viewLayoutGuide key="contentLayoutGuide" id="SK0-Hn-u6W"/>
+                        <viewLayoutGuide key="frameLayoutGuide" id="qnl-vc-0nB"/>
+                    </scrollView>
                 </subviews>
                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                 <constraints>
                     <constraint firstItem="jKY-L8-rgU" firstAttribute="top" secondItem="VEH-bw-Kjg" secondAttribute="top" constant="32" id="050-8M-LAf"/>
                     <constraint firstItem="xlt-Ub-b80" firstAttribute="top" secondItem="VEH-bw-Kjg" secondAttribute="top" constant="32" id="1z0-Df-26z"/>
+                    <constraint firstItem="VEH-bw-Kjg" firstAttribute="bottom" secondItem="YoI-Q1-J8x" secondAttribute="bottom" id="Brw-OJ-HZs"/>
                     <constraint firstItem="BtA-hw-ygG" firstAttribute="top" secondItem="jKY-L8-rgU" secondAttribute="bottom" constant="16" id="SUg-Ff-5kX"/>
+                    <constraint firstItem="YoI-Q1-J8x" firstAttribute="leading" secondItem="VEH-bw-Kjg" secondAttribute="leading" id="WGT-F0-Teu"/>
+                    <constraint firstItem="YoI-Q1-J8x" firstAttribute="top" secondItem="BtA-hw-ygG" secondAttribute="bottom" constant="8" symbolic="YES" id="aF4-UJ-4xI"/>
+                    <constraint firstItem="VEH-bw-Kjg" firstAttribute="trailing" secondItem="YoI-Q1-J8x" secondAttribute="trailing" id="qvK-Su-O2p"/>
                     <constraint firstItem="BtA-hw-ygG" firstAttribute="leading" secondItem="VEH-bw-Kjg" secondAttribute="leading" id="r0T-H5-xK6"/>
                     <constraint firstItem="BtA-hw-ygG" firstAttribute="trailing" secondItem="VEH-bw-Kjg" secondAttribute="trailing" id="vTZ-MA-Xb8"/>
                     <constraint firstItem="VEH-bw-Kjg" firstAttribute="trailing" secondItem="xlt-Ub-b80" secondAttribute="trailing" constant="32" id="xJJ-T2-pLM"/>
@@ -50,6 +75,7 @@
             <connections>
                 <outlet property="cancelButton" destination="jKY-L8-rgU" id="3Gk-sp-Y9f"/>
                 <outlet property="editButton" destination="xlt-Ub-b80" id="FUY-Rg-qhG"/>
+                <outlet property="scrolledView" destination="w7S-xi-JzX" id="KJg-lR-vtc"/>
                 <outlet property="typePicker" destination="BtA-hw-ygG" id="UQf-Z4-exX"/>
             </connections>
             <point key="canvasLocation" x="78.75" y="73.75"/>
