@@ -337,50 +337,93 @@ rowHeightForComponent:(NSInteger)component
             // Add the label
             [self.scrolledView addSubview:attributesNameLabel];
             // Leading constraint
-            NSLayoutConstraint * attributesTitleLabelLeading = [NSLayoutConstraint
-                                                                constraintWithItem:attributesNameLabel
-                                                                attribute:NSLayoutAttributeLeading
-                                                                relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.scrolledView
-                                                                attribute:NSLayoutAttributeLeading
-                                                                multiplier:1.0
-                                                                constant:16.0];
-            // Trailing constraint
-            NSLayoutConstraint * attributesTitleLabelTrailing =[NSLayoutConstraint
-                                                                constraintWithItem:attributesNameLabel
-                                                                attribute:NSLayoutAttributeTrailing
-                                                                relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.scrolledView
-                                                                attribute:NSLayoutAttributeTrailing
-                                                                multiplier:1.0
-                                                                constant:16.0];
-            // Top constraint
-            NSLayoutConstraint * attributesTitleLabelTop = [NSLayoutConstraint
-                                                            constraintWithItem:attributesNameLabel
-                                                            attribute:NSLayoutAttributeTop
-                                                            relatedBy:NSLayoutRelationEqual
-                                                            toItem:lastAddedElement
-                                                            attribute:NSLayoutAttributeBottom
-                                                            multiplier:1.0
-                                                            constant:16.0];
-            // Height constraint
-            NSLayoutConstraint * attributesTitleLabelHeight = [NSLayoutConstraint
+            NSLayoutConstraint * attributesNameLabelLeading = [NSLayoutConstraint
                                                                constraintWithItem:attributesNameLabel
-                                                               attribute:NSLayoutAttributeHeight
+                                                               attribute:NSLayoutAttributeLeading
                                                                relatedBy:NSLayoutRelationEqual
-                                                               toItem:nil
-                                                               attribute:NSLayoutAttributeNotAnAttribute
+                                                               toItem:self.scrolledView
+                                                               attribute:NSLayoutAttributeLeading
                                                                multiplier:1.0
-                                                               constant:21.0];
+                                                               constant:24.0];
+            // Trailing constraint
+            NSLayoutConstraint * attributesNameLabelTrailing =[NSLayoutConstraint
+                                                               constraintWithItem:self.scrolledView
+                                                               attribute:NSLayoutAttributeTrailing
+                                                               relatedBy:NSLayoutRelationEqual
+                                                               toItem:attributesNameLabel
+                                                               attribute:NSLayoutAttributeTrailing
+                                                               multiplier:1.0
+                                                               constant:24.0];
+            // Top constraint
+            NSLayoutConstraint * attributesNameLabelTop = [NSLayoutConstraint
+                                                           constraintWithItem:attributesNameLabel
+                                                           attribute:NSLayoutAttributeTop
+                                                           relatedBy:NSLayoutRelationEqual
+                                                           toItem:lastAddedElement
+                                                           attribute:NSLayoutAttributeBottom
+                                                           multiplier:1.0
+                                                           constant:16.0];
+            // Height constraint
+            NSLayoutConstraint * attributesNameLabelHeight = [NSLayoutConstraint
+                                                              constraintWithItem:attributesNameLabel
+                                                              attribute:NSLayoutAttributeHeight
+                                                              relatedBy:NSLayoutRelationEqual
+                                                              toItem:nil
+                                                              attribute:NSLayoutAttributeNotAnAttribute
+                                                              multiplier:1.0
+                                                              constant:21.0];
             //Add constraints to the Parent
-            [self.scrolledView addConstraint:attributesTitleLabelTrailing];
-            [self.scrolledView addConstraint:attributesTitleLabelLeading];
-            [self.scrolledView addConstraint:attributesTitleLabelTop];
+            [self.scrolledView addConstraint:attributesNameLabelTrailing];
+            [self.scrolledView addConstraint:attributesNameLabelLeading];
+            [self.scrolledView addConstraint:attributesNameLabelTop];
             //Add height constraint to the subview, as subview owns it.
-            [attributesNameLabel addConstraint:attributesTitleLabelHeight];
+            [attributesNameLabel addConstraint:attributesNameLabelHeight];
             
             // Set this label as the last element added
             lastAddedElement = (UIView *)attributesNameLabel;
+            
+            // Set attribute's textField
+            UITextField * attributesTextField = [[UITextField alloc] init];
+            [attributesTextField setTranslatesAutoresizingMaskIntoConstraints:NO];
+            [attributesTextField setBorderStyle:UITextBorderStyleRoundedRect];
+            [attributesTextField setText:[NSString stringWithFormat:@"%@", [eachAttribute getAttribute]]];
+            
+            // Add the label
+            [self.scrolledView addSubview:attributesTextField];
+            // Leading constraint
+            NSLayoutConstraint * attributesTextFieldLeading = [NSLayoutConstraint
+                                                               constraintWithItem:attributesTextField
+                                                               attribute:NSLayoutAttributeLeading
+                                                               relatedBy:NSLayoutRelationEqual
+                                                               toItem:self.scrolledView
+                                                               attribute:NSLayoutAttributeLeading
+                                                               multiplier:1.0
+                                                               constant:24.0];
+            // Trailing constraint
+            NSLayoutConstraint * attributesTextFieldTrailing =[NSLayoutConstraint
+                                                               constraintWithItem:self.scrolledView
+                                                               attribute:NSLayoutAttributeTrailing
+                                                               relatedBy:NSLayoutRelationEqual
+                                                               toItem:attributesTextField
+                                                               attribute:NSLayoutAttributeTrailing
+                                                               multiplier:1.0
+                                                               constant:24.0];
+            // Top constraint
+            NSLayoutConstraint * attributesTextFieldTop = [NSLayoutConstraint
+                                                           constraintWithItem:attributesTextField
+                                                           attribute:NSLayoutAttributeTop
+                                                           relatedBy:NSLayoutRelationEqual
+                                                           toItem:lastAddedElement
+                                                           attribute:NSLayoutAttributeBottom
+                                                           multiplier:1.0
+                                                           constant:8.0];
+            //Add constraints to the Parent
+            [self.scrolledView addConstraint:attributesTextFieldTrailing];
+            [self.scrolledView addConstraint:attributesTextFieldLeading];
+            [self.scrolledView addConstraint:attributesTextFieldTop];
+            
+            // Set this label as the last element added
+            lastAddedElement = (UIView *)attributesTextField;
         }
     }
 }
