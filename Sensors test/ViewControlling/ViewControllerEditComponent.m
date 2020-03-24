@@ -49,6 +49,14 @@
 {
     itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
                                                                    andCredentialsUserDic:credentialsUserDic];
+    MDType * typeItemChosenByUser = itemChosenByUser[@"type"];
+    if (typeItemChosenByUser) {
+        typeChosenByUser = typeItemChosenByUser;
+    } else {
+        typeChosenByUser = [modeTypes objectAtIndex:0];
+    }
+    [self showAttributesOfTypeChosenByUser];
+    
     NSLog(@"[INFO][VCEC] The user is editing %@", itemChosenByUser[@"uuid"]);
 }
 
