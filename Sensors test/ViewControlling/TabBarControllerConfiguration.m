@@ -488,29 +488,29 @@
         [infoDic2_5 setValue:cornerType forKey:@"type"];
         [items addObject:infoDic2_5];
         
-        NSMutableDictionary * infoDic3_0 = [[NSMutableDictionary alloc] init];
-        RDPosition * position3_0 = [[RDPosition alloc] init];
-        position3_0.x = [NSNumber numberWithFloat:3.0];
-        position3_0.y = [NSNumber numberWithFloat:0.0];
-        position3_0.z = [NSNumber numberWithFloat:0.0];
-        [infoDic3_0 setValue:@"position" forKey:@"sort"];
-        [infoDic3_0 setValue:@"position3_0@miso.uam.es" forKey:@"identifier"];
-        [infoDic3_0 setValue:position3_0 forKey:@"position"];
-        [infoDic3_0 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic3_0 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic3_0];
+        NSMutableDictionary * infoDic35_0 = [[NSMutableDictionary alloc] init];
+        RDPosition * position35_0 = [[RDPosition alloc] init];
+        position35_0.x = [NSNumber numberWithFloat:3.5];
+        position35_0.y = [NSNumber numberWithFloat:0.0];
+        position35_0.z = [NSNumber numberWithFloat:0.0];
+        [infoDic35_0 setValue:@"position" forKey:@"sort"];
+        [infoDic35_0 setValue:@"position35_0@miso.uam.es" forKey:@"identifier"];
+        [infoDic35_0 setValue:position35_0 forKey:@"position"];
+        [infoDic35_0 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDic35_0 setValue:cornerType forKey:@"type"];
+        [items addObject:infoDic35_0];
         
-        NSMutableDictionary * infoDic3_5 = [[NSMutableDictionary alloc] init];
-        RDPosition * position3_5 = [[RDPosition alloc] init];
-        position3_5.x = [NSNumber numberWithFloat:3.0];
-        position3_5.y = [NSNumber numberWithFloat:5.0];
-        position3_5.z = [NSNumber numberWithFloat:0.0];
-        [infoDic3_5 setValue:@"position" forKey:@"sort"];
-        [infoDic3_5 setValue:@"position3_5@miso.uam.es" forKey:@"identifier"];
-        [infoDic3_5 setValue:position3_5 forKey:@"position"];
-        [infoDic3_5 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic3_5 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic3_5];
+        NSMutableDictionary * infoDic35_5 = [[NSMutableDictionary alloc] init];
+        RDPosition * position35_5 = [[RDPosition alloc] init];
+        position35_5.x = [NSNumber numberWithFloat:3.5];
+        position35_5.y = [NSNumber numberWithFloat:5.0];
+        position35_5.z = [NSNumber numberWithFloat:0.0];
+        [infoDic35_5 setValue:@"position" forKey:@"sort"];
+        [infoDic35_5 setValue:@"position35_5@miso.uam.es" forKey:@"identifier"];
+        [infoDic35_5 setValue:position35_5 forKey:@"position"];
+        [infoDic35_5 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDic35_5 setValue:cornerType forKey:@"type"];
+        [items addObject:infoDic35_5];
         
         NSMutableDictionary * infoDic85_0 = [[NSMutableDictionary alloc] init];
         RDPosition * position85_0 = [[RDPosition alloc] init];
@@ -655,6 +655,54 @@
         [infoDicColumn19_16 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
         [infoDicColumn19_16 setValue:columnType forKey:@"type"];
         [items addObject:infoDicColumn19_16];
+        
+        NSMutableDictionary * infoDicEntrance95_25 = [[NSMutableDictionary alloc] init];
+        RDPosition * position95_25 = [[RDPosition alloc] init];
+        position95_25.x = [NSNumber numberWithFloat:9.5];
+        position95_25.y = [NSNumber numberWithFloat:2.5];
+        position95_25.z = [NSNumber numberWithFloat:0.0];
+        [infoDicEntrance95_25 setValue:@"position" forKey:@"sort"];
+        [infoDicEntrance95_25 setValue:@"entrance95_25@miso.uam.es" forKey:@"identifier"];
+        [infoDicEntrance95_25 setValue:position95_25 forKey:@"position"];
+        [infoDicEntrance95_25 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDicEntrance95_25 setValue:entranceType forKey:@"type"];
+        [items addObject:infoDicEntrance95_25];
+        
+        NSMutableDictionary * infoDicEntrance9_08 = [[NSMutableDictionary alloc] init];
+        RDPosition * position9_08 = [[RDPosition alloc] init];
+        position9_08.x = [NSNumber numberWithFloat:9.0];
+        position9_08.y = [NSNumber numberWithFloat:0.8];
+        position9_08.z = [NSNumber numberWithFloat:0.0];
+        [infoDicEntrance9_08 setValue:@"position" forKey:@"sort"];
+        [infoDicEntrance9_08 setValue:@"entrance9_08@miso.uam.es" forKey:@"identifier"];
+        [infoDicEntrance9_08 setValue:position9_08 forKey:@"position"];
+        [infoDicEntrance9_08 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDicEntrance9_08 setValue:entranceType forKey:@"type"];
+        [items addObject:infoDicEntrance9_08];
+        
+        NSMutableDictionary * infoDicEntrance9_42 = [[NSMutableDictionary alloc] init];
+        RDPosition * position9_42 = [[RDPosition alloc] init];
+        position9_42.x = [NSNumber numberWithFloat:9.0];
+        position9_42.y = [NSNumber numberWithFloat:4.2];
+        position9_42.z = [NSNumber numberWithFloat:0.0];
+        [infoDicEntrance9_42 setValue:@"position" forKey:@"sort"];
+        [infoDicEntrance9_42 setValue:@"entrance9_42@miso.uam.es" forKey:@"identifier"];
+        [infoDicEntrance9_42 setValue:position9_42 forKey:@"position"];
+        [infoDicEntrance9_42 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDicEntrance9_42 setValue:entranceType forKey:@"type"];
+        [items addObject:infoDicEntrance9_42];
+        
+        NSMutableDictionary * infoDicEntrance0_25 = [[NSMutableDictionary alloc] init];
+        RDPosition * position0_25 = [[RDPosition alloc] init];
+        position0_25.x = [NSNumber numberWithFloat:0.0];
+        position0_25.y = [NSNumber numberWithFloat:2.5];
+        position0_25.z = [NSNumber numberWithFloat:0.0];
+        [infoDicEntrance0_25 setValue:@"position" forKey:@"sort"];
+        [infoDicEntrance0_25 setValue:@"entrance0_25@miso.uam.es" forKey:@"identifier"];
+        [infoDicEntrance0_25 setValue:position0_25 forKey:@"position"];
+        [infoDicEntrance0_25 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [infoDicEntrance0_25 setValue:emergencyType forKey:@"type"];
+        [items addObject:infoDicEntrance0_25];
         
         // END CASE OF USE PAPER
         

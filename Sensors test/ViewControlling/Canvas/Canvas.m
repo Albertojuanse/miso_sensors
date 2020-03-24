@@ -787,11 +787,12 @@
         
         // Draw the type
         // Get its color...
-        NSUInteger typeIndex = 5;
+        NSUInteger typeIndex = 0;
         NSMutableArray * types = [sharedData getTypesDataWithCredentialsUserDic:credentialsUserDic];
         for (MDType * eachType in types) {
-            typeIndex++;
-            if ([eachType isEqualToMDType:type]) {
+            typeIndex = typeIndex + 1;
+            NSString * eachTypeName = [eachType getName];
+            if ([eachTypeName isEqualToString:[type getName]]) {
                 break;
             }
         }

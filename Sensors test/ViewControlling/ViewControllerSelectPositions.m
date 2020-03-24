@@ -123,8 +123,8 @@
                 [itemIdentifier isEqualToString:@"position95_16@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"position85_5@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"position85_0@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position3_5@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position3_0@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"position35_5@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"position35_0@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"position2_5@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"position2_0@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"position05_5@miso.uam.es"] ||
@@ -140,7 +140,11 @@
                 [itemIdentifier isEqualToString:@"column35_33@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"column35_16@miso.uam.es"] ||
                 [itemIdentifier isEqualToString:@"column19_33@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"column19_16@miso.uam.es"]
+                [itemIdentifier isEqualToString:@"column19_16@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"entrance95_25@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"entrance9_08@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"entrance9_42@miso.uam.es"] ||
+                [itemIdentifier isEqualToString:@"entrance0_25@miso.uam.es"]
                 )
             {
                 [sharedData  inSessionDataSetAsChosenItem:itemDic
