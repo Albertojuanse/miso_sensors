@@ -8,6 +8,7 @@
 
 #include <Foundation/Foundation.h>
 #include <UIKit/UIKit.h>
+#include "MDAttribute.h"
 
 /*!
  @protocol MDType

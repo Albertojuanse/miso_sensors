@@ -91,6 +91,29 @@
 }
 
 /*!
+ @method setAttribute
+ @discussion Setter of an unique 'attribute' MDAttribute; if it exists, replace it, but if not, adds it.
+ */
+- (void)setAttribute:(MDAttribute *)givenAttribute
+{
+    // Search the attribute
+    NSString * givenAttributeName = [givenAttribute getName];
+    MDAttribute * foundAttribute;
+    for (MDAttribute * eachAttribute in attributes) {
+        NSString * eachAttributeName = [eachAttribute getName];
+        if ([givenAttributeName isEqualToString:eachAttributeName]) {
+            foundAttribute = eachAttribute;
+        }
+    }
+    // If found, replace it; if not, add it
+    if(foundAttribute) {
+        [attributes removeObject:foundAttribute];
+    }
+    [attributes addObject:givenAttribute];
+    return;
+}
+
+/*!
 @method setIcon
 @discussion Setter of the 'icon' UIImage object.
 */
