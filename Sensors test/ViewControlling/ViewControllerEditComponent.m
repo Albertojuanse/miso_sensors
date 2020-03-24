@@ -271,28 +271,28 @@ rowHeightForComponent:(NSInteger)component
         [self.scrolledView addSubview:attributesTitleLabel];
         // Leading constraint
         NSLayoutConstraint * attributesTitleLabelLeading = [NSLayoutConstraint
-                                                            constraintWithItem:self.scrolledView
+                                                            constraintWithItem:attributesTitleLabel
                                                             attribute:NSLayoutAttributeLeading
                                                             relatedBy:NSLayoutRelationEqual
-                                                            toItem:attributesTitleLabel
+                                                            toItem:self.scrolledView
                                                             attribute:NSLayoutAttributeLeading
-                                                            multiplier:16.0
-                                                            constant:0.f];
+                                                            multiplier:1.0
+                                                            constant:16.0];
         // Trailing constraint
         NSLayoutConstraint * attributesTitleLabelTrailing =[NSLayoutConstraint
-                                                            constraintWithItem:self.scrolledView
+                                                            constraintWithItem:attributesTitleLabel
                                                             attribute:NSLayoutAttributeTrailing
                                                             relatedBy:NSLayoutRelationEqual
-                                                            toItem:attributesTitleLabel
+                                                            toItem:self.scrolledView
                                                             attribute:NSLayoutAttributeTrailing
                                                             multiplier:1.0
                                                             constant:0.0];
         // Top constraint
         NSLayoutConstraint * attributesTitleLabelTop = [NSLayoutConstraint
-                                                        constraintWithItem:self.scrolledView
+                                                        constraintWithItem:attributesTitleLabel
                                                         attribute:NSLayoutAttributeTop
                                                         relatedBy:NSLayoutRelationEqual
-                                                        toItem:attributesTitleLabel
+                                                        toItem:self.scrolledView
                                                         attribute:NSLayoutAttributeTop
                                                         multiplier:1.0
                                                         constant:0.0];
