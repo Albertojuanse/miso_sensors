@@ -28,6 +28,9 @@
         position.x = [NSNumber numberWithFloat:0.0];
         position.y = [NSNumber numberWithFloat:0.0];
         position.z = [NSNumber numberWithFloat:0.0];
+        currentCompassHeading = [locationManager heading];
+        lastMeasuredHeading = nil;
+        needMeasureHeading = NO;
         
         // Initialize location manager and set this class as the delegate which implement the event response's methods
         locationManager = [[CLLocationManager alloc] init];
@@ -247,6 +250,110 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 - (void)locationManager:(CLLocationManager *)manager
        didUpdateHeading:(CLHeading *)newHeading
 {
+    // Upadate current compass heading
+    currentCompassHeading = newHeading;
+    
+    // Check for asynchronous measuring needs
+    if (needMeasureHeading) {
+        lastMeasuredHeading = currentCompassHeading;
+        needMeasureHeading = NO;
+        NSLog(@"[INFO][LMTTL] Measuring needed; updated last measured heading.");
+    }
+}
+
+/*!
+ @method locationManagerShouldDisplayHeadingCalibration:
+ @discussion Adverts the user that compass needs calibration.
+ */
+- (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager
+{
+    CLLocationDirection accuracy = [[manager heading] headingAccuracy];
+    return !accuracy || accuracy <= 0.0f || accuracy > 3.0f; // 0 means invalid heading, need to calibrate
+}
+
+#pragma mark - Notification event handles
+/*!
+ @method startCompassHeadingMeasuring:
+ @discussion This method asks the Location Manager to start positioning the device using the compass.
+ */
+- (void) startCompassHeadingMeasuring:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"startCompassHeadingMeasuring"]){
+        NSLog(@"[NOTI][LMTTL] Notification \"startCompassHeadingMeasuring\" recived.");
+        // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
+        [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
+                                   andWithCredentialsUserDic:credentialsUserDic];
+        
+        // Start locating if it is posible.
+        [self locationManager:locationManager didChangeAuthorizationStatus:CLLocationManager.authorizationStatus];
+        
+        // Validate the access to the data shared collection
+        if (
+            [sharedData validateCredentialsUserDic:credentialsUserDic]
+            )
+        {
+            
+        } else {
+            /*
+             [self alertUserWithTitle:@"Beacon ranged won't be procesed."
+             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
+             andHandler:^(UIAlertAction * action) {
+             // TODO: handle intrusion situations. Alberto J. 2019/09/10.
+             }
+             ];
+             */
+            NSLog(@"[ERROR][LMTTL] Shared data could not be accessed while starting compass heading measure.");
+            return;
+        }
+        MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                          andCredentialsUserDic:credentialsUserDic];
+        // If using location services is allowed
+        if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
+           CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
+            
+            if ([mode isModeKey:kModeThetaThetaLocating]) {
+                
+                [locationManager startUpdatingHeading];
+                NSLog(@"[INFO][LMTTL] Start updating compass heading.");
+                needMeasureHeading = YES;
+                
+            } else {
+                NSLog(@"[ERROR][LMTTL] Instantiated class %@ when using %@ mode.",
+                      NSStringFromClass([self class]),
+                      mode
+                      );
+            }
+            
+        }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied ||
+                  CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted){
+            [self stopRoutine];
+            [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                                  andWithCredentialsUserDic:credentialsUserDic];
+            NSLog(@"[ERROR][LMTTL] Location services not allowed; stop updating compass heading.");
+        }
+    }
+}
+
+/*!
+ @method stopCompassHeadingMeasuring:
+ @discussion This method asks the Location Manager to stop positioning the device using the compass.
+ */
+- (void) stopCompassHeadingMeasuring:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"stopCompassHeadingMeasuring"]){
+        NSLog(@"[NOTI][LMTTL] Notification \"stopCompassHeadingMeasuring\" recived.");
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                              andWithCredentialsUserDic:credentialsUserDic];
+        [self saveMeasure];
+        [self stopRoutine];
+        NSLog(@"[INFO][LMTTL] Stop updating compass heading.");
+    }
+}
+
+/*!
+@method saveMeasure:
+@discussion This method is called when measured must finish and compose and save the measure.
+*/
+- (void) saveMeasure
+{
     // First, validate the access to the data shared collection
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
@@ -281,14 +388,19 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
             NSMutableDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
                                                                                                  andCredentialsUserDic:credentialsUserDic];
             if(itemChosenByUser) {
-                // If its not null retrieve the information needed.
+                // If its not null retrieve the information needed...
                 NSString * itemUUID = itemChosenByUser[@"uuid"];
                 RDPosition * measurePosition = [[RDPosition alloc] init];
                 measurePosition.x = position.x;
                 measurePosition.y = position.y;
                 measurePosition.z = position.z;
                 
-                [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithDouble:[newHeading trueHeading]*M_PI/180.0]
+                double lastMeasuredHeadingValue = [lastMeasuredHeading trueHeading]*M_PI/180.0;
+                double currentCompassHeadingValue = [currentCompassHeading trueHeading]*M_PI/180.0;
+                NSNumber * measure = [NSNumber numberWithDouble:currentCompassHeadingValue - lastMeasuredHeadingValue];
+                
+                // ...and save data
+                [sharedData inMeasuresDataSetMeasure:measure
                                               ofSort:@"heading"
                                         withItemUUID:itemUUID
                                       withDeviceUUID:deviceUUID
@@ -372,92 +484,6 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         
     } else { // If is idle...
         // Do nothing
-    }
-}
-
-/*!
- @method locationManagerShouldDisplayHeadingCalibration:
- @discussion Adverts the user that compass needs calibration.
- */
-- (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager
-{
-    if(!manager.heading) return YES; // Got nothing, We can assume we got to calibrate.
-    else if(manager.heading.headingAccuracy < 0 ) return YES; // 0 means invalid heading, need to calibrate
-    else if(manager.heading.headingAccuracy > 3 ) return YES; // 5 degrees is a small value correct for my needs, too.
-    else return NO; // All is good. Compass is precise enough.
-}
-
-#pragma mark - Notification event handles
-/*!
- @method startCompassHeadingMeasuring:
- @discussion This method asks the Location Manager to start positioning the device using the compass.
- */
-- (void) startCompassHeadingMeasuring:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"startCompassHeadingMeasuring"]){
-        NSLog(@"[NOTI][LMTTL] Notification \"startCompassHeadingMeasuring\" recived.");
-        // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
-        [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
-                                   andWithCredentialsUserDic:credentialsUserDic];        
-        
-        // Start locating if it is posible.
-        [self locationManager:locationManager didChangeAuthorizationStatus:CLLocationManager.authorizationStatus];
-        
-        // Validate the access to the data shared collection
-        if (
-            [sharedData validateCredentialsUserDic:credentialsUserDic]
-            )
-        {
-            
-        } else {
-            /*
-             [self alertUserWithTitle:@"Beacon ranged won't be procesed."
-             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
-             andHandler:^(UIAlertAction * action) {
-             // TODO: handle intrusion situations. Alberto J. 2019/09/10.
-             }
-             ];
-             */
-            NSLog(@"[ERROR][LMTTL] Shared data could not be accessed while starting compass heading measure.");
-            return;
-        }
-        MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
-                                                          andCredentialsUserDic:credentialsUserDic];
-        // If using location services is allowed
-        if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
-           CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
-            
-            if ([mode isModeKey:kModeThetaThetaLocating]) {
-                
-                [locationManager startUpdatingHeading];
-                NSLog(@"[INFO][LMTTL] Start updating compass heading.");
-            } else {
-                NSLog(@"[ERROR][LMTTL] Instantiated class %@ when using %@ mode.",
-                      NSStringFromClass([self class]),
-                      mode
-                      );
-            }
-            
-        }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied ||
-                  CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted){
-            [self stopRoutine];
-            [sharedData inSessionDataSetIdleUserWithUserDic:userDic
-                                  andWithCredentialsUserDic:credentialsUserDic];
-            NSLog(@"[ERROR][LMTTL] Location services not allowed; stop updating compass heading.");
-        }
-    }
-}
-
-/*!
- @method stopCompassHeadingMeasuring:
- @discussion This method asks the Location Manager to stop positioning the device using the compass.
- */
-- (void) stopCompassHeadingMeasuring:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"stopCompassHeadingMeasuring"]){
-        NSLog(@"[NOTI][LMTTL] Notification \"stopCompassHeadingMeasuring\" recived.");
-        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
-                              andWithCredentialsUserDic:credentialsUserDic];
-        [self stopRoutine];
-        NSLog(@"[INFO][LMTTL] Stop updating compass heading.");
     }
 }
 

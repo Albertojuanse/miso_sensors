@@ -34,6 +34,9 @@
     
     // Variables
     RDPosition * position;  // Current position of device
+    CLHeading * currentCompassHeading;
+    CLHeading * lastMeasuredHeading;
+    BOOL needMeasureHeading;
     
 }
 

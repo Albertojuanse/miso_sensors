@@ -381,7 +381,7 @@
         NSLog(@"[NOTI][VCTTL] Notification \"createReference\" recived.");
     
         // Retrieve notification data
-        NSMutableDictionary * dataDic = [notification userInfo];
+        NSDictionary * dataDic = [notification userInfo];
         VCComponent * sourceView = dataDic[@"sourceView"];
         VCComponent * targetView = dataDic[@"targetView"];
         
