@@ -15,6 +15,7 @@
 		42263BB224475B2800161AB2 /* PListLocating.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42263BB124475B2800161AB2 /* PListLocating.plist */; };
 		42263BB52447668800161AB2 /* LMDelegateCalibrating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42263BB42447668800161AB2 /* LMDelegateCalibrating.m */; };
 		42263BB824479AC800161AB2 /* LMDelegateGPS.m in Sources */ = {isa = PBXBuildFile; fileRef = 42263BB724479AC800161AB2 /* LMDelegateGPS.m */; };
+		42263BBB2447A81E00161AB2 /* LMDelegateHeading.m in Sources */ = {isa = PBXBuildFile; fileRef = 42263BBA2447A81E00161AB2 /* LMDelegateHeading.m */; };
 		4227338B23D0BB6B00F79364 /* LMDelegateMonitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227338A23D0BB6B00F79364 /* LMDelegateMonitoring.m */; };
 		422798852271F37800E07C39 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798842271F37800E07C39 /* AppDelegate.m */; };
 		422798882271F37800E07C39 /* ViewControllerRhoRhoModeling.m in Sources */ = {isa = PBXBuildFile; fileRef = 422798872271F37800E07C39 /* ViewControllerRhoRhoModeling.m */; };
@@ -91,6 +92,8 @@
 		42263BB42447668800161AB2 /* LMDelegateCalibrating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateCalibrating.m; sourceTree = "<group>"; };
 		42263BB624479AB300161AB2 /* LMDelegateGPS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateGPS.h; sourceTree = "<group>"; };
 		42263BB724479AC800161AB2 /* LMDelegateGPS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateGPS.m; sourceTree = "<group>"; };
+		42263BB92447A80F00161AB2 /* LMDelegateHeading.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateHeading.h; sourceTree = "<group>"; };
+		42263BBA2447A81E00161AB2 /* LMDelegateHeading.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateHeading.m; sourceTree = "<group>"; };
 		4227338923D0BB5500F79364 /* LMDelegateMonitoring.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateMonitoring.h; sourceTree = "<group>"; };
 		4227338A23D0BB6B00F79364 /* LMDelegateMonitoring.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateMonitoring.m; sourceTree = "<group>"; };
 		422798802271F37800E07C39 /* Sensors test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sensors test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -280,6 +283,8 @@
 				42B676ED23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m */,
 				42263BB624479AB300161AB2 /* LMDelegateGPS.h */,
 				42263BB724479AC800161AB2 /* LMDelegateGPS.m */,
+				42263BB92447A80F00161AB2 /* LMDelegateHeading.h */,
+				42263BBA2447A81E00161AB2 /* LMDelegateHeading.m */,
 				42612F3D24470ADB00B66BC3 /* LMRanging.h */,
 				42612F3E24470AEB00B66BC3 /* LMRanging.m */,
 			);
@@ -552,6 +557,7 @@
 				429093E023AA4B3C000CEA6E /* ViewControllerMonitoring.m in Sources */,
 				42263BB52447668800161AB2 /* LMDelegateCalibrating.m in Sources */,
 				426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */,
+				42263BBB2447A81E00161AB2 /* LMDelegateHeading.m in Sources */,
 				42BE9EA223DB0BD2002D08FA /* ViewControllerConfigurationMetamodels.m in Sources */,
 				4242F6CB22CBACAB00C4B0B7 /* Averager.m in Sources */,
 				4240729D23E9D6C100B2C696 /* MDAttribute.m in Sources */,
