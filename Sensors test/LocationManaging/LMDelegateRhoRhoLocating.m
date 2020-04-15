@@ -383,9 +383,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 NSLog(@"[INFO][LMRRL]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
                 
                 // Ask view controller to refresh the canvas
-                NSLog(@"[NOTI][LMRRL] Notification \"refreshCanvas\" posted.");
+                NSLog(@"[NOTI][LMRRL] Notification \"canvas/refresh\" posted.");
                 [[NSNotificationCenter defaultCenter]
-                 postNotificationName:@"refreshCanvas"
+                 postNotificationName:@"canvas/refresh"
                  object:nil];
             }
             

@@ -459,9 +459,9 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
             NSLog(@"[INFO][LMTTL]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
             
             // Ask view controller to refresh the canvas
-            NSLog(@"[NOTI][LMTTL] Notification \"refreshCanvas\" posted.");
+            NSLog(@"[NOTI][LMTTL] Notification \"canvas/refresh\" posted.");
             [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"refreshCanvas"
+             postNotificationName:@"canvas/refresh"
              object:nil];
             
         }

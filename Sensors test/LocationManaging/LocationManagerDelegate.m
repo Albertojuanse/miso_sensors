@@ -357,9 +357,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 [self stopRoutine];
                 
                 // Notify menu that calibration is finished.
-                NSLog(@"[NOTI][LM] Notification \"calibrationFinished\" posted.");
+                NSLog(@"[NOTI][LM] Notification \"calibration/finished\" posted.");
                 [[NSNotificationCenter defaultCenter]
-                 postNotificationName:@"calibrationFinished"
+                 postNotificationName:@"calibration/finished"
                  object:nil];
                 
             } else {
@@ -456,13 +456,13 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     
                     // Ask view controller to refresh the canvas and table
                     if(beacons.count > 0) {
-                        NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
+                        NSLog(@"[NOTI][LM] Notification \"canvas/refresh\" posted.");
                         [[NSNotificationCenter defaultCenter]
-                         postNotificationName:@"refreshCanvas"
+                         postNotificationName:@"canvas/refresh"
                          object:nil];
-                        NSLog(@"[NOTI][LM] Notification \"refreshRegisterTable\" posted.");
+                        NSLog(@"[NOTI][LM] Notification \"cvm/registerTable/refresh\" posted.");
                         [[NSNotificationCenter defaultCenter]
-                         postNotificationName:@"refreshRegisterTable"
+                         postNotificationName:@"cvm/registerTable/refresh"
                          object:nil];
                     }
                 }
@@ -624,9 +624,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     
                     // Ask view controller to refresh the canvas
                     if(beacons.count > 0) {
-                        NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
+                        NSLog(@"[NOTI][LM] Notification \"canvas/refresh\" posted.");
                         [[NSNotificationCenter defaultCenter]
-                         postNotificationName:@"refreshCanvas"
+                         postNotificationName:@"canvas/refresh"
                          object:nil];
                     }
                 }
@@ -819,9 +819,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             NSLog(@"[INFO][LM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
             
             // Ask view controller to refresh the canvas
-            NSLog(@"[NOTI][LM] Notification \"refreshCanvas\" posted.");
+            NSLog(@"[NOTI][LM] Notification \"canvas/refresh\" posted.");
             [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"refreshCanvas"
+             postNotificationName:@"canvas/refresh"
              object:nil];
             
         }
@@ -1319,9 +1319,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             // Delete registered regions and heading updates
             [self stopRoutine];
             // Notify menu that calibration is finished.
-            NSLog(@"[NOTI][LM] Notification \"calibrationFinished\" posted.");
+            NSLog(@"[NOTI][LM] Notification \"calibration/finished\" posted.");
             [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"calibrationFinished"
+             postNotificationName:@"calibration/finished"
              object:nil];
             return;
         }
@@ -1370,9 +1370,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             // Delete registered regions and heading updates
             [self stopRoutine];
             
-            NSLog(@"[NOTI][LM] Notification \"calibrationFinished\" posted.");
+            NSLog(@"[NOTI][LM] Notification \"calibration/finished\" posted.");
             [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"calibrationFinished"
+             postNotificationName:@"calibration/finished"
              object:nil];
             return;
         }

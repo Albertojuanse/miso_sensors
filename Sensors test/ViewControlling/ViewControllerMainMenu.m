@@ -212,7 +212,7 @@
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(calibrationFinished:)
-                                                 name:@"calibrationFinished"
+                                                 name:@"calibration/finished"
                                                object:nil];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.

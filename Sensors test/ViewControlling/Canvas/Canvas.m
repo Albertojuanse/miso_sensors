@@ -89,8 +89,8 @@
     
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(refreshCanvas:)
-                                                 name:@"refreshCanvas"
+                                             selector:@selector(canvasRefresh:)
+                                                 name:@"canvas/refresh"
                                                object:nil];
     
     // Center point
@@ -101,13 +101,13 @@
 
 #pragma mark - Notifications events handlers
 /*!
- @method refreshCanvas:
- @discussion This method gets the beacons that must be represented in canvas and ask it to upload; this method is called when someone submits the 'refreshCanvas' notification.
+ @method canvasRefresh:
+ @discussion This method gets the beacons that must be represented in canvas and ask it to upload; this method is called when someone submits the 'canvas/refresh' notification.
  */
-- (void) refreshCanvas:(NSNotification *) notification
+- (void) canvasRefresh:(NSNotification *) notification
 {
-    if ([[notification name] isEqualToString:@"refreshCanvas"]){
-        NSLog(@"[NOTI][VC] Notification \"refreshCanvas\" recived.");
+    if ([[notification name] isEqualToString:@"canvas/refresh"]){
+        NSLog(@"[NOTI][VC] Notification \"canvas/refresh\" recived.");
         // TODO. Logic. Alberto J. 2019/09/13.
     }
     [self setNeedsDisplay];

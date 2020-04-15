@@ -341,13 +341,13 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 NSLog(@"[INFO][LMM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
                 
                 // Ask view controller to refresh the canvas and table
-                NSLog(@"[NOTI][LMM] Notification \"refreshCanvas\" posted.");
+                NSLog(@"[NOTI][LMM] Notification \"canvas/refresh\" posted.");
                 [[NSNotificationCenter defaultCenter]
-                 postNotificationName:@"refreshCanvas"
+                 postNotificationName:@"canvas/refresh"
                  object:nil];
-                NSLog(@"[NOTI][LMM] Notification \"refreshRegisterTable\" posted.");
+                NSLog(@"[NOTI][LMM] Notification \"cvm/registerTable/refresh\" posted.");
                 [[NSNotificationCenter defaultCenter]
-                 postNotificationName:@"refreshRegisterTable"
+                 postNotificationName:@"cvm/registerTable/refresh"
                  object:nil];
             }
             

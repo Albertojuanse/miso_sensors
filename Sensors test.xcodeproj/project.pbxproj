@@ -33,6 +33,7 @@
 		424F576B234C9D1D00826B27 /* ViewControllerFinalModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 424F576A234C9D1D00826B27 /* ViewControllerFinalModel.m */; };
 		425124292320F3840096D0A8 /* ViewControllerLogin.m in Sources */ = {isa = PBXBuildFile; fileRef = 425124282320F3840096D0A8 /* ViewControllerLogin.m */; };
 		4255A9FA23D21B5D008DDB9F /* MDMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4255A9F923D21B5D008DDB9F /* MDMode.m */; };
+		42612F3F24470AEB00B66BC3 /* LMRanging.m in Sources */ = {isa = PBXBuildFile; fileRef = 42612F3E24470AEB00B66BC3 /* LMRanging.m */; };
 		426501BA22A03B3000BE20B7 /* LocationManagerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */; };
 		426501BD22A03B4300BE20B7 /* Canvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501BC22A03B4300BE20B7 /* Canvas.m */; };
 		426501C322A03B5200BE20B7 /* RDPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 426501C022A03B5200BE20B7 /* RDPosition.m */; };
@@ -121,6 +122,8 @@
 		425124282320F3840096D0A8 /* ViewControllerLogin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerLogin.m; sourceTree = "<group>"; };
 		4255A9F823D1DF6C008DDB9F /* MDMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDMode.h; sourceTree = "<group>"; };
 		4255A9F923D21B5D008DDB9F /* MDMode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDMode.m; sourceTree = "<group>"; };
+		42612F3D24470ADB00B66BC3 /* LMRanging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMRanging.h; sourceTree = "<group>"; };
+		42612F3E24470AEB00B66BC3 /* LMRanging.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMRanging.m; sourceTree = "<group>"; };
 		426501B822A03B2A00BE20B7 /* LocationManagerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationManagerDelegate.h; sourceTree = "<group>"; };
 		426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManagerDelegate.m; sourceTree = "<group>"; };
 		426501BB22A03B4000BE20B7 /* Canvas.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Canvas.h; sourceTree = "<group>"; };
@@ -264,6 +267,8 @@
 				42ED9F6C23D7415500537FE6 /* LMDelegateRhoRhoLocating.m */,
 				42B676EC23D5B5AD005E3CBD /* LMDelegateThetaThetaLocating.h */,
 				42B676ED23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m */,
+				42612F3D24470ADB00B66BC3 /* LMRanging.h */,
+				42612F3E24470AEB00B66BC3 /* LMRanging.m */,
 			);
 			path = LocationManaging;
 			sourceTree = "<group>";
@@ -536,6 +541,7 @@
 				4242F6CB22CBACAB00C4B0B7 /* Averager.m in Sources */,
 				4240729D23E9D6C100B2C696 /* MDAttribute.m in Sources */,
 				4295FB2622D360BB0024B155 /* ViewControllerAddBeaconMenu.m in Sources */,
+				42612F3F24470AEB00B66BC3 /* LMRanging.m in Sources */,
 				4227989B2271F60700E07C39 /* MotionManager.m in Sources */,
 				426AD1C923FD3DEE00565D65 /* VCModesTable.m in Sources */,
 				4275ED5A22D5E8A900A5CAB7 /* ViewControllerRhoThetaModeling.m in Sources */,

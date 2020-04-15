@@ -111,8 +111,8 @@
     
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(refreshRegisterTable:)
-                                                 name:@"refreshRegisterTable"
+                                             selector:@selector(registerTableRefresh:)
+                                                 name:@"cvm/registerTable/refresh"
                                                object:nil];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
@@ -150,13 +150,13 @@
 
 #pragma mark - Notifications events handlers
 /*!
- @method refreshRegisterTable:
- @discussion This method uploads the table with the ranged iBeacons; this method is called when someone submits the 'refreshCanvas' notification.
+ @method registerTableRefresh:
+ @discussion This method uploads the table with the ranged iBeacons; this method is called when someone submits the 'cvm/registerTable/refresh' notification.
  */
-- (void) refreshRegisterTable:(NSNotification *) notification
+- (void) registerTableRefresh:(NSNotification *) notification
 {
-    if ([[notification name] isEqualToString:@"refreshRegisterTable"]){
-        NSLog(@"[NOTI][VC] Notification \"refreshRegisterTable\" recived.");
+    if ([[notification name] isEqualToString:@"cvm/registerTable/refresh"]){
+        NSLog(@"[NOTI][VC] Notification \"cvm/registerTable/refresh\" recived.");
     }
     [self.tableRegister reloadData];
 }

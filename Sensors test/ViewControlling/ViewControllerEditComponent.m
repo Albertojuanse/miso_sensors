@@ -146,9 +146,9 @@
     // Dismiss the popover view
     itemChosenByUser[@"type"] = nil; // ARC dispose
     itemChosenByUser[@"type"] = typeChosenByUser; // ARC dispose
-    NSLog(@"[NOTI][VCEC] Notification \"refreshCanvas\" posted.");
+    NSLog(@"[NOTI][VCEC] Notification \"canvas/refresh\" posted.");
     [[NSNotificationCenter defaultCenter]
-     postNotificationName:@"refreshCanvas"
+     postNotificationName:@"canvas/refresh"
      object:nil];
     [self dismissViewControllerAnimated:YES completion:Nil];
 }
