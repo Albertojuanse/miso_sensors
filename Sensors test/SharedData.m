@@ -83,7 +83,7 @@
 //     "itemUUID": (NSString *)itemUUID1;
 //     "deviceUUID": (NSString *)deviceUUID1;
 //     "sort" : (NSString *)type1;
-//     "measure": (NSNumber *)measure1
+//     "measure": (id)measure1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // measureDic; userDic
 //               "pass": (NSString *)pass2;
@@ -1470,7 +1470,7 @@
 //     "itemUUID": (NSString *)itemUUID1;
 //     "deviceUUID": (NSString *)deviceUUID1;
 //     "sort" : (NSString *)type1;
-//     "measure": (NSNumber *)measure1
+//     "measure": (id)measure1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // measureDic; userDic
 //               "pass": (NSString *)pass2;
@@ -2280,10 +2280,13 @@
         if (measuresTaken.count > 0) {
             NSNumber * max = [NSNumber numberWithFloat:FLT_MIN];
             for (NSMutableDictionary * measureDic in measuresTaken) {
-                NSNumber * eachMeasure = measureDic[@"measure"];
-                if ([eachMeasure floatValue] > [max floatValue]) {
-                    max = nil;
-                    max = [NSNumber numberWithFloat:[eachMeasure floatValue]];
+                id eachMeasure = measureDic[@"measure"];
+                
+                if ([eachMeasure isKindOfClass:[NSNumber class]]) {
+                    if ([eachMeasure floatValue] > [max floatValue]) {
+                        max = nil;
+                        max = [NSNumber numberWithFloat:[eachMeasure floatValue]];
+                    }
                 }
             }
             return max;
@@ -2308,12 +2311,17 @@
         NSMutableArray * measuresTaken = [self fromMeasuresDataGetMeasuresOfSort:sort
                                                           withCredentialsUserDic:credentialsUserDic];
         if (measuresTaken.count > 0) {
-            NSNumber * acc = 0;
+            NSNumber * acc = [NSNumber numberWithInt:0];
+            NSNumber * count = [NSNumber numberWithInt:0];
             for (NSMutableDictionary * measureDic in measuresTaken) {
-                NSNumber * eachMeasure = measureDic[@"measure"];
-                acc = [NSNumber numberWithFloat:[acc floatValue] + [eachMeasure floatValue]];
+                id eachMeasure = measureDic[@"measure"];
+                
+                if ([eachMeasure isKindOfClass:[NSNumber class]]) {
+                    acc = [NSNumber numberWithFloat:[acc floatValue] + [eachMeasure floatValue]];
+                    count = [NSNumber numberWithInt:[count intValue] +  1];
+                }
             }
-            return [NSNumber numberWithFloat:[acc floatValue]/measuresTaken.count];
+            return [NSNumber numberWithFloat:[acc floatValue]/[count floatValue]];
         } else {
             return nil;
         }
@@ -3391,7 +3399,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 //     "itemUUID": (NSString *)itemUUID1;
 //     "deviceUUID": (NSString *)deviceUUID1;
 //     "sort" : (NSString *)type1;
-//     "measure": (NSNumber *)measure1
+//     "measure": (id)measure1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // measureDic; userDic
 //               "pass": (NSString *)pass2;
@@ -3408,7 +3416,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
  @method inMeasuresDataSetMeasure:ofSort:withItemUUID:withDeviceUUID:atPosition:takenByUserDic:andWithCredentialsUserDic:
  @discussion This method saves in the measures data collection a new one from a given item UUID and device UUID; if the state MEASURING is not true for the given user credentials 'userDic', is saved only the position but no measure; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
  */
-- (BOOL) inMeasuresDataSetMeasure:(NSNumber *)measure
+- (BOOL) inMeasuresDataSetMeasure:(id)measure
                            ofSort:(NSString *)sort
                      withItemUUID:(NSString *)itemUUID
                    withDeviceUUID:(NSString *)deviceUUID

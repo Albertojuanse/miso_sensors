@@ -336,7 +336,7 @@
     //     "itemUUID": (NSString *)itemUUID1;
     //     "deviceUUID": (NSString *)deviceUUID1;
     //     "sort" : (NSString *)type1;
-    //     "measure": (NSNumber *)measure1
+    //     "measure": (id)measure1
     //   },
     //   { "user": { "name": (NSString *)name2;                  // measureDic; userDic
     //               "pass": (NSString *)pass2;

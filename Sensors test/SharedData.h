@@ -358,7 +358,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
        andWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific measures data setters
-- (BOOL) inMeasuresDataSetMeasure:(NSNumber *)measure
+- (BOOL) inMeasuresDataSetMeasure:(id)measure
                            ofSort:(NSString *)sort
                      withItemUUID:(NSString *)itemUUID
                    withDeviceUUID:(NSString *)deviceUUID
