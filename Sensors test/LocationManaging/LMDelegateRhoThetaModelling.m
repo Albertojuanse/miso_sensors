@@ -355,7 +355,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                 isItemChosenByUserRanged = YES;
                                 // Save the measure
                                 [sharedData inMeasuresDataSetMeasure:beacon
-                                                              ofSort:@"calibratedRSSI"
+                                                              ofSort:@"rssi"
                                                         withItemUUID:itemUUID
                                                       withDeviceUUID:deviceUUID
                                                           atPosition:measurePosition

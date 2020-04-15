@@ -322,7 +322,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     
                     // ...and save it.
                     [sharedData inMeasuresDataSetMeasure:beacon
-                                                  ofSort:@"calibratedRSSI"
+                                                  ofSort:@"rssi"
                                             withItemUUID:uuid
                                           withDeviceUUID:deviceUUID
                                               atPosition:measurePosition
