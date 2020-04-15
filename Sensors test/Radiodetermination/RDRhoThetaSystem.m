@@ -143,7 +143,7 @@
                 NSMutableArray * rssiMeasures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
                                                                                takenFromPosition:measurePosition
                                                                                     fromItemUUID:UUIDtoLocate
-                                                                                          ofSort:@"rssi"
+                                                                                          ofSort:@"calibratedRSSI"
                                                                           withCredentialsUserDic:credentialsUserDic];
                 NSMutableArray * headingMeasures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
                                                                                   takenFromPosition:measurePosition
@@ -261,7 +261,7 @@
             // TODO: Multiuser measures. Alberto J. 2019/09/24.
             NSMutableArray * rssiMeasures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
                                                                            takenFromItemUUID:UUIDusedToLocate
-                                                                                      ofSort:@"rssi"
+                                                                                      ofSort:@"calibratedRSSI"
                                                                       withCredentialsUserDic:credentialsUserDic];
             NSMutableArray * headingMeasures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
                                                                               takenFromItemUUID:UUIDusedToLocate

@@ -177,7 +177,7 @@
                                 measureDic = [measureDicDic objectForKey:measureKey];
                                 
                                 // Get the data and acumulate it
-                                if ([measureDic[@"sort"] isEqualToString:@"rssi"]) {
+                                if ([measureDic[@"sort"] isEqualToString:@"calibratedRSSI"]) {
                                     // Do nothing; they should no exist.
                                 }
                                 if ([measureDic[@"type"] isEqualToString:@"heading"]) {

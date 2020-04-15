@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "MotionManager.h"
-#import "LocationManagerDelegate.h"
 #import "SharedData.h"
 #import "ViewControllerMainMenu.h"
 #import "NSMutableArray+Printable.h"

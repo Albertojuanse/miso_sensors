@@ -231,7 +231,7 @@
         
         // It is needed the whole of positions where measures were taken and its maximun value to caluculate a grid in which locate every item. Retrieve that data.
         NSMutableArray * measurePositions = [sharedData fromMeasuresDataGetPositionsWithCredentialsUserDic:credentialsUserDic];
-        NSNumber * maxMeasure = [sharedData fromMeasuresDataGetMaxMeasureOfSort:@"rssi" withCredentialsUserDic:credentialsUserDic];
+        NSNumber * maxMeasure = [sharedData fromMeasuresDataGetMaxMeasureOfSort:@"calibratedRSSI" withCredentialsUserDic:credentialsUserDic];
         NSMutableArray * grid = [self generateGridUsingPositions:measurePositions
                                                    andMaxMeasure:maxMeasure
                                                    andPrecisions:precisions];
@@ -284,7 +284,7 @@
                             NSMutableArray * measures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
                                                                                        takenFromPosition:measurePosition
                                                                                             fromItemUUID:measuredUUID
-                                                                                                  ofSort:@"rssi"
+                                                                                                  ofSort:@"calibratedRSSI"
                                                                                   withCredentialsUserDic:credentialsUserDic];
                             // ...and for every measure calculate its mean average.
                             // TODO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
@@ -379,7 +379,7 @@
                 }
             }
         }
-        NSNumber * maxMeasure = [sharedData fromMeasuresDataGetMaxMeasureOfSort:@"rssi" withCredentialsUserDic:credentialsUserDic];
+        NSNumber * maxMeasure = [sharedData fromMeasuresDataGetMaxMeasureOfSort:@"calibratedRSSI" withCredentialsUserDic:credentialsUserDic];
         NSMutableArray * grid = [self generateGridUsingPositions:itemsPositions
                                                    andMaxMeasure:maxMeasure
                                                    andPrecisions:precisions];
@@ -421,7 +421,7 @@
                     // Now, get only the measures taken from that item and its UUID...
                     NSMutableArray * measures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
                                                                             takenFromItemUUID:itemUUID
-                                                                                        ofSort:@"rssi"
+                                                                                        ofSort:@"calibratedRSSI"
                                                                         withCredentialsUserDic:credentialsUserDic];
                     // ...and for every measure calculate its mean average.
                     // TODO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.

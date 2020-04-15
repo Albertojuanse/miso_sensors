@@ -315,77 +315,26 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     
                     // ...get its information...
                     NSString * uuid = [[beacon proximityUUID] UUIDString];
-                    NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
-                    // TODO. Calibration. Alberto J. 2019/11/14.
-                    // TODO: Get the 1 meter RSSI from CLBeacon. Alberto J. 2019/11/14.
-                    // Absolute values of speed of light, frecuency, and antenna's join gain
-                    float C = 299792458.0;
-                    float F = 2440000000.0; // 2400 - 2480 MHz
-                    float G = 1.0; // typically 2.16 dBi
-                    // Calculate the distance
-                    float distance = (C / (4.0 * M_PI * F)) * sqrt(G * pow(10.0, -[rssi floatValue]/ 10.0));
-                    NSNumber * RSSIdistance = [[NSNumber alloc] initWithFloat:distance];
-                    
-                    // ...prepare the measure..
                     RDPosition * measurePosition = [[RDPosition alloc] init];
                     measurePosition.x = position.x;
                     measurePosition.y = position.y;
                     measurePosition.z = position.z;
-                    NSMutableDictionary * locatedPositions;
-                    
-                    // Precision is arbitrary set to 10 cm
-                    // TODO: Make this configurable. Alberto J. 2019/09/12.
-                    NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                 [NSNumber numberWithFloat:0.1], @"xPrecision",
-                                                 [NSNumber numberWithFloat:0.1], @"yPrecision",
-                                                 [NSNumber numberWithFloat:0.1], @"zPrecision",
-                                                 nil];
                     
                     // ...and save it.
-                    [sharedData inMeasuresDataSetMeasure:RSSIdistance
-                                                  ofSort:@"rssi"
+                    [sharedData inMeasuresDataSetMeasure:beacon
+                                                  ofSort:@"calibratedRSSI"
                                             withItemUUID:uuid
                                           withDeviceUUID:deviceUUID
                                               atPosition:measurePosition
                                           takenByUserDic:userDic
                                andWithCredentialsUserDic:credentialsUserDic];
-            
-                    // Ask radiolocation of beacons if posible...
-                    locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithPrecisions:precisions];
-            
-                    // Save the positions as located items.
-                    NSArray *positionKeys = [locatedPositions allKeys];
-                    for (id positionKey in positionKeys) {
-                        NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
-                        infoDic[@"located"] = @"YES";
-                        infoDic[@"sort"] = @"position";
-                        NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
-                        itemPositionIdNumber = [NSNumber numberWithInteger:[itemPositionIdNumber integerValue] + 1];
-                        positionId = [positionId stringByAppendingString:@"@miso.uam.es"];
-                        infoDic[@"identifier"] = positionId;
-                        infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
-                        BOOL savedItem = [sharedData inItemDataAddItemOfSort:@"position"
-                                                                    withUUID:positionKey
-                                                                 withInfoDic:infoDic
-                                                   andWithCredentialsUserDic:credentialsUserDic];
-                        if (!savedItem) {
-                            NSLog(@"[ERROR][LMRTM] Located position %@ could not be stored as an item.", infoDic[@"position"]);
-                        }
-                    }
                     
                 }
                 
-                NSLog(@"[INFO][LMRRL] Generated locations:");
-                NSLog(@"[INFO][LMRRL]  -> %@",  [sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                                        andCredentialsUserDic:credentialsUserDic]);
-                
-                NSLog(@"[INFO][LMRRL] Generated measures:");
-                NSLog(@"[INFO][LMRRL]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
-                
-                // Ask view controller to refresh the canvas
-                NSLog(@"[NOTI][LMRRL] Notification \"canvas/refresh\" posted.");
+                // Notify that there are new measures
+                NSLog(@"[NOTI][LMRRL] Notification \"ranging/newMeasuresAvalible\" posted.");
                 [[NSNotificationCenter defaultCenter]
-                 postNotificationName:@"canvas/refresh"
+                 postNotificationName:@"ranging/newMeasuresAvalible"
                  object:nil];
             }
             
@@ -398,24 +347,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 rssi = nil;
             }
         }
-        
-        
-        
-        // Save variables in device memory
-        // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
-        // Remove previous collection
-        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-        [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
-        [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-        [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-        
-        // Save information
-        NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-        [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
-        NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
-        NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
-        [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-        [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
         
     }
 }

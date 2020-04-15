@@ -315,31 +315,10 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     
                     // ...get its information...
                     NSString * uuid = [[beacon proximityUUID] UUIDString];
-                    NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
-                    // TODO. Calibration. Alberto J. 2019/11/14.
-                    // TODO: Get the 1 meter RSSI from CLBeacon. Alberto J. 2019/11/14.
-                    // Absolute values of speed of light, frecuency, and antenna's join gain
-                    float C = 299792458.0;
-                    float F = 2440000000.0; // 2400 - 2480 MHz
-                    float G = 1.0; // typically 2.16 dBi
-                    // Calculate the distance
-                    float distance = (C / (4.0 * M_PI * F)) * sqrt(G * pow(10.0, -[rssi floatValue]/ 10.0));
-                    NSNumber * RSSIdistance = [[NSNumber alloc] initWithFloat:distance];
-                    
-                    // ...prepare the measure..
                     RDPosition * measurePosition = [[RDPosition alloc] init];
                     measurePosition.x = position.x;
                     measurePosition.y = position.y;
                     measurePosition.z = position.z;
-                    NSMutableDictionary * locatedPositions;
-                    
-                    // Precision is arbitrary set to 10 cm
-                    // TODO: Make this configurable. Alberto J. 2019/09/12.
-                    NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                 [NSNumber numberWithFloat:0.1], @"xPrecision",
-                                                 [NSNumber numberWithFloat:0.1], @"yPrecision",
-                                                 [NSNumber numberWithFloat:0.1], @"zPrecision",
-                                                 nil];
                     
                     // ...and retrieve the aimed item information.
                     //      In this mode, the user must select an item to measure, whose item dictionary is stored in session dictionary as 'itemChosenByUser'.
@@ -357,82 +336,46 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                             NSLog(@"[ERROR][LMRTM] Measure not saved since the item selected had no UUID.");
                             return;
                         } else {
-                            
-                            // Minimum sensibility 5 cm; Ipad often gives unreal values near to cero
-                            // TODO: Make this configurable. Alberto J. 2019/09/12.
-                            if ([RSSIdistance floatValue] > 0.05) {
                                 
-                                // The measure is saved only if event's uuid and the chosen one are the same; also, the heading measures only will be saved if becons measures are saved, when 'isItemChosenByUserRanged' is true.
-                                if ([itemUUID isEqualToString:uuid]) {
-                                    
-                                    // Conditional clausule for an specific issue with Apple devices' heading measures:
-                                    if (!isItemChosenByUserRanged) {
-                                        // Device does not deliver heading measures unless new values available; when RSSI measures from the chosen item is saved, can occur that no heading is saved until user moves the device. If it happens, the delegated method 'locationManager:didUpdateHeading:' is never called, and so, this method saves its value once. If 'isItemChosenByUserRanged' flag is false means this is the first time that this item is ranged, and thus, this heading is saved as a first heading measure to, at least, save one.
-                                        [sharedData inMeasuresDataSetMeasure:lastHeadingPosition
-                                                                      ofSort:@"heading"
-                                                                withItemUUID:itemUUID
-                                                              withDeviceUUID:deviceUUID
-                                                                  atPosition:measurePosition
-                                                              takenByUserDic:userDic
-                                                   andWithCredentialsUserDic:credentialsUserDic];
-                                    }
-                                    
-                                    isItemChosenByUserRanged = YES;
-                                    // Save the measure
-                                    [sharedData inMeasuresDataSetMeasure:RSSIdistance
-                                                                  ofSort:@"rssi"
+                            // The measure is saved only if event's uuid and the chosen one are the same; also, the heading measures only will be saved if becons measures are saved, when 'isItemChosenByUserRanged' is true.
+                            if ([itemUUID isEqualToString:uuid]) {
+                                
+                                // Conditional clausule for an specific issue with Apple devices' heading measures:
+                                if (!isItemChosenByUserRanged) {
+                                    // Device does not deliver heading measures unless new values available; when RSSI measures from the chosen item is saved, can occur that no heading is saved until user moves the device. If it happens, the delegated method 'locationManager:didUpdateHeading:' is never called, and so, this method saves its value once. If 'isItemChosenByUserRanged' flag is false means this is the first time that this item is ranged, and thus, this heading is saved as a first heading measure to, at least, save one.
+                                    [sharedData inMeasuresDataSetMeasure:lastHeadingPosition
+                                                                  ofSort:@"heading"
                                                             withItemUUID:itemUUID
                                                           withDeviceUUID:deviceUUID
                                                               atPosition:measurePosition
                                                           takenByUserDic:userDic
                                                andWithCredentialsUserDic:credentialsUserDic];
-                                    
-                                    // Ask radiolocation of beacons if posible...
-                                    locatedPositions = [rhoThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
                                 }
+                                
+                                isItemChosenByUserRanged = YES;
+                                // Save the measure
+                                [sharedData inMeasuresDataSetMeasure:beacon
+                                                              ofSort:@"calibratedRSSI"
+                                                        withItemUUID:itemUUID
+                                                      withDeviceUUID:deviceUUID
+                                                          atPosition:measurePosition
+                                                      takenByUserDic:userDic
+                                           andWithCredentialsUserDic:credentialsUserDic];
                             }
-                            
-                            // Save the positions as located items.
-                            NSArray *positionKeys = [locatedPositions allKeys];
-                            for (id positionKey in positionKeys) {
-                                NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
-                                infoDic[@"located"] = @"YES";
-                                infoDic[@"sort"] = @"position";
-                                NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
-                                itemPositionIdNumber = [NSNumber numberWithInteger:[itemPositionIdNumber integerValue] + 1];
-                                positionId = [positionId stringByAppendingString:@"@miso.uam.es"];
-                                infoDic[@"identifier"] = positionId;
-                                infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
-                                BOOL savedItem = [sharedData inItemDataAddItemOfSort:@"position"
-                                                                            withUUID:positionKey
-                                                                         withInfoDic:infoDic
-                                                           andWithCredentialsUserDic:credentialsUserDic];
-                                if (!savedItem) {
-                                    NSLog(@"[ERROR][LMRTM] Located position %@ could not be stored as an item.", infoDic[@"position"]);
-                                }
-                            }
-                            
                         }
-                        
                     } else {
                         NSLog(@"[ERROR][LMRTM] Measure not saved since user did not choose any item.");
                         return;
                     }
-                
+                    
                 }
                 
-                NSLog(@"[INFO][LMRTM] Generated locations:");
-                NSLog(@"[INFO][LMRTM]  -> %@",  [sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                                     andCredentialsUserDic:credentialsUserDic]);
-                
-                NSLog(@"[INFO][LMRTM] Generated measures:");
-                NSLog(@"[INFO][LMRTM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
-                    
-                // Ask view controller to refresh the canvas
-                NSLog(@"[NOTI][LMRTM] Notification \"canvas/refresh\" posted.");
+                // Notify that there are new measures
+                NSLog(@"[NOTI][LMRTM] Notification \"ranging/newMeasuresAvalible\" posted.");
                 [[NSNotificationCenter defaultCenter]
-                 postNotificationName:@"canvas/refresh"
+                 postNotificationName:@"ranging/newMeasuresAvalible"
                  object:nil];
+                                    
             }
             
         } else { // If is idle or traveling...
@@ -444,22 +387,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 rssi = nil;
             }
         }
-    
-        // Save variables in device memory
-        // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
-        // Remove previous collection
-        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-        [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
-        [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-        [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-        
-        // Save information
-        NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-        [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
-        NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
-        NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
-        [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-        [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
         
     }
 }
