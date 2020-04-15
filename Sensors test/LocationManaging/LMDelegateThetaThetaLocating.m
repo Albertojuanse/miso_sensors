@@ -97,12 +97,14 @@
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
-    sharedData = initSharedData;
-    credentialsUserDic = initCredentialsUserDic;
-    userDic = initUserDic;
-    deviceUUID = initDeviceUUID;
-    thetaThetaSystem = initThetaThetaSystem;
     self = [self initWithSharedData:initSharedData];
+    if (self) {
+        sharedData = initSharedData;
+        credentialsUserDic = initCredentialsUserDic;
+        userDic = initUserDic;
+        deviceUUID = initDeviceUUID;
+        thetaThetaSystem = initThetaThetaSystem;
+    }
     return self;
 }
 

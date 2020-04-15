@@ -31,7 +31,7 @@
     CLLocationManager * locationManager;
     
     // Variables
-    RDPosition * position;  // Current position of device
+    RDPosition * position;
     
     // Data store
     NSMutableArray * monitoredRegions;

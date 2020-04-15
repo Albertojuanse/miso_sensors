@@ -86,11 +86,13 @@
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
-    sharedData = initSharedData;
-    credentialsUserDic = initCredentialsUserDic;
-    userDic = initUserDic;
-    deviceUUID = initDeviceUUID;
     self = [self initWithSharedData:initSharedData];
+    if (self) {
+        sharedData = initSharedData;
+        credentialsUserDic = initCredentialsUserDic;
+        userDic = initUserDic;
+        deviceUUID = initDeviceUUID;
+    }
     return self;
 }
 
@@ -268,17 +270,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             NSString * uuid = [[beacon proximityUUID] UUIDString];
             NSLog(@"[INFO][LMC] Beacon ranged %@.", uuid);
             
-            RDPosition * measuringPosition = [[RDPosition alloc] init];
-            measuringPosition.x = [[NSNumber alloc] initWithFloat:0.0];
-            measuringPosition.y = [[NSNumber alloc] initWithFloat:0.0];
-            measuringPosition.z = [[NSNumber alloc] initWithFloat:0.0];
-            
             // ...and compose a measure with them.
             [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithFloat:0.0]
                                           ofSort:@"calibration"
                                     withItemUUID:uuid
                                   withDeviceUUID:deviceUUID
-                                      atPosition:measuringPosition
+                                      atPosition:nil
                                   takenByUserDic:userDic
                        andWithCredentialsUserDic:credentialsUserDic];
         }

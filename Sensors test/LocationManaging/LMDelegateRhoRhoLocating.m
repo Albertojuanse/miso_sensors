@@ -94,12 +94,14 @@
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
-    sharedData = initSharedData;
-    credentialsUserDic = initCredentialsUserDic;
-    userDic = initUserDic;
-    deviceUUID = initDeviceUUID;
-    rhoRhoSystem = initRhoRhoSystem;
     self = [self initWithSharedData:initSharedData];
+    if (self) {
+        sharedData = initSharedData;
+        credentialsUserDic = initCredentialsUserDic;
+        userDic = initUserDic;
+        deviceUUID = initDeviceUUID;
+        rhoRhoSystem = initRhoRhoSystem;
+    }
     return self;
 }
 
