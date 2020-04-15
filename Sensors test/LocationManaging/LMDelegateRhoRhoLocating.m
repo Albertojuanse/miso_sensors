@@ -66,16 +66,16 @@
         
         // This object must listen to this events
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(startBeaconRangingMeasuring:)
-                                                     name:@"startBeaconRangingMeasuring"
+                                                 selector:@selector(start:)
+                                                     name:@"lmdRhoRholocating/start"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(stopBeaconRangingMeasuring:)
-                                                     name:@"stopBeaconRangingMeasuring"
+                                                 selector:@selector(stop:)
+                                                     name:@"lmdRhoRholocating/stop"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reset:)
-                                                     name:@"resetLocationAndMeasures"
+                                                     name:@"lmd/reset"
                                                    object:nil];
         
         NSLog(@"[INFO][LMRRL] LocationManager prepared for kModeRhoRhoLocating mode.");
@@ -354,12 +354,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 #pragma mark - Notification event handles
 
 /*!
- @method startBeaconRangingMeasuring:
+ @method start:
  @discussion This method asks the Location Manager to start positioning the device using beacons.
  */
-- (void) startBeaconRangingMeasuring:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"startBeaconRangingMeasuring"]){
-        NSLog(@"[NOTI][LMRRL] Notification \"startBeaconRangingMeasuring\" recived.");
+- (void) start:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"lmdRhoRholocating/start"]){
+        NSLog(@"[NOTI][LMRRL] Notification \"lmdRhoRholocating/start\" recived.");
         
         // Register the beacons only if posible.
         [self locationManager:locationManager didChangeAuthorizationStatus:CLLocationManager.authorizationStatus];
@@ -443,12 +443,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 }
 
 /*!
- @method stopBeaconRangingMeasuring:
+ @method stop:
  @discussion This method asks the Location Manager to stop positioning the device using beacons.
  */
-- (void) stopBeaconRangingMeasuring:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"stopBeaconRangingMeasuring"]){
-        NSLog(@"[NOTI][LMRRL] Notification \"stopBeaconRangingMeasuring\" recived.");
+- (void) stop:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"lmdRhoRholocating/stop"]){
+        NSLog(@"[NOTI][LMRRL] Notification \"lmdRhoRholocating/stop\" recived.");
         // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
@@ -481,8 +481,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  */
 - (void) reset:(NSNotification *) notification
 {
-    if ([[notification name] isEqualToString:@"resetLocationAndMeasures"]){
-        NSLog(@"[NOTI][LMRRL] Notification \"resetLocationAndMeasures\" recived.");
+    if ([[notification name] isEqualToString:@"lmd/reset"]){
+        NSLog(@"[NOTI][LMRRL] Notification \"lmd/reset\" recived.");
         
         // Instance variables
         // Set device's location at the origin

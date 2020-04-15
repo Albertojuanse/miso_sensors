@@ -318,9 +318,9 @@
         self.modelText.text = modelString;
         
         // Reset the measures and location componentes
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmd/reset"
                                                             object:nil];
-        NSLog(@"[NOTI][VCFM] Notification \"resetLocationAndMeasures\" posted.");
+        NSLog(@"[NOTI][VCFM] Notification \"lmd/reset\" posted.");
         
     } else {
         NSLog(@"[ERROR][VCFM] Model %@ could not be saved in device memory.", savingName);
@@ -403,9 +403,9 @@
     self.modelText.text = modelString;
     
     // Reset the measures and location componentes
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmd/reset"
                                                         object:nil];
-    NSLog(@"[NOTI][VCFM] Notification \"resetLocationAndMeasures\" posted.");
+    NSLog(@"[NOTI][VCFM] Notification \"lmd/reset\" posted.");
 }
 
 /*!

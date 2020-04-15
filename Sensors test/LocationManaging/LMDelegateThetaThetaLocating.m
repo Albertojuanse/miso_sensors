@@ -69,16 +69,16 @@
         
         // This object must listen to this events
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(startCompassHeadingMeasuring:)
-                                                     name:@"startCompassHeadingMeasuring"
+                                                 selector:@selector(start:)
+                                                     name:@"lmdThetaThetaLocating/start"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(stopCompassHeadingMeasuring:)
-                                                     name:@"stopCompassHeadingMeasuring"
+                                                 selector:@selector(stop:)
+                                                     name:@"lmdThetaThetaLocating/stop"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reset:)
-                                                     name:@"resetLocationAndMeasures"
+                                                     name:@"lmdThetaThetaLocating/reset"
                                                    object:nil];
         
         NSLog(@"[INFO][LMTTL] LocationManager prepared for kModeThetaThetaLocating mode.");
@@ -273,12 +273,12 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 
 #pragma mark - Notification event handles
 /*!
- @method startCompassHeadingMeasuring:
+ @method start:
  @discussion This method asks the Location Manager to start positioning the device using the compass.
  */
-- (void) startCompassHeadingMeasuring:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"startCompassHeadingMeasuring"]){
-        NSLog(@"[NOTI][LMTTL] Notification \"startCompassHeadingMeasuring\" recived.");
+- (void) start:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"lmdThetaThetaLocating/start"]){
+        NSLog(@"[NOTI][LMTTL] Notification \"lmdThetaThetaLocating/start\" recived.");
         // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                    andWithCredentialsUserDic:credentialsUserDic];
@@ -334,12 +334,12 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 }
 
 /*!
- @method stopCompassHeadingMeasuring:
+ @method stop:
  @discussion This method asks the Location Manager to stop positioning the device using the compass.
  */
-- (void) stopCompassHeadingMeasuring:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"stopCompassHeadingMeasuring"]){
-        NSLog(@"[NOTI][LMTTL] Notification \"stopCompassHeadingMeasuring\" recived.");
+- (void) stop:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"lmdThetaThetaLocating/stop"]){
+        NSLog(@"[NOTI][LMTTL] Notification \"lmdThetaThetaLocating/stop\" recived.");
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         [self saveMeasure];
@@ -506,13 +506,13 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 }
 
 /*!
- @method reset
+ @method reset:
  @discussion Setter of current position of the device using observer pattern.
  */
 - (void) reset:(NSNotification *) notification
 {
-    if ([[notification name] isEqualToString:@"resetLocationAndMeasures"]){
-        NSLog(@"[NOTI][LM] Notification \"resetLocationAndMeasures\" recived.");
+    if ([[notification name] isEqualToString:@"lmdThetaThetaLocating/reset"]){
+        NSLog(@"[NOTI][LM] Notification \"lmdThetaThetaLocating/reset\" recived.");
         
         // Instance variables
         // Set device's location at the origin

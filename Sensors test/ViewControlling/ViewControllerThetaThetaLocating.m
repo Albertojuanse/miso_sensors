@@ -560,7 +560,7 @@
             
             // And send the notification
             // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
-            // [[NSNotificationCenter defaultCenter] postNotificationName:@"startCompassHeadingMeasuring" object:nil];
+            // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaLocating/start" object:nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
             NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopes\" posted.");
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring"
@@ -576,7 +576,7 @@
         // This next line have been moved into "stopGyroscopesHeadingMeasuring" method, because the measure is generated in this case after stop measuring
         // [sharedData inSessionDataSetIdleUserWithUserDic:userDic andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
-        // [[NSNotificationCenter defaultCenter] postNotificationName:@"stopCompassHeadingMeasuring" object:nil];
+        // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaLocating/stop" object:nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
         NSLog(@"[NOTI][VCTTL] Notification \"stopGyroscopes\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
@@ -663,9 +663,9 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
                                                             object:nil];
         NSLog(@"[NOTI][VCTTL] Notification \"stopGyroscopeHeadingMeasuring\" posted.");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmd/reset"
                                                             object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"resetLocationAndMeasures\" posted.");
+        NSLog(@"[NOTI][VCTTL] Notification \"lmd/reset\" posted.");
         return;
     }
     

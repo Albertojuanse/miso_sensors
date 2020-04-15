@@ -378,9 +378,9 @@
             [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
         
             // And send the notification
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startCompassHeadingAndBeaconRangingMeasuring"
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaModelling/start"
                                                                 object:nil];
-            NSLog(@"[NOTI][VCRTM] Notification \"startCompassHeadingAndBeaconRangingMeasuring\" posted.");
+            NSLog(@"[NOTI][VCRTM] Notification \"lmdRhoThetaModelling/start\" posted.");
             return;
         } else {
             return;
@@ -391,9 +391,9 @@
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, aim the iBEacon device and tap 'Measure' for starting. Tap back for finishing."];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopCompassHeadingAndBeaconRangingMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaModelling/stop"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"stopCompassHeadingAndBeaconRangingMeasuring\" posted.");
+        NSLog(@"[NOTI][VCRTM] Notification \"lmdRhoThetaModelling/stop\" posted.");
         return;
     }
 }
@@ -460,12 +460,12 @@
         [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
         
         // Ask Location manager to clean the measures taken and reset its position.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopCompassHeadingAndBeaconRangingMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaModelling/stop"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"stopCompassHeadingAndBeaconRangingMeasuring\" posted.");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
+        NSLog(@"[NOTI][VCRTM] Notification \"lmdRhoThetaModelling/stop\" posted.");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmd/reset"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRTM] Notification \"resetLocationAndMeasures\" posted.");
+        NSLog(@"[NOTI][VCRTM] Notification \"lmd/reset\" posted.");
         return;
     }
     

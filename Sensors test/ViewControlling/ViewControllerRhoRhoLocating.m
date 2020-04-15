@@ -345,9 +345,9 @@
             [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again to finish the measure."];
             
             // And send the notification
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startBeaconRangingMeasuring"
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRholocating/start"
                                                                 object:nil];
-            NSLog(@"[NOTI][VCRRL] Notification \"startBeaconRangingMeasuring\" posted.");
+            NSLog(@"[NOTI][VCRRL] Notification \"lmdRhoRholocating/start\" posted.");
         } else {
         }
         return;
@@ -357,9 +357,9 @@
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         [self.labelStatus setText:@"IDLE; please, tap 'Next' to add another component, move to any position and tap 'Measure' to start. Tap back to finish."];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopBeaconRangingMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRholocating/stop"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRRL] Notification \"stopBeaconRangingMeasuring\" posted.");
+        NSLog(@"[NOTI][VCRRL] Notification \"lmdRhoRholocating/stop\" posted.");
         return;
     }
 }
@@ -442,12 +442,12 @@
         [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
         
         // Ask Location manager to clean the measures taken and reset its position.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopBeaconRangingMeasuring"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRholocating/stop"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRRL] Notification \"stopBeaconRangingMeasuring\" posted.");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
+        NSLog(@"[NOTI][VCRRL] Notification \"lmdRhoRholocating/stop\" posted.");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmd/reset"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRRL] Notification \"resetLocationAndMeasures\" posted.");
+        NSLog(@"[NOTI][VCRRL] Notification \"lmd/reset\" posted.");
         return;
     }
     

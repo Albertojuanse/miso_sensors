@@ -124,8 +124,8 @@
     // Initial state measuring and init measures
     [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                andWithCredentialsUserDic:credentialsUserDic];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"startMonitoringMeasures" object:nil];
-    NSLog(@"[NOTI][VCM] Notification \"startMonitoringMeasures\" posted.");
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdMonitoring/start" object:nil];
+    NSLog(@"[NOTI][VCM] Notification \"lmdMonitoring/start\" posted.");
 }
 
 /*!
@@ -244,8 +244,8 @@
                 // Stop measuring
                 [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                                       andWithCredentialsUserDic:credentialsUserDic];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMonitoringMeasures" object:nil];
-                NSLog(@"[NOTI][VCM] Notification \"stopMonitoringMeasures\" posted.");
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdMonitoring/stop" object:nil];
+                NSLog(@"[NOTI][VCM] Notification \"lmdMonitoring/stop\" posted.");
                 
                 // Set registered items as located and reference with the registering item
                 MDType * type = [[MDType alloc] initWithName:@"Register"];
@@ -332,12 +332,12 @@
         [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
         
         // Ask Location manager to clean the measures taken and reset its position.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMonitoringMeasures"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdMonitoring/stop"
                                                             object:nil];
-        NSLog(@"[NOTI][VCM] Notification \"stopMonitoringMeasures\" posted.");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
+        NSLog(@"[NOTI][VCM] Notification \"lmdMonitoring/stop\" posted.");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmd/reset"
                                                             object:nil];
-        NSLog(@"[NOTI][VCM] Notification \"resetLocationAndMeasures\" posted.");
+        NSLog(@"[NOTI][VCM] Notification \"lmd/reset\" posted.");
         return;
     }
     
@@ -353,7 +353,7 @@
         [viewControllerFinalModel setItemPositionIdNumber:itemPositionIdNumber];
         return;
     }
-    if ([[segue identifier] isEqualToString:@"fromRHO_THETA_MODELINGToMain"]) {
+    if ([[segue identifier] isEqualToString:@"fromMONITORINGToMain"]) {
         
         // Get destination view
         ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
@@ -365,12 +365,12 @@
         [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
         
         // Ask Location manager to clean the measures taken and reset its position.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopMonitoringMeasures"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdMonitoring/stop"
                                                             object:nil];
-        NSLog(@"[NOTI][VCM] Notification \"stopMonitoringMeasures\" posted.");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
+        NSLog(@"[NOTI][VCM] Notification \"lmdMonitoring/stop\" posted.");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmd/reset"
                                                             object:nil];
-        NSLog(@"[NOTI][VCM] Notification \"resetLocationAndMeasures\" posted.");
+        NSLog(@"[NOTI][VCM] Notification \"lmd/reset\" posted.");
         return;
     }
 }

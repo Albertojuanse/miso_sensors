@@ -109,7 +109,7 @@
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reset:)
-                                                     name:@"resetLocationAndMeasures"
+                                                     name:@"lmd/reset"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(calibration:)
@@ -1199,8 +1199,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  */
 - (void) reset:(NSNotification *) notification
 {
-    if ([[notification name] isEqualToString:@"resetLocationAndMeasures"]){
-        NSLog(@"[NOTI][LM] Notification \"resetLocationAndMeasures\" recived.");
+    if ([[notification name] isEqualToString:@"lmd/reset"]){
+        NSLog(@"[NOTI][LM] Notification \"lmd/reset\" recived.");
         
         // Instance variables
         // Set device's location at the origin

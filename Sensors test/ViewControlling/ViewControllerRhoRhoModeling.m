@@ -444,9 +444,9 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopTraveling"
                                                             object:nil];
         NSLog(@"[NOTI][VCRRM] Notification \"stopTraveling\" posted.");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"resetLocationAndMeasures"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmd/reset"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRRM] Notification \"resetLocationAndMeasures\" posted.");
+        NSLog(@"[NOTI][VCRRM] Notification \"lmd/reset\" posted.");
         return;        
     }
 }

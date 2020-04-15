@@ -70,12 +70,16 @@
         
         // This object must listen to this events
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(startMonitoringMeasures:)
-                                                     name:@"startMonitoringMeasures"
+                                                 selector:@selector(start:)
+                                                     name:@"lmdMonitoring/start"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(stopMonitoringMeasures:)
-                                                     name:@"stopMonitoringMeasures"
+                                                 selector:@selector(stop:)
+                                                     name:@"lmdMonitoring/stop"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(reset:)
+                                                     name:@"lmd/reset"
                                                    object:nil];
         
         NSLog(@"[INFO][LMM] LocationManager prepared for monitoring mode.");
@@ -366,13 +370,13 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 
 #pragma mark - Notification event handles
 /*!
- @method startMonitoringMeasures
+ @method start
  @discussion This method sets the flag 'measuring' true, and thus the measures are stored.
  */
-- (void) startMonitoringMeasures:(NSNotification *) notification
+- (void) start:(NSNotification *) notification
 {
-    if ([[notification name] isEqualToString:@"startMonitoringMeasures"]){
-        NSLog(@"[NOTI][LMM] Notification \"startMonitoringMeasures\" recived.");
+    if ([[notification name] isEqualToString:@"lmdMonitoring/start"]){
+        NSLog(@"[NOTI][LMM] Notification \"lmdMonitoring/start\" recived.");
         
         // Register the beacons only if posible.
         [self locationManager:locationManager didChangeAuthorizationStatus:CLLocationManager.authorizationStatus];
@@ -457,12 +461,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 }
 
 /*!
- @method stopMonitoringMeasures:
+ @method stop:
  @discussion This method sets the flag 'measuring' false, and thus the measures are not stored; it also deletes the monitored regions from location manager.
  */
-- (void) stopMonitoringMeasures:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"stopMonitoringMeasures"]) {
-        NSLog(@"[NOTI][LMM] Notification \"stopMonitoringMeasures\" recived.");
+- (void) stop:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"lmdMonitoring/stop"]) {
+        NSLog(@"[NOTI][LMM] Notification \"lmdMonitoring/stop\" recived.");
         // Delete registered regions and heading updates
         [self stopRoutine];
     }
@@ -492,8 +496,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  */
 - (void) reset:(NSNotification *) notification
 {
-    if ([[notification name] isEqualToString:@"resetLocationAndMeasures"]){
-        NSLog(@"[NOTI][LM] Notification \"resetLocationAndMeasures\" recived.");
+    if ([[notification name] isEqualToString:@"lmd/reset"]){
+        NSLog(@"[NOTI][LM] Notification \"lmd/reset\" recived.");
         
         // Instance variables
         // Set device's location at the origin

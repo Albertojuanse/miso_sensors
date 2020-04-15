@@ -66,16 +66,16 @@
         
         // This object must listen to this events
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(startCompassHeadingAndBeaconRangingMeasuring:)
-                                                     name:@"startCompassHeadingAndBeaconRangingMeasuring"
+                                                 selector:@selector(start:)
+                                                     name:@"lmdRhoThetaModelling/start"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(stopCompassHeadingAndBeaconRangingMeasuring:)
-                                                     name:@"stopCompassHeadingAndBeaconRangingMeasuring"
+                                                 selector:@selector(stop:)
+                                                     name:@"lmdRhoThetaModelling/stop"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reset:)
-                                                     name:@"resetLocationAndMeasures"
+                                                     name:@"lmd/reset"
                                                    object:nil];
         
         NSLog(@"[INFO][LMRTM] LocationManager prepared for kModeRhoThetaModelling mode.");
@@ -476,21 +476,19 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  */
 - (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager
 {
-    if(!manager.heading) return YES; // Got nothing, We can assume we got to calibrate.
-    else if(manager.heading.headingAccuracy < 0 ) return YES; // 0 means invalid heading, need to calibrate
-    else if(manager.heading.headingAccuracy > 3 ) return YES; // 5 degrees is a small value correct for my needs, too.
-    else return NO; // All is good. Compass is precise enough.
+    CLLocationDirection accuracy = [[manager heading] headingAccuracy];
+    return !accuracy || accuracy <= 0.0f || accuracy > 3.0f; // 0 means invalid heading, need to calibrate
 }
 
 #pragma mark - Notification event handles
 
 /*!
- @method startCompassHeadingAndBeaconRangingMeasuring:
+ @method start:
  @discussion This method asks the Location Manager to start positioning the device using compass and iBeacons.
  */
-- (void) startCompassHeadingAndBeaconRangingMeasuring:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"startCompassHeadingAndBeaconRangingMeasuring"]){
-        NSLog(@"[NOTI][LMRTM] Notification \"startCompassHeadingAndBeaconRangingMeasuring\" recived.");
+- (void) start:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"lmdRhoThetaModelling/start"]){
+        NSLog(@"[NOTI][LMRTM] Notification \"lmdRhoThetaModelling/start\" recived.");
         
         // Register the beacons only if posible.
         [self locationManager:locationManager didChangeAuthorizationStatus:CLLocationManager.authorizationStatus];
@@ -576,12 +574,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 }
 
 /*!
- @method stopCompassHeadingAndBeaconRangingMeasuring:
+ @method stop:
  @discussion This method asks the Location Manager to stop positioning the device using compass and iBeacons.
  */
-- (void) stopCompassHeadingAndBeaconRangingMeasuring:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"stopCompassHeadingAndBeaconRangingMeasuring"]){
-        NSLog(@"[NOTI][LMRTM] Notification \"stopCompassHeadingAndBeaconRangingMeasuring\" recived.");
+- (void) stop:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"lmdRhoThetaModelling/start"]){
+        NSLog(@"[NOTI][LMRTM] Notification \"lmdRhoThetaModelling/start\" recived.");
         // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
@@ -614,8 +612,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  */
 - (void) reset:(NSNotification *) notification
 {
-    if ([[notification name] isEqualToString:@"resetLocationAndMeasures"]){
-        NSLog(@"[NOTI][LMRTM] Notification \"resetLocationAndMeasures\" recived.");
+    if ([[notification name] isEqualToString:@"lmd/reset"]){
+        NSLog(@"[NOTI][LMRTM] Notification \"lmd/reset\" recived.");
         
         // Instance variables
         // Set device's location at the origin
