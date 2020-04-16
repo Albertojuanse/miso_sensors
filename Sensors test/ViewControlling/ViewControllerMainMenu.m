@@ -722,8 +722,12 @@
                            andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
-            // TODO: A view for this. Alberto J. 2020/01/20
+            // TODO: Move this to final model view. Alberto J. 2020/01/20
             if ([chosenMode isModeKey:kModeGPSSelfLocating]) { // GPS_SELF_LOCATING
+                if (!deviceUUID) {
+                    deviceUUID = [[NSUUID UUID] UUIDString];
+                }
+                // Mode is only set in shared data when GPS is started, to use it as orchestration variable
                 MDMode * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                                          andCredentialsUserDic:credentialsUserDic];
                 if (currentMode) {
@@ -731,9 +735,9 @@
                         [sharedData inSessionDataSetMode:nil
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopUpdatingLocation"
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdGPS/stop"
                                                                             object:nil];
-                        NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingLocation\" posted.");
+                        NSLog(@"[NOTI][VCMM] Notification \"lmdGPS/stop\" posted.");
                         // Let user know that the measure is done
                         [self alertUserWithTitle:@"Geoposition acquiered."
                                          message:[NSString stringWithFormat:@"A geolocated position has been acquired; it will be used as an attribute of the model."]
@@ -741,26 +745,51 @@
                                           // Nothing to do.
                                       }
                          ];
+                         
+                         // Dealloc location manager
+                         locationGPS = nil;
                     } else {
+                        
+                        // Alloc and init the location manager
+                        if (!locationGPS) {
+                            locationGPS = [[LMDelegateGPS alloc] initWithSharedData:sharedData
+                                                                            userDic:credentialsUserDic
+                                                                         deviceUUID:deviceUUID
+                                                              andCredentialsUserDic:credentialsUserDic];
+                        }
+                        
                         [sharedData inSessionDataSetMode:chosenMode
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingLocation"
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdGPS/start"
                                                                             object:nil];
-                        NSLog(@"[NOTI][VCMM] Notification \"startUpdatingLocation\" posted.");
+                        NSLog(@"[NOTI][VCMM] Notification \"lmdGPS/start\" posted.");
                     }
                 } else {
+                    
+                    // Alloc and init the location manager
+                    if (!locationGPS) {
+                        locationGPS = [[LMDelegateGPS alloc] initWithSharedData:sharedData
+                                                                        userDic:credentialsUserDic
+                                                                     deviceUUID:deviceUUID
+                                                          andCredentialsUserDic:credentialsUserDic];
+                    }
+                    
                     [sharedData inSessionDataSetMode:chosenMode
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingLocation"
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdGPS/start"
                                                                         object:nil];
-                    NSLog(@"[NOTI][VCMM] Notification \"startUpdatingLocation\" posted.");
+                    NSLog(@"[NOTI][VCMM] Notification \"lmdGPS/start\" posted.");
                 }
                 
             }
-            // TODO: A view for this. Alberto J. 2020/01/20
+            // TODO: Move this to final model view. Alberto J. 2020/01/20
             if ([chosenMode isModeKey:kModeCompassSelfLocating]) { // COMPASS_SELF_LOCATING
+                if (!deviceUUID) {
+                    deviceUUID = [[NSUUID UUID] UUIDString];
+                }
+                // Mode is only set in shared data when GPS is started, to use it as orchestration variable
                 MDMode * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                                        andCredentialsUserDic:credentialsUserDic];
                 if (currentMode) {
@@ -768,9 +797,9 @@
                         [sharedData inSessionDataSetMode:nil
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopUpdatingHeading"
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdHeading/stop"
                                                                             object:nil];
-                        NSLog(@"[NOTI][VCMM] Notification \"stopUpdatingHeading\" posted.");
+                        NSLog(@"[NOTI][VCMM] Notification \"lmdHeading/stop\" posted.");
                         // Let user know that the measure is done
                         [self alertUserWithTitle:@"Heading measure acquiered."
                                          message:[NSString stringWithFormat:@"A heading measure has been acquired; it will be used as an attribute of the model."]
@@ -778,21 +807,42 @@
                                           // Nothing to do.
                                       }
                          ];
+                        
+                        // Dealloc location manager
+                        locationHeading = nil;
                     } else {
+                        
+                        // Alloc and init the location manager
+                        if (!locationHeading) {
+                            locationHeading = [[LMDelegateHeading alloc] initWithSharedData:sharedData
+                                                                                    userDic:credentialsUserDic
+                                                                                 deviceUUID:deviceUUID
+                                                                      andCredentialsUserDic:credentialsUserDic];
+                        }
+                        
                         [sharedData inSessionDataSetMode:chosenMode
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingHeading"
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdHeading/start"
                                                                             object:nil];
-                        NSLog(@"[NOTI][VCMM] Notification \"startUpdatingHeading\" posted.");
+                        NSLog(@"[NOTI][VCMM] Notification \"lmdHeading/start\" posted.");
                     }
                 } else {
+                    
+                    // Alloc and init the location manager
+                    if (!locationHeading) {
+                        locationHeading = [[LMDelegateHeading alloc] initWithSharedData:sharedData
+                                                                                userDic:credentialsUserDic
+                                                                             deviceUUID:deviceUUID
+                                                                  andCredentialsUserDic:credentialsUserDic];
+                    }
+                    
                     [sharedData inSessionDataSetMode:chosenMode
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"startUpdatingHeading"
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdHeading/start"
                                                                         object:nil];
-                    NSLog(@"[NOTI][VCMM] Notification \"startUpdatingHeading\" posted.");
+                    NSLog(@"[NOTI][VCMM] Notification \"lmdHeading/start\" posted.");
                 }
                 
             }

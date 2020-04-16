@@ -289,7 +289,7 @@
  @method stop:
  @discussion This method asks the Location Manager to stop positioning the device using GPS.
  */
-- (void) stopUpdatingLocation:(NSNotification *) notification {
+- (void) stop:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"lmdGPS/stop"]){
         NSLog(@"[NOTI][LMG] Notification \"lmdGPS/stop\" recived.");
         [locationManager stopUpdatingLocation];

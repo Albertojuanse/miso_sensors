@@ -13,6 +13,8 @@
 #import "MDMetamodel.h"
 #import "MDType.h"
 #import "MDMode.h"
+#import "LMDelegateGPS.h"
+#import "LMDelegateHeading.h"
 #import "VCToolbar.h"
 #import "ViewControllerLogin.h"
 #import "ViewControllerAddBeaconMenu.h"
@@ -26,6 +28,8 @@
     
     // Other components
     SharedData * sharedData;
+    LMDelegateGPS * locationGPS;
+    LMDelegateHeading * locationHeading;
     
     // Session and user context
     // The first credentials dictionary is for security issues and its proprietary is the one who logs-in in the device; the second one is used for identifying purposes; in multiuser context, the first one is used in the device for accessing data, etc. while the second one is shared to the rest of users when a measure is taken or something is changed to indicate who did it.
@@ -35,9 +39,11 @@
     // Modes
     MDMode * chosenMode;
     
+    // Variables
     // Beacons' region identifiers
     NSNumber * itemBeaconIdNumber;
     NSNumber * itemPositionIdNumber;
+    NSString * deviceUUID;
     
     // Login
     BOOL userDidAskLogOut;
