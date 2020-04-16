@@ -67,6 +67,10 @@
                                                      name:@"lmdCalibrating/start"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(stop:)
+                                                     name:@"lmdCalibrating/stop"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reset:)
                                                      name:@"lmd/reset"
                                                    object:nil];
@@ -286,10 +290,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 }
 
 #pragma mark - Notification event handles
-
 /*!
  @method start:
- @discussion This method is called when calibration process start.
+ @discussion This method configures the location manager and registers all items that must be located.
  */
 - (void) start:(NSNotification *) notification
 {
@@ -375,9 +378,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 // Delete registered regions and heading updates
                 [self stopRoutine];
                 
-                NSLog(@"[NOTI][LMC] Notification \"calibration/finished\" posted.");
+                NSLog(@"[NOTI][LMC] Notification \"vcMainMenu/calibrationFinished\" posted.");
                 [[NSNotificationCenter defaultCenter]
-                 postNotificationName:@"calibration/finished"
+                 postNotificationName:@"vcMainMenu/calibrationFinished"
                  object:nil];
                 return;
             }
@@ -388,8 +391,25 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                   CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted)
         {
             // If is not allowed to use location services, delete registered regions and heading updates
+            NSLog(@"[NOTI][LMC] Notification \"vcMainMenu/calibrationFinished\" posted.");
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"vcMainMenu/calibrationFinished"
+             object:nil];
             [self stopRoutine];
+            return;
         }
+    }
+}
+
+/*!
+ @method stop:
+ @discussion This method is called when calibration routine must end.
+ */
+- (void) stop:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"lmdCalibrating/stop"]) {
+        NSLog(@"[NOTI][LMM] Notification \"lmdCalibrating/stop\" recived.");
+        // Delete registered regions and heading updates
+        [self stopRoutine];
     }
 }
 

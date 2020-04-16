@@ -373,7 +373,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 #pragma mark - Notification event handles
 /*!
  @method start
- @discussion This method sets the flag 'measuring' true, and thus the measures are stored.
+ @discussion This method configures the location manager and registers all items that must be located.
  */
 - (void) start:(NSNotification *) notification
 {

@@ -212,7 +212,7 @@
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(calibrationFinished:)
-                                                 name:@"calibration/finished"
+                                                 name:@"vcMainMenu/calibrationFinished"
                                                object:nil];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
@@ -586,6 +586,14 @@
                                                   ];
         if (itemChosenByUser) {
             
+            // Alloc and init the location manager
+            if (!locationCalibrating) {
+                locationCalibrating = [[LMDelegateCalibrating alloc] initWithSharedData:sharedData
+                                                                                userDic:credentialsUserDic
+                                                                             deviceUUID:deviceUUID
+                                                                  andCredentialsUserDic:credentialsUserDic];
+            }
+            
             NSString * sort = itemChosenByUser[@"sort"];
             if([sort isEqualToString:@"beacon"]) {
                 // Ask Location manager to calibrate the beacon
@@ -594,10 +602,10 @@
                 NSString * uuidToCalibrate = itemChosenByUser[@"uuid"];
                 [data setObject:uuidToCalibrate forKey:@"uuid"];
                 // And send the notification
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"calibration"
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/start"
                                                                     object:nil
                                                                   userInfo:data];
-                NSLog(@"[NOTI][VCMM] Notification \"calibration\" posted.");
+                NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/start\" posted.");
                 [self.calibrateButton setEnabled:NO];
             }
             
@@ -615,6 +623,11 @@
  @discussion This method handles the event that notifies that the calibration is done; sets the calibration button enabled.
  */
 - (void)calibrationFinished:(NSNotification *) notification {
+    // Deallocate location manager; ARC disposal.
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
+                                                        object:nil];
+    NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+    locationCalibrating = nil;
     [self.calibrateButton setEnabled:YES];
 }
 
