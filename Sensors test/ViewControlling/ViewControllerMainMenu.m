@@ -623,12 +623,17 @@
  @discussion This method handles the event that notifies that the calibration is done; sets the calibration button enabled.
  */
 - (void)calibrationFinished:(NSNotification *) notification {
-    // Deallocate location manager; ARC disposal.
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
-                                                        object:nil];
-    NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
-    locationCalibrating = nil;
-    [self.calibrateButton setEnabled:YES];
+    if ([[notification name] isEqualToString:@"vcMainMenu/calibrationFinished"]){
+        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/calibrationFinished\" recived.");
+        
+        // Deallocate location manager; ARC disposal.
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
+                                                            object:nil];
+        NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+        locationCalibrating = nil;
+        
+        [self.calibrateButton setEnabled:YES];
+    }
 }
 
 /*!
