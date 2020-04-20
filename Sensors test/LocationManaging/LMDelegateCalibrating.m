@@ -287,6 +287,15 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         NSLog(@"[INFO][LMC]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
         
     }
+    
+    // Notificate the new measurements
+    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+    [data setObject:calibrationUUID forKey:@"calibrationUUID"];
+    NSLog(@"[NOTI][LMRRL] Notification \"ranging/newMeasuresAvalible\" posted.");
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:@"ranging/newMeasuresAvalible"
+     object:nil
+     userInfo:data];
 }
 
 #pragma mark - Notification event handles
@@ -300,7 +309,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         NSLog(@"[NOTI][LMC] Notification \"lmdCalibrating/start\" recived.");
         
         NSDictionary * data = notification.userInfo;
-        NSString * calibrationUUID = data[@"uuid"];
+        calibrationUUID = data[@"calibrationUUID"];
         NSLog(@"[INFO][LMC] The user asked to calibrate the iBeacon %@", calibrationUUID);
         
         // Validate the access to the data shared collection

@@ -600,7 +600,7 @@
                 NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
                 // Create a copy of the current position for sending it; concurrence issues prevented
                 NSString * uuidToCalibrate = itemChosenByUser[@"uuid"];
-                [data setObject:uuidToCalibrate forKey:@"uuid"];
+                [data setObject:uuidToCalibrate forKey:@"calibrationUUID"];
                 // And send the notification
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/start"
                                                                     object:nil

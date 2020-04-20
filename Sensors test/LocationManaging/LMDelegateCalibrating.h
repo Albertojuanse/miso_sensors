@@ -32,6 +32,7 @@
     
     // Variables
     NSMutableDictionary * itemToCalibrate;
+    NSString * calibrationUUID;
     
     // Data store
     NSMutableArray * monitoredRegions;
