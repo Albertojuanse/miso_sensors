@@ -115,6 +115,9 @@
 {
     if ([[notification name] isEqualToString:@"ranging/newMeasuresAvalible"]){
         NSLog(@"[NOTI][LMR] Notification \"ranging/newMeasuresAvalible\" recived.");
+        NSDictionary * data = notification.userInfo;
+        calibrationUUID = data[@"calibrationUUID"];
+        NSLog(@"[INFO][LMR] Location manager notifies new calibration mesurements of the iBeacon %@", calibrationUUID);
         
         // Check the access to data shared collections
         if (
@@ -157,16 +160,93 @@
     return;
 }
 
-#pragma mark - Processing methods
+#pragma mark - Processing methods. Calibration
 /*!
  @method processCalibrationMeasures:
- @discussion This method processes the calibration measures taken to calibrate the RSSI values.
+ @discussion This method processes the calibration measures taken to calibrate the RSSI values and decides when it is calibrated
  */
 - (void)processCalibrationMeasures:(NSMutableArray *)calibrationMeasures
 {
-
+    // Each beacon must be calibrated separetly, since each BLE device can transmit a different power values
+    
+    // Get item to calibrate.
+    NSMutableDictionary * firstMeasure = [calibrationMeasures objectAtIndex:0];
+    NSString * itemToCalibrateUUID = firstMeasure[@"itemUUID"];
+    NSLog(@"[LMR][INFO] Measures taken to calibrate item: %@", itemToCalibrateUUID);
+    NSMutableArray * itemsToCalibrate = [sharedData fromItemDataGetItemsWithUUID:itemToCalibrateUUID
+                                                           andCredentialsUserDic:credentialsUserDic];
+    NSMutableDictionary * itemToCalibrate;
+    if ([itemsToCalibrate count] > 0) {
+        itemToCalibrate = [itemsToCalibrate objectAtIndex:0];
+    } else {
+        NSLog(@"[LMR][ERROR] Item to calibrate not found %@", itemToCalibrateUUID);
+        return;
+    }
+    
+    // Retrieve from item to calibrate old variables to use them as initialization point.
+    NSNumber * refRSSI = itemToCalibrate[@"refRSSI"];
+    NSNumber * refDistance = itemToCalibrate[@"refDistance"];
+    NSNumber * attenuationFactor = itemToCalibrate[@"attenuationFactor"];
+    if(!refRSSI) {
+        refRSSI = [NSNumber numberWithFloat:-60];
+        NSLog(@"[LMR][INFO] Reference RSSI value of item not found; set default.");
+    }
+    if(!refDistance) {
+        refDistance = [NSNumber numberWithFloat:1];
+        NSLog(@"[LMR][INFO] Reference distance value of item not found; set default.");
+    }
+    if(!attenuationFactor) {
+        attenuationFactor = [NSNumber numberWithFloat:2];
+        NSLog(@"[LMR][INFO] Reference attenuation factor of item not found; set default.");
+    }
+    
+    // Gather all RSSI measured values
+    NSMutableArray * beacons;
+    for (NSMutableDictionary * eachMeasure in calibrationMeasures) {
+        
+        // Check measures
+        NSString * eachMeasureUUID = eachMeasure[@"itemUUID"];
+        if ([eachMeasureUUID isEqualToString:itemToCalibrateUUID]) {
+            
+            CLBeacon * eachBeacon = eachMeasure[@"measure"];
+            [beacons addObject:eachBeacon];
+            
+        } else {
+            NSLog(@"[LMR][ERROR] A measure taken from another item different to the calibrating one: %@", eachMeasureUUID);
+        }
+    }
+    
+    // Calibrate measures
+    BOOL calibrationFinished = [self calibrateBeacons:beacons];
+    if (calibrationFinished) {
+        // Notify menu view that calibration is finished.
+        NSLog(@"[NOTI][LMR] Notification \"calibration/finished\" posted.");
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"calibration/finished"
+         object:nil];
+    }
+    
+    return;
 }
 
+/*!
+ @method calibrateBeacons:
+ @discussion This method calibrate an item given its measures; return YES if calibration is finished and NO if more measures are needed.
+ */
+- (BOOL)calibrateBeacons:(NSMutableArray *)beacons
+{
+    // Get calibration variables.
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    if (!minNumberOfSteps){
+        NSNumber * minNumberOfStepsSaved = layoutDic[@"calibration/measures/minNumber"];
+        minNumberOfSteps = [minNumberOfStepsSaved integerValue];
+    }
+    
+    return YES;
+}
+
+#pragma mark - Processing methods. Measures
 /*!
  @method processRssiMeasures:
  @discussion This method processes the RSSI measures.

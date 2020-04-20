@@ -29,6 +29,10 @@
     // Components
     SharedData * sharedData;
     
+    // Variables
+    NSString * calibrationUUID;
+    NSInteger minNumberOfSteps;
+    
     // Orchestration variables
 }
 
