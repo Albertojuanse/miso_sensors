@@ -31,6 +31,7 @@
     
     // Variables
     NSString * calibrationUUID;
+    NSMutableDictionary * itemToCalibrate;
     NSInteger minNumberOfSteps;
     
     // Orchestration variables

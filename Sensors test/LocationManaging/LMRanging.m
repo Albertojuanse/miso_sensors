@@ -174,30 +174,12 @@
     NSString * itemToCalibrateUUID = firstMeasure[@"itemUUID"];
     NSLog(@"[LMR][INFO] Measures taken to calibrate item: %@", itemToCalibrateUUID);
     NSMutableArray * itemsToCalibrate = [sharedData fromItemDataGetItemsWithUUID:itemToCalibrateUUID
-                                                           andCredentialsUserDic:credentialsUserDic];
-    NSMutableDictionary * itemToCalibrate;
+                                                           andCredentialsUserDic:credentialsUserDic];    
     if ([itemsToCalibrate count] > 0) {
         itemToCalibrate = [itemsToCalibrate objectAtIndex:0];
     } else {
         NSLog(@"[LMR][ERROR] Item to calibrate not found %@", itemToCalibrateUUID);
         return;
-    }
-    
-    // Retrieve from item to calibrate old variables to use them as initialization point.
-    NSNumber * refRSSI = itemToCalibrate[@"refRSSI"];
-    NSNumber * refDistance = itemToCalibrate[@"refDistance"];
-    NSNumber * attenuationFactor = itemToCalibrate[@"attenuationFactor"];
-    if(!refRSSI) {
-        refRSSI = [NSNumber numberWithFloat:-60];
-        NSLog(@"[LMR][INFO] Reference RSSI value of item not found; set default.");
-    }
-    if(!refDistance) {
-        refDistance = [NSNumber numberWithFloat:1];
-        NSLog(@"[LMR][INFO] Reference distance value of item not found; set default.");
-    }
-    if(!attenuationFactor) {
-        attenuationFactor = [NSNumber numberWithFloat:2];
-        NSLog(@"[LMR][INFO] Reference attenuation factor of item not found; set default.");
     }
     
     // Gather all RSSI measured values
@@ -235,14 +217,51 @@
  */
 - (BOOL)calibrateBeacons:(NSMutableArray *)beacons
 {
-    // Get calibration variables.
+    // Propagation model used is RSSI(d) = RSSI(d0) - 10 * n * log(d/d0)
+    //  where RSSI(d)  is the received RSSI
+    //        RSSI(d0) is a calibration value
+    //        d0       is the distance for this calibration and
+    //        n        is the attenuation factor of the wave
+    // When calibrating, user places the beacon at 1 meter, so
+    //        d0 = 1   and
+    //        d0 = d   so
+    //        RSSI(d) = RSSI(d0)
+    // and this value is saved.
+    // Then, the attenuation factor must be calculated. Using Friis formula,
+    // the minimum attenuation factor is 2, and typical values must be < 10.
+    
+    // Get calibration costants.
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
-    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSDictionary * locatingDic = [NSDictionary dictionaryWithContentsOfFile:path];
     if (!minNumberOfSteps){
-        NSNumber * minNumberOfStepsSaved = layoutDic[@"calibration/measures/minNumber"];
+        NSNumber * minNumberOfStepsSaved = locatingDic[@"calibration/measures/minNumber"];
         minNumberOfSteps = [minNumberOfStepsSaved integerValue];
     }
     
+    // Retrieve from item to calibrate old variables to use them as initialization point; if not, initialize them
+    NSNumber * refRSSI = itemToCalibrate[@"refRSSI"];
+    NSNumber * refDistance = itemToCalibrate[@"refDistance"];
+    NSNumber * attenuationFactor = itemToCalibrate[@"attenuationFactor"];
+    if(!refRSSI) {
+        NSNumber * initRefRSSI = locatingDic[@"calibration/init/refRSSI"];
+        refRSSI = [NSNumber numberWithFloat:[initRefRSSI floatValue]];
+        NSLog(@"[LMR][INFO] Reference RSSI value of item not found; set default.");
+    }
+    if(!refDistance) {
+        NSNumber * initRefDistance = locatingDic[@"calibration/init/refDistance"];
+        refDistance = [NSNumber numberWithFloat:[initRefDistance floatValue]];
+        NSLog(@"[LMR][INFO] Reference distance value of item not found; set default.");
+    }
+    if(!attenuationFactor) {
+        NSNumber * initAttenuationFactor = locatingDic[@"calibration/init/attenuationFactor"];
+        attenuationFactor = [NSNumber numberWithFloat:[initAttenuationFactor floatValue]];
+        NSLog(@"[LMR][INFO] Reference attenuation factor of item not found; set default.");
+    }
+    
+    // Calibration
+
+    
+    // Decide weather the calibration is finished or not
     return YES;
 }
 

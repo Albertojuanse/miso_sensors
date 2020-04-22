@@ -4,5 +4,11 @@
 <dict>
 	<key>calibration/measures/minNumber</key>
 	<integer>10</integer>
+	<key>calibration/init/refRSSI</key>
+	<integer>-60</integer>
+	<key>calibration/init/refDistance</key>
+	<integer>1</integer>
+	<key>calibration/init/attenuationFactor</key>
+	<integer>2</integer>
 </dict>
 </plist>

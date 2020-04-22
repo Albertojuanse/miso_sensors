@@ -269,6 +269,8 @@
 		426501B322A032B800BE20B7 /* LocationManaging */ = {
 			isa = PBXGroup;
 			children = (
+				42612F3D24470ADB00B66BC3 /* LMRanging.h */,
+				42612F3E24470AEB00B66BC3 /* LMRanging.m */,
 				426501B822A03B2A00BE20B7 /* LocationManagerDelegate.h */,
 				426501B922A03B3000BE20B7 /* LocationManagerDelegate.m */,
 				4227338923D0BB5500F79364 /* LMDelegateMonitoring.h */,
@@ -285,8 +287,6 @@
 				42263BB724479AC800161AB2 /* LMDelegateGPS.m */,
 				42263BB92447A80F00161AB2 /* LMDelegateHeading.h */,
 				42263BBA2447A81E00161AB2 /* LMDelegateHeading.m */,
-				42612F3D24470ADB00B66BC3 /* LMRanging.h */,
-				42612F3E24470AEB00B66BC3 /* LMRanging.m */,
 			);
 			path = LocationManaging;
 			sourceTree = "<group>";
