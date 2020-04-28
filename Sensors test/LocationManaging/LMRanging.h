@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
+#import <math.h>
 #import "MDMode.h"
 #import "RDPosition.h"
 #import "SharedData.h"
@@ -33,6 +34,7 @@
     NSString * calibrationUUID;
     NSMutableDictionary * itemToCalibrate;
     NSInteger minNumberOfSteps;
+    float gaussThreshold;
     
     // Orchestration variables
 }

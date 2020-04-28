@@ -229,7 +229,7 @@
     // and this value is saved.
     // Then, the attenuation factor must be calculated. Using Friis formula,
     // the minimum attenuation factor is 2, and typical values must be < 10.
-    
+
     // Get calibration costants.
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * locatingDic = [NSDictionary dictionaryWithContentsOfFile:path];
@@ -237,68 +237,132 @@
         NSNumber * minNumberOfStepsSaved = locatingDic[@"calibration/measures/minNumber"];
         minNumberOfSteps = [minNumberOfStepsSaved integerValue];
     }
-    
-    // Retrieve from item to calibrate old variables to use them as initialization point; if not, initialize them
-    NSNumber * refRSSI = itemToCalibrate[@"refRSSI"];
-    NSNumber * refDistance = itemToCalibrate[@"refDistance"];
-    NSNumber * attenuationFactor = itemToCalibrate[@"attenuationFactor"];
-    if(!refRSSI) {
-        NSNumber * initRefRSSI = locatingDic[@"calibration/init/refRSSI"];
-        refRSSI = [NSNumber numberWithFloat:[initRefRSSI floatValue]];
-        NSLog(@"[LMR][INFO] Reference RSSI value of item not found; set default.");
-    }
-    if(!refDistance) {
-        NSNumber * initRefDistance = locatingDic[@"calibration/init/refDistance"];
-        refDistance = [NSNumber numberWithFloat:[initRefDistance floatValue]];
-        NSLog(@"[LMR][INFO] Reference distance value of item not found; set default.");
-    }
-    if(!attenuationFactor) {
-        NSNumber * initAttenuationFactor = locatingDic[@"calibration/init/attenuationFactor"];
-        attenuationFactor = [NSNumber numberWithFloat:[initAttenuationFactor floatValue]];
-        NSLog(@"[LMR][INFO] Reference attenuation factor of item not found; set default.");
+    if (!gaussThreshold) {
+        NSNumber * gaussThresholdSaved = locatingDic[@"calibration/measures/gaussThreshold"];
+        gaussThreshold = [gaussThresholdSaved floatValue]/100.0;
     }
     
-    // Calibration with gaussian filter
-    // Retrieve RSSI values
-    NSMutableArray * rssiValues = [[NSMutableArray alloc] init];
-    for (CLBeacon * beacon in beacons) {
-        NSNumber * rssiValue = [NSNumber numberWithInteger:[beacon rssi]];
-        [rssiValues addObject:rssiValue];
-    }
-    // Mean value
-    NSNumber * acc = [NSNumber numberWithFloat:0.0];
-    for (NSNumber * rssiValue in rssiValues) {
-        acc = [NSNumber numberWithFloat:[acc floatValue] + [rssiValue floatValue]];
-    }
-    NSNumber * meanValue = [NSNumber numberWithFloat:[acc floatValue]/rssiValues.count];
-    // Variance
-    acc = nil; //ARC dispose
-    acc = [NSNumber numberWithFloat:0.0];
-    for (NSNumber * rssiValue in rssiValues) {
-        NSNumber * distance = [NSNumber numberWithFloat:
-                               ([rssiValue floatValue] - [meanValue floatValue]) *
-                               ([rssiValue floatValue] - [meanValue floatValue])
+    if (beacons.count <= minNumberOfSteps) {
+        NSLog(@"[INFO][LMR] %tu measures taken; not calibrating.", beacons.count);
+        return NO;
+    } else {
+        NSLog(@"[INFO][LMR] %tu measures taken; calibrating.", beacons.count);
+        
+        // Retrieve from item to calibrate old variables to use them as initialization point; if not, initialize them
+        NSNumber * refRSSI = itemToCalibrate[@"refRSSI"];
+        NSNumber * refDistance = itemToCalibrate[@"refDistance"];
+        NSNumber * attenuationFactor = itemToCalibrate[@"attenuationFactor"];
+        if(!refRSSI) {
+            NSNumber * initRefRSSI = locatingDic[@"calibration/init/refRSSI"];
+            refRSSI = [NSNumber numberWithFloat:[initRefRSSI floatValue]];
+            NSLog(@"[LMR][INFO] Reference RSSI value of item not found; set default.");
+        }
+        if(!refDistance) {
+            NSNumber * initRefDistance = locatingDic[@"calibration/init/refDistance"];
+            refDistance = [NSNumber numberWithFloat:[initRefDistance floatValue]];
+            NSLog(@"[LMR][INFO] Reference distance value of item not found; set default.");
+        }
+        if(!attenuationFactor) {
+            NSNumber * initAttenuationFactor = locatingDic[@"calibration/init/attenuationFactor"];
+            attenuationFactor = [NSNumber numberWithFloat:[initAttenuationFactor floatValue]];
+            NSLog(@"[LMR][INFO] Reference attenuation factor of item not found; set default.");
+        }
+        
+        // Calibration with gaussian filter
+        // Retrieve RSSI values
+        NSMutableArray * rssiValues = [[NSMutableArray alloc] init];
+        for (CLBeacon * beacon in beacons) {
+            NSNumber * rssiValue = [NSNumber numberWithInteger:[beacon rssi]];
+            [rssiValues addObject:rssiValue];
+        }
+        // Mean value
+        NSNumber * acc = [NSNumber numberWithFloat:0.0];
+        for (NSNumber * rssiValue in rssiValues) {
+            acc = [NSNumber numberWithFloat:[acc floatValue] + [rssiValue floatValue]];
+        }
+        NSNumber * meanValue = [NSNumber numberWithFloat:[acc floatValue]/rssiValues.count];
+        // Variance
+        acc = nil; //ARC dispose
+        acc = [NSNumber numberWithFloat:0.0];
+        for (NSNumber * rssiValue in rssiValues) {
+            NSNumber * distance = [NSNumber numberWithFloat:
+                                   ([rssiValue floatValue] - [meanValue floatValue]) *
+                                   ([rssiValue floatValue] - [meanValue floatValue])
+                                   ];
+            acc = [NSNumber numberWithFloat:[acc floatValue] + [distance floatValue]];
+        }
+        NSNumber * variance = [NSNumber numberWithFloat:
+                               [acc floatValue]/(rssiValues.count - 1)
                                ];
-        acc = [NSNumber numberWithFloat:[acc floatValue] + [distance floatValue]];
+        // Evaluate effective range in which measures sum the 0.6 of probability.
+        // For that, a min and a max value of that range must be found.
+        NSSortDescriptor * highestToLowest = [NSSortDescriptor sortDescriptorWithKey:@"self"
+                                                                           ascending:NO];
+        [rssiValues sortUsingDescriptors:[NSArray arrayWithObject:highestToLowest]];
+        NSLog(@"[LMR][INFO] Sorted beacon measures: %@", rssiValues);
+        NSLog(@"[LMR][INFO] There are %tu measures before filter.", rssiValues.count);
+        // Once sorted, the max and min values are removed until the cumulative
+        // probability is less than 0.6; at that point, the valid solution is the
+        // previous one, greater than 0.6.
+        NSNumber * maxRSSI;
+        NSNumber * minRSSI;
+        NSInteger iter = rssiValues.count;
+        for (int i = 1; i < iter; i++) {
+            NSNumber * auxMaxRSSI = [rssiValues lastObject];
+            NSNumber * auxMinRSSI = [rssiValues objectAtIndex:0];
+            
+            NSNumber * cumulativeMinRSSI = [self gaussianFilterFunctionOf:auxMinRSSI
+                                                                 withMean:meanValue
+                                                              andVariance:variance];
+            NSNumber * cumulativeMaxRSSI = [self gaussianFilterFunctionOf:auxMaxRSSI
+                                                                 withMean:meanValue
+                                                              andVariance:variance];
+            NSNumber * cumulativeDiffValue = [NSNumber numberWithFloat:
+                                              [cumulativeMaxRSSI floatValue] -
+                                              [cumulativeMinRSSI floatValue]
+                                              ];
+            if ([cumulativeDiffValue floatValue] < gaussThreshold) {
+                NSLog(@"[LMR][INFO] Range found");
+                NSLog(@"[LMR][INFO] The next cumulative probability integred was %.2f",
+                      [cumulativeDiffValue floatValue]);
+                break;
+            } else {
+                NSLog(@"[LMR][INFO] The cumulative probability integred is %.2f",
+                      [cumulativeDiffValue floatValue]);
+                [rssiValues removeObjectAtIndex:0];
+                [rssiValues removeLastObject];
+                maxRSSI = auxMaxRSSI;
+                minRSSI = auxMinRSSI;
+            }
+        }
+        NSLog(@"[LMR][INFO] There are %tu measures left after filter.", rssiValues.count);
+        
+        // Calculate new mean with the measures left and save it as refRSSI
+        acc = nil; //ARC dispose
+        acc = [NSNumber numberWithFloat:0.0];
+        for (NSNumber * rssiValue in rssiValues) {
+            acc = [NSNumber numberWithFloat:[acc floatValue] + [rssiValue floatValue]];
+        }
+        NSNumber * newRefRSSI = [NSNumber numberWithFloat:[acc floatValue]/rssiValues.count];
+        itemToCalibrate[@"refRSSI"] = newRefRSSI;
+    
+        // Decide weather the calibration is finished or not
+        return YES;
     }
-    NSNumber * variance = [NSNumber numberWithFloat:
-                           [acc floatValue]/(rssiValues.count - 1)
-                           ];
-    // Evaluate
-    
-    
-    // Decide weather the calibration is finished or not
-    return YES;
 }
 
 /*!
  @method gaussianFilterFunctionWithMean:andVariance:
- @discussion This method defines the gaussian function used by the gaussian filter.
+ @discussion This method defines the gaussian function used by the gaussian filter; the gaussian cumulative distribution using function error.
  */
-- (NSNumber *)gaussianFilterFunctionWithMean:(NSNumber *)mean
+- (NSNumber *)gaussianFilterFunctionOf:(NSNumber *)x
+                              withMean:(NSNumber *)mean
                            andVariance:(NSNumber *)variance
 {
-    return nil;
+    return [NSNumber numberWithFloat:
+            0.5*(1 + erf(([mean floatValue]-[x floatValue])/
+                         (sqrt([variance floatValue])*M_SQRT1_2)))
+            ];
 }
 
 #pragma mark - Processing methods. Measures
