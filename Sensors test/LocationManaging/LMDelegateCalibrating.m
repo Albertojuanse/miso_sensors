@@ -276,7 +276,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             
             // ...and compose a measure with them.
             [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithFloat:0.0]
-                                          ofSort:@"calibration"
+                                          ofSort:@"calibrationAtRefDistance"
                                     withItemUUID:uuid
                                   withDeviceUUID:deviceUUID
                                       atPosition:nil

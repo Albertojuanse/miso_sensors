@@ -135,10 +135,10 @@
             [self processRssiMeasures:rssiMeasures];
         }
         
-        NSMutableArray * calibrationMeasures = [sharedData fromMeasuresDataGetMeasuresOfSort:@"calibration"
+        NSMutableArray * calibrationAtRefDistanceMeasures = [sharedData fromMeasuresDataGetMeasuresOfSort:@"calibrationAtRefDistance"
                                                                       withCredentialsUserDic:credentialsUserDic];
-        if ([calibrationMeasures count] > 0) {
-          [self processCalibrationMeasures:calibrationMeasures];
+        if ([calibrationAtRefDistanceMeasures count] > 0) {
+          [self processCalibrationAtRefDistanceMeasures:calibrationAtRefDistanceMeasures];
         }
         
     }
@@ -162,15 +162,15 @@
 
 #pragma mark - Processing methods. Calibration
 /*!
- @method processCalibrationMeasures:
- @discussion This method processes the calibration measures taken to calibrate the RSSI values and decides when it is calibrated
+ @method processCalibrationAtRefDistanceMeasures:
+ @discussion This method processes the calibration measures taken to calibrate the RSSI value at reference distance d0 and decides when it is calibrated
  */
-- (void)processCalibrationMeasures:(NSMutableArray *)calibrationMeasures
+- (void)processCalibrationAtRefDistanceMeasures:(NSMutableArray *)calibrationAtRefDistanceMeasures
 {
     // Each beacon must be calibrated separetly, since each BLE device can transmit a different power values
     
     // Get item to calibrate.
-    NSMutableDictionary * firstMeasure = [calibrationMeasures objectAtIndex:0];
+    NSMutableDictionary * firstMeasure = [calibrationAtRefDistanceMeasures objectAtIndex:0];
     NSString * itemToCalibrateUUID = firstMeasure[@"itemUUID"];
     NSLog(@"[LMR][INFO] Measures taken to calibrate item: %@", itemToCalibrateUUID);
     NSMutableArray * itemsToCalibrate = [sharedData fromItemDataGetItemsWithUUID:itemToCalibrateUUID
@@ -184,7 +184,7 @@
     
     // Gather all RSSI measured values
     NSMutableArray * beacons;
-    for (NSMutableDictionary * eachMeasure in calibrationMeasures) {
+    for (NSMutableDictionary * eachMeasure in calibrationAtRefDistanceMeasures) {
         
         // Check measures
         NSString * eachMeasureUUID = eachMeasure[@"itemUUID"];
@@ -199,7 +199,7 @@
     }
     
     // Calibrate measures
-    BOOL calibrationFinished = [self calibrateBeacons:beacons];
+    BOOL calibrationFinished = [self calibrateRefRSSIWithCLBeacons:beacons];
     if (calibrationFinished) {
         // Notify menu view that calibration is finished.
         NSLog(@"[NOTI][LMR] Notification \"calibration/finished\" posted.");
@@ -212,10 +212,10 @@
 }
 
 /*!
- @method calibrateBeacons:
- @discussion This method calibrate an item given its measures; return YES if calibration is finished and NO if more measures are needed.
+ @method calibrateRefRSSIWithCLBeacons:
+ @discussion This method calibrate the RSSI recived at d0 of an item given its measures; return YES if calibration is finished and NO if more measures are needed.
  */
-- (BOOL)calibrateBeacons:(NSMutableArray *)beacons
+- (BOOL)calibrateRefRSSIWithCLBeacons:(NSMutableArray *)beacons
 {
     // Propagation model used is RSSI(d) = RSSI(d0) - 10 * n * log(d/d0)
     //  where RSSI(d)  is the received RSSI
@@ -258,11 +258,47 @@
         NSLog(@"[LMR][INFO] Reference attenuation factor of item not found; set default.");
     }
     
-    // Calibration
-
+    // Calibration with gaussian filter
+    // Retrieve RSSI values
+    NSMutableArray * rssiValues = [[NSMutableArray alloc] init];
+    for (CLBeacon * beacon in beacons) {
+        NSNumber * rssiValue = [NSNumber numberWithInteger:[beacon rssi]];
+        [rssiValues addObject:rssiValue];
+    }
+    // Mean value
+    NSNumber * acc = [NSNumber numberWithFloat:0.0];
+    for (NSNumber * rssiValue in rssiValues) {
+        acc = [NSNumber numberWithFloat:[acc floatValue] + [rssiValue floatValue]];
+    }
+    NSNumber * meanValue = [NSNumber numberWithFloat:[acc floatValue]/rssiValues.count];
+    // Variance
+    acc = nil; //ARC dispose
+    acc = [NSNumber numberWithFloat:0.0];
+    for (NSNumber * rssiValue in rssiValues) {
+        NSNumber * distance = [NSNumber numberWithFloat:
+                               ([rssiValue floatValue] - [meanValue floatValue]) *
+                               ([rssiValue floatValue] - [meanValue floatValue])
+                               ];
+        acc = [NSNumber numberWithFloat:[acc floatValue] + [distance floatValue]];
+    }
+    NSNumber * variance = [NSNumber numberWithFloat:
+                           [acc floatValue]/(rssiValues.count - 1)
+                           ];
+    // Evaluate
+    
     
     // Decide weather the calibration is finished or not
     return YES;
+}
+
+/*!
+ @method gaussianFilterFunctionWithMean:andVariance:
+ @discussion This method defines the gaussian function used by the gaussian filter.
+ */
+- (NSNumber *)gaussianFilterFunctionWithMean:(NSNumber *)mean
+                           andVariance:(NSNumber *)variance
+{
+    return nil;
 }
 
 #pragma mark - Processing methods. Measures
