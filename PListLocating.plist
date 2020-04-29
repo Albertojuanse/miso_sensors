@@ -12,5 +12,7 @@
 	<integer>1</integer>
 	<key>calibration/init/attenuationFactor</key>
 	<integer>2</integer>
+	<key>calibration/init/attenuationDistance</key>
+	<integer>2</integer>
 </dict>
 </plist>
