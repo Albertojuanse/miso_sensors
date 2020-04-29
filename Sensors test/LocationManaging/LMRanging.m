@@ -351,6 +351,7 @@
                                  [acc floatValue]/filteredRSSIValues.count
                                  ];
         itemToCalibrate[@"refRSSI"] = newRefRSSI;
+        NSLog(@"[LMR][INFO] Reference RSSI calibrated: %.2f.", [newRefRSSI floatValue]);
     
         // Decide weather the calibration is finished or not
         return YES;
@@ -434,6 +435,7 @@
                                            (10.0*log10([attenuationDistance floatValue]/[refDistance floatValue]))
                                            ];
         itemToCalibrate[@"attenuationFactor"] = newAttenuationFactor;
+        NSLog(@"[LMR][INFO] Attenuation Factor calibrated: %.2f.", [newAttenuationFactor floatValue]);
     
         // Decide weather the calibration is finished or not
         return YES;
@@ -534,11 +536,68 @@
  */
 - (void)processRssiMeasures:(NSMutableArray *)rssiMeasures
 {
+    // Propagation model used is RSSI(d) = RSSI(d0) - 10 * n * log(d/d0)
+    //  where RSSI(d)  is the received RSSI
+    //        RSSI(d0) is a calibration value
+    //        d0       is the distance for this calibration and
+    //        n        is the attenuation factor of the wave
+    // When calibrating, user places the beacon at 1 meter, so
+    //        d0 = 1   and
+    //        d0 = d   so
+    //        RSSI(d) = RSSI(d0)
+    // and this value is saved.
+    // Then, the attenuation factor must be calculated. Using Friis formula,
+    // the minimum attenuation factor is 2, and typical values must be < 10.
+    
     MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                     andCredentialsUserDic:credentialsUserDic];
     
     // For every RSSI measure taken in a Rho type mode...
     for (NSMutableDictionary * measureDic in rssiMeasures) {
+        
+        // Get the item measured
+        NSMutableDictionary * itemDic;
+        NSString * itemUUID = measureDic[@"itemUUID"];
+        NSMutableArray * items = [sharedData fromItemDataGetItemsWithUUID:itemUUID
+                                                    andCredentialsUserDic:credentialsUserDic];
+        if ([items count] > 0) {
+            itemDic = [items objectAtIndex:0];
+        } else {
+            NSLog(@"[LMR][ERROR] Item not found when correcting it: %@", itemUUID);
+            return;
+        }
+        
+        // Retrieve from item to calibrate old variables to use them as initialization point; if not, initialize them
+        NSNumber * refRSSI = itemDic[@"refRSSI"];
+        NSNumber * refDistance = itemDic[@"refDistance"];
+        NSNumber * attenuationFactor = itemDic[@"attenuationFactor"];
+        NSNumber * attenuationDistance = itemDic[@"attenuationDistance"];
+        NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+        NSDictionary * locatingDic = [NSDictionary dictionaryWithContentsOfFile:path];
+        if(!refRSSI) {
+            NSNumber * initRefRSSI = locatingDic[@"calibration/init/refRSSI"];
+            refRSSI = [NSNumber numberWithFloat:[initRefRSSI floatValue]];
+            NSLog(@"[LMR][WARNING] Using a not calibrated beacon device: %@.", itemUUID);
+            NSLog(@"[LMR][WARNING] Reference RSSI value of item not found; set default.");
+        }
+        if(!refDistance) {
+            NSNumber * initRefDistance = locatingDic[@"calibration/init/refDistance"];
+            refDistance = [NSNumber numberWithFloat:[initRefDistance floatValue]];
+            NSLog(@"[LMR][WARNING] Using a not calibrated beacon device: %@.", itemUUID);
+            NSLog(@"[LMR][WARNING] Reference distance value of item not found; set default.");
+        }
+        if(!attenuationFactor) {
+            NSNumber * initAttenuationFactor = locatingDic[@"calibration/init/attenuationFactor"];
+            attenuationFactor = [NSNumber numberWithFloat:[initAttenuationFactor floatValue]];
+            NSLog(@"[LMR][WARNING] Using a not calibrated beacon device: %@.", itemUUID);
+            NSLog(@"[LMR][WARNING] Reference attenuation factor of item not found; set default.");
+        }
+        if(!attenuationDistance) {
+            NSNumber * initAttenuationDistance = locatingDic[@"calibration/init/attenuationDistance"];
+            attenuationDistance = [NSNumber numberWithFloat:[initAttenuationDistance floatValue]];
+            NSLog(@"[LMR][WARNING] Using a not calibrated beacon device: %@.", itemUUID);
+            NSLog(@"[LMR][WARNING] Reference attenuation distance of item not found; set default.");
+        }
         
         id measure = measureDic[@"measure"];
         CLBeacon * beacon;
@@ -549,17 +608,18 @@
             break;
         }
         
-        // ...get its information...
-        NSNumber * rssi = [NSNumber numberWithInteger:[beacon rssi]];
-        // TODO. Calibration. Alberto J. 2019/11/14.
-        // TODO: Get the 1 meter RSSI from CLBeacon. Alberto J. 2019/11/14.
-        // Absolute values of speed of light, frecuency, and antenna's join gain
-        float C = 299792458.0;
-        float F = 2440000000.0; // 2400 - 2480 MHz
-        float G = 1.0; // typically 2.16 dBi
-        // Calculate the distance
-        float distance = (C / (4.0 * M_PI * F)) * sqrt(G * pow(10.0, -[rssi floatValue]/ 10.0));
-        NSNumber * RSSIdistance = [[NSNumber alloc] initWithFloat:distance];
+        // Get its information and correct it
+        NSNumber * recivedRSSI = [NSNumber numberWithInteger:[beacon rssi]];
+        NSNumber * correctedDistance = [NSNumber numberWithFloat:
+                                        powf(
+                                             10.0,
+                                             ([refRSSI floatValue]-[recivedRSSI floatValue])
+                                             /
+                                             (10.0*[attenuationFactor floatValue])
+                                             )
+                                             ];
+        NSLog(@"[ERROR][LMR] Measure of %@ corrected.", itemUUID);
+        NSLog(@"[ERROR][LMR] -> Recived RSSI %.2f set as distance  %.2f.", [recivedRSSI floatValue], [correctedDistance floatValue]);
 
         // ...prepare the measure..
         NSMutableDictionary * measureUserDic = measureDic[@"user"];
@@ -568,8 +628,8 @@
         NSString * measureDeviceUUID = measureDic[@"deviceUUID"];
         
         // ...and save it.
-        [sharedData inMeasuresDataSetMeasure:RSSIdistance
-                                      ofSort:@"calibratedRSSI"
+        [sharedData inMeasuresDataSetMeasure:correctedDistance
+                                      ofSort:@"correctedDistance"
                                 withItemUUID:measureItemUUID
                               withDeviceUUID:measureDeviceUUID
                                   atPosition:measurePosition
