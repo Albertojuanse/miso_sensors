@@ -268,87 +268,102 @@
             NSLog(@"[LMR][INFO] Reference attenuation factor of item not found; set default.");
         }
         
-        // Calibration with gaussian filter
         // Retrieve RSSI values
         NSMutableArray * rssiValues = [[NSMutableArray alloc] init];
         for (CLBeacon * beacon in beacons) {
             NSNumber * rssiValue = [NSNumber numberWithInteger:[beacon rssi]];
             [rssiValues addObject:rssiValue];
         }
-        // Mean value
-        NSNumber * acc = [NSNumber numberWithFloat:0.0];
-        for (NSNumber * rssiValue in rssiValues) {
-            acc = [NSNumber numberWithFloat:[acc floatValue] + [rssiValue floatValue]];
-        }
-        NSNumber * meanValue = [NSNumber numberWithFloat:[acc floatValue]/rssiValues.count];
-        // Variance
-        acc = nil; //ARC dispose
-        acc = [NSNumber numberWithFloat:0.0];
-        for (NSNumber * rssiValue in rssiValues) {
-            NSNumber * distance = [NSNumber numberWithFloat:
-                                   ([rssiValue floatValue] - [meanValue floatValue]) *
-                                   ([rssiValue floatValue] - [meanValue floatValue])
-                                   ];
-            acc = [NSNumber numberWithFloat:[acc floatValue] + [distance floatValue]];
-        }
-        NSNumber * variance = [NSNumber numberWithFloat:
-                               [acc floatValue]/(rssiValues.count - 1)
-                               ];
-        // Evaluate effective range in which measures sum the 0.6 of probability.
-        // For that, a min and a max value of that range must be found.
-        NSSortDescriptor * highestToLowest = [NSSortDescriptor sortDescriptorWithKey:@"self"
-                                                                           ascending:NO];
-        [rssiValues sortUsingDescriptors:[NSArray arrayWithObject:highestToLowest]];
-        NSLog(@"[LMR][INFO] Sorted beacon measures: %@", rssiValues);
-        NSLog(@"[LMR][INFO] There are %tu measures before filter.", rssiValues.count);
-        // Once sorted, the max and min values are removed until the cumulative
-        // probability is less than 0.6; at that point, the valid solution is the
-        // previous one, greater than 0.6.
-        NSNumber * maxRSSI;
-        NSNumber * minRSSI;
-        NSInteger iter = rssiValues.count;
-        for (int i = 1; i < iter; i++) {
-            NSNumber * auxMaxRSSI = [rssiValues lastObject];
-            NSNumber * auxMinRSSI = [rssiValues objectAtIndex:0];
-            
-            NSNumber * cumulativeMinRSSI = [self gaussianFilterFunctionOf:auxMinRSSI
-                                                                 withMean:meanValue
-                                                              andVariance:variance];
-            NSNumber * cumulativeMaxRSSI = [self gaussianFilterFunctionOf:auxMaxRSSI
-                                                                 withMean:meanValue
-                                                              andVariance:variance];
-            NSNumber * cumulativeDiffValue = [NSNumber numberWithFloat:
-                                              [cumulativeMaxRSSI floatValue] -
-                                              [cumulativeMinRSSI floatValue]
-                                              ];
-            if ([cumulativeDiffValue floatValue] < gaussThreshold) {
-                NSLog(@"[LMR][INFO] Range found");
-                NSLog(@"[LMR][INFO] The next cumulative probability integred was %.2f",
-                      [cumulativeDiffValue floatValue]);
-                break;
-            } else {
-                NSLog(@"[LMR][INFO] The cumulative probability integred is %.2f",
-                      [cumulativeDiffValue floatValue]);
-                [rssiValues removeObjectAtIndex:0];
-                [rssiValues removeLastObject];
-                maxRSSI = auxMaxRSSI;
-                minRSSI = auxMinRSSI;
-            }
-        }
-        NSLog(@"[LMR][INFO] There are %tu measures left after filter.", rssiValues.count);
         
-        // Calculate new mean with the measures left and save it as refRSSI
-        acc = nil; //ARC dispose
-        acc = [NSNumber numberWithFloat:0.0];
-        for (NSNumber * rssiValue in rssiValues) {
+        // Filter the values using a gaussian filter
+        NSMutableArray * filteredRSSIValues = [self gaussianFilterOfMeasures:rssiValues];
+        
+        // Calculate mean with the measures left and save it as refRSSI
+        NSNumber * acc = [NSNumber numberWithFloat:0.0];
+        for (NSNumber * rssiValue in filteredRSSIValues) {
             acc = [NSNumber numberWithFloat:[acc floatValue] + [rssiValue floatValue]];
         }
-        NSNumber * newRefRSSI = [NSNumber numberWithFloat:[acc floatValue]/rssiValues.count];
+        NSNumber * newRefRSSI = [NSNumber numberWithFloat:
+                                 [acc floatValue]/filteredRSSIValues.count
+                                 ];
         itemToCalibrate[@"refRSSI"] = newRefRSSI;
     
         // Decide weather the calibration is finished or not
         return YES;
     }
+}
+
+/*!
+@method gaussianFilterOfMeasures:
+@discussion This method filters the measured values using a gaussian filter.
+*/
+- (NSMutableArray *)gaussianFilterOfMeasures:(NSMutableArray *)rssiValues
+{
+    // Mean value
+    NSNumber * acc = [NSNumber numberWithFloat:0.0];
+    for (NSNumber * rssiValue in rssiValues) {
+        acc = [NSNumber numberWithFloat:[acc floatValue] + [rssiValue floatValue]];
+    }
+    NSNumber * meanValue = [NSNumber numberWithFloat:[acc floatValue]/rssiValues.count];
+    
+    // Variance
+    acc = nil; //ARC dispose
+    acc = [NSNumber numberWithFloat:0.0];
+    for (NSNumber * rssiValue in rssiValues) {
+        NSNumber * distance = [NSNumber numberWithFloat:
+                               ([rssiValue floatValue] - [meanValue floatValue]) *
+                               ([rssiValue floatValue] - [meanValue floatValue])
+                               ];
+        acc = [NSNumber numberWithFloat:[acc floatValue] + [distance floatValue]];
+    }
+    NSNumber * variance = [NSNumber numberWithFloat:
+                           [acc floatValue]/(rssiValues.count - 1)
+                           ];
+    
+    // Evaluate effective range in which measures sum the 0.6 of probability.
+    // For that, a min and a max value of that range must be found.
+    NSSortDescriptor * highestToLowest = [NSSortDescriptor sortDescriptorWithKey:@"self"
+                                                                       ascending:NO];
+    [rssiValues sortUsingDescriptors:[NSArray arrayWithObject:highestToLowest]];
+    NSLog(@"[LMR][INFO] Sorted beacon measures: %@", rssiValues);
+    NSLog(@"[LMR][INFO] There are %tu measures before filter.", rssiValues.count);
+    
+    // Once sorted, the max and min values are removed until the cumulative
+    // probability is less than 0.6; at that point, the valid solution is the
+    // previous one, greater than 0.6.
+    NSNumber * maxRSSI;
+    NSNumber * minRSSI;
+    NSInteger iter = rssiValues.count;
+    for (int i = 1; i < iter; i++) {
+        NSNumber * auxMaxRSSI = [rssiValues lastObject];
+        NSNumber * auxMinRSSI = [rssiValues objectAtIndex:0];
+        
+        NSNumber * cumulativeMinRSSI = [self gaussianFilterFunctionOf:auxMinRSSI
+                                                             withMean:meanValue
+                                                          andVariance:variance];
+        NSNumber * cumulativeMaxRSSI = [self gaussianFilterFunctionOf:auxMaxRSSI
+                                                             withMean:meanValue
+                                                          andVariance:variance];
+        NSNumber * cumulativeDiffValue = [NSNumber numberWithFloat:
+                                          [cumulativeMaxRSSI floatValue] -
+                                          [cumulativeMinRSSI floatValue]
+                                          ];
+        if ([cumulativeDiffValue floatValue] < gaussThreshold) {
+            NSLog(@"[LMR][INFO] Range found");
+            NSLog(@"[LMR][INFO] The next cumulative probability integred was %.2f",
+                  [cumulativeDiffValue floatValue]);
+            break;
+        } else {
+            NSLog(@"[LMR][INFO] The cumulative probability integred is %.2f",
+                  [cumulativeDiffValue floatValue]);
+            [rssiValues removeObjectAtIndex:0];
+            [rssiValues removeLastObject];
+            maxRSSI = auxMaxRSSI;
+            minRSSI = auxMinRSSI;
+        }
+    }
+    NSLog(@"[LMR][INFO] There are %tu measures left after filter.", rssiValues.count);
+    return rssiValues;
 }
 
 /*!
