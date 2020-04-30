@@ -1203,4 +1203,128 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     }
 }
 
+#pragma mark - UItableView swipe cells methods
+/*!
+ @method tableView:canEditRowAtIndexPath:
+ @discussion This method sets every cell as editable.
+ */
+- (BOOL)tableView:(UITableView *)tableView
+canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.tableModes) { // No actions here
+        
+        return NO;
+        
+    }
+    if (tableView == self.tableItems) {
+        
+        // Select the source of items; both items are models shown
+        NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+        NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
+        
+        // Load the item depending of the source
+        NSMutableDictionary * itemDic = nil;
+        if (indexPath.row < itemsCount) {
+            itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                       objectAtIndex:indexPath.row
+                       ];
+        }
+        if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
+            itemDic = [
+                       [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
+                       objectAtIndex:indexPath.row - itemsCount
+                       ];
+        }
+        if (indexPath.row >= itemsCount + modelCount) {
+            // Empty cell; no actions
+            return NO;
+        }
+        
+        // Get its sort.
+        // Can be null if credentials are not allowed.
+        if (itemDic) {
+            
+            // If it is a beacon
+            if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
+                return YES;                
+            } else {
+                return NO;
+            }
+            
+        }
+        
+    }
+    return NO;
+}
+
+/*!
+@method tableView:canEditRowAtIndexPath:
+@discussion This method defines the actions avalible when user swipe a cell.
+*/
+- (UISwipeActionsConfiguration *)tableView:(UITableView *)tableView
+trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.tableModes) { // No actions here
+        
+        return nil;
+        
+    }
+    if (tableView == self.tableItems) {
+        
+        // Select the source of items; both items are models shown
+        NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+        NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
+        
+        // Load the item depending of the source
+        NSMutableDictionary * itemDic = nil;
+        if (indexPath.row < itemsCount) {
+            itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                       objectAtIndex:indexPath.row
+                       ];
+        }
+        if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
+            itemDic = [
+                       [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
+                       objectAtIndex:indexPath.row - itemsCount
+                       ];
+        }
+        if (indexPath.row >= itemsCount + modelCount) {
+            // Empty cell; no actions
+            return nil;
+        }
+        
+        // Get its sort.
+        // Can be null if credentials are not allowed.
+        if (itemDic) {
+            
+            // If it is a beacon
+            if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
+                
+                // Definition of the handler to be set in the action.
+                void (^handler)(UIContextualAction*, UIView*, void(^)(BOOL)) = ^(UIContextualAction *action, UIView *source, void(^completionHandler)(BOOL)) {
+                    
+                    NSLog(@"Handleler block at: %@", indexPath);
+                    
+                    completionHandler(YES);
+                };
+                
+                // Init the action with the handler.
+                UIContextualAction * calibrateAction = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal
+                                                                                               title:@"⚙️"
+                                                                                             handler:handler];
+                [calibrateAction setBackgroundColor:[UIColor whiteColor]];
+                UISwipeActionsConfiguration * swipeActionsConfiguration = [UISwipeActionsConfiguration configurationWithActions:@[calibrateAction]];
+                [swipeActionsConfiguration setPerformsFirstActionWithFullSwipe:NO];
+                return swipeActionsConfiguration;
+                
+            } else {
+                return nil;
+            }
+            
+        }
+        
+    }
+    return nil;
+}
+
 @end
