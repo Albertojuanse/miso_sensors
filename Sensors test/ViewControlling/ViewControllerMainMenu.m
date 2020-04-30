@@ -1006,22 +1006,8 @@
             )
         {
         
-            // Select the source of items; both items and models are shown
-            NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
-            NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
-            
-            // Load the item depending of the source
-            NSMutableDictionary * itemDic = nil;
-            if (indexPath.row < itemsCount) {
-                itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
-                           objectAtIndex:indexPath.row];
-            }
-            if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
-                itemDic = [
-                           [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
-                           objectAtIndex:indexPath.row - itemsCount
-                           ];
-            }
+            NSMutableDictionary * itemDic = [self fromSharedDataGetItemWithIndexPath:indexPath
+                                                                        inTableItems:tableView];
             
             // The itemDic variable can be null or NO if access is not granted or there are not items stored.
             if (itemDic) {
@@ -1161,23 +1147,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
         
-        // Select the source of items; both items are models shown
-        NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
-        NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
-        
-        // Load the item depending of the source
-        NSMutableDictionary * itemChosenByUser = nil;
-        if (indexPath.row < itemsCount) {
-            itemChosenByUser = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
-                                objectAtIndex:indexPath.row
-                                ];
-        }
-        if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
-            itemChosenByUser = [
-                       [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
-                                objectAtIndex:indexPath.row - itemsCount
-                                ];
-        }
+        NSMutableDictionary * itemChosenByUser = [self fromSharedDataGetItemWithIndexPath:indexPath
+                                                                             inTableItems:tableView];
         
         // Update
         // Can be null if credentials are not allowed.
@@ -1218,27 +1189,8 @@ canEditRowAtIndexPath:(NSIndexPath *)indexPath
     }
     if (tableView == self.tableItems) {
         
-        // Select the source of items; both items are models shown
-        NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
-        NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
-        
-        // Load the item depending of the source
-        NSMutableDictionary * itemDic = nil;
-        if (indexPath.row < itemsCount) {
-            itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
-                       objectAtIndex:indexPath.row
-                       ];
-        }
-        if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
-            itemDic = [
-                       [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
-                       objectAtIndex:indexPath.row - itemsCount
-                       ];
-        }
-        if (indexPath.row >= itemsCount + modelCount) {
-            // Empty cell; no actions
-            return NO;
-        }
+        NSMutableDictionary * itemDic = [self fromSharedDataGetItemWithIndexPath:indexPath
+                                                                    inTableItems:tableView];
         
         // Get its sort.
         // Can be null if credentials are not allowed.
@@ -1246,11 +1198,13 @@ canEditRowAtIndexPath:(NSIndexPath *)indexPath
             
             // If it is a beacon
             if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
-                return YES;                
+                return YES;
             } else {
                 return NO;
             }
             
+        } else {
+            return NO;
         }
         
     }
@@ -1271,27 +1225,8 @@ trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
     }
     if (tableView == self.tableItems) {
         
-        // Select the source of items; both items are models shown
-        NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
-        NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
-        
-        // Load the item depending of the source
-        NSMutableDictionary * itemDic = nil;
-        if (indexPath.row < itemsCount) {
-            itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
-                       objectAtIndex:indexPath.row
-                       ];
-        }
-        if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
-            itemDic = [
-                       [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
-                       objectAtIndex:indexPath.row - itemsCount
-                       ];
-        }
-        if (indexPath.row >= itemsCount + modelCount) {
-            // Empty cell; no actions
-            return nil;
-        }
+        NSMutableDictionary * itemDic = [self fromSharedDataGetItemWithIndexPath:indexPath
+                                                                    inTableItems:tableView];
         
         // Get its sort.
         // Can be null if credentials are not allowed.
@@ -1303,9 +1238,23 @@ trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
                 // Definition of the handler to be set in the action.
                 void (^handler)(UIContextualAction*, UIView*, void(^)(BOOL)) = ^(UIContextualAction *action, UIView *source, void(^completionHandler)(BOOL)) {
                     
-                    NSLog(@"Handleler block at: %@", indexPath);
                     
-                    completionHandler(YES);
+                    
+                    // Can be null if credentials are not allowed.
+                    NSString * itemUUID;
+                    if (itemDic) {
+                        
+                        // If it is a beacon
+                        if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
+                            itemUUID = itemDic[@"itemUUID"];
+                            NSLog(@"[INFO][VCMM] User asked to edit settings of beacon %@.", itemUUID);
+                            completionHandler(YES);
+                        } else {
+                            NSLog(@"[ERROR][VCMM] User asked to edit settings of an item of sort %@.", itemDic[@"sort"]);
+                            completionHandler(NO);
+                        }
+                        
+                    }
                 };
                 
                 // Init the action with the handler.
@@ -1321,10 +1270,43 @@ trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
                 return nil;
             }
             
+        } else {
+            return nil;
         }
         
     }
     return nil;
 }
 
+#pragma mark - Other methods
+/*!
+@method tableView:fromSharedDataGetItemWithIndexPath:inTableItems;
+@discussion This method returns the item asked or selected by user in the item's table view.
+*/
+- (NSMutableDictionary *)fromSharedDataGetItemWithIndexPath:(NSIndexPath *)indexPath
+                                               inTableItems:(UITableView *)tableView
+{
+    // Select the source of items; both items are models shown
+    NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+    NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
+    
+    // Load the item depending of the source
+    NSMutableDictionary * itemDic = nil;
+    if (indexPath.row < itemsCount) {
+        itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                   objectAtIndex:indexPath.row
+                   ];
+    }
+    if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
+        itemDic = [
+                   [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
+                   objectAtIndex:indexPath.row - itemsCount
+                   ];
+    }
+    if (indexPath.row >= itemsCount + modelCount) {
+        // Empty cell
+    }
+    
+    return itemDic;
+}
 @end
