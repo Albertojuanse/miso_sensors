@@ -63,8 +63,12 @@
         
         // This object must listen to this events
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(start:)
-                                                     name:@"lmdCalibrating/start"
+                                                 selector:@selector(startFirstStep:)
+                                                     name:@"lmdCalibrating/startFirstStep"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(startSecondStep:)
+                                                     name:@"lmdCalibrating/startSecondStep"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(stop:)
@@ -268,23 +272,28 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     }
     
     if (beacons.count > 0) {
+        
+        // Different behave depending on the current state
+        if ([sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic
+                                            andCredentialsUserDic:credentialsUserDic]) {
                     
-        for (CLBeacon *beacon in beacons) {
-            // ...get its information...
-            NSString * uuid = [[beacon proximityUUID] UUIDString];
-            NSLog(@"[INFO][LMC] Beacon ranged %@.", uuid);
-            
-            // ...and compose a measure with them.
-            [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithFloat:0.0]
-                                          ofSort:@"calibrationAtRefDistance"
-                                    withItemUUID:uuid
-                                  withDeviceUUID:deviceUUID
-                                      atPosition:nil
-                                  takenByUserDic:userDic
-                       andWithCredentialsUserDic:credentialsUserDic];
+            for (CLBeacon *beacon in beacons) {
+                // ...get its information...
+                NSString * uuid = [[beacon proximityUUID] UUIDString];
+                NSLog(@"[INFO][LMC] Beacon ranged %@.", uuid);
+                
+                // ...and compose a measure with them.
+                [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithFloat:0.0]
+                                              ofSort:mesureSortDescription
+                                        withItemUUID:uuid
+                                      withDeviceUUID:deviceUUID
+                                          atPosition:nil
+                                      takenByUserDic:userDic
+                           andWithCredentialsUserDic:credentialsUserDic];
+            }
+            NSLog(@"[INFO][LMC] Generated measures:");
+            NSLog(@"[INFO][LMC]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
         }
-        NSLog(@"[INFO][LMC] Generated measures:");
-        NSLog(@"[INFO][LMC]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
         
     }
     
@@ -300,13 +309,15 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 
 #pragma mark - Notification event handles
 /*!
- @method start:
+ @method startFirstStep:
  @discussion This method configures the location manager and registers all items that must be located.
  */
-- (void) start:(NSNotification *) notification
+- (void) startFirstStep:(NSNotification *) notification
 {
     if ([[notification name] isEqualToString:@"lmdCalibrating/start"]){
         NSLog(@"[NOTI][LMC] Notification \"lmdCalibrating/start\" recived.");
+        
+        mesureSortDescription = @"calibrationAtRefDistance";
         
         NSDictionary * data = notification.userInfo;
         calibrationUUID = data[@"calibrationUUID"];
@@ -340,9 +351,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             // Delete registered regions and heading updates
             [self stopRoutine];
             // Notify menu that calibration is finished.
-            NSLog(@"[NOTI][LMC] Notification \"calibration/finished\" posted.");
+            NSLog(@"[NOTI][LMC] Notification \"calibration/finishedRefCalibrationWithErrors\" posted.");
             [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"calibration/finished"
+             postNotificationName:@"calibration/finishedRefCalibrationWithErrors"
              object:nil];
             return;
         }
@@ -407,6 +418,20 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             [self stopRoutine];
             return;
         }
+    }
+}
+
+/*!
+ @method startSecondStep:
+ @discussion This method changes the measure description.
+ */
+- (void) startSecondStep:(NSNotification *) notification
+{
+    if ([[notification name] isEqualToString:@"lmdCalibrating/start"]){
+        NSLog(@"[NOTI][LMC] Notification \"lmdCalibrating/start\" recived.");
+        
+        mesureSortDescription = @"calibrationAtOtherDistance";
+        
     }
 }
 

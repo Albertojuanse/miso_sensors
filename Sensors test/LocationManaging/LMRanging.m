@@ -220,9 +220,9 @@
     BOOL calibrationFinished = [self calibrateRefRSSIWithCLBeacons:beacons];
     if (calibrationFinished) {
         // Notify menu view that calibration is finished.
-        NSLog(@"[NOTI][LMR] Notification \"calibration/finishedRefCalibration\" posted.");
+        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/firstStepFinished\" posted.");
         [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"calibration/finishedRefCalibration"
+         postNotificationName:@"vcMainMenu/firstStepFinished"
          object:nil];
     }
     
@@ -270,9 +270,9 @@
     BOOL calibrationFinished = [self calibrateAttenuationFactorWithCLBeacons:beacons];
     if (calibrationFinished) {
         // Notify menu view that calibration is finished.
-        NSLog(@"[NOTI][LMR] Notification \"calibration/finishedAttenuationFactorCalibration\" posted.");
+        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/secondStepFinished\" posted.");
         [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"calibration/finishedAttenuationFactorCalibration"
+         postNotificationName:@"vcMainMenu/secondStepFinished"
          object:nil];
     }
     
@@ -647,10 +647,10 @@
                                  nil];
     NSMutableDictionary * locatedPositions;
     if ([mode isModeKey:kModeRhoThetaModelling]) {
-        locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithPrecisions:precisions];
+        //locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithPrecisions:precisions];
     }
     else if ([mode isModeKey:kModeRhoThetaModelling]) {
-        locatedPositions = [rhoThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
+        //locatedPositions = [rhoThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
     }
 
     if (locatedPositions) {

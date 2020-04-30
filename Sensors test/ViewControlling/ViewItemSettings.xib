@@ -88,6 +88,9 @@
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HvK-xY-yhN">
                         <rect key="frame" x="129" y="235.5" width="62" height="30"/>
                         <state key="normal" title="Calibrate"/>
+                        <connections>
+                            <action selector="handleButtonCalibrate:" destination="gKY-u1-yMm" eventType="touchUpInside" id="IVw-hQ-ikh"/>
+                        </connections>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(null)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kDk-RZ-l7p">
                         <rect key="frame" x="73" y="96" width="231" height="21"/>
@@ -149,6 +152,9 @@
                             <constraint firstAttribute="width" constant="52" id="piU-Av-4Sl"/>
                         </constraints>
                         <state key="normal" title="Second"/>
+                        <connections>
+                            <action selector="handleButtonSecond:" destination="gKY-u1-yMm" eventType="touchUpInside" id="Hqj-ov-mbx"/>
+                        </connections>
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TbA-Ds-weM">
                         <rect key="frame" x="158" y="446" width="30" height="30"/>
@@ -156,6 +162,9 @@
                             <constraint firstAttribute="width" constant="30" id="L0b-uW-FFt"/>
                         </constraints>
                         <state key="normal" title="First"/>
+                        <connections>
+                            <action selector="handleButtonFirst:" destination="gKY-u1-yMm" eventType="touchUpInside" id="7po-4r-XFc"/>
+                        </connections>
                     </button>
                 </subviews>
                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>

@@ -44,7 +44,7 @@
                                          ]
                                forState:UIControlStateNormal];
     [self.calibrateButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                        green:[layoutDic[@"navbar/green"] floatValue]/255.0
                                                          blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
                                                         alpha:0.3
                                     ]
@@ -76,6 +76,9 @@
                                       ]
                             forState:UIControlStateDisabled];
     [self.secondButton setEnabled:NO];
+    
+    // Variables
+    calibrating = NO;
 }
 
 /*!
@@ -120,6 +123,24 @@
     } else {
         NSLog(@"[ERROR][VCIS] View will appear without itemChosenByUser variable.");
     }
+    
+    // This object must listen to this events
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(firstStepFinished:)
+                                                 name:@"vcItemSettings/firstStepFinished"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(firstStepFinishedWithErrors:)
+                                                 name:@"vcItemSettings/firstStepFinishedWithErrors"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(secondStepFinished:)
+                                                 name:@"vcItemSettings/secondStepFinished"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(secondStepFinishedWithErrors:)
+                                                 name:@"vcItemSettings/secondStepFinishedWithErrors"
+                                               object:nil];
 }
 
 /*!
@@ -187,8 +208,120 @@
     itemChosenByUser = givenItemChosenByUser;
 }
 
-#pragma mark - Buttons event handlers
+/*!
+ @method setDeviceUUID:
+ @discussion This method sets the NSString variable 'deviceUUID'.
+ */
+- (void) setDeviceUUID:(NSString *)givenDeviceUUID
+{
+    deviceUUID = givenDeviceUUID;
+}
 
+#pragma mark - Notification event handles
+/*!
+ @method firstStepFinished:
+ @discussion This method handles the event that notifies that the first calibration step is done.
+ */
+- (void)firstStepFinished:(NSNotification *)notification {
+    if ([[notification name] isEqualToString:@"vcItemSettings/firstStepFinished"]){
+        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/firstStepFinished\" recived.");
+        
+        // Orchestrate and set user idle
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                              andWithCredentialsUserDic:credentialsUserDic];
+        
+        // Layout
+        [self.secondButton setEnabled:YES];
+    }
+}
+
+/*!
+ @method firstStepFinishedWithErrors:
+ @discussion This method handles the event that notifies that the first calibration step failed.
+ */
+- (void)firstStepFinishedWithErrors:(NSNotification *)notification {
+    if ([[notification name] isEqualToString:@"vcItemSettings/firstStepFinishedWithErrors"]){
+        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/firstStepFinishedWithErrors\" recived.");
+        
+        // Orchestrate and set user idle
+        calibrating = NO;
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                              andWithCredentialsUserDic:credentialsUserDic];
+        
+        // Alert the user
+        [self alertUserWithTitle:@"Calibration error"
+                         message:@"Calibration process failed in its first step due an unknown error. Please, try again."
+                      andHandler:^(UIAlertAction * action) {
+                          // Do nothing
+                      }];
+        
+        // Deallocate location manager; ARC disposal.
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
+                                                            object:nil];
+        NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+        location = nil;
+        
+        // Layout
+        [self.calibrateButton setEnabled:YES];
+    }
+}
+
+/*!
+ @method secondStepFinished:
+ @discussion This method handles the event that notifies that the second calibration step is done.
+ */
+- (void)secondStepFinished:(NSNotification *)notification {
+    if ([[notification name] isEqualToString:@"vcItemSettings/secondStepFinished"]){
+        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/secondStepFinished\" recived.");
+        
+        // Orchestrate and set user idle
+        calibrating = NO;
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                              andWithCredentialsUserDic:credentialsUserDic];
+        
+        // Deallocate location manager; ARC disposal.
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
+                                                            object:nil];
+        NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+        location = nil;
+        
+        // Layout
+        [self.calibrateButton setEnabled:YES];
+    }
+}
+
+/*!
+ @method secondStepFinishedWithErrors:
+ @discussion This method handles the event that notifies that the second calibration step failed.
+ */
+- (void)secondStepFinishedWithErrors:(NSNotification *)notification {
+    if ([[notification name] isEqualToString:@"vcItemSettings/secondStepFinishedWithErrors"]){
+        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/secondStepFinishedWithErrors\" recived.");
+        
+        // Orchestrate and set user idle
+        calibrating = NO;
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                              andWithCredentialsUserDic:credentialsUserDic];
+        
+        // Alert the user
+        [self alertUserWithTitle:@"Calibration error"
+                         message:@"Calibration process failed in its second step due an unknown error. Please, try again."
+                      andHandler:^(UIAlertAction * action) {
+                          // Do nothing
+                      }];
+        
+        // Deallocate location manager; ARC disposal.
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
+                                                            object:nil];
+        NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+        location = nil;
+        
+        // Layout
+        [self.calibrateButton setEnabled:YES];
+    }
+}
+
+#pragma mark - Buttons event handlers
 /*!
  @method handleButtonCancel:
  @discussion This method handles the 'cancel' button action and segues back.
@@ -196,6 +329,7 @@
 - (IBAction)handleButtonCancel:(id)sender
 {
     // Dismiss the popover view
+    // TODO: Notify cancel event to location manager. Alberto J. 2020/04/30.
     [self dismissViewControllerAnimated:YES completion:Nil];
 }
 
@@ -206,7 +340,74 @@
 - (IBAction)handleButtonEdit:(id)sender
 {
     // Dismiss the popover view
+    // TODO: Notify cancel event to location manager if process is not finished. Alberto J. 2020/04/30.
     [self dismissViewControllerAnimated:YES completion:Nil];
+}
+
+/*!
+@method handleButtonCalibrate:
+@discussion This method handles the 'calibrate' button action, instantiating the location manager and enabling the process.
+*/
+- (IBAction)handleButtonCalibrate:(id)sender
+{
+    // Layout
+    [self.calibrateButton setEnabled:NO];
+    [self.firstButton setEnabled:YES];
+    
+    // Components
+    location = [[LMDelegateCalibrating alloc] initWithSharedData:sharedData
+                                                         userDic:userDic
+                                                      deviceUUID:deviceUUID
+                                           andCredentialsUserDic:credentialsUserDic];
+    
+    // Variables
+    calibrating = YES;
+}
+
+/*!
+@method handleButtonFirst:
+@discussion This method handles the 'first' button action, handleling the first step of calibration pocess.
+*/
+- (IBAction)handleButtonFirst:(id)sender
+{
+    // Orchestrate and set user measuring
+    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                          andWithCredentialsUserDic:credentialsUserDic];
+    
+    // Layout
+    [self.firstButton setEnabled:NO];
+    
+    // Ask Location manager to calibrate the beacon
+    NSMutableDictionary * data = [[NSMutableDictionary alloc] init];
+    // Create a copy of the current position for sending it; concurrence issues prevented
+    NSString * uuidToCalibrate = itemChosenByUser[@"uuid"];
+    [data setObject:uuidToCalibrate forKey:@"calibrationUUID"];
+    // And send the notification
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/startFirstStep"
+                                                        object:nil
+                                                      userInfo:data];
+    NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/startFirstStep\" posted.");
+    
+}
+
+/*!
+@method handleButtonSecond:
+@discussion This method handles the 'second' button action, handleling the second step of calibration pocess.
+*/
+- (IBAction)handleButtonSecond:(id)sender
+{
+    // Orchestrate and set user measuring
+    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                          andWithCredentialsUserDic:credentialsUserDic];
+    
+    // Layout
+    [self.secondButton setEnabled:NO];
+    
+    // Notify to location manager
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/startSecondStep"
+                                                        object:nil];
+    NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/startSecondStep\" posted.");
+    
 }
 
 /*!

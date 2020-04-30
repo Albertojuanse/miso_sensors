@@ -513,8 +513,26 @@
     itemPositionIdNumber = givenItemPositionIdNumber;
 }
 
-#pragma mark - Butons event handle
+#pragma mark - Notification event handles
+/*!
+ @method calibrationFinished
+ @discussion This method handles the event that notifies that the calibration is done; sets the calibration button enabled.
+ */
+- (void)calibrationFinished:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"vcMainMenu/calibrationFinished"]){
+        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/calibrationFinished\" recived.");
+        
+        // Deallocate location manager; ARC disposal.
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
+                                                            object:nil];
+        NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+        locationCalibrating = nil;
+        
+        [self.calibrateButton setEnabled:YES];
+    }
+}
 
+#pragma mark - Butons event handle
 /*!
  @method handleButtonSingOut:
  @discussion This method handles the 'sing out' button action and ask Login View to delete user; 'prepareForSegue:sender:' method is called before.
@@ -615,24 +633,6 @@
         
     } else {
         // TODO: handle intrusion situations. Alberto J. 2019/09/10.
-    }
-}
-
-/*!
- @method calibrationFinished
- @discussion This method handles the event that notifies that the calibration is done; sets the calibration button enabled.
- */
-- (void)calibrationFinished:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"vcMainMenu/calibrationFinished"]){
-        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/calibrationFinished\" recived.");
-        
-        // Deallocate location manager; ARC disposal.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
-                                                            object:nil];
-        NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
-        locationCalibrating = nil;
-        
-        [self.calibrateButton setEnabled:YES];
     }
 }
 
@@ -1250,6 +1250,7 @@ trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
                             [viewControllerItemSettings setItemBeaconIdNumber:itemBeaconIdNumber];
                             [viewControllerItemSettings setItemPositionIdNumber:itemPositionIdNumber];
                             [viewControllerItemSettings setItemChosenByUser:itemDic];
+                            [viewControllerItemSettings setDeviceUUID:deviceUUID];
                             // Configure popover layout
                             UIPopoverPresentationController * popoverItemSettings =  viewControllerItemSettings.popoverPresentationController;
                             [popoverItemSettings setDelegate:viewControllerItemSettings];

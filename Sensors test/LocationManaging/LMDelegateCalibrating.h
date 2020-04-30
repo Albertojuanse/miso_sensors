@@ -33,6 +33,7 @@
     // Variables
     NSMutableDictionary * itemToCalibrate;
     NSString * calibrationUUID;
+    NSString * mesureSortDescription;
     
     // Data store
     NSMutableArray * monitoredRegions;
@@ -47,6 +48,5 @@
 - (void)setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void)setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void)setDeviceUUID:(NSString *)givenDeviceUUID;
-- (void)setPosition:(RDPosition *)givenPosition;
 
 @end
