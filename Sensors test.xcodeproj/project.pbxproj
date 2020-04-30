@@ -11,6 +11,8 @@
 		421550F223D9BA5500945294 /* ViewControllerConfigurationModes.m in Sources */ = {isa = PBXBuildFile; fileRef = 421550F123D9BA5500945294 /* ViewControllerConfigurationModes.m */; };
 		421550F823D9F3AB00945294 /* VCToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 421550F723D9F3AB00945294 /* VCToolbar.m */; };
 		421550FA23DA0D8700945294 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 421550F923DA0D8600945294 /* icon.png */; };
+		421E741A245AE76600AC8FC8 /* ViewItemSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 421E7419245AE76600AC8FC8 /* ViewItemSettings.xib */; };
+		421E741D245AE79C00AC8FC8 /* ViewControllerItemSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 421E741C245AE79C00AC8FC8 /* ViewControllerItemSettings.m */; };
 		421FCEB922CF5C8E00C62E5E /* miso.png in Resources */ = {isa = PBXBuildFile; fileRef = 421FCEB822CF5C8E00C62E5E /* miso.png */; };
 		42263BB224475B2800161AB2 /* PListLocating.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42263BB124475B2800161AB2 /* PListLocating.plist */; };
 		42263BB52447668800161AB2 /* LMDelegateCalibrating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42263BB42447668800161AB2 /* LMDelegateCalibrating.m */; };
@@ -26,7 +28,7 @@
 		4227989B2271F60700E07C39 /* MotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227989A2271F60700E07C39 /* MotionManager.m */; };
 		42300BDB2330E03000E2385F /* VCComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = 42300BDA2330E03000E2385F /* VCComponent.m */; };
 		42364B27236AE0BA00C387E5 /* MDReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 42364B26236AE0BA00C387E5 /* MDReference.m */; };
-		423CE15724226CC100C24DF8 /* ViewControllerEditComponent.xib in Resources */ = {isa = PBXBuildFile; fileRef = 423CE15624226CC100C24DF8 /* ViewControllerEditComponent.xib */; };
+		423CE15724226CC100C24DF8 /* ViewEditComponent.xib in Resources */ = {isa = PBXBuildFile; fileRef = 423CE15624226CC100C24DF8 /* ViewEditComponent.xib */; };
 		4240729723E9761700B2C696 /* ViewControllerConfigurationTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 4240729623E9761700B2C696 /* ViewControllerConfigurationTypes.m */; };
 		4240729A23E9764300B2C696 /* ViewControllerConfigurationBeacons.m in Sources */ = {isa = PBXBuildFile; fileRef = 4240729923E9764300B2C696 /* ViewControllerConfigurationBeacons.m */; };
 		4240729D23E9D6C100B2C696 /* MDAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 4240729C23E9D6C100B2C696 /* MDAttribute.m */; };
@@ -86,6 +88,9 @@
 		421550F623D9F39900945294 /* VCToolbar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCToolbar.h; sourceTree = "<group>"; };
 		421550F723D9F3AB00945294 /* VCToolbar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCToolbar.m; sourceTree = "<group>"; };
 		421550F923DA0D8600945294 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		421E7419245AE76600AC8FC8 /* ViewItemSettings.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewItemSettings.xib; sourceTree = "<group>"; };
+		421E741B245AE78100AC8FC8 /* ViewControllerItemSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerItemSettings.h; sourceTree = "<group>"; };
+		421E741C245AE79C00AC8FC8 /* ViewControllerItemSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerItemSettings.m; sourceTree = "<group>"; };
 		421FCEB822CF5C8E00C62E5E /* miso.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = miso.png; sourceTree = "<group>"; };
 		42263BB124475B2800161AB2 /* PListLocating.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PListLocating.plist; sourceTree = "<group>"; };
 		42263BB32447667C00161AB2 /* LMDelegateCalibrating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateCalibrating.h; sourceTree = "<group>"; };
@@ -112,7 +117,7 @@
 		42300BDA2330E03000E2385F /* VCComponent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCComponent.m; sourceTree = "<group>"; };
 		42364B25236AE09D00C387E5 /* MDReference.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDReference.h; sourceTree = "<group>"; };
 		42364B26236AE0BA00C387E5 /* MDReference.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDReference.m; sourceTree = "<group>"; };
-		423CE15624226CC100C24DF8 /* ViewControllerEditComponent.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewControllerEditComponent.xib; sourceTree = "<group>"; };
+		423CE15624226CC100C24DF8 /* ViewEditComponent.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewEditComponent.xib; sourceTree = "<group>"; };
 		4240729523E975D300B2C696 /* ViewControllerConfigurationTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerConfigurationTypes.h; sourceTree = "<group>"; };
 		4240729623E9761700B2C696 /* ViewControllerConfigurationTypes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerConfigurationTypes.m; sourceTree = "<group>"; };
 		4240729823E9762900B2C696 /* ViewControllerConfigurationBeacons.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerConfigurationBeacons.h; sourceTree = "<group>"; };
@@ -316,9 +321,12 @@
 				4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */,
 				428AF6BE22D7912400BE5374 /* ViewControllerSelectPositions.h */,
 				428AF6BF22D7915000BE5374 /* ViewControllerSelectPositions.m */,
-				423CE15624226CC100C24DF8 /* ViewControllerEditComponent.xib */,
+				423CE15624226CC100C24DF8 /* ViewEditComponent.xib */,
 				426AE1FD242162FA00E01D9F /* ViewControllerEditComponent.h */,
 				426AE1FE2421630F00E01D9F /* ViewControllerEditComponent.m */,
+				421E7419245AE76600AC8FC8 /* ViewItemSettings.xib */,
+				421E741B245AE78100AC8FC8 /* ViewControllerItemSettings.h */,
+				421E741C245AE79C00AC8FC8 /* ViewControllerItemSettings.m */,
 				429093DE23AA4B1E000CEA6E /* ViewControllerMonitoring.h */,
 				429093DF23AA4B3C000CEA6E /* ViewControllerMonitoring.m */,
 				422798862271F37800E07C39 /* ViewControllerRhoRhoModeling.h */,
@@ -495,8 +503,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				421E741A245AE76600AC8FC8 /* ViewItemSettings.xib in Resources */,
 				422798902271F37800E07C39 /* LaunchScreen.storyboard in Resources */,
-				423CE15724226CC100C24DF8 /* ViewControllerEditComponent.xib in Resources */,
+				423CE15724226CC100C24DF8 /* ViewEditComponent.xib in Resources */,
 				42263BB224475B2800161AB2 /* PListLocating.plist in Resources */,
 				421550EF23D9B67F00945294 /* PListLayout.plist in Resources */,
 				427828C123E322F8005D19B3 /* type.png in Resources */,
@@ -555,6 +564,7 @@
 				42300BDB2330E03000E2385F /* VCComponent.m in Sources */,
 				421550F223D9BA5500945294 /* ViewControllerConfigurationModes.m in Sources */,
 				429093E023AA4B3C000CEA6E /* ViewControllerMonitoring.m in Sources */,
+				421E741D245AE79C00AC8FC8 /* ViewControllerItemSettings.m in Sources */,
 				42263BB52447668800161AB2 /* LMDelegateCalibrating.m in Sources */,
 				426501C422A03B5200BE20B7 /* RDRhoRhoSystem.m in Sources */,
 				42263BBB2447A81E00161AB2 /* LMDelegateHeading.m in Sources */,

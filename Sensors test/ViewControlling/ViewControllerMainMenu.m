@@ -1246,7 +1246,7 @@ trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
                         
                         // If it is a beacon
                         if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
-                            itemUUID = itemDic[@"itemUUID"];
+                            itemUUID = itemDic[@"uuid"];
                             NSLog(@"[INFO][VCMM] User asked to edit settings of beacon %@.", itemUUID);
                             completionHandler(YES);
                         } else {

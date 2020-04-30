@@ -340,7 +340,7 @@
         // Present the view as a pop up
         //[self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToEditComponent" sender:nil];
         ViewControllerEditComponent * viewControllerEditComponent = [[[NSBundle mainBundle]
-                                                                      loadNibNamed:@"ViewControllerEditComponent"
+                                                                      loadNibNamed:@"ViewEditComponent"
                                                                       owner:self
                                                                       options:nil]
                                                                      objectAtIndex:0];
