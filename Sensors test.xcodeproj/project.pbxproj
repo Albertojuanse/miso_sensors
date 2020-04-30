@@ -13,6 +13,7 @@
 		421550FA23DA0D8700945294 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 421550F923DA0D8600945294 /* icon.png */; };
 		421E741A245AE76600AC8FC8 /* ViewItemSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 421E7419245AE76600AC8FC8 /* ViewItemSettings.xib */; };
 		421E741D245AE79C00AC8FC8 /* ViewControllerItemSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 421E741C245AE79C00AC8FC8 /* ViewControllerItemSettings.m */; };
+		421E741F245B20A700AC8FC8 /* Calibration.png in Resources */ = {isa = PBXBuildFile; fileRef = 421E741E245B20A700AC8FC8 /* Calibration.png */; };
 		421FCEB922CF5C8E00C62E5E /* miso.png in Resources */ = {isa = PBXBuildFile; fileRef = 421FCEB822CF5C8E00C62E5E /* miso.png */; };
 		42263BB224475B2800161AB2 /* PListLocating.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42263BB124475B2800161AB2 /* PListLocating.plist */; };
 		42263BB52447668800161AB2 /* LMDelegateCalibrating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42263BB42447668800161AB2 /* LMDelegateCalibrating.m */; };
@@ -91,6 +92,7 @@
 		421E7419245AE76600AC8FC8 /* ViewItemSettings.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewItemSettings.xib; sourceTree = "<group>"; };
 		421E741B245AE78100AC8FC8 /* ViewControllerItemSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerItemSettings.h; sourceTree = "<group>"; };
 		421E741C245AE79C00AC8FC8 /* ViewControllerItemSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerItemSettings.m; sourceTree = "<group>"; };
+		421E741E245B20A700AC8FC8 /* Calibration.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Calibration.png; sourceTree = "<group>"; };
 		421FCEB822CF5C8E00C62E5E /* miso.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = miso.png; sourceTree = "<group>"; };
 		42263BB124475B2800161AB2 /* PListLocating.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PListLocating.plist; sourceTree = "<group>"; };
 		42263BB32447667C00161AB2 /* LMDelegateCalibrating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateCalibrating.h; sourceTree = "<group>"; };
@@ -412,6 +414,7 @@
 		42BE9EA323DB5117002D08FA /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				421E741E245B20A700AC8FC8 /* Calibration.png */,
 				42776ACC23F30D9400CE44A0 /* beacon.png */,
 				427828BB23E322F8005D19B3 /* metamodel.png */,
 				427828BC23E322F8005D19B3 /* routine.png */,
@@ -503,6 +506,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				421E741F245B20A700AC8FC8 /* Calibration.png in Resources */,
 				421E741A245AE76600AC8FC8 /* ViewItemSettings.xib in Resources */,
 				422798902271F37800E07C39 /* LaunchScreen.storyboard in Resources */,
 				423CE15724226CC100C24DF8 /* ViewEditComponent.xib in Resources */,
