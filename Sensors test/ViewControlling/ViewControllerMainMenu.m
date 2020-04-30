@@ -1253,9 +1253,12 @@ trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
                             // Configure popover layout
                             UIPopoverPresentationController * popoverItemSettings =  viewControllerItemSettings.popoverPresentationController;
                             [popoverItemSettings setDelegate:viewControllerItemSettings];
-                            [popoverItemSettings setSourceView:source];
-                            [popoverItemSettings setSourceRect:source.frame];
-                            [popoverItemSettings setPermittedArrowDirections:UIPopoverArrowDirectionAny];
+                            [popoverItemSettings setSourceView:self.view];
+                            [popoverItemSettings setSourceRect:CGRectMake(CGRectGetMidX(self.view.bounds),
+                                                                          CGRectGetMidY(self.view.bounds),
+                                                                          0,
+                                                                          0)];
+                            [popoverItemSettings setPermittedArrowDirections:0];
                             // Show the view
                             [self presentViewController:viewControllerItemSettings animated:YES completion:nil];                            
                             
