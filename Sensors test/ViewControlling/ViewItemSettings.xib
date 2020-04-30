@@ -221,8 +221,17 @@
                 <viewLayoutGuide key="safeArea" id="6OG-jX-6JG"/>
             </view>
             <connections>
+                <outlet property="calibrateButton" destination="HvK-xY-yhN" id="bS2-Bn-rij"/>
                 <outlet property="cancelButton" destination="eiQ-fr-tf4" id="9Zk-R7-hQj"/>
                 <outlet property="editButton" destination="bad-41-O7L" id="jXt-Tg-SUx"/>
+                <outlet property="firstButton" destination="TbA-Ds-weM" id="KnU-zM-zNs"/>
+                <outlet property="firstDistanceLabel" destination="jRg-3j-RdI" id="Plw-jR-ETf"/>
+                <outlet property="majorLabel" destination="KWy-Mz-I9V" id="MpO-NQ-9hK"/>
+                <outlet property="minorLabel" destination="kcO-Bb-I3H" id="qHV-Ln-bMF"/>
+                <outlet property="secondButton" destination="My5-DZ-3Xh" id="OeO-RU-yNb"/>
+                <outlet property="secondDistanceText" destination="NbB-hU-yZQ" id="iqp-u5-cUA"/>
+                <outlet property="sortLabel" destination="kDk-RZ-l7p" id="fjw-qr-0P8"/>
+                <outlet property="uuidLabel" destination="KFS-VL-vVc" id="geS-10-KTq"/>
             </connections>
             <point key="canvasLocation" x="82.5" y="142.5"/>
         </viewController>

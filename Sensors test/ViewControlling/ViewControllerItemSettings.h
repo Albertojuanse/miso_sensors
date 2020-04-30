@@ -37,6 +37,15 @@
 
 @property (weak, nonatomic) IBOutlet UIButton * cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton * editButton;
+@property (weak, nonatomic) IBOutlet UILabel * sortLabel;
+@property (weak, nonatomic) IBOutlet UILabel * uuidLabel;
+@property (weak, nonatomic) IBOutlet UILabel * majorLabel;
+@property (weak, nonatomic) IBOutlet UILabel *minorLabel;
+@property (weak, nonatomic) IBOutlet UIButton * calibrateButton;
+@property (weak, nonatomic) IBOutlet UIButton * firstButton;
+@property (weak, nonatomic) IBOutlet UIButton * secondButton;
+@property (weak, nonatomic) IBOutlet UILabel *firstDistanceLabel;
+@property (weak, nonatomic) IBOutlet UITextField *secondDistanceText;
 
 // Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;

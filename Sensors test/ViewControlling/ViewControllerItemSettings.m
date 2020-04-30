@@ -19,6 +19,8 @@
 {
     [super viewDidLoad];
     
+    NSLog(@"itemDic viewDidLoad: %@", itemChosenByUser);
+    
     // Visualization
     // Toolbar layout
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
@@ -35,7 +37,45 @@
                                                     alpha:1.0
                                     ]
                           forState:UIControlStateNormal];
-    
+    [self.calibrateButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                        green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                         blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                        alpha:1.0
+                                         ]
+                               forState:UIControlStateNormal];
+    [self.calibrateButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                         blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                        alpha:0.3
+                                    ]
+                               forState:UIControlStateDisabled];
+    [self.calibrateButton setEnabled:YES];
+    [self.firstButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                    alpha:1.0
+                                     ]
+                           forState:UIControlStateNormal];
+    [self.firstButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                    alpha:0.3
+                                     ]
+                           forState:UIControlStateDisabled];
+    [self.firstButton setEnabled:NO];
+    [self.secondButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                     alpha:1.0
+                                      ]
+                            forState:UIControlStateNormal];
+    [self.secondButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                      blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                     alpha:0.3
+                                      ]
+                            forState:UIControlStateDisabled];
+    [self.secondButton setEnabled:NO];
 }
 
 /*!
@@ -44,7 +84,42 @@
 */
 - (void)viewWillAppear:(BOOL)animated
 {
-    
+    // Retrieve and show information from item
+    if (itemChosenByUser) {
+        
+        // General information
+        NSString * sort = itemChosenByUser[@"sort"];
+        NSString * itemUUID = itemChosenByUser[@"uuid"];
+        NSString * major = itemChosenByUser[@"major"];
+        NSString * minor = itemChosenByUser[@"minor"];
+        if (sort) {
+            [self.sortLabel setText:sort];
+        } else {
+            [self.sortLabel setText:@"(null)"];
+        }
+        if (itemUUID) {
+            [self.uuidLabel setText:itemUUID];
+        } else {
+            [self.uuidLabel setText:@"(null)"];
+        }
+        
+        if (major) {
+            [self.majorLabel setText:major];
+        } else {
+            [self.majorLabel setText:@"(null)"];
+        }
+        
+        if (minor) {
+            [self.minorLabel setText:minor];
+        } else {
+            [self.minorLabel setText:@"(null)"];
+        }
+        
+        // Calibration information
+        
+    } else {
+        NSLog(@"[ERROR][VCIS] View will appear without itemChosenByUser variable.");
+    }
 }
 
 /*!
