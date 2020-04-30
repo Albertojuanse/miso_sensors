@@ -923,20 +923,6 @@
         
     }
     
-    // If add menu is going to be displayed, pass it the beaconsAndPositionsRegistered array
-    if ([[segue identifier] isEqualToString:@"fromMainToAdd"]) {
-        
-        // Get destination view
-        ViewControllerAddBeaconMenu * viewControllerAddBeaconMenu = [segue destinationViewController];
-        // Set the variables and components
-        [viewControllerAddBeaconMenu setCredentialsUserDic:credentialsUserDic];
-        [viewControllerAddBeaconMenu setUserDic:userDic];
-        [viewControllerAddBeaconMenu setSharedData:sharedData];
-        [viewControllerAddBeaconMenu setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerAddBeaconMenu setItemPositionIdNumber:itemPositionIdNumber];
-        
-    }
-    
     // If Rho Theta Syetem or Rho Rho Sytem based Locating is going to be displayed, pass it the beaconsAndPositionsRegistered array.
     if ([[segue identifier] isEqualToString:@"fromMainToSelectPositions"]) {
         
@@ -1248,6 +1234,31 @@ trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
                         if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
                             itemUUID = itemDic[@"uuid"];
                             NSLog(@"[INFO][VCMM] User asked to edit settings of beacon %@.", itemUUID);
+                            
+                            // Present the view as a pop up
+                            //[self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToEditComponent" sender:nil];
+                            ViewControllerItemSettings * viewControllerItemSettings = [[[NSBundle mainBundle]
+                                                                                        loadNibNamed:@"ViewItemSettings"
+                                                                                        owner:self
+                                                                                        options:nil]
+                                                                                       objectAtIndex:0];
+                            [viewControllerItemSettings setModalPresentationStyle:UIModalPresentationPopover];
+                            // Set the variables
+                            [viewControllerItemSettings setCredentialsUserDic:credentialsUserDic];
+                            [viewControllerItemSettings setUserDic:userDic];
+                            [viewControllerItemSettings setSharedData:sharedData];
+                            [viewControllerItemSettings setItemBeaconIdNumber:itemBeaconIdNumber];
+                            [viewControllerItemSettings setItemPositionIdNumber:itemPositionIdNumber];
+                            [viewControllerItemSettings setItemChosenByUser:itemDic];
+                            // Configure popover layout
+                            UIPopoverPresentationController * popoverItemSettings =  viewControllerItemSettings.popoverPresentationController;
+                            [popoverItemSettings setDelegate:viewControllerItemSettings];
+                            [popoverItemSettings setSourceView:source];
+                            [popoverItemSettings setSourceRect:source.frame];
+                            [popoverItemSettings setPermittedArrowDirections:UIPopoverArrowDirectionAny];
+                            // Show the view
+                            [self presentViewController:viewControllerItemSettings animated:YES completion:nil];                            
+                            
                             completionHandler(YES);
                         } else {
                             NSLog(@"[ERROR][VCMM] User asked to edit settings of an item of sort %@.", itemDic[@"sort"]);

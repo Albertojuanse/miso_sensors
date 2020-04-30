@@ -18,8 +18,8 @@
 #import "LMDelegateCalibrating.h"
 #import "VCToolbar.h"
 #import "ViewControllerLogin.h"
-#import "ViewControllerAddBeaconMenu.h"
 #import "ViewControllerSelectPositions.h"
+#import "ViewControllerItemSettings.h"
 
 /*!
  @class ViewControllerMainMenu

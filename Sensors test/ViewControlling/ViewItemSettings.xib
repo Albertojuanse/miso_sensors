@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina3_5" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <viewController id="gKY-u1-yMm" customClass="ViewControllerItemSettings">
+            <view key="view" contentMode="scaleToFill" id="TUN-wp-j4V">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <subviews>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eiQ-fr-tf4">
+                        <rect key="frame" x="32" y="32" width="30" height="48"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                        <state key="normal" title="✗"/>
+                        <connections>
+                            <action selector="handleButtonCancel:" destination="gKY-u1-yMm" eventType="touchUpInside" id="W2n-yX-dtS"/>
+                        </connections>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bad-41-O7L">
+                        <rect key="frame" x="258" y="32" width="30" height="48"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                        <state key="normal" title="✓"/>
+                        <connections>
+                            <action selector="handleButtonEdit:" destination="gKY-u1-yMm" eventType="touchUpInside" id="OZd-7O-dMr"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                <constraints>
+                    <constraint firstItem="bad-41-O7L" firstAttribute="top" secondItem="6OG-jX-6JG" secondAttribute="top" constant="32" id="2ll-5j-aZw"/>
+                    <constraint firstItem="6OG-jX-6JG" firstAttribute="trailing" secondItem="bad-41-O7L" secondAttribute="trailing" constant="32" id="FwR-Uj-scY"/>
+                    <constraint firstItem="eiQ-fr-tf4" firstAttribute="leading" secondItem="6OG-jX-6JG" secondAttribute="leading" constant="32" id="HXl-Cz-3iA"/>
+                    <constraint firstItem="eiQ-fr-tf4" firstAttribute="top" secondItem="6OG-jX-6JG" secondAttribute="top" constant="32" id="R7A-il-Dag"/>
+                </constraints>
+                <viewLayoutGuide key="safeArea" id="6OG-jX-6JG"/>
+            </view>
+            <connections>
+                <outlet property="cancelButton" destination="eiQ-fr-tf4" id="9Zk-R7-hQj"/>
+                <outlet property="editButton" destination="bad-41-O7L" id="jXt-Tg-SUx"/>
+            </connections>
+            <point key="canvasLocation" x="96" y="129"/>
+        </viewController>
+    </objects>
+</document>
