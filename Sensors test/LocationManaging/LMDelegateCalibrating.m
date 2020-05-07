@@ -300,7 +300,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
     // Notificate the new measurements
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     [data setObject:calibrationUUID forKey:@"calibrationUUID"];
-    NSLog(@"[NOTI][LMRRL] Notification \"ranging/newMeasuresAvalible\" posted.");
+    NSLog(@"[NOTI][LMC] Notification \"ranging/newMeasuresAvalible\" posted.");
     [[NSNotificationCenter defaultCenter]
      postNotificationName:@"ranging/newMeasuresAvalible"
      object:nil
@@ -314,8 +314,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  */
 - (void) startFirstStep:(NSNotification *) notification
 {
-    if ([[notification name] isEqualToString:@"lmdCalibrating/start"]){
-        NSLog(@"[NOTI][LMC] Notification \"lmdCalibrating/start\" recived.");
+    if ([[notification name] isEqualToString:@"lmdCalibrating/startFirstStep"]){
+        NSLog(@"[NOTI][LMC] Notification \"lmdCalibrating/startFirstStep\" recived.");
         
         mesureSortDescription = @"calibrationAtRefDistance";
         
@@ -427,8 +427,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  */
 - (void) startSecondStep:(NSNotification *) notification
 {
-    if ([[notification name] isEqualToString:@"lmdCalibrating/start"]){
-        NSLog(@"[NOTI][LMC] Notification \"lmdCalibrating/start\" recived.");
+    if ([[notification name] isEqualToString:@"lmdCalibrating/startSecondStep"]){
+        NSLog(@"[NOTI][LMC] Notification \"lmdCalibrating/startSecondStep\" recived.");
         
         mesureSortDescription = @"calibrationAtOtherDistance";
         

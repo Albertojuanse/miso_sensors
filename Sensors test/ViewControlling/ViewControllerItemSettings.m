@@ -79,6 +79,24 @@
     
     // Variables
     calibrating = NO;
+    
+    // This object must listen to this events
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(firstStepFinished:)
+                                                 name:@"vcItemSettings/firstStepFinished"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(firstStepFinishedWithErrors:)
+                                                 name:@"vcItemSettings/firstStepFinishedWithErrors"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(secondStepFinished:)
+                                                 name:@"vcItemSettings/secondStepFinished"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(secondStepFinishedWithErrors:)
+                                                 name:@"vcItemSettings/secondStepFinishedWithErrors"
+                                               object:nil];
 }
 
 /*!
@@ -124,23 +142,6 @@
         NSLog(@"[ERROR][VCIS] View will appear without itemChosenByUser variable.");
     }
     
-    // This object must listen to this events
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(firstStepFinished:)
-                                                 name:@"vcItemSettings/firstStepFinished"
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(firstStepFinishedWithErrors:)
-                                                 name:@"vcItemSettings/firstStepFinishedWithErrors"
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(secondStepFinished:)
-                                                 name:@"vcItemSettings/secondStepFinished"
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(secondStepFinishedWithErrors:)
-                                                 name:@"vcItemSettings/secondStepFinishedWithErrors"
-                                               object:nil];
 }
 
 /*!
@@ -284,6 +285,7 @@
                                                             object:nil];
         NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
         location = nil;
+        ranger = nil;
         
         // Layout
         [self.calibrateButton setEnabled:YES];
@@ -315,6 +317,7 @@
                                                             object:nil];
         NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
         location = nil;
+        ranger = nil;
         
         // Layout
         [self.calibrateButton setEnabled:YES];
@@ -330,6 +333,12 @@
 {
     // Dismiss the popover view
     // TODO: Notify cancel event to location manager. Alberto J. 2020/04/30.
+    // Deallocate location manager; ARC disposal.
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
+                                                        object:nil];
+    NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+    location = nil;
+    ranger = nil;
     [self dismissViewControllerAnimated:YES completion:Nil];
 }
 
@@ -341,6 +350,12 @@
 {
     // Dismiss the popover view
     // TODO: Notify cancel event to location manager if process is not finished. Alberto J. 2020/04/30.
+    // Deallocate location manager; ARC disposal.
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
+                                                        object:nil];
+    NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+    location = nil;
+    ranger = nil;
     [self dismissViewControllerAnimated:YES completion:Nil];
 }
 
@@ -359,6 +374,10 @@
                                                          userDic:userDic
                                                       deviceUUID:deviceUUID
                                            andCredentialsUserDic:credentialsUserDic];
+    ranger = [[LMRanging alloc] initWithSharedData:sharedData
+                                           userDic:userDic
+                                        deviceUUID:deviceUUID
+                             andCredentialsUserDic:credentialsUserDic];
     
     // Variables
     calibrating = YES;
