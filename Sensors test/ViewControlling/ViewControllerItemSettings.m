@@ -225,7 +225,7 @@
  */
 - (void)firstStepFinished:(NSNotification *)notification {
     if ([[notification name] isEqualToString:@"vcItemSettings/firstStepFinished"]){
-        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/firstStepFinished\" recived.");
+        NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/firstStepFinished\" recived.");
         
         // Orchestrate and set user idle
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
@@ -242,7 +242,7 @@
  */
 - (void)firstStepFinishedWithErrors:(NSNotification *)notification {
     if ([[notification name] isEqualToString:@"vcItemSettings/firstStepFinishedWithErrors"]){
-        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/firstStepFinishedWithErrors\" recived.");
+        NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/firstStepFinishedWithErrors\" recived.");
         
         // Orchestrate and set user idle
         calibrating = NO;
@@ -273,7 +273,7 @@
  */
 - (void)secondStepFinished:(NSNotification *)notification {
     if ([[notification name] isEqualToString:@"vcItemSettings/secondStepFinished"]){
-        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/secondStepFinished\" recived.");
+        NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/secondStepFinished\" recived.");
         
         // Orchestrate and set user idle
         calibrating = NO;
@@ -298,7 +298,7 @@
  */
 - (void)secondStepFinishedWithErrors:(NSNotification *)notification {
     if ([[notification name] isEqualToString:@"vcItemSettings/secondStepFinishedWithErrors"]){
-        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/secondStepFinishedWithErrors\" recived.");
+        NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/secondStepFinishedWithErrors\" recived.");
         
         // Orchestrate and set user idle
         calibrating = NO;
@@ -390,7 +390,7 @@
 - (IBAction)handleButtonFirst:(id)sender
 {
     // Orchestrate and set user measuring
-    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+    [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                           andWithCredentialsUserDic:credentialsUserDic];
     
     // Layout
@@ -416,8 +416,8 @@
 - (IBAction)handleButtonSecond:(id)sender
 {
     // Orchestrate and set user measuring
-    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
-                          andWithCredentialsUserDic:credentialsUserDic];
+    [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
+                               andWithCredentialsUserDic:credentialsUserDic];
     
     // Layout
     [self.secondButton setEnabled:NO];

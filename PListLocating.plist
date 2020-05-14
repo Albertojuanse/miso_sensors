@@ -5,7 +5,7 @@
 	<key>calibration/measures/minNumber</key>
 	<integer>10</integer>
 	<key>calibration/measures/gaussThreshold</key>
-	<integer>60</integer>
+	<integer>80</integer>
 	<key>calibration/init/refRSSI</key>
 	<integer>-60</integer>
 	<key>calibration/init/refDistance</key>

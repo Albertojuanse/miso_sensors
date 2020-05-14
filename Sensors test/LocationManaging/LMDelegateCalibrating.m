@@ -281,9 +281,10 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 // ...get its information...
                 NSString * uuid = [[beacon proximityUUID] UUIDString];
                 NSLog(@"[INFO][LMC] Beacon ranged %@.", uuid);
+                NSLog(@"[INFO][LMC] -> with RSSI value %tu.", [beacon rssi]);
                 
                 // ...and compose a measure with them.
-                [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithFloat:0.0]
+                [sharedData inMeasuresDataSetMeasure:beacon
                                               ofSort:mesureSortDescription
                                         withItemUUID:uuid
                                       withDeviceUUID:deviceUUID
@@ -293,18 +294,19 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             }
             NSLog(@"[INFO][LMC] Generated measures:");
             NSLog(@"[INFO][LMC]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
+            
+            // Notificate the new measurements
+            NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+            [data setObject:calibrationUUID forKey:@"calibrationUUID"];
+            NSLog(@"[NOTI][LMC] Notification \"ranging/newMeasuresAvalible\" posted.");
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"ranging/newMeasuresAvalible"
+             object:nil
+             userInfo:data];
+            
         }
         
     }
-    
-    // Notificate the new measurements
-    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-    [data setObject:calibrationUUID forKey:@"calibrationUUID"];
-    NSLog(@"[NOTI][LMC] Notification \"ranging/newMeasuresAvalible\" posted.");
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:@"ranging/newMeasuresAvalible"
-     object:nil
-     userInfo:data];
 }
 
 #pragma mark - Notification event handles
@@ -398,9 +400,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 // Delete registered regions and heading updates
                 [self stopRoutine];
                 
-                NSLog(@"[NOTI][LMC] Notification \"vcMainMenu/calibrationFinished\" posted.");
+                NSLog(@"[NOTI][LMC] Notification \"vcItemSettings/firstStepFinishedWithErrors\" posted.");
                 [[NSNotificationCenter defaultCenter]
-                 postNotificationName:@"vcMainMenu/calibrationFinished"
+                 postNotificationName:@"vcItemSettings/firstStepFinishedWithErrors"
                  object:nil];
                 return;
             }
@@ -411,9 +413,9 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                   CLLocationManager.authorizationStatus == kCLAuthorizationStatusRestricted)
         {
             // If is not allowed to use location services, delete registered regions and heading updates
-            NSLog(@"[NOTI][LMC] Notification \"vcMainMenu/calibrationFinished\" posted.");
+            NSLog(@"[NOTI][LMC] Notification \"vcItemSettings/firstStepFinishedWithErrors\" posted.");
             [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"vcMainMenu/calibrationFinished"
+             postNotificationName:@"vcItemSettings/firstStepFinishedWithErrors"
              object:nil];
             [self stopRoutine];
             return;

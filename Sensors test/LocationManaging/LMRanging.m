@@ -33,7 +33,7 @@
                                                    object:nil];
         
         // Get calibration costants.
-        NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+        NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLocating" ofType:@"plist"];
         NSDictionary * locatingDic = [NSDictionary dictionaryWithContentsOfFile:path];
         if (!minNumberOfSteps){
             NSNumber * minNumberOfStepsSaved = locatingDic[@"calibration/measures/minNumber"];
@@ -201,7 +201,7 @@
     }
     
     // Gather all RSSI measured values
-    NSMutableArray * beacons;
+    NSMutableArray * beacons = [[NSMutableArray alloc] init];
     for (NSMutableDictionary * eachMeasure in calibrationAtRefDistanceMeasures) {
         
         // Check measures
@@ -220,9 +220,9 @@
     BOOL calibrationFinished = [self calibrateRefRSSIWithCLBeacons:beacons];
     if (calibrationFinished) {
         // Notify menu view that calibration is finished.
-        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/firstStepFinished\" posted.");
+        NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/firstStepFinished\" posted.");
         [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"vcMainMenu/firstStepFinished"
+         postNotificationName:@"vcItemSettings/firstStepFinished"
          object:nil];
     }
     
@@ -270,9 +270,9 @@
     BOOL calibrationFinished = [self calibrateAttenuationFactorWithCLBeacons:beacons];
     if (calibrationFinished) {
         // Notify menu view that calibration is finished.
-        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/secondStepFinished\" posted.");
+        NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/secondStepFinished\" posted.");
         [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"vcMainMenu/secondStepFinished"
+         postNotificationName:@"vcItemSettings/secondStepFinished"
          object:nil];
     }
     
@@ -298,18 +298,19 @@
     // Then, the attenuation factor must be calculated. Using Friis formula,
     // the minimum attenuation factor is 2, and typical values must be < 10.
     
+    NSLog(@"[LMR][HOLA][CAL] -> minNumberOfSteps: %.2f .", (float) minNumberOfSteps);
     if (beacons.count <= minNumberOfSteps) {
-        NSLog(@"[INFO][LMR] %tu measures taken; not calibrating.", beacons.count);
+        NSLog(@"[LMR][INFO] %tu measures taken; not calibrating.", beacons.count);
         return NO;
     } else {
-        NSLog(@"[INFO][LMR] %tu measures taken; calibrating.", beacons.count);
+        NSLog(@"[LMR][INFO] %tu measures taken; calibrating.", beacons.count);
         
         // Retrieve from item to calibrate old variables to use them as initialization point; if not, initialize them
         NSNumber * refRSSI = itemToCalibrate[@"refRSSI"];
         NSNumber * refDistance = itemToCalibrate[@"refDistance"];
         NSNumber * attenuationFactor = itemToCalibrate[@"attenuationFactor"];
         NSNumber * attenuationDistance = itemToCalibrate[@"attenuationDistance"];
-        NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+        NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLocating" ofType:@"plist"];
         NSDictionary * locatingDic = [NSDictionary dictionaryWithContentsOfFile:path];
         if(!refRSSI) {
             NSNumber * initRefRSSI = locatingDic[@"calibration/init/refRSSI"];
@@ -377,7 +378,7 @@
     // Then, the attenuation factor must be calculated. Using Friis formula,
     // the minimum attenuation factor is 2, and typical values must be < 10.
     
-    if (beacons.count <= minNumberOfSteps) {
+    if (beacons.count <= 2 * minNumberOfSteps) {
         NSLog(@"[INFO][LMR] %tu measures taken; not calibrating.", beacons.count);
         return NO;
     } else {
@@ -388,7 +389,7 @@
         NSNumber * refDistance = itemToCalibrate[@"refDistance"];
         NSNumber * attenuationFactor = itemToCalibrate[@"attenuationFactor"];
         NSNumber * attenuationDistance = itemToCalibrate[@"attenuationDistance"];
-        NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+        NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLocating" ofType:@"plist"];
         NSDictionary * locatingDic = [NSDictionary dictionaryWithContentsOfFile:path];
         if(!refRSSI) {
             NSNumber * initRefRSSI = locatingDic[@"calibration/init/refRSSI"];
@@ -415,8 +416,11 @@
         NSMutableArray * rssiValues = [[NSMutableArray alloc] init];
         for (CLBeacon * beacon in beacons) {
             NSNumber * rssiValue = [NSNumber numberWithInteger:[beacon rssi]];
-            [rssiValues addObject:rssiValue];
+            if ([rssiValue floatValue] < 0) { // Filter the measures equal to zero since they are errors from iOS
+                [rssiValues addObject:rssiValue];
+            }
         }
+        NSLog(@"[LMR][INFO] Beacon measures: %@", rssiValues);
         
         // Filter the values using a gaussian filter
         NSMutableArray * filteredRSSIValues = [self gaussianFilterOfMeasures:rssiValues];
@@ -471,6 +475,7 @@
     
     // Evaluate effective range in which measures sum the 0.6 of probability.
     // For that, a min and a max value of that range must be found.
+    NSLog(@"[LMR][INFO] Unsorted beacon measures: %@", rssiValues);
     NSSortDescriptor * highestToLowest = [NSSortDescriptor sortDescriptorWithKey:@"self"
                                                                        ascending:NO];
     [rssiValues sortUsingDescriptors:[NSArray arrayWithObject:highestToLowest]];
@@ -505,10 +510,15 @@
         } else {
             NSLog(@"[LMR][INFO] The cumulative probability integred is %.2f",
                   [cumulativeDiffValue floatValue]);
-            [rssiValues removeObjectAtIndex:0];
-            [rssiValues removeLastObject];
-            maxRSSI = auxMaxRSSI;
-            minRSSI = auxMinRSSI;
+            // the measures can only be poped when there are more than 2.
+            if ([rssiValues count] > 2 ) {
+                [rssiValues removeObjectAtIndex:0];
+                [rssiValues removeLastObject];
+                maxRSSI = auxMaxRSSI;
+                minRSSI = auxMinRSSI;
+            } else {
+                break;
+            }
         }
     }
     NSLog(@"[LMR][INFO] There are %tu measures left after filter.", rssiValues.count);
@@ -572,7 +582,7 @@
         NSNumber * refDistance = itemDic[@"refDistance"];
         NSNumber * attenuationFactor = itemDic[@"attenuationFactor"];
         NSNumber * attenuationDistance = itemDic[@"attenuationDistance"];
-        NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+        NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLocating" ofType:@"plist"];
         NSDictionary * locatingDic = [NSDictionary dictionaryWithContentsOfFile:path];
         if(!refRSSI) {
             NSNumber * initRefRSSI = locatingDic[@"calibration/init/refRSSI"];
