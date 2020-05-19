@@ -33,7 +33,10 @@
     // Variables
     NSString * calibrationUUID;
     NSMutableDictionary * itemToCalibrate;
-    NSInteger minNumberOfSteps;
+    NSInteger minNumberOfIterations;
+    NSInteger minNumberOfIterationsOfFirstStep;
+    NSInteger minNumberOfIterationsOfSecondStep;
+    BOOL firstStepFinished;
     float gaussThreshold;
     
     // Orchestration variables

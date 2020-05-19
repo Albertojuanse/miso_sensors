@@ -19,8 +19,6 @@
 {
     [super viewDidLoad];
     
-    NSLog(@"itemDic viewDidLoad: %@", itemChosenByUser);
-    
     // Visualization
     // Toolbar layout
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
@@ -225,7 +223,7 @@
  */
 - (void)firstStepFinished:(NSNotification *)notification {
     if ([[notification name] isEqualToString:@"vcItemSettings/firstStepFinished"]){
-        NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/firstStepFinished\" recived.");
+        NSLog(@"[LMR][NOTI] Notification \"vcItemSettings/firstStepFinished\" recived.");
         
         // Orchestrate and set user idle
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
@@ -242,7 +240,7 @@
  */
 - (void)firstStepFinishedWithErrors:(NSNotification *)notification {
     if ([[notification name] isEqualToString:@"vcItemSettings/firstStepFinishedWithErrors"]){
-        NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/firstStepFinishedWithErrors\" recived.");
+        NSLog(@"[LMR][NOTI] Notification \"vcItemSettings/firstStepFinishedWithErrors\" recived.");
         
         // Orchestrate and set user idle
         calibrating = NO;
@@ -273,7 +271,7 @@
  */
 - (void)secondStepFinished:(NSNotification *)notification {
     if ([[notification name] isEqualToString:@"vcItemSettings/secondStepFinished"]){
-        NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/secondStepFinished\" recived.");
+        NSLog(@"[LMR][NOTI] Notification \"vcItemSettings/secondStepFinished\" recived.");
         
         // Orchestrate and set user idle
         calibrating = NO;
@@ -284,6 +282,8 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
                                                             object:nil];
         NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+        // Remove all measures
+        [sharedData resetMeasuresWithCredentialsUserDic:credentialsUserDic];
         location = nil;
         ranger = nil;
         
@@ -298,7 +298,7 @@
  */
 - (void)secondStepFinishedWithErrors:(NSNotification *)notification {
     if ([[notification name] isEqualToString:@"vcItemSettings/secondStepFinishedWithErrors"]){
-        NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/secondStepFinishedWithErrors\" recived.");
+        NSLog(@"[LMR][NOTI] Notification \"vcItemSettings/secondStepFinishedWithErrors\" recived.");
         
         // Orchestrate and set user idle
         calibrating = NO;
@@ -316,6 +316,8 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
                                                             object:nil];
         NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+        // Remove all measures
+        [sharedData resetMeasuresWithCredentialsUserDic:credentialsUserDic];
         location = nil;
         ranger = nil;
         

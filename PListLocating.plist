@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>calibration/measures/minNumber</key>
-	<integer>10</integer>
+	<integer>15</integer>
 	<key>calibration/measures/gaussThreshold</key>
 	<integer>80</integer>
 	<key>calibration/init/refRSSI</key>
