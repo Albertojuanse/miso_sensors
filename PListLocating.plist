@@ -6,6 +6,8 @@
 	<integer>15</integer>
 	<key>calibration/measures/gaussThreshold</key>
 	<integer>80</integer>
+	<key>calibration/measures/minMeasuresAfterGauss</key>
+	<integer>5</integer>
 	<key>calibration/init/refRSSI</key>
 	<integer>-60</integer>
 	<key>calibration/init/refDistance</key>

@@ -36,6 +36,7 @@
     NSInteger minNumberOfIterations;
     NSInteger minNumberOfIterationsOfFirstStep;
     NSInteger minNumberOfIterationsOfSecondStep;
+    NSInteger minNumberOfMeasuresAfterGauss;
     BOOL firstStepFinished;
     float gaussThreshold;
     

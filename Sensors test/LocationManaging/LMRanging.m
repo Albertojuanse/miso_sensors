@@ -45,6 +45,10 @@
             NSNumber * gaussThresholdSaved = locatingDic[@"calibration/measures/gaussThreshold"];
             gaussThreshold = [gaussThresholdSaved floatValue]/100.0;
         }
+        if (!minNumberOfMeasuresAfterGauss) {
+            NSNumber * minNumberOfMeasuresAfterGaussSaved = locatingDic[@"calibration/measures/minMeasuresAfterGauss"];
+            minNumberOfMeasuresAfterGauss = [minNumberOfMeasuresAfterGaussSaved floatValue];
+        }
         firstStepFinished = NO;
         
         NSLog(@"[INFO][LMR] LM Ranging module prepared.");
@@ -216,7 +220,7 @@
                 CLBeacon * eachBeacon = eachMeasure[@"measure"];
                 
                 // Check the device's accuracy; if less than 0 means not calibrated by Apple devuce
-                if ([eachBeacon accuracy] < 0.0) {
+                if ([eachBeacon rssi] < 0) {
                     [beacons addObject:eachBeacon];
                 } else {
                     invalidMeasures++;
@@ -276,8 +280,8 @@
                             
             CLBeacon * eachBeacon = eachMeasure[@"measure"];
             
-            // Check the device's accuracy; if less than 0 means not calibrated by Apple devuce
-            if ([eachBeacon accuracy] < 0.0) {
+            // Check the device's accuracy; if 0 means not calibrated by Apple devuce
+            if ([eachBeacon rssi] < 0) {
                 [beacons addObject:eachBeacon];
             } else {
                 invalidMeasures++;
@@ -367,6 +371,12 @@
         // Filter the values using a gaussian filter
         NSMutableArray * filteredRSSIValues = [self gaussianFilterOfMeasures:rssiValues];
         
+        // Not a valid subset if there are less than a minimum number of measures
+        if (filteredRSSIValues.count < minNumberOfMeasuresAfterGauss) {
+            NSLog(@"[INFO][LMR] %tu are too few measures after gaussian filter; not calibrating.", filteredRSSIValues.count);
+            return NO;
+        }
+        
         // Calculate mean with the measures left and save it as refRSSI
         NSNumber * acc = [NSNumber numberWithFloat:0.0];
         for (NSNumber * rssiValue in filteredRSSIValues) {
@@ -444,14 +454,18 @@
         NSMutableArray * rssiValues = [[NSMutableArray alloc] init];
         for (CLBeacon * beacon in beacons) {
             NSNumber * rssiValue = [NSNumber numberWithInteger:[beacon rssi]];
-            if ([rssiValue floatValue] < 0) { // Filter the measures equal to zero since they are errors from iOS
-                [rssiValues addObject:rssiValue];
-            }
+            [rssiValues addObject:rssiValue];
         }
         NSLog(@"[INFO][LMR] Beacon measures: %@", rssiValues);
         
         // Filter the values using a gaussian filter
         NSMutableArray * filteredRSSIValues = [self gaussianFilterOfMeasures:rssiValues];
+        
+        // Not a valid subset if there are less than a minimum number of measures
+        if (filteredRSSIValues.count < minNumberOfMeasuresAfterGauss) {
+            NSLog(@"[INFO][LMR] %tu are too few measures after gaussian filter; not calibrating.", filteredRSSIValues.count);
+            return NO;
+        }
         
         // Calculate attenuation factor with the mean of the measures left and save it as attenuationFactor
         NSNumber * acc = [NSNumber numberWithFloat:0.0];
