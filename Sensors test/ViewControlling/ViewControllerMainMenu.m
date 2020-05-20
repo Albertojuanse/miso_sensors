@@ -520,7 +520,7 @@
  */
 - (void)calibrationFinished:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"vcMainMenu/calibrationFinished"]){
-        NSLog(@"[LMR][NOTI] Notification \"vcMainMenu/calibrationFinished\" recived.");
+        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/calibrationFinished\" recived.");
         
         // Deallocate location manager; ARC disposal.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
