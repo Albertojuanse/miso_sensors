@@ -258,6 +258,8 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
                                                             object:nil];
         NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+        // Remove all measures
+        [sharedData resetMeasuresWithCredentialsUserDic:credentialsUserDic];
         location = nil;
         
         // Layout
