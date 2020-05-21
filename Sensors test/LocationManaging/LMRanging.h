@@ -40,6 +40,8 @@
     NSInteger minNumberOfIterationsOfSecondStep;
     NSInteger maxNumberOfIterationsOfSecondStep;
     NSInteger minNumberOfMeasuresAfterGauss;
+    NSInteger numberOfConsecutiveInvalidMeasures;
+    NSInteger maxNumberOfConsecutiveInvalidMeasures;
     BOOL firstStepFinished;
     float gaussThreshold;
     

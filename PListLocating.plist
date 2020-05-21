@@ -10,6 +10,8 @@
 	<integer>80</integer>
 	<key>calibration/measures/minMeasuresAfterGauss</key>
 	<integer>5</integer>
+	<key>calibration/measures/maxNumberOfConsecutiveInvalidMeasures</key>
+	<integer>10</integer>
 	<key>calibration/init/refRSSI</key>
 	<integer>-60</integer>
 	<key>calibration/init/refDistance</key>

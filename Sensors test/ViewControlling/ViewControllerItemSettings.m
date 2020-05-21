@@ -245,14 +245,28 @@
         // Orchestrate and set user idle
         calibrating = NO;
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
-                              andWithCredentialsUserDic:credentialsUserDic];
+                             andWithCredentialsUserDic:credentialsUserDic];
         
-        // Alert the user
-        [self alertUserWithTitle:@"Calibration error"
-                         message:@"Calibration process failed in its first step due an unknown error. Please, try again."
-                      andHandler:^(UIAlertAction * action) {
-                          // Do nothing
-                      }];
+        // Retrieve its information
+        NSDictionary * data = notification.userInfo;
+        NSString * consecutiveInvalidMeasuresError = data[@"consecutiveInvalidMeasures"];
+        if (consecutiveInvalidMeasuresError) {
+            if ([consecutiveInvalidMeasuresError isEqualToString:@"consecutiveInvalidMeasures"]) {
+                // Alert the user
+                [self alertUserWithTitle:@"Calibration error"
+                                 message:@"Calibration process failed in its first step due to too many measures were invalid. Please, try again."
+                              andHandler:^(UIAlertAction * action) {
+                                  // Do nothing
+                              }];
+            }
+        } else {
+            // Alert the user
+            [self alertUserWithTitle:@"Calibration error"
+                             message:@"Calibration process failed in its first step due an unknown error. Please, try again."
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }];
+        }
         
         // Deallocate location manager; ARC disposal.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
@@ -305,14 +319,28 @@
         // Orchestrate and set user idle
         calibrating = NO;
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
-                              andWithCredentialsUserDic:credentialsUserDic];
+                             andWithCredentialsUserDic:credentialsUserDic];
         
-        // Alert the user
-        [self alertUserWithTitle:@"Calibration error"
-                         message:@"Calibration process failed in its second step due an unknown error. Please, try again."
-                      andHandler:^(UIAlertAction * action) {
-                          // Do nothing
-                      }];
+        // Retrieve its information
+        NSDictionary * data = notification.userInfo;
+        NSString * consecutiveInvalidMeasuresError = data[@"consecutiveInvalidMeasures"];
+        if (consecutiveInvalidMeasuresError) {
+            if ([consecutiveInvalidMeasuresError isEqualToString:@"consecutiveInvalidMeasures"]) {
+                // Alert the user
+                [self alertUserWithTitle:@"Calibration error"
+                                 message:@"Calibration process failed in its first step due to too many measures were invalid. Please, try again."
+                              andHandler:^(UIAlertAction * action) {
+                                  // Do nothing
+                              }];
+            }
+        } else {
+            // Alert the user
+            [self alertUserWithTitle:@"Calibration error"
+                             message:@"Calibration process failed in its first step due an unknown error. Please, try again."
+                          andHandler:^(UIAlertAction * action) {
+                              // Do nothing
+                          }];
+        }
         
         // Deallocate location manager; ARC disposal.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
