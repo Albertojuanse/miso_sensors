@@ -172,11 +172,14 @@
         {
           [self processCalibrationAtRefDistanceMeasures:calibrationAtRefDistanceMeasures];
         } else {
-            // Notify the view that calibration is finished with errors.
-            NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/firstStepFinishedWithErrors\" posted.");
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"vcItemSettings/firstStepFinishedWithErrors"
-             object:nil];
+            // Unless not empty
+            if ([calibrationAtRefDistanceMeasures count] > 0) {
+                // Notify the view that calibration is finished with errors.
+                NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/firstStepFinishedWithErrors\" posted.");
+                [[NSNotificationCenter defaultCenter]
+                 postNotificationName:@"vcItemSettings/firstStepFinishedWithErrors"
+                 object:nil];
+            }
         }
         NSMutableArray * calibrationAtOtherDistanceMeasures = [sharedData fromMeasuresDataGetMeasuresOfSort:@"calibrationAtOtherDistance"
                                                                       withCredentialsUserDic:credentialsUserDic];
@@ -187,11 +190,14 @@
         {
             [self processCalibrationAtOtherDistanceMeasures:calibrationAtOtherDistanceMeasures];
         } else {
-            // Notify the view that calibration is finished with errors.
-            NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/secondStepFinishedWithErrors\" posted.");
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"vcItemSettings/secondStepFinishedWithErrors"
-             object:nil];
+            // Unless not empty
+            if ([calibrationAtOtherDistanceMeasures count] > 0) {
+                // Notify the view that calibration is finished with errors.
+                NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/secondStepFinishedWithErrors\" posted.");
+                [[NSNotificationCenter defaultCenter]
+                 postNotificationName:@"vcItemSettings/secondStepFinishedWithErrors"
+                 object:nil];
+            }
         }
     }
 }
