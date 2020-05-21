@@ -4,6 +4,8 @@
 <dict>
 	<key>calibration/measures/minNumber</key>
 	<integer>15</integer>
+	<key>calibration/measures/maxNumber</key>
+	<integer>100</integer>
 	<key>calibration/measures/gaussThreshold</key>
 	<integer>80</integer>
 	<key>calibration/measures/minMeasuresAfterGauss</key>

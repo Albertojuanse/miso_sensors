@@ -34,8 +34,11 @@
     NSString * calibrationUUID;
     NSMutableDictionary * itemToCalibrate;
     NSInteger minNumberOfIterations;
+    NSInteger maxNumberOfIterations;
     NSInteger minNumberOfIterationsOfFirstStep;
+    NSInteger maxNumberOfIterationsOfFirstStep;
     NSInteger minNumberOfIterationsOfSecondStep;
+    NSInteger maxNumberOfIterationsOfSecondStep;
     NSInteger minNumberOfMeasuresAfterGauss;
     BOOL firstStepFinished;
     float gaussThreshold;

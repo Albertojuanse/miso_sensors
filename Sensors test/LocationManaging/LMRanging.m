@@ -40,7 +40,13 @@
             minNumberOfIterations = [minNumberOfIterationsSaved integerValue];
         }
         minNumberOfIterationsOfFirstStep = minNumberOfIterations;
-        minNumberOfIterationsOfSecondStep = minNumberOfIterationsOfFirstStep + minNumberOfIterations;
+        minNumberOfIterationsOfSecondStep = minNumberOfIterations;
+        if (!maxNumberOfIterations){
+            NSNumber * maxNumberOfIterationsSaved = locatingDic[@"calibration/measures/maxNumber"];
+            maxNumberOfIterations = [maxNumberOfIterationsSaved integerValue];
+        }
+        maxNumberOfIterationsOfFirstStep = maxNumberOfIterations;
+        maxNumberOfIterationsOfSecondStep = maxNumberOfIterations;
         if (!gaussThreshold) {
             NSNumber * gaussThresholdSaved = locatingDic[@"calibration/measures/gaussThreshold"];
             gaussThreshold = [gaussThresholdSaved floatValue]/100.0;
@@ -136,7 +142,7 @@
         NSLog(@"[NOTI][LMR] Notification \"ranging/newMeasuresAvalible\" recived.");
         NSDictionary * data = notification.userInfo;
         calibrationUUID = data[@"calibrationUUID"];
-        NSLog(@"[INFO][LMR] Location manager notifies new calibration mesurements of the iBeacon %@", calibrationUUID);
+        NSLog(@"[INFO][LMR] Location manager notifies new mesures of item %@", calibrationUUID);
         
         // Check the access to data shared collections
         if (
@@ -145,6 +151,7 @@
         {
             // TODO: handle intrusion situations. Alberto J. 2019/09/10.
             NSLog(@"[ERROR][LMR] Shared data could not be accessed before use grid aproximation.");
+            return;
         }
         
         // Retrieve measures by sort and decide
@@ -156,16 +163,36 @@
         
         NSMutableArray * calibrationAtRefDistanceMeasures = [sharedData fromMeasuresDataGetMeasuresOfSort:@"calibrationAtRefDistance"
                                                                       withCredentialsUserDic:credentialsUserDic];
-        if ([calibrationAtRefDistanceMeasures count] > 0 ) {
+        // Calibration is only allowed if number of measures is less than the maximum.
+        // This is verified here to count all the measures taken and not only the valid ones.
+        if (
+            [calibrationAtRefDistanceMeasures count] > 0 &&
+            [calibrationAtRefDistanceMeasures count] < maxNumberOfIterationsOfFirstStep
+            )
+        {
           [self processCalibrationAtRefDistanceMeasures:calibrationAtRefDistanceMeasures];
+        } else {
+            // Notify the view that calibration is finished with errors.
+            NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/firstStepFinishedWithErrors\" posted.");
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"vcItemSettings/firstStepFinishedWithErrors"
+             object:nil];
         }
-        
         NSMutableArray * calibrationAtOtherDistanceMeasures = [sharedData fromMeasuresDataGetMeasuresOfSort:@"calibrationAtOtherDistance"
                                                                       withCredentialsUserDic:credentialsUserDic];
-        if ([calibrationAtOtherDistanceMeasures count] > 0) {
-          [self processCalibrationAtOtherDistanceMeasures:calibrationAtOtherDistanceMeasures];
+        if (
+            [calibrationAtOtherDistanceMeasures count] > 0 &&
+            [calibrationAtOtherDistanceMeasures count] < maxNumberOfIterationsOfSecondStep
+            )
+        {
+            [self processCalibrationAtOtherDistanceMeasures:calibrationAtOtherDistanceMeasures];
+        } else {
+            // Notify the view that calibration is finished with errors.
+            NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/secondStepFinishedWithErrors\" posted.");
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"vcItemSettings/secondStepFinishedWithErrors"
+             object:nil];
         }
-        
     }
 }
 
@@ -177,7 +204,6 @@
 {
     if ([[notification name] isEqualToString:@"ranging/reset"]){
         NSLog(@"[NOTI][LM] Notification \"ranging/reset\" recived.");
-        
         
         // Components
         [sharedData resetMeasuresWithCredentialsUserDic:credentialsUserDic];
@@ -196,15 +222,13 @@
         // Each beacon must be calibrated separetly, since each BLE device can transmit a different power values
         
         // Get item to calibrate.
-        NSMutableDictionary * firstMeasure = [calibrationAtRefDistanceMeasures objectAtIndex:0];
-        NSString * itemToCalibrateUUID = firstMeasure[@"itemUUID"];
-        NSLog(@"[INFO][LMR] Measures taken to calibrate item: %@", itemToCalibrateUUID);
-        NSMutableArray * itemsToCalibrate = [sharedData fromItemDataGetItemsWithUUID:itemToCalibrateUUID
+        NSLog(@"[INFO][LMR] Measures taken to calibrate at reference distance the item: %@", calibrationUUID);
+        NSMutableArray * itemsToCalibrate = [sharedData fromItemDataGetItemsWithUUID:calibrationUUID
                                                                andCredentialsUserDic:credentialsUserDic];
         if ([itemsToCalibrate count] > 0) {
             itemToCalibrate = [itemsToCalibrate objectAtIndex:0];
         } else {
-            NSLog(@"[LMR][ERROR] Item to calibrate not found %@", itemToCalibrateUUID);
+            NSLog(@"[LMR][ERROR] Item to calibrate not found %@", calibrationUUID);
             return;
         }
         
@@ -213,13 +237,13 @@
         NSMutableArray * beacons = [[NSMutableArray alloc] init];
         for (NSMutableDictionary * eachMeasure in calibrationAtRefDistanceMeasures) {
             
-            // Check measures
+            // Check the measures' UUID, since all measures are asked to shared data collections
             NSString * eachMeasureUUID = eachMeasure[@"itemUUID"];
-            if ([eachMeasureUUID isEqualToString:itemToCalibrateUUID]) {
+            if ([eachMeasureUUID isEqualToString:calibrationUUID]) {
                                 
                 CLBeacon * eachBeacon = eachMeasure[@"measure"];
                 
-                // Check the device's accuracy; if less than 0 means not calibrated by Apple devuce
+                // Check the device's accuracy; if not less than 0 means not calibrated by Apple device
                 if ([eachBeacon rssi] < 0) {
                     [beacons addObject:eachBeacon];
                 } else {
@@ -234,15 +258,32 @@
             NSLog(@"[WARNING][LMR] Some of the measures taken were invalid: %tu; not using them.", invalidMeasures);
         }
         
-        // Calibrate measures
-        BOOL calibrationFinished = [self calibrateRefRSSIWithCLBeacons:beacons];
-        if (calibrationFinished) {
-            // Notify menu view that calibration is finished.
-            NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/firstStepFinished\" posted.");
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"vcItemSettings/firstStepFinished"
-             object:nil];
-            firstStepFinished = YES;
+        // Decide if the number of measures is enough for calibration
+        if (beacons.count < minNumberOfIterationsOfFirstStep) {
+            
+            NSLog(@"[INFO][LMR] %tu/%tu valid measures taken; not calibrating.",
+                  beacons.count,
+                  minNumberOfIterationsOfFirstStep
+                  );
+            
+        } else {
+            
+            NSLog(@"[INFO][LMR] %tu/%tu valid measures taken; calibrating.",
+                  beacons.count,
+                  minNumberOfIterationsOfFirstStep
+                  );
+            
+            // Calibrate measures
+            BOOL calibrationFinished = [self calibrateRefRSSIWithCLBeacons:beacons];
+            if (calibrationFinished) {
+                // Notify the view that calibration is finished.
+                NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/firstStepFinished\" posted.");
+                [[NSNotificationCenter defaultCenter]
+                 postNotificationName:@"vcItemSettings/firstStepFinished"
+                 object:nil];
+                firstStepFinished = YES;
+            }
+            
         }
     }
     return;
@@ -257,15 +298,13 @@
     // Each beacon must be calibrated separetly, since each BLE device can transmit a different power values
     
     // Get item to calibrate.
-    NSMutableDictionary * firstMeasure = [calibrationAtOtherDistanceMeasures objectAtIndex:0];
-    NSString * itemToCalibrateUUID = firstMeasure[@"itemUUID"];
-    NSLog(@"[INFO][LMR] Measures taken to calibrate item: %@", itemToCalibrateUUID);
-    NSMutableArray * itemsToCalibrate = [sharedData fromItemDataGetItemsWithUUID:itemToCalibrateUUID
+    NSLog(@"[INFO][LMR] Measures taken to calibrate at other distance the item: %@", calibrationUUID);
+    NSMutableArray * itemsToCalibrate = [sharedData fromItemDataGetItemsWithUUID:calibrationUUID
                                                            andCredentialsUserDic:credentialsUserDic];
     if ([itemsToCalibrate count] > 0) {
         itemToCalibrate = [itemsToCalibrate objectAtIndex:0];
     } else {
-        NSLog(@"[LMR][ERROR] Item to calibrate not found %@", itemToCalibrateUUID);
+        NSLog(@"[LMR][ERROR] Item to calibrate not found %@", calibrationUUID);
         return;
     }
     
@@ -274,13 +313,13 @@
     NSMutableArray * beacons = [[NSMutableArray alloc] init];
     for (NSMutableDictionary * eachMeasure in calibrationAtOtherDistanceMeasures) {
         
-        // Check measures
+        // Check the measures' UUID, since all measures are asked to shared data collections
         NSString * eachMeasureUUID = eachMeasure[@"itemUUID"];
-        if ([eachMeasureUUID isEqualToString:itemToCalibrateUUID]) {
+        if ([eachMeasureUUID isEqualToString:calibrationUUID]) {
                             
             CLBeacon * eachBeacon = eachMeasure[@"measure"];
             
-            // Check the device's accuracy; if 0 means not calibrated by Apple devuce
+            // Check the device's accuracy; if not less than 0 means not calibrated by Apple device
             if ([eachBeacon rssi] < 0) {
                 [beacons addObject:eachBeacon];
             } else {
@@ -295,14 +334,33 @@
         NSLog(@"[WARNING][LMR] Some of the measures taken were invalid: %tu; not using them.", invalidMeasures);
     }
     
-    // Calibrate measures
-    BOOL calibrationFinished = [self calibrateAttenuationFactorWithCLBeacons:beacons];
-    if (calibrationFinished) {
-        // Notify menu view that calibration is finished.
-        NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/secondStepFinished\" posted.");
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"vcItemSettings/secondStepFinished"
-         object:nil];
+    // Decide if the number of measures is enough for calibration
+    if (
+        beacons.count < minNumberOfIterationsOfSecondStep
+        )
+    {
+        NSLog(@"[INFO][LMR] %tu/%tu valid measures taken; not calibrating at second step.",
+              beacons.count,
+              minNumberOfIterationsOfSecondStep
+              );
+        
+    } else {
+        
+        NSLog(@"[INFO][LMR] %tu/%tu valid measures taken; calibrating at second step.",
+              beacons.count,
+              minNumberOfIterationsOfSecondStep
+              );
+    
+        // Calibrate measures
+        BOOL calibrationFinished = [self calibrateAttenuationFactorWithCLBeacons:beacons];
+        if (calibrationFinished) {
+            // Notify menu view that calibration is finished.
+            NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/secondStepFinished\" posted.");
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"vcItemSettings/secondStepFinished"
+             object:nil];
+             firstStepFinished = NO;
+        }
     }
     
     return;
@@ -326,71 +384,69 @@
     // and this value is saved.
     // Then, the attenuation factor must be calculated. Using Friis formula,
     // the minimum attenuation factor is 2, and typical values must be < 10.
-    
-    if (beacons.count < minNumberOfIterationsOfFirstStep) {
-        NSLog(@"[INFO][LMR] %tu measures taken; not calibrating.", beacons.count);
-        return NO;
-    } else {
-        NSLog(@"[INFO][LMR] %tu measures taken; calibrating.", beacons.count);
         
-        // Retrieve from item to calibrate old variables to use them as initialization point; if not, initialize them
-        NSNumber * refRSSI = itemToCalibrate[@"refRSSI"];
-        NSNumber * refDistance = itemToCalibrate[@"refDistance"];
-        NSNumber * attenuationFactor = itemToCalibrate[@"attenuationFactor"];
-        NSNumber * attenuationDistance = itemToCalibrate[@"attenuationDistance"];
-        NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLocating" ofType:@"plist"];
-        NSDictionary * locatingDic = [NSDictionary dictionaryWithContentsOfFile:path];
-        if(!refRSSI) {
-            NSNumber * initRefRSSI = locatingDic[@"calibration/init/refRSSI"];
-            refRSSI = [NSNumber numberWithFloat:[initRefRSSI floatValue]];
-            NSLog(@"[INFO][LMR] Reference RSSI value of item not found; set default.");
-        }
-        if(!refDistance) {
-            NSNumber * initRefDistance = locatingDic[@"calibration/init/refDistance"];
-            refDistance = [NSNumber numberWithFloat:[initRefDistance floatValue]];
-            NSLog(@"[INFO][LMR] Reference distance value of item not found; set default.");
-        }
-        if(!attenuationFactor) {
-            NSNumber * initAttenuationFactor = locatingDic[@"calibration/init/attenuationFactor"];
-            attenuationFactor = [NSNumber numberWithFloat:[initAttenuationFactor floatValue]];
-            NSLog(@"[INFO][LMR] Reference attenuation factor of item not found; set default.");
-        }
-        if(!attenuationDistance) {
-            NSNumber * initAttenuationDistance = locatingDic[@"calibration/init/attenuationDistance"];
-            attenuationDistance = [NSNumber numberWithFloat:[initAttenuationDistance floatValue]];
-            NSLog(@"[INFO][LMR] Reference attenuation distance of item not found; set default.");
-        }
-        
-        // Retrieve RSSI values
-        NSMutableArray * rssiValues = [[NSMutableArray alloc] init];
-        for (CLBeacon * beacon in beacons) {
-            NSNumber * rssiValue = [NSNumber numberWithInteger:[beacon rssi]];
-            [rssiValues addObject:rssiValue];
-        }
-        
-        // Filter the values using a gaussian filter
-        NSMutableArray * filteredRSSIValues = [self gaussianFilterOfMeasures:rssiValues];
-        
-        // Not a valid subset if there are less than a minimum number of measures
-        if (filteredRSSIValues.count < minNumberOfMeasuresAfterGauss) {
-            NSLog(@"[INFO][LMR] %tu are too few measures after gaussian filter; not calibrating.", filteredRSSIValues.count);
-            return NO;
-        }
-        
-        // Calculate mean with the measures left and save it as refRSSI
-        NSNumber * acc = [NSNumber numberWithFloat:0.0];
-        for (NSNumber * rssiValue in filteredRSSIValues) {
-            acc = [NSNumber numberWithFloat:[acc floatValue] + [rssiValue floatValue]];
-        }
-        NSNumber * newRefRSSI = [NSNumber numberWithFloat:
-                                 [acc floatValue]/filteredRSSIValues.count
-                                 ];
-        itemToCalibrate[@"refRSSI"] = newRefRSSI;
-        NSLog(@"[INFO][LMR] Reference RSSI calibrated: %.2f.", [newRefRSSI floatValue]);
-    
-        // Decide weather the calibration is finished or not
-        return YES;
+    // Retrieve from item to calibrate old variables to use them as initialization point; if not, initialize them
+    /*
+    NSNumber * refRSSI = itemToCalibrate[@"refRSSI"];
+    NSNumber * refDistance = itemToCalibrate[@"refDistance"];
+    NSNumber * attenuationFactor = itemToCalibrate[@"attenuationFactor"];
+    NSNumber * attenuationDistance = itemToCalibrate[@"attenuationDistance"];
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLocating" ofType:@"plist"];
+    NSDictionary * locatingDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    if(!refRSSI) {
+        NSNumber * initRefRSSI = locatingDic[@"calibration/init/refRSSI"];
+        refRSSI = [NSNumber numberWithFloat:[initRefRSSI floatValue]];
+        NSLog(@"[INFO][LMR] Reference RSSI value of item not found; set default.");
     }
+    if(!refDistance) {
+        NSNumber * initRefDistance = locatingDic[@"calibration/init/refDistance"];
+        refDistance = [NSNumber numberWithFloat:[initRefDistance floatValue]];
+        NSLog(@"[INFO][LMR] Reference distance value of item not found; set default.");
+    }
+    if(!attenuationFactor) {
+        NSNumber * initAttenuationFactor = locatingDic[@"calibration/init/attenuationFactor"];
+        attenuationFactor = [NSNumber numberWithFloat:[initAttenuationFactor floatValue]];
+        NSLog(@"[INFO][LMR] Reference attenuation factor of item not found; set default.");
+    }
+    if(!attenuationDistance) {
+        NSNumber * initAttenuationDistance = locatingDic[@"calibration/init/attenuationDistance"];
+        attenuationDistance = [NSNumber numberWithFloat:[initAttenuationDistance floatValue]];
+        NSLog(@"[INFO][LMR] Reference attenuation distance of item not found; set default.");
+    }
+    */
+    
+    // Retrieve RSSI values
+    NSMutableArray * rssiValues = [[NSMutableArray alloc] init];
+    for (CLBeacon * beacon in beacons) {
+        NSNumber * rssiValue = [NSNumber numberWithInteger:[beacon rssi]];
+        [rssiValues addObject:rssiValue];
+    }
+    
+    // Filter the values using a gaussian filter
+    NSMutableArray * filteredRSSIValues = [self gaussianFilterOfMeasures:rssiValues];
+    
+    // Not a valid subset if there are less than a minimum number of measures
+    if (filteredRSSIValues.count < minNumberOfMeasuresAfterGauss) {
+        NSLog(@"[INFO][LMR] %tu/%tu are too few measures after gaussian filter; not calibrating.",
+              filteredRSSIValues.count,
+              minNumberOfMeasuresAfterGauss
+              );
+        return NO;
+    }
+    
+    // Calculate mean with the measures left and save it as refRSSI
+    NSNumber * acc = [NSNumber numberWithFloat:0.0];
+    for (NSNumber * rssiValue in filteredRSSIValues) {
+        acc = [NSNumber numberWithFloat:[acc floatValue] + [rssiValue floatValue]];
+    }
+    NSNumber * newRefRSSI = [NSNumber numberWithFloat:
+                             [acc floatValue]/filteredRSSIValues.count
+                             ];
+    itemToCalibrate[@"refRSSI"] = newRefRSSI;
+    NSLog(@"[INFO][LMR] Reference RSSI calibrated: %.2f.", [newRefRSSI floatValue]);
+
+    // Decide weather the calibration is finished or not
+    return YES;
 }
 
 /*!
@@ -412,80 +468,72 @@
     // Then, the attenuation factor must be calculated. Using Friis formula,
     // the minimum attenuation factor is 2, and typical values must be < 10.
     
-    if (
-        beacons.count > minNumberOfIterationsOfFirstStep ||
-        beacons.count < minNumberOfIterationsOfFirstStep
-        )
-    {
-        NSLog(@"[INFO][LMR] %tu measures taken; not calibrating.", beacons.count);
-        return NO;
-    } else {
-        NSLog(@"[INFO][LMR] %tu measures taken; calibrating.", beacons.count);
-        
-        // Retrieve from item to calibrate old variables to use them as initialization point; if not, initialize them
-        NSNumber * refRSSI = itemToCalibrate[@"refRSSI"];
-        NSNumber * refDistance = itemToCalibrate[@"refDistance"];
-        NSNumber * attenuationFactor = itemToCalibrate[@"attenuationFactor"];
-        NSNumber * attenuationDistance = itemToCalibrate[@"attenuationDistance"];
-        NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLocating" ofType:@"plist"];
-        NSDictionary * locatingDic = [NSDictionary dictionaryWithContentsOfFile:path];
-        if(!refRSSI) {
-            NSNumber * initRefRSSI = locatingDic[@"calibration/init/refRSSI"];
-            refRSSI = [NSNumber numberWithFloat:[initRefRSSI floatValue]];
-            NSLog(@"[INFO][LMR] Reference RSSI value of item not found; set default.");
-        }
-        if(!refDistance) {
-            NSNumber * initRefDistance = locatingDic[@"calibration/init/refDistance"];
-            refDistance = [NSNumber numberWithFloat:[initRefDistance floatValue]];
-            NSLog(@"[INFO][LMR] Reference distance value of item not found; set default.");
-        }
-        if(!attenuationFactor) {
-            NSNumber * initAttenuationFactor = locatingDic[@"calibration/init/attenuationFactor"];
-            attenuationFactor = [NSNumber numberWithFloat:[initAttenuationFactor floatValue]];
-            NSLog(@"[INFO][LMR] Reference attenuation factor of item not found; set default.");
-        }
-        if(!attenuationDistance) {
-            NSNumber * initAttenuationDistance = locatingDic[@"calibration/init/attenuationDistance"];
-            attenuationDistance = [NSNumber numberWithFloat:[initAttenuationDistance floatValue]];
-            NSLog(@"[INFO][LMR] Reference attenuation distance of item not found; set default.");
-        }
-        
-        // Retrieve RSSI values
-        NSMutableArray * rssiValues = [[NSMutableArray alloc] init];
-        for (CLBeacon * beacon in beacons) {
-            NSNumber * rssiValue = [NSNumber numberWithInteger:[beacon rssi]];
-            [rssiValues addObject:rssiValue];
-        }
-        NSLog(@"[INFO][LMR] Beacon measures: %@", rssiValues);
-        
-        // Filter the values using a gaussian filter
-        NSMutableArray * filteredRSSIValues = [self gaussianFilterOfMeasures:rssiValues];
-        
-        // Not a valid subset if there are less than a minimum number of measures
-        if (filteredRSSIValues.count < minNumberOfMeasuresAfterGauss) {
-            NSLog(@"[INFO][LMR] %tu are too few measures after gaussian filter; not calibrating.", filteredRSSIValues.count);
-            return NO;
-        }
-        
-        // Calculate attenuation factor with the mean of the measures left and save it as attenuationFactor
-        NSNumber * acc = [NSNumber numberWithFloat:0.0];
-        for (NSNumber * rssiValue in filteredRSSIValues) {
-            acc = [NSNumber numberWithFloat:[acc floatValue] + [rssiValue floatValue]];
-        }
-        NSNumber * recivedRSSIValue = [NSNumber numberWithFloat:
-                                       [acc floatValue]/filteredRSSIValues.count
-                                       ];
-        NSNumber * newAttenuationFactor = [NSNumber numberWithFloat:
-                                           ([refRSSI floatValue]-[recivedRSSIValue floatValue])
-                                           /
-                                           (10.0*log10([attenuationDistance floatValue]/[refDistance floatValue]))
-                                           ];
-        itemToCalibrate[@"attenuationFactor"] = newAttenuationFactor;
-        NSLog(@"[INFO][LMR] Attenuation Factor calibrated: %.2f.", [newAttenuationFactor floatValue]);
-    
-        // Decide weather the calibration is finished or not
-        return YES;
+    // Retrieve from item to calibrate variables; in the second step they must exist.
+    NSNumber * refRSSI = itemToCalibrate[@"refRSSI"];
+    NSNumber * refDistance = itemToCalibrate[@"refDistance"];
+    NSNumber * attenuationFactor = itemToCalibrate[@"attenuationFactor"];
+    NSNumber * attenuationDistance = itemToCalibrate[@"attenuationDistance"];
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLocating" ofType:@"plist"];
+    NSDictionary * locatingDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    if(!refRSSI) {
+        NSNumber * initRefRSSI = locatingDic[@"calibration/init/refRSSI"];
+        refRSSI = [NSNumber numberWithFloat:[initRefRSSI floatValue]];
+        NSLog(@"[ERROR][LMR] Reference RSSI value of item not found; set default.");
     }
+    if(!refDistance) {
+        NSNumber * initRefDistance = locatingDic[@"calibration/init/refDistance"];
+        refDistance = [NSNumber numberWithFloat:[initRefDistance floatValue]];
+        NSLog(@"[ERROR][LMR] Reference distance value of item not found; set default.");
+    }
+    if(!attenuationFactor) {
+        NSNumber * initAttenuationFactor = locatingDic[@"calibration/init/attenuationFactor"];
+        attenuationFactor = [NSNumber numberWithFloat:[initAttenuationFactor floatValue]];
+        NSLog(@"[ERROR][LMR] Reference attenuation factor of item not found; set default.");
+    }
+    if(!attenuationDistance) {
+        NSNumber * initAttenuationDistance = locatingDic[@"calibration/init/attenuationDistance"];
+        attenuationDistance = [NSNumber numberWithFloat:[initAttenuationDistance floatValue]];
+        NSLog(@"[ERROR][LMR] Reference attenuation distance of item not found; set default.");
+    }
+    
+    // Retrieve RSSI values
+    NSMutableArray * rssiValues = [[NSMutableArray alloc] init];
+    for (CLBeacon * beacon in beacons) {
+        NSNumber * rssiValue = [NSNumber numberWithInteger:[beacon rssi]];
+        [rssiValues addObject:rssiValue];
+    }
+    NSLog(@"[INFO][LMR] Beacon measures: %@", rssiValues);
+    
+    // Filter the values using a gaussian filter
+    NSMutableArray * filteredRSSIValues = [self gaussianFilterOfMeasures:rssiValues];
+    
+    // Not a valid subset if there are less than a minimum number of measures
+    if (filteredRSSIValues.count < minNumberOfMeasuresAfterGauss) {
+        NSLog(@"[INFO][LMR] %tu/%tu are too few measures after gaussian filter; not calibrating.",
+              filteredRSSIValues.count,
+              minNumberOfMeasuresAfterGauss
+              );
+        return NO;
+    }
+    
+    // Calculate attenuation factor with the mean of the measures left and save it as attenuationFactor
+    NSNumber * acc = [NSNumber numberWithFloat:0.0];
+    for (NSNumber * rssiValue in filteredRSSIValues) {
+        acc = [NSNumber numberWithFloat:[acc floatValue] + [rssiValue floatValue]];
+    }
+    NSNumber * recivedRSSIValue = [NSNumber numberWithFloat:
+                                   [acc floatValue]/filteredRSSIValues.count
+                                   ];
+    NSNumber * newAttenuationFactor = [NSNumber numberWithFloat:
+                                       ([refRSSI floatValue]-[recivedRSSIValue floatValue])
+                                       /
+                                       (10.0*log10([attenuationDistance floatValue]/[refDistance floatValue]))
+                                       ];
+    itemToCalibrate[@"attenuationFactor"] = newAttenuationFactor;
+    NSLog(@"[INFO][LMR] Attenuation Factor calibrated: %.2f.", [newAttenuationFactor floatValue]);
+
+    // Decide weather the calibration is finished or not
+    return YES;
 }
 
 /*!
@@ -517,11 +565,11 @@
     
     // Evaluate effective range in which measures sum the 0.6 of probability.
     // For that, a min and a max value of that range must be found.
-    NSLog(@"[INFO][LMR] Unsorted beacon measures: %@", rssiValues);
+    //NSLog(@"[INFO][LMR] Unsorted beacon measures: %@", rssiValues);
     NSSortDescriptor * highestToLowest = [NSSortDescriptor sortDescriptorWithKey:@"self"
                                                                        ascending:NO];
     [rssiValues sortUsingDescriptors:[NSArray arrayWithObject:highestToLowest]];
-    NSLog(@"[INFO][LMR] Sorted beacon measures: %@", rssiValues);
+    //NSLog(@"[INFO][LMR] Sorted beacon measures: %@", rssiValues);
     NSLog(@"[INFO][LMR] There are %tu measures before filter.", rssiValues.count);
     
     // Once sorted, the max and min values are removed until the cumulative
