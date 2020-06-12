@@ -919,6 +919,7 @@
                         <segue destination="1M1-iA-J20" kind="presentation" identifier="fromSelectPositionsToRHO_THETA_MODELING" modalPresentationStyle="fullScreen" id="A3y-43-nSw"/>
                         <segue destination="kSl-V8-bhM" kind="presentation" identifier="fromSelectPositionsToMONITORING" modalPresentationStyle="fullScreen" id="GqH-ez-bNl"/>
                         <segue destination="04n-E6-oj0" kind="presentation" identifier="fromSelectPositionsToRHO_RHO_LOCATING" modalPresentationStyle="fullScreen" id="x22-tD-Meu"/>
+                        <segue destination="okL-35-9pm" kind="presentation" identifier="fromSelectPositionsToEDITING" modalPresentationStyle="fullScreen" id="WbY-sj-piI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ewG-5j-Hqc" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2607,11 +2608,12 @@
         <image name="miso.png" width="134.39999389648438" height="108"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="WbY-sj-piI"/>
         <segue reference="x22-tD-Meu"/>
         <segue reference="ama-gS-GxY"/>
-        <segue reference="ZVX-zW-HeN"/>
-        <segue reference="2AF-RI-iGH"/>
-        <segue reference="jUo-Ud-pm0"/>
+        <segue reference="A3y-43-nSw"/>
+        <segue reference="LlF-Fb-myL"/>
+        <segue reference="OWJ-G0-Y79"/>
         <segue reference="R4c-cp-jPI"/>
     </inferredMetricsTieBreakers>
 </document>
