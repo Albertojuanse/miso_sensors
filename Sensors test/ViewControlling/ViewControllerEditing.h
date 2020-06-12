@@ -9,8 +9,12 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
+
 #import "ViewControllerSelectPositions.h"
 #import "ViewControllerEditComponent.h"
+
+#import "VCEditingDelegate.h"
+#import "VCEditingDelegateThetaThetaLocating.h"
 
 #import "LMDelegateRhoThetaModelling.h"
 #import "LMDelegateRhoRhoLocating.h"
@@ -37,20 +41,26 @@
     CLLocationManager * locationManager;
     MotionManager * motion;
     
+    // Delegate class with the methods to define the behaviour of this view in each mode
+    id<VCEditingDelegate> delegate;
+    
     // Session and user context
     // The first credentials dictionary is for security issues and its proprietary is the one who logs-in in the device; the second one is used for identifying purposes; in multiuser context, the first one is used in the device for accessing data, etc. while the second one is shared to the rest of users when a measure is taken or something is changed to indicate who did it.
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
     
-    // Variables
+    // Context variables
     // Beacons' region identifiers
     NSNumber * itemBeaconIdNumber;
     NSNumber * itemPositionIdNumber;
     NSString * locatedPositionUUID; // This one changes when the user measures and generates a new position for the device.
     NSString * deviceUUID;
     MDMode * mode;
-        NSMutableArray * modeMetamodels;
-        NSMutableArray * modeTypes;
+    NSMutableArray * modeMetamodels;
+    NSMutableArray * modeTypes;
+    
+    // Delegate variables
+    NSString * errorDescription;
 }
 
 @property (weak, nonatomic) IBOutlet VCToolbar *toolbar;

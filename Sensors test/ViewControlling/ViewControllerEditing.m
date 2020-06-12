@@ -178,7 +178,7 @@
     } else {
         return;
     }
-    NSLog(@"[INFO][VCTTL] Loaded %tu metamodels for this mode.", modeMetamodels.count);
+    NSLog(@"[INFO]%@ Loaded %tu metamodels for this mode.", errorDescription, modeMetamodels.count);
 }
 
 /*!
@@ -218,7 +218,7 @@
     } else {
         return;
     }
-    NSLog(@"[INFO][VCTTL] Loaded %tu ontologycal types for this mode.", modeTypes.count);
+    NSLog(@"[INFO]%@ Loaded %tu ontologycal types for this mode.", errorDescription, modeTypes.count);
 }
 
 /*!
@@ -234,6 +234,10 @@
     
     // Strategy pattern; different location delegate for each mode
     if ([mode isModeKey:kModeThetaThetaLocating]) {
+        
+        delegate = [[VCEditingDelegateThetaThetaLocating alloc] init];
+        errorDescription = [delegate getErrorDescription];
+        
         if (!thetaThetaSystem) {
             thetaThetaSystem = [[RDThetaThetaSystem alloc] initWithSharedData:sharedData
                                                                       userDic:userDic
@@ -299,27 +303,27 @@
 - (void) chooseItem:(NSNotification *) notification
 {
     if ([[notification name] isEqualToString:@"chooseItem"]){
-        NSLog(@"[NOTI][VC] Notification \"chooseItem\" recived.");
+        NSLog(@"[NOTI]%@ Notification \"chooseItem\" recived.", errorDescription);
         
         // User did choose an item; get it...
         VCComponent * sourceViewChosenByUser = [notification object];
         if (!sourceViewChosenByUser) {
-            NSLog(@"[ERROR][VCTTL] Object VCComponent not found in notification.");
+            NSLog(@"[ERROR]%@ Object VCComponent not found in notification.", errorDescription);
             return;
         }
         NSString * chosenItemUUID = [sourceViewChosenByUser getUUID];
         NSMutableArray * itemsChosenByUser = [sharedData fromItemDataGetItemsWithUUID:chosenItemUUID
                                                                 andCredentialsUserDic:credentialsUserDic];
         if (itemsChosenByUser.count == 0) {
-            NSLog(@"[ERROR][VCTTL] User did choose an unknown item: %@", chosenItemUUID);
+            NSLog(@"[ERROR]%@ User did choose an unknown item: %@", errorDescription, chosenItemUUID);
             return;
         }
         else if (itemsChosenByUser.count > 1) {
-            NSLog(@"[ERROR][VCTTL] User did choose an item whose UUID is repeated: %@", chosenItemUUID);
+            NSLog(@"[ERROR]%@ User did choose an item whose UUID is repeated: %@", errorDescription, chosenItemUUID);
         }
         NSMutableDictionary * itemChosenByUser = [itemsChosenByUser objectAtIndex:0];
 
-        NSLog(@"[INFO][VCTTL] The user did choose the item %@", itemChosenByUser[@"uuid"]);
+        NSLog(@"[INFO]%@ The user did choose the item %@", errorDescription, itemChosenByUser[@"uuid"]);
         
         // ...and set it as item chosen by user in shared data.
         [sharedData inSessionDataSetItemChosenByUser:itemChosenByUser
@@ -336,27 +340,27 @@
 - (void) presentEditComponentView:(NSNotification *) notification
 {
     if ([[notification name] isEqualToString:@"presentEditComponentView"]){
-        NSLog(@"[NOTI][VC] Notification \"presentEditComponentView\" recived.");
+        NSLog(@"[NOTI]%@ Notification \"presentEditComponentView\" recived.", errorDescription);
         
         // User did choose an item; get it...
         VCComponent * sourceViewChosenByUser = [notification object];
         if (!sourceViewChosenByUser) {
-            NSLog(@"[ERROR][VCTTL] Object VCComponent not found in notification.");
+            NSLog(@"[ERROR]%@ Object VCComponent not found in notification.", errorDescription);
             return;
         }
         NSString * chosenItemUUID = [sourceViewChosenByUser getUUID];
         NSMutableArray * itemsChosenByUser = [sharedData fromItemDataGetItemsWithUUID:chosenItemUUID
                                                                 andCredentialsUserDic:credentialsUserDic];
         if (itemsChosenByUser.count == 0) {
-            NSLog(@"[ERROR][VCTTL] User did choose an unknown item: %@", chosenItemUUID);
+            NSLog(@"[ERROR]%@ User did choose an unknown item: %@", errorDescription, chosenItemUUID);
             return;
         }
         else if (itemsChosenByUser.count > 1) {
-            NSLog(@"[ERROR][VCTTL] User did choose an item whose UUID is repeated: %@", chosenItemUUID);
+            NSLog(@"[ERROR]%@ User did choose an item whose UUID is repeated: %@", errorDescription, chosenItemUUID);
         }
         NSMutableDictionary * itemChosenByUser = [itemsChosenByUser objectAtIndex:0];
 
-        NSLog(@"[INFO][VCTTL] The user asked pop up view to edit %@", itemChosenByUser[@"uuid"]);
+        NSLog(@"[INFO]%@ The user asked pop up view to edit %@", errorDescription, itemChosenByUser[@"uuid"]);
         
         // ...and set it as item chosen by user in shared data.
         [sharedData inSessionDataSetItemChosenByUser:itemChosenByUser
@@ -404,7 +408,7 @@
 - (void)createReference:(NSNotification *) notification
 {
     if ([[notification name] isEqualToString:@"createReference"]){
-        NSLog(@"[NOTI][VCTTL] Notification \"createReference\" recived.");
+        NSLog(@"[NOTI]%@ Notification \"createReference\" recived.", errorDescription);
     
         // Retrieve notification data
         NSDictionary * dataDic = [notification userInfo];
@@ -418,11 +422,11 @@
         {
             // Get both items from shared data
             if (!sourceView) {
-                NSLog(@"[ERROR][VCTTL] Source VCComponent not found in notification.");
+                NSLog(@"[ERROR]%@ Source VCComponent not found in notification.", errorDescription);
                 return;
             }
             if (!targetView) {
-                NSLog(@"[ERROR][VCTTL] Target VCComponent not found in notification.");
+                NSLog(@"[ERROR]%@ Target VCComponent not found in notification.", errorDescription);
                 return;
             }
             NSString * sourceItemUUID = [sourceView getUUID];
@@ -433,28 +437,28 @@
             NSMutableArray * targetItems = [sharedData fromItemDataGetItemsWithUUID:targetItemUUID
                                                               andCredentialsUserDic:credentialsUserDic];
             if (sourceItems.count == 0) {
-                NSLog(@"[ERROR][VCTTL] User did choose an unknown source item: %@", sourceItemUUID);
+                NSLog(@"[ERROR]%@ User did choose an unknown source item: %@", errorDescription, sourceItemUUID);
                 return;
             }
             if (targetItems.count == 0) {
-                NSLog(@"[ERROR][VCTTL] User did choose an unknown target item: %@", targetItemUUID);
+                NSLog(@"[ERROR]%@ User did choose an unknown target item: %@", errorDescription, targetItemUUID);
                 return;
             }
             else if (sourceItems.count > 1) {
-                NSLog(@"[ERROR][VCTTL] User did choose a source item whose UUID is repeated: %@", sourceItemUUID);
+                NSLog(@"[ERROR]%@ User did choose a source item whose UUID is repeated: %@", errorDescription, sourceItemUUID);
             }
             else if (targetItems.count > 1) {
-                NSLog(@"[ERROR][VCTTL] User did choose a target item whose UUID is repeated: %@", targetItemUUID);
+                NSLog(@"[ERROR]%@ User did choose a target item whose UUID is repeated: %@", errorDescription, targetItemUUID);
             }
             NSMutableDictionary * sourceItem = [sourceItems objectAtIndex:0];
             NSMutableDictionary * targetItem = [targetItems objectAtIndex:0];
 
-            NSLog(@"[INFO][VCTTL] The user asked to crate a reference between %@ and %@", sourceItem[@"uuid"], targetItem[@"uuid"]);
+            NSLog(@"[INFO]%@ The user asked to crate a reference between %@ and %@", errorDescription, sourceItem[@"uuid"], targetItem[@"uuid"]);
 
             // And create and add the reference
             MDReference * reference = [[MDReference alloc] initWithsourceItemId:sourceItem[@"identifier"]
                                                                 andTargetItemId:targetItem[@"identifier"]];
-            NSLog(@"[INFO][VCMTTL] Created reference %@", reference);
+            NSLog(@"[INFO]%@ Created reference %@", errorDescription, reference);
             [sharedData inSessionDataAddReference:reference toUserWithUserDic:userDic withCredentialsUserDic:credentialsUserDic];
             
             [self.canvas setNeedsDisplay];
@@ -466,7 +470,7 @@
                               // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                           }
              ];
-            NSLog(@"[ERROR][VCMTTL] Shared data could not be accessed before handle the 'reference' button.");
+            NSLog(@"[ERROR]%@ Shared data could not be accessed before handle the 'reference' button.", errorDescription);
         }
     }
     return;
@@ -565,7 +569,7 @@
                           // TODO: handle intrusion situations. Alberto J. 2019/09/10.
                       }
          ];
-        NSLog(@"[ERROR][VCTTL] Shared data could not be accessed while starting travel.");
+        NSLog(@"[ERROR]%@ Shared data could not be accessed while starting travel.", errorDescription);
         return;
     }
     
@@ -587,10 +591,10 @@
             // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
             // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaLocating/start" object:nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
-            NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopes\" posted.");
+            NSLog(@"[NOTI]%@ Notification \"startGyroscopes\" posted.", errorDescription);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring"
                                                                 object:nil];
-            NSLog(@"[NOTI][VCTTL] Notification \"startGyroscopeHeadingMeasuring\" posted.");
+            NSLog(@"[NOTI]%@ Notification \"startGyroscopeHeadingMeasuring\" posted.", errorDescription);
             return;
         } else {
             return;
@@ -603,10 +607,10 @@
         [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
         // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaLocating/stop" object:nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopGyroscopes\" posted.");
+        NSLog(@"[NOTI]%@ Notification \"stopGyroscopes\" posted.", errorDescription);
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopGyroscopeHeadingMeasuring\" posted.");
+        NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", errorDescription);
         return;
     }
 }
@@ -649,7 +653,7 @@
  */
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSLog(@"[INFO][VCTTL] Asked segue %@", [segue identifier]);
+    NSLog(@"[INFO]%@ Asked segue %@", errorDescription, [segue identifier]);
     
     // If main menu is going to be displayed, any variable can be returned here
     if ([[segue identifier] isEqualToString:@"fromEDITINGToSelectPosition"]) {
@@ -666,10 +670,10 @@
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"stopGyroscopeHeadingMeasuring\" posted.");
+        NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", errorDescription);
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmd/reset"
                                                             object:nil];
-        NSLog(@"[NOTI][VCTTL] Notification \"lmd/reset\" posted.");
+        NSLog(@"[NOTI]%@ Notification \"lmd/reset\" posted.", errorDescription);
         return;
     }
     
