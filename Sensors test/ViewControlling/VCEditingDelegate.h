@@ -8,6 +8,8 @@
 
 #include <Foundation/Foundation.h>
 #include <UIKit/UIKit.h>
+#include <CoreLocation/CoreLocation.h>
+#import "SharedData.h"
 
 /*!
  @protocol VCEditingDelegate
@@ -16,6 +18,10 @@
 @protocol VCEditingDelegate
 
 @required
-- (instancetype)init;
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
+                           userDic:(NSMutableDictionary *)initUserDic
+                        deviceUUID:(NSString *)initDeviceUUID
+             andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (NSString *)getErrorDescription;
+- (id<CLLocationManagerDelegate>)loadLMDelegate;
 @end

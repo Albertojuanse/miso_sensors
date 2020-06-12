@@ -11,13 +11,20 @@
 @implementation VCEditingDelegateThetaThetaLocating : NSObject
 
 /*!
- @method init
- @discussion Constructor.
+ @method initWithSharedData:userDic:deviceUUID:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
  */
-- (instancetype)init
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
+                           userDic:(NSMutableDictionary *)initUserDic
+                        deviceUUID:(NSString *)initDeviceUUID
+             andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [super init];
     if (self) {
+        sharedData = initSharedData;
+        credentialsUserDic = initCredentialsUserDic;
+        userDic = initUserDic;
+        deviceUUID = initDeviceUUID;
         
         // Description for errors that View Controller Editing must use when in ThetaThetaLocating mode.
         errorDescription = @"[VCETTL]";
@@ -34,6 +41,29 @@
 - (NSString *)getErrorDescription
 {
     return errorDescription;
+}
+
+/*!
+@method loadLMDelegate
+@discussion This method returns the location manager with the proper location system in ThetaThetaLocating mode.
+*/
+- (id<CLLocationManagerDelegate>)loadLMDelegate
+{
+    if (!thetaThetaSystem) {
+        thetaThetaSystem = [[RDThetaThetaSystem alloc] initWithSharedData:sharedData
+                                                                  userDic:userDic
+                                                               deviceUUID:deviceUUID
+                                                    andCredentialsUserDic:credentialsUserDic];
+    }
+    if (!location) {
+        // Load the location manager and its delegate, the component which device uses to handle location events.
+        location = [[LMDelegateThetaThetaLocating alloc] initWithSharedData:sharedData
+                                                                    userDic:userDic
+                                                           thetaThetaSystem:thetaThetaSystem
+                                                                 deviceUUID:deviceUUID
+                                                      andCredentialsUserDic:credentialsUserDic];
+    }
+    return location;
 }
 
 @end

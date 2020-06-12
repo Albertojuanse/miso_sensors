@@ -238,23 +238,12 @@
         delegate = [[VCEditingDelegateThetaThetaLocating alloc] init];
         errorDescription = [delegate getErrorDescription];
         
-        if (!thetaThetaSystem) {
-            thetaThetaSystem = [[RDThetaThetaSystem alloc] initWithSharedData:sharedData
-                                                                      userDic:userDic
-                                                                   deviceUUID:deviceUUID
-                                                        andCredentialsUserDic:credentialsUserDic];
-        }
-        if (!location) {
-            // Load the location manager and its delegate, the component which device uses to handle location events.
-            location = [[LMDelegateThetaThetaLocating alloc] initWithSharedData:sharedData
-                                                                        userDic:userDic
-                                                               thetaThetaSystem:thetaThetaSystem
-                                                                     deviceUUID:deviceUUID
-                                                          andCredentialsUserDic:credentialsUserDic];
-            LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)location;
-            [lmdelegate setItemBeaconIdNumber:itemBeaconIdNumber];
-            [lmdelegate setItemPositionIdNumber:itemPositionIdNumber];
-        }
+        location = [delegate loadLMDelegate];
+        // TODO: idNubers to shared data. Alberto J. 2020/06/12.
+        LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)location;
+        //[lmdelegate setItemBeaconIdNumber:itemBeaconIdNumber];
+        //[lmdelegate setItemPositionIdNumber:itemPositionIdNumber];
+        
         if (!motion) {
             motion = [[MotionManager alloc] initWithSharedData:sharedData
                                                        userDic:credentialsUserDic
