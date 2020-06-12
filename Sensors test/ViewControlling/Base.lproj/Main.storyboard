@@ -916,7 +916,6 @@
                         <outlet property="tableItems" destination="zil-AZ-XAM" id="AoX-da-XFj"/>
                         <outlet property="toolbar" destination="fhW-mt-T6N" id="we9-jG-ktl"/>
                         <segue destination="lVP-jp-YaV" kind="presentation" identifier="fromSelectPositionsToMain" modalPresentationStyle="fullScreen" id="OWJ-G0-Y79"/>
-                        <segue destination="iCa-UJ-9hQ" kind="presentation" identifier="fromSelectPositionsToTHETA_THETA_LOCATING" modalPresentationStyle="fullScreen" id="QxI-WS-XJS"/>
                         <segue destination="1M1-iA-J20" kind="presentation" identifier="fromSelectPositionsToRHO_THETA_MODELING" modalPresentationStyle="fullScreen" id="A3y-43-nSw"/>
                         <segue destination="kSl-V8-bhM" kind="presentation" identifier="fromSelectPositionsToMONITORING" modalPresentationStyle="fullScreen" id="GqH-ez-bNl"/>
                         <segue destination="04n-E6-oj0" kind="presentation" identifier="fromSelectPositionsToRHO_RHO_LOCATING" modalPresentationStyle="fullScreen" id="x22-tD-Meu"/>
@@ -1096,28 +1095,28 @@
                                                 <rect key="frame" x="613" y="785" width="59" height="30"/>
                                                 <state key="normal" title="Measure"/>
                                                 <connections>
-                                                    <action selector="handleButtonMeasure:" destination="iCa-UJ-9hQ" eventType="touchUpInside" id="XSt-3o-iIa"/>
+                                                    <action selector="handleButtonMeasure:" destination="iCa-UJ-9hQ" eventType="touchUpInside" id="e5d-mU-aRo"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RMB-oA-IwZ">
                                                 <rect key="frame" x="549" y="785" width="32" height="30"/>
                                                 <state key="normal" title="Next"/>
                                                 <connections>
-                                                    <action selector="handleButtonNext:" destination="iCa-UJ-9hQ" eventType="touchUpInside" id="dJ5-Mr-NWm"/>
+                                                    <action selector="handleButtonNext:" destination="iCa-UJ-9hQ" eventType="touchUpInside" id="adf-Dx-YmM"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YbL-gE-sij">
                                                 <rect key="frame" x="483" y="785" width="34" height="30"/>
                                                 <state key="normal" title="Back"/>
                                                 <connections>
-                                                    <action selector="handleBackButton:" destination="iCa-UJ-9hQ" eventType="touchUpInside" id="TYH-5Z-t2Z"/>
+                                                    <action selector="handleBackButton:" destination="iCa-UJ-9hQ" eventType="touchUpInside" id="ywM-BL-hEj"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OrN-qf-C5G">
                                                 <rect key="frame" x="408" y="785" width="43" height="30"/>
                                                 <state key="normal" title="Model"/>
                                                 <connections>
-                                                    <action selector="handleButtonModel:" destination="iCa-UJ-9hQ" eventType="touchUpInside" id="COM-0l-Afh"/>
+                                                    <action selector="handleButtonModel:" destination="iCa-UJ-9hQ" eventType="touchUpInside" id="yHr-WE-ioO"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -1194,16 +1193,16 @@
                     </view>
                     <navigationItem key="navigationItem" id="Jek-kK-UzE"/>
                     <connections>
-                        <outlet property="buttonBack" destination="YbL-gE-sij" id="Faj-25-fge"/>
-                        <outlet property="buttonMeasure" destination="V1E-ek-NDM" id="leJ-dI-AEr"/>
-                        <outlet property="buttonModel" destination="OrN-qf-C5G" id="rUY-dL-P5s"/>
-                        <outlet property="buttonNext" destination="RMB-oA-IwZ" id="nL3-ru-XcI"/>
-                        <outlet property="canvas" destination="141-Pq-GhL" id="oKL-io-hh7"/>
-                        <outlet property="labelStatus" destination="dfE-Bc-mRd" id="6cn-QC-Hgk"/>
-                        <outlet property="logOutButton" destination="OgH-z2-mdZ" id="CM0-sj-HSb"/>
-                        <outlet property="loginText" destination="Cb6-sx-5F5" id="d76-tI-UnM"/>
-                        <outlet property="signOutButton" destination="IZz-Gv-BcI" id="bOH-s6-huB"/>
-                        <outlet property="toolbar" destination="L59-Ls-pzL" id="M4e-Di-WBV"/>
+                        <outlet property="buttonBack" destination="YbL-gE-sij" id="Z3y-eM-WXg"/>
+                        <outlet property="buttonMeasure" destination="V1E-ek-NDM" id="IrO-id-Nwk"/>
+                        <outlet property="buttonModel" destination="OrN-qf-C5G" id="FiK-V1-X0t"/>
+                        <outlet property="buttonNext" destination="RMB-oA-IwZ" id="LZv-w9-s1z"/>
+                        <outlet property="canvas" destination="141-Pq-GhL" id="CRP-1j-EFt"/>
+                        <outlet property="labelStatus" destination="dfE-Bc-mRd" id="Hhi-7g-ezL"/>
+                        <outlet property="logOutButton" destination="OgH-z2-mdZ" id="uSP-C0-YpX"/>
+                        <outlet property="loginText" destination="Cb6-sx-5F5" id="0Hf-Uq-15x"/>
+                        <outlet property="signOutButton" destination="IZz-Gv-BcI" id="Kvc-1h-6Ne"/>
+                        <outlet property="toolbar" destination="L59-Ls-pzL" id="ht4-9Q-6Bp"/>
                         <segue destination="zBC-hA-n0a" kind="presentation" identifier="fromTHETA_THETA_LOCATINGToSelectPosition" modalPresentationStyle="fullScreen" id="2AF-RI-iGH"/>
                         <segue destination="fiB-CG-Opu" kind="presentation" identifier="fromTHETA_THETA_LOCATINGToModelingTHETA_THETA_LOCATING" modalPresentationStyle="fullScreen" id="Ul9-9n-vjH"/>
                     </connections>
@@ -1349,7 +1348,6 @@
                                         <state key="normal" title="Back"/>
                                         <connections>
                                             <action selector="handleBackButton:" destination="fiB-CG-Opu" eventType="touchUpInside" id="uL1-IT-PHe"/>
-                                            <segue destination="iCa-UJ-9hQ" kind="presentation" identifier="fromModelingTHETA_THETA_LOCATINGToTHETA_THETA_LOCATING" modalPresentationStyle="fullScreen" id="NKP-hK-ln4"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6yn-w8-AGx" userLabel="Label Status">
@@ -2469,6 +2467,140 @@
             </objects>
             <point key="canvasLocation" x="761" y="-733"/>
         </scene>
+        <!--View Controller Editing-->
+        <scene sceneID="kan-hD-kHq">
+            <objects>
+                <viewController id="okL-35-9pm" customClass="ViewControllerEditing" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="IDp-Lk-fan">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2uo-Tc-WLn" userLabel="Main" customClass="Vi">
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lkn-Mp-7ch" userLabel="Canvas" customClass="Canvas">
+                                        <rect key="frame" x="32" y="92" width="704" height="847"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="psd-ZE-J9o">
+                                                <rect key="frame" x="613" y="785" width="59" height="30"/>
+                                                <state key="normal" title="Measure"/>
+                                                <connections>
+                                                    <action selector="handleButtonMeasure:" destination="okL-35-9pm" eventType="touchUpInside" id="XMl-4t-7zC"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aVK-XL-Kwy">
+                                                <rect key="frame" x="549" y="785" width="32" height="30"/>
+                                                <state key="normal" title="Next"/>
+                                                <connections>
+                                                    <action selector="handleButtonNext:" destination="okL-35-9pm" eventType="touchUpInside" id="bzY-pL-xA0"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xub-Bw-BYp">
+                                                <rect key="frame" x="483" y="785" width="34" height="30"/>
+                                                <state key="normal" title="Back"/>
+                                                <connections>
+                                                    <action selector="handleButtonBack:" destination="okL-35-9pm" eventType="touchUpInside" id="IdH-l2-m5C"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cwf-Zo-7tw">
+                                                <rect key="frame" x="410" y="785" width="41" height="30"/>
+                                                <state key="normal" title="Finish"/>
+                                                <connections>
+                                                    <action selector="handleButtonFinish:" destination="okL-35-9pm" eventType="touchUpInside" id="SIJ-Rs-Rhc"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="cwf-Zo-7tw" secondAttribute="bottom" constant="32" id="CUR-Pz-nNO"/>
+                                            <constraint firstItem="aVK-XL-Kwy" firstAttribute="leading" secondItem="Xub-Bw-BYp" secondAttribute="trailing" constant="32" id="Lg8-4Z-fbm"/>
+                                            <constraint firstAttribute="bottom" secondItem="Xub-Bw-BYp" secondAttribute="bottom" constant="32" id="Q0t-YA-ASb"/>
+                                            <constraint firstAttribute="trailing" secondItem="psd-ZE-J9o" secondAttribute="trailing" constant="32" id="Sfj-ay-Ee4"/>
+                                            <constraint firstAttribute="bottom" secondItem="aVK-XL-Kwy" secondAttribute="bottom" constant="32" id="anx-Oc-rkb"/>
+                                            <constraint firstItem="Xub-Bw-BYp" firstAttribute="leading" secondItem="cwf-Zo-7tw" secondAttribute="trailing" constant="32" id="jxe-RP-AMl"/>
+                                            <constraint firstItem="psd-ZE-J9o" firstAttribute="leading" secondItem="aVK-XL-Kwy" secondAttribute="trailing" constant="32" id="msv-Tb-r3t"/>
+                                            <constraint firstAttribute="bottom" secondItem="psd-ZE-J9o" secondAttribute="bottom" constant="32" id="uFr-5o-06l"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QG3-lL-fir" customClass="VCToolbar">
+                                        <rect key="frame" x="0.0" y="0.0" width="768" height="60"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Logged as:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Re3-2a-6t7">
+                                                <rect key="frame" x="32" y="31" width="84" height="21"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="arb-kn-b7V">
+                                                <rect key="frame" x="684" y="22" width="52" height="30"/>
+                                                <state key="normal" title="Log out"/>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CvC-rh-LqE">
+                                                <rect key="frame" x="595" y="22" width="57" height="30"/>
+                                                <state key="normal" title="Sign out"/>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="arb-kn-b7V" secondAttribute="trailing" constant="32" id="bmo-dX-gKE"/>
+                                            <constraint firstItem="arb-kn-b7V" firstAttribute="leading" secondItem="CvC-rh-LqE" secondAttribute="trailing" constant="32" id="cLK-da-mAR"/>
+                                            <constraint firstAttribute="bottom" secondItem="Re3-2a-6t7" secondAttribute="bottom" constant="8" id="eTm-Dp-G90"/>
+                                            <constraint firstItem="Re3-2a-6t7" firstAttribute="leading" secondItem="QG3-lL-fir" secondAttribute="leading" constant="32" id="mCU-Yz-RNT"/>
+                                            <constraint firstAttribute="bottom" secondItem="CvC-rh-LqE" secondAttribute="bottom" constant="8" id="on2-A6-Zgp"/>
+                                            <constraint firstAttribute="bottom" secondItem="arb-kn-b7V" secondAttribute="bottom" constant="8" id="rzT-pP-Ex0"/>
+                                            <constraint firstAttribute="height" constant="60" id="s3b-zQ-hXo"/>
+                                        </constraints>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2gF-xs-nhO" userLabel="Label Status">
+                                        <rect key="frame" x="32" y="971" width="50" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="Lkn-Mp-7ch" secondAttribute="trailing" constant="32" id="1MD-MX-6X0"/>
+                                    <constraint firstAttribute="trailing" secondItem="QG3-lL-fir" secondAttribute="trailing" id="1r3-bI-rHT"/>
+                                    <constraint firstItem="2gF-xs-nhO" firstAttribute="top" secondItem="Lkn-Mp-7ch" secondAttribute="bottom" constant="32" id="9OT-YA-24s"/>
+                                    <constraint firstItem="2gF-xs-nhO" firstAttribute="leading" secondItem="2uo-Tc-WLn" secondAttribute="leading" constant="32" id="Vlm-6q-wb9"/>
+                                    <constraint firstItem="QG3-lL-fir" firstAttribute="leading" secondItem="2uo-Tc-WLn" secondAttribute="leading" id="XLo-Co-d7I"/>
+                                    <constraint firstItem="QG3-lL-fir" firstAttribute="top" secondItem="2uo-Tc-WLn" secondAttribute="top" id="XXl-Om-bG8"/>
+                                    <constraint firstAttribute="bottom" secondItem="2gF-xs-nhO" secondAttribute="bottom" constant="32" id="XcH-Ah-FYm"/>
+                                    <constraint firstItem="Lkn-Mp-7ch" firstAttribute="top" secondItem="QG3-lL-fir" secondAttribute="bottom" constant="32" id="enB-QO-qrH"/>
+                                    <constraint firstItem="Lkn-Mp-7ch" firstAttribute="leading" secondItem="2uo-Tc-WLn" secondAttribute="leading" constant="32" id="zxI-WB-m3q"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="2uo-Tc-WLn" firstAttribute="leading" secondItem="HXG-Ss-c9t" secondAttribute="leading" id="I7K-sf-CS8"/>
+                            <constraint firstItem="2uo-Tc-WLn" firstAttribute="bottom" secondItem="HXG-Ss-c9t" secondAttribute="bottom" id="M0c-Uh-zcg"/>
+                            <constraint firstItem="2uo-Tc-WLn" firstAttribute="top" secondItem="IDp-Lk-fan" secondAttribute="top" id="Yta-le-ji9"/>
+                            <constraint firstItem="2uo-Tc-WLn" firstAttribute="trailing" secondItem="HXG-Ss-c9t" secondAttribute="trailing" id="ruO-nX-eXA"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="HXG-Ss-c9t"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="qT7-Rd-FSI"/>
+                    <connections>
+                        <outlet property="buttonBack" destination="Xub-Bw-BYp" id="gAn-Cq-CCc"/>
+                        <outlet property="buttonFinish" destination="cwf-Zo-7tw" id="Mvh-6C-ig7"/>
+                        <outlet property="buttonMeasure" destination="psd-ZE-J9o" id="aiT-6K-ReB"/>
+                        <outlet property="buttonNext" destination="aVK-XL-Kwy" id="HNR-0Z-Twp"/>
+                        <outlet property="canvas" destination="Lkn-Mp-7ch" id="gAM-lh-vkf"/>
+                        <outlet property="labelStatus" destination="2gF-xs-nhO" id="SKS-cI-4cu"/>
+                        <outlet property="logOutButton" destination="arb-kn-b7V" id="ZvU-gU-TVH"/>
+                        <outlet property="loginText" destination="Re3-2a-6t7" id="iZe-9e-Grz"/>
+                        <outlet property="signOutButton" destination="CvC-rh-LqE" id="FH6-T1-RaN"/>
+                        <outlet property="toolbar" destination="QG3-lL-fir" id="wBl-rb-Msb"/>
+                        <segue destination="Yt7-Vj-vjk" kind="presentation" identifier="fromEDITINGToFinalModel" modalPresentationStyle="fullScreen" id="ama-gS-GxY"/>
+                        <segue destination="zBC-hA-n0a" kind="presentation" identifier="fromEDITINGToSelectPosition" modalPresentationStyle="fullScreen" id="LlF-Fb-myL"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="A5Q-Oa-hh2" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2950" y="25"/>
+        </scene>
     </scenes>
     <resources>
         <image name="icon.png" width="3036" height="1844"/>
@@ -2476,8 +2608,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="x22-tD-Meu"/>
-        <segue reference="crr-mq-j8Q"/>
-        <segue reference="QxI-WS-XJS"/>
+        <segue reference="ama-gS-GxY"/>
         <segue reference="ZVX-zW-HeN"/>
         <segue reference="2AF-RI-iGH"/>
         <segue reference="jUo-Ud-pm0"/>
