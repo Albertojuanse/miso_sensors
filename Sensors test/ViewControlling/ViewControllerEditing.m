@@ -91,13 +91,13 @@
                                                       blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
                                                      alpha:1.0
                                       ]
-                           forState:UIControlStateNormal];
+                            forState:UIControlStateNormal];
     [self.buttonFinish setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
                                                      green:[layoutDic[@"navbar/green"] floatValue]/255.0
                                                       blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
                                                      alpha:0.3
                                       ]
-                           forState:UIControlStateDisabled];
+                            forState:UIControlStateDisabled];
     [self.buttonNext setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
@@ -244,16 +244,14 @@
                                                                    deviceUUID:deviceUUID
                                                         andCredentialsUserDic:credentialsUserDic];
         }
-        if (!locationManager) {
-            // Load the location manager, the component which device uses to handle location events.
-            locationManager = [[CLLocationManager alloc] init];
-            // the location manager delegate which defines the handleling.
-            LMDelegateThetaThetaLocating * lmdelegate = [[LMDelegateThetaThetaLocating alloc] initWithSharedData:sharedData
-                                                                                                         userDic:userDic
-                                                                                                thetaThetaSystem:thetaThetaSystem
-                                                                                                      deviceUUID:deviceUUID
-                                                                                           andCredentialsUserDic:credentialsUserDic];
-            locationManager.delegate = lmdelegate;
+        if (!location) {
+            // Load the location manager and its delegate, the component which device uses to handle location events.
+            location = [[LMDelegateThetaThetaLocating alloc] initWithSharedData:sharedData
+                                                                        userDic:userDic
+                                                               thetaThetaSystem:thetaThetaSystem
+                                                                     deviceUUID:deviceUUID
+                                                          andCredentialsUserDic:credentialsUserDic];
+            LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)location;
             [lmdelegate setItemBeaconIdNumber:itemBeaconIdNumber];
             [lmdelegate setItemPositionIdNumber:itemPositionIdNumber];
         }
@@ -517,9 +515,9 @@
  @method setLocationManager:
  @discussion This method sets the location manager.
  */
-- (void) setLocationManager:(CLLocationManager *)givenLocationManager
+- (void) setLocationManager:(id<CLLocationManagerDelegate>)givenLocation
 {
-    locationManager = givenLocationManager;
+    location = givenLocation;
 }
 
 /*!
@@ -632,7 +630,7 @@
 {
     // New UUID
     if ([mode isModeKey:kModeThetaThetaLocating]) {
-        LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)locationManager.delegate;
+        LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)location;
         locatedPositionUUID = [[NSUUID UUID] UUIDString];
         [lmdelegate setDeviceUUID:locatedPositionUUID];
         [motion setDeviceUUID:locatedPositionUUID];
