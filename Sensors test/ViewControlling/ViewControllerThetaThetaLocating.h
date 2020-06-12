@@ -20,7 +20,7 @@
  @class ViewControllerThetaThetaLocating
  @discussion This class extends UIViewController and controls the interface for locating the device with the theta theta location system.
  */
-@interface ViewControllerThetaThetaLocating : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+@interface ViewControllerThetaThetaLocating : UIViewController {
     
     // Other components
     SharedData * sharedData;

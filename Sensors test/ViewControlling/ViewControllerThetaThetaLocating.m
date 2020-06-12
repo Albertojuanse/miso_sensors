@@ -372,8 +372,8 @@
 }
 
 /*!
- @method handleReferenceButton:
- @discussion This method creates a reference between teo components in the model.
+ @method createReference:
+ @discussion This method creates a reference between two components in the model.
  */
 - (void)createReference:(NSNotification *) notification
 {
@@ -430,7 +430,6 @@
                                                                 andTargetItemId:targetItem[@"identifier"]];
             NSLog(@"[INFO][VCMTTL] Created reference %@", reference);
             [sharedData inSessionDataAddReference:reference toUserWithUserDic:userDic withCredentialsUserDic:credentialsUserDic];
-                    
             
             [self.canvas setNeedsDisplay];
             
