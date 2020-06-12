@@ -285,7 +285,8 @@
         if ([mode isModeKey:kModeThetaThetaLocating]) {
             // TODO: Go is only allowed if the user did choose at least one position in the table. Alberto J. 2020/01/20.
             NSLog(@"[INFO][VCSP] Chosen mode is kModeThetaThetaLocating.");
-            [self performSegueWithIdentifier:@"fromSelectPositionsToTHETA_THETA_LOCATING" sender:sender];
+            // [self performSegueWithIdentifier:@"fromSelectPositionsToTHETA_THETA_LOCATING" sender:sender];
+            [self performSegueWithIdentifier:@"fromSelectPositionsToEDITING" sender:sender];
         }
         
     } else {
@@ -381,16 +382,16 @@
         [viewControllerRhoThetaModeling setItemPositionIdNumber:itemPositionIdNumber];
         
     }
-    if ([[segue identifier] isEqualToString:@"fromSelectPositionsToMain"]) {
+    if ([[segue identifier] isEqualToString:@"fromSelectPositionsToEDITING"]) {
         
         // Get destination view
-        ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
+        ViewControllerEditing * viewControllerEditing = [segue destinationViewController];
         // Set the variables
-        [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
-        [viewControllerMainMenu setUserDic:userDic];
-        [viewControllerMainMenu setSharedData:sharedData];
-        [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
+        [viewControllerEditing setCredentialsUserDic:credentialsUserDic];
+        [viewControllerEditing setUserDic:userDic];
+        [viewControllerEditing setSharedData:sharedData];
+        [viewControllerEditing setItemBeaconIdNumber:itemBeaconIdNumber];
+        [viewControllerEditing setItemPositionIdNumber:itemPositionIdNumber];
         
     }
     return;

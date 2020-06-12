@@ -13,6 +13,7 @@
 #import "ViewControllerRhoRhoLocating.h"
 #import "ViewControllerRhoThetaModeling.h"
 #import "ViewControllerMainMenu.h"
+#import "ViewControllerEditing.h"
 
 /*!
  @class ViewControllerSelectPositions

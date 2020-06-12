@@ -26,7 +26,7 @@
     return self;
 }
 
-#pragma mark - Instance methods
+#pragma mark - VCEditingDelegate methods
 /*!
 @method getErrorDescription
 @discussion This method returns the description for errors that ViewControllerEditing must use when in ThetaThetaLocating mode.

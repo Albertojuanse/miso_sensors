@@ -8,6 +8,7 @@
 
 #include <Foundation/Foundation.h>
 #import "VCEditingDelegate.h"
+#import "LMDelegateThetaThetaLocating.h"
 
 /*!
  @class VCEditingDelegateThetaThetaLocating
