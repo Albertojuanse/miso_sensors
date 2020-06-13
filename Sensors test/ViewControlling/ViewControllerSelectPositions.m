@@ -358,18 +358,6 @@
         [viewControllerRhoRhoLocating setItemPositionIdNumber:itemPositionIdNumber];
         
     }
-    if ([[segue identifier] isEqualToString:@"fromSelectPositionsToTHETA_THETA_LOCATING"]) {
-        
-        // Get destination view
-        ViewControllerThetaThetaLocating * viewControllerThetaThetaLocating = [segue destinationViewController];
-        // Set the variables
-        [viewControllerThetaThetaLocating setCredentialsUserDic:credentialsUserDic];
-        [viewControllerThetaThetaLocating setUserDic:userDic];
-        [viewControllerThetaThetaLocating setSharedData:sharedData];
-        [viewControllerThetaThetaLocating setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerThetaThetaLocating setItemPositionIdNumber:itemPositionIdNumber];
-        
-    }
     if ([[segue identifier] isEqualToString:@"fromSelectPositionsToRHO_THETA_MODELING"]) {
         
         // Get destination view

@@ -15,7 +15,7 @@
 #import "LMDelegateMonitoring.h"
 
 /*!
- @class ViewControllerThetaThetaLocating
+ @class ViewControllerMonitoring
  @discussion This class extends UIViewController and controls the interface for locating the device with the theta theta location system.
  */
 @interface ViewControllerMonitoring : UIViewController <UITableViewDelegate, UITableViewDataSource> {

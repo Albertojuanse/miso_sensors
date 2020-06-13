@@ -10,7 +10,6 @@
 #import <UIKit/UIKit.h>
 #import "MDAttribute.h"
 #import "MDType.h"
-#import "ViewControllerThetaThetaLocating.h"
 #import "ViewControllerRhoRhoLocating.h"
 #import "ViewControllerRhoThetaModeling.h"
 #import "VCComponent.h"
