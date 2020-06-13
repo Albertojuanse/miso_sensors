@@ -24,6 +24,8 @@
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (NSString *)getErrorDescription;
+- (NSString *)getIdleStateMessage;
+- (NSString *)getMeasuringStateMessage;
 - (id<CLLocationManagerDelegate>)loadLMDelegate;
 - (MotionManager *)loadMotion;
 @end

@@ -129,7 +129,6 @@
                             forState:UIControlStateNormal];
     [self.loginText setTextColor:[UIColor whiteColor]];
     [self.buttonMeasure setEnabled:YES];
-    [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
 }
 
 /*!
@@ -242,13 +241,20 @@
         errorDescription = [delegate getErrorDescription];
         NSLog(@"[INFO]%@ Delegate loaded for ViewControllingEditing.", errorDescription);
         
+        // Load the location manager and its delegate to define how location events are handled
         location = [delegate loadLMDelegate];
         // TODO: idNubers to shared data. Alberto J. 2020/06/12.
         LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)location;
         [lmdelegate setItemBeaconIdNumber:itemBeaconIdNumber];
         [lmdelegate setItemPositionIdNumber:itemPositionIdNumber];
         
+        // Load the motion manager to define how motion events are handled
         motion = [delegate loadMotion];
+
+        // Load the messages that are shown to user in each state
+        idleStateMessage = [delegate getIdleStateMessage];
+        measuringStateMessage = [delegate getMeasuringStateMessage];
+        [self.labelStatus setText:idleStateMessage];
     } else {
         NSLog(@"[ERROR][VCE---] No delegate for ViewControllingEditing was loaded.");
     }
@@ -564,7 +570,7 @@
             [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                        andWithCredentialsUserDic:credentialsUserDic];
             
-            [self.labelStatus setText:@"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure."];
+            [self.labelStatus setText:measuringStateMessage];
             
             // And send the notification
             // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
@@ -583,7 +589,7 @@
         [self.buttonMeasure setEnabled:YES];
         // This next line have been moved into "stopGyroscopesHeadingMeasuring" method, because the measure is generated in this case after stop measuring
         // [sharedData inSessionDataSetIdleUserWithUserDic:userDic andWithCredentialsUserDic:credentialsUserDic];
-        [self.labelStatus setText:@"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing."];
+        [self.labelStatus setText:idleStateMessage];
         // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaLocating/stop" object:nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
         NSLog(@"[NOTI]%@ Notification \"stopGyroscopes\" posted.", errorDescription);

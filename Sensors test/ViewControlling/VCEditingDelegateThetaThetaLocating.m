@@ -25,9 +25,6 @@
         credentialsUserDic = initCredentialsUserDic;
         userDic = initUserDic;
         deviceUUID = initDeviceUUID;
-        
-        // Description for errors that View Controller Editing must use when in ThetaThetaLocating mode.
-        errorDescription = @"[VCETTL]";
     }
     
     return self;
@@ -40,7 +37,25 @@
 */
 - (NSString *)getErrorDescription
 {
-    return errorDescription;
+    return @"[VCETTL]";
+}
+
+/*!
+@method getIdleStateMessage
+@discussion This method returns the label test for Idle state in ThetaThetaLocating mode.
+*/
+- (NSString *)getIdleStateMessage
+{
+    return @"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing.";
+}
+
+/*!
+@method getMeasuringStateMessage
+@discussion This method returns the label test for Measuring state in ThetaThetaLocating mode.
+*/
+- (NSString *)getMeasuringStateMessage
+{
+    return @"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure.";
 }
 
 /*!

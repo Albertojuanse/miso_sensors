@@ -30,9 +30,6 @@
     RDThetaThetaSystem * thetaThetaSystem;
     MotionManager * motion;
     
-    // Variables
-    NSString * errorDescription;
-    
 }
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
@@ -40,6 +37,8 @@
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (NSString *)getErrorDescription;
+- (NSString *)getIdleStateMessage;
+- (NSString *)getMeasuringStateMessage;
 - (id<CLLocationManagerDelegate>)loadLMDelegate;
 - (MotionManager *)loadMotion;
 

@@ -61,6 +61,8 @@
     
     // Delegate variables
     NSString * errorDescription;
+    NSString * idleStateMessage;
+    NSString * measuringStateMessage;
 }
 
 @property (weak, nonatomic) IBOutlet VCToolbar *toolbar;
