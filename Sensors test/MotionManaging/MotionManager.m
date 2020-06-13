@@ -197,19 +197,20 @@
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
-    sharedData = initSharedData;
-    credentialsUserDic = initCredentialsUserDic;
-    userDic = initUserDic;
-    deviceUUID = initDeviceUUID;
-    rhoRhoSystem = initRhoRhoSystem;
-    rhoThetaSystem = initRhoThetaSystem;
-    thetaThetaSystem = initThetaThetaSystem;
     self = [self initWithSharedData:initSharedData];
+    if (self) {
+        credentialsUserDic = initCredentialsUserDic;
+        userDic = initUserDic;
+        deviceUUID = initDeviceUUID;
+        rhoRhoSystem = initRhoRhoSystem;
+        rhoThetaSystem = initRhoThetaSystem;
+        thetaThetaSystem = initThetaThetaSystem;
+    }
     return self;
 }
 
 /*!
- @method initWithSharedData:userDic::thetaThetaSystem:deviceUUID:andCredentialsUserDic:
+ @method initWithSharedData:userDic:thetaThetaSystem:deviceUUID:andCredentialsUserDic:
  @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the location systems, the device's UUID and the credentials of the user for access it.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
@@ -218,12 +219,33 @@
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
-    sharedData = initSharedData;
-    credentialsUserDic = initCredentialsUserDic;
-    userDic = initUserDic;
-    deviceUUID = initDeviceUUID;
-    thetaThetaSystem = initThetaThetaSystem;
     self = [self initWithSharedData:initSharedData];
+    if (self) {
+        credentialsUserDic = initCredentialsUserDic;
+        userDic = initUserDic;
+        deviceUUID = initDeviceUUID;
+        thetaThetaSystem = initThetaThetaSystem;
+    }
+    return self;
+}
+
+/*!
+@method initWithSharedData:userDic:rhoThetaSystem:deviceUUID:andCredentialsUserDic:
+@discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the location systems, the device's UUID and the credentials of the user for access it.
+*/
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
+                           userDic:(NSMutableDictionary *)initUserDic
+                    rhoThetaSystem:(RDRhoThetaSystem *)initRhoThetaSystem
+                        deviceUUID:(NSString *)initDeviceUUID
+             andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
+{
+    self = [self initWithSharedData:initSharedData];
+    if (self) {
+        credentialsUserDic = initCredentialsUserDic;
+        userDic = initUserDic;
+        deviceUUID = initDeviceUUID;
+        rhoThetaSystem = initRhoThetaSystem;
+    }
     return self;
 }
 
