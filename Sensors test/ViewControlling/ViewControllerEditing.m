@@ -234,31 +234,23 @@
     
     // Strategy pattern; different location delegate for each mode
     if ([mode isModeKey:kModeThetaThetaLocating]) {
-        
         delegate = [[VCEditingDelegateThetaThetaLocating alloc] init];
+    }
+    
+    if (delegate) {
+        // Load the components from delegate
         errorDescription = [delegate getErrorDescription];
+        NSLog(@"[INFO]%@ Delegate loaded for ViewControllingEditing.", errorDescription);
         
         location = [delegate loadLMDelegate];
         // TODO: idNubers to shared data. Alberto J. 2020/06/12.
         LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)location;
-        //[lmdelegate setItemBeaconIdNumber:itemBeaconIdNumber];
-        //[lmdelegate setItemPositionIdNumber:itemPositionIdNumber];
+        [lmdelegate setItemBeaconIdNumber:itemBeaconIdNumber];
+        [lmdelegate setItemPositionIdNumber:itemPositionIdNumber];
         
-        if (!motion) {
-            motion = [[MotionManager alloc] initWithSharedData:sharedData
-                                                       userDic:credentialsUserDic
-                                              thetaThetaSystem:thetaThetaSystem
-                                                    deviceUUID:deviceUUID
-                                         andCredentialsUserDic:credentialsUserDic];
-            
-            // TODO: make this configurable or properties. Alberto J. 2019/09/13.
-            motion.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
-            motion.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
-            motion.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
-            motion.acce_biasBuffer_capacity = [NSNumber numberWithInt:500];
-            motion.gyro_measuresBuffer_capacity = [NSNumber numberWithInt:500];
-            motion.gyro_biasBuffer_capacity = [NSNumber numberWithInt:500];
-        }
+        motion = [delegate loadMotion];
+    } else {
+        NSLog(@"[ERROR][VCE---] No delegate for ViewControllingEditing was loaded.");
     }
 }
 /*!

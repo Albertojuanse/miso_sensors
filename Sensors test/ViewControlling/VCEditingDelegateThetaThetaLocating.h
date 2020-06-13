@@ -10,6 +10,7 @@
 #import "VCEditingDelegate.h"
 #import "RDThetaThetaSystem.h"
 #import "LMDelegateThetaThetaLocating.h"
+#import "MotionManager.h"
 
 /*!
  @class VCEditingDelegateThetaThetaLocating
@@ -27,6 +28,7 @@
     SharedData * sharedData;
     LMDelegateThetaThetaLocating * location;
     RDThetaThetaSystem * thetaThetaSystem;
+    MotionManager * motion;
     
     // Variables
     NSString * errorDescription;
@@ -39,5 +41,6 @@
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (NSString *)getErrorDescription;
 - (id<CLLocationManagerDelegate>)loadLMDelegate;
+- (MotionManager *)loadMotion;
 
 @end

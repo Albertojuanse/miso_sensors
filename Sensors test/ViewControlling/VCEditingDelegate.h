@@ -9,6 +9,7 @@
 #include <Foundation/Foundation.h>
 #include <UIKit/UIKit.h>
 #include <CoreLocation/CoreLocation.h>
+#import "MotionManager.h"
 #import "SharedData.h"
 
 /*!
@@ -24,4 +25,5 @@
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (NSString *)getErrorDescription;
 - (id<CLLocationManagerDelegate>)loadLMDelegate;
+- (MotionManager *)loadMotion;
 @end
