@@ -561,43 +561,10 @@
     // In every state the button performs different behaviours
     NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic];
-    
-    if ([state isEqualToString:@"IDLE"]) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
-        // If user did chose a position to aim
-        if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic]) {
-            [self.buttonMeasure setEnabled:YES];
-            [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
-                                       andWithCredentialsUserDic:credentialsUserDic];
-            
-            [self.labelStatus setText:measuringStateMessage];
-            
-            // And send the notification
-            // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
-            // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaLocating/start" object:nil];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
-            NSLog(@"[NOTI]%@ Notification \"startGyroscopes\" posted.", errorDescription);
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring"
-                                                                object:nil];
-            NSLog(@"[NOTI]%@ Notification \"startGyroscopeHeadingMeasuring\" posted.", errorDescription);
-            return;
-        } else {
-            return;
-        }
-    }
-    if ([state isEqualToString:@"MEASURING"]) { // If 'Measuring' is tapped, ask stop measuring.
-        [self.buttonMeasure setEnabled:YES];
-        // This next line have been moved into "stopGyroscopesHeadingMeasuring" method, because the measure is generated in this case after stop measuring
-        // [sharedData inSessionDataSetIdleUserWithUserDic:userDic andWithCredentialsUserDic:credentialsUserDic];
-        [self.labelStatus setText:idleStateMessage];
-        // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaLocating/stop" object:nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
-        NSLog(@"[NOTI]%@ Notification \"stopGyroscopes\" posted.", errorDescription);
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
-                                                            object:nil];
-        NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", errorDescription);
-        return;
-    }
+    [delegate userDidTapButtonMeasure:self.buttonMeasure
+                          whenInState:state
+                   andWithLabelStatus:self.labelStatus];
+    return;
 }
 
 /*!
@@ -616,6 +583,7 @@
 - (IBAction)handleButtonNext:(id)sender
 {
     // New UUID
+    // TODO: To notification. Aberto J. 2020/06/13.
     if ([mode isModeKey:kModeThetaThetaLocating]) {
         LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)location;
         locatedPositionUUID = [[NSUUID UUID] UUIDString];

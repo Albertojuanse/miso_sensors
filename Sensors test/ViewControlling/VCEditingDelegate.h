@@ -28,4 +28,7 @@
 - (NSString *)getMeasuringStateMessage;
 - (id<CLLocationManagerDelegate>)loadLMDelegate;
 - (MotionManager *)loadMotion;
+- (void)userDidTapButtonMeasure:(UIButton *)buttonMeasure
+                    whenInState:(NSString *)state
+             andWithLabelStatus:(UILabel *)labelStatus;
 @end

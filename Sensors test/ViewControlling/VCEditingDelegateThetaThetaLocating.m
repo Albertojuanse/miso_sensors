@@ -37,7 +37,7 @@
 */
 - (NSString *)getErrorDescription
 {
-    return @"[VCETTL]";
+    return ERROR_DESCRIPTION;
 }
 
 /*!
@@ -46,7 +46,7 @@
 */
 - (NSString *)getIdleStateMessage
 {
-    return @"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing.";
+    return IDLE_STATE_MESSAGE;
 }
 
 /*!
@@ -55,7 +55,7 @@
 */
 - (NSString *)getMeasuringStateMessage
 {
-    return @"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure.";
+    return MEASURING_STATE_MESSAGE;
 }
 
 /*!
@@ -104,5 +104,52 @@
     }
     return motion;
 }
+
+/*!
+@method userDidTapButtonMeasure:whenInState:
+@discussion This method returns the behaviour when user taps 'Measure' button in ThetaThetaLocating mode.
+*/
+- (void)userDidTapButtonMeasure:(UIButton *)buttonMeasure
+                    whenInState:(NSString *)state
+             andWithLabelStatus:(UILabel *)labelStatus
+{
+    if ([state isEqualToString:@"IDLE"]) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
+        // If user did chose a position to aim
+        if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                        andCredentialsUserDic:credentialsUserDic]) {
+            [buttonMeasure setEnabled:YES];
+            [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
+                                       andWithCredentialsUserDic:credentialsUserDic];
+            
+            [labelStatus setText:MEASURING_STATE_MESSAGE];
+            
+            // And send the notification
+            // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
+            // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaLocating/start" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
+            NSLog(@"[NOTI]%@ Notification \"startGyroscopes\" posted.", ERROR_DESCRIPTION);
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring"
+                                                                object:nil];
+            NSLog(@"[NOTI]%@ Notification \"startGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION);
+            return;
+        } else {
+            return;
+        }
+    }
+    if ([state isEqualToString:@"MEASURING"]) { // If 'Measuring' is tapped, ask stop measuring.
+        [buttonMeasure setEnabled:YES];
+        // This next line have been moved into "stopGyroscopesHeadingMeasuring" method, because the measure is generated in this case after stop measuring
+        // [sharedData inSessionDataSetIdleUserWithUserDic:userDic andWithCredentialsUserDic:credentialsUserDic];
+        [labelStatus setText:IDLE_STATE_MESSAGE];
+        // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaLocating/stop" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
+        NSLog(@"[NOTI]%@ Notification \"stopGyroscopes\" posted.", ERROR_DESCRIPTION);
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
+                                                            object:nil];
+        NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION);
+        return;
+    }
+}
+
 
 @end
