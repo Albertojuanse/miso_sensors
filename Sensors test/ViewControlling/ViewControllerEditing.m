@@ -353,7 +353,6 @@
                                andCredentialsUserDic:credentialsUserDic];
         
         // Present the view as a pop up
-        //[self performSegueWithIdentifier:@"fromTHETA_THETA_LOCATINGToEditComponent" sender:nil];
         ViewControllerEditComponent * viewControllerEditComponent = [[[NSBundle mainBundle]
                                                                       loadNibNamed:@"ViewEditComponent"
                                                                       owner:self
@@ -598,6 +597,37 @@
  */
 - (IBAction)handleButtonFinish:(id)sender {
     [self performSegueWithIdentifier:@"fromEDITINGToFinalModel" sender:sender];
+}
+
+/*!
+ @method handleButtonAdd:
+ @discussion This method is called when user wants to add a component to the model.
+ */
+- (IBAction)handleButtonAdd:(id)sender {
+    
+    // Instance the add component view
+    ViewControllerAddComponent * viewControllerAddComponent = [[[NSBundle mainBundle]
+                                                                loadNibNamed:@"ViewAddComponent"
+                                                                owner:self
+                                                                options:nil]
+                                                               objectAtIndex:0];
+    [viewControllerAddComponent setModalPresentationStyle:UIModalPresentationPopover];
+    
+    // Set the context variables
+    [viewControllerAddComponent setCredentialsUserDic:credentialsUserDic];
+    [viewControllerAddComponent setUserDic:userDic];
+    [viewControllerAddComponent setSharedData:sharedData];
+    [viewControllerAddComponent setItemBeaconIdNumber:itemBeaconIdNumber];
+    [viewControllerAddComponent setItemPositionIdNumber:itemPositionIdNumber];
+    
+    // Configure popover layout
+    UIPopoverPresentationController * popoverEditComponent =  viewControllerAddComponent.popoverPresentationController;
+    [popoverEditComponent setDelegate:viewControllerAddComponent];
+    [popoverEditComponent setSourceView:self.buttonAdd];
+    [popoverEditComponent setSourceRect:CGRectMake(0, 0, 1, 1)];
+    [popoverEditComponent setPermittedArrowDirections:UIPopoverArrowDirectionAny];
+    // Show the view
+    [self presentViewController:viewControllerAddComponent animated:YES completion:nil];
 }
 
 /*!

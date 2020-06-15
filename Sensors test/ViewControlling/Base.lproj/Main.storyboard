@@ -2216,10 +2216,20 @@
                                                     <action selector="handleButtonFinish:" destination="okL-35-9pm" eventType="touchUpInside" id="SIJ-Rs-Rhc"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pC1-jv-prk">
+                                                <rect key="frame" x="32" y="32" width="30" height="48"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                                <state key="normal" title="+"/>
+                                                <connections>
+                                                    <action selector="handleButtonAdd:" destination="okL-35-9pm" eventType="touchUpInside" id="jJZ-zC-ysM"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
+                                            <constraint firstItem="pC1-jv-prk" firstAttribute="leading" secondItem="Lkn-Mp-7ch" secondAttribute="leading" constant="32" id="AFL-TA-iSF"/>
                                             <constraint firstAttribute="bottom" secondItem="cwf-Zo-7tw" secondAttribute="bottom" constant="32" id="CUR-Pz-nNO"/>
+                                            <constraint firstItem="pC1-jv-prk" firstAttribute="top" secondItem="Lkn-Mp-7ch" secondAttribute="top" constant="32" id="EXw-XV-lz7"/>
                                             <constraint firstItem="aVK-XL-Kwy" firstAttribute="leading" secondItem="Xub-Bw-BYp" secondAttribute="trailing" constant="32" id="Lg8-4Z-fbm"/>
                                             <constraint firstAttribute="bottom" secondItem="Xub-Bw-BYp" secondAttribute="bottom" constant="32" id="Q0t-YA-ASb"/>
                                             <constraint firstAttribute="trailing" secondItem="psd-ZE-J9o" secondAttribute="trailing" constant="32" id="Sfj-ay-Ee4"/>
@@ -2290,6 +2300,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="qT7-Rd-FSI"/>
                     <connections>
+                        <outlet property="buttonAdd" destination="pC1-jv-prk" id="gOs-lA-YqG"/>
                         <outlet property="buttonBack" destination="Xub-Bw-BYp" id="gAn-Cq-CCc"/>
                         <outlet property="buttonFinish" destination="cwf-Zo-7tw" id="Mvh-6C-ig7"/>
                         <outlet property="buttonMeasure" destination="psd-ZE-J9o" id="aiT-6K-ReB"/>

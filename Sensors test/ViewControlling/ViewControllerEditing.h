@@ -11,6 +11,7 @@
 #import <CoreLocation/CoreLocation.h>
 
 #import "ViewControllerSelectPositions.h"
+#import "ViewControllerAddComponent.h"
 #import "ViewControllerEditComponent.h"
 
 #import "VCEditingDelegate.h"
@@ -75,6 +76,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonFinish;
 @property (weak, nonatomic) IBOutlet UIButton *buttonNext;
 @property (weak, nonatomic) IBOutlet UIButton *buttonBack;
+@property (weak, nonatomic) IBOutlet UIButton *buttonAdd;
 
 // Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
