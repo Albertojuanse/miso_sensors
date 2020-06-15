@@ -42,7 +42,7 @@
 }
 
 /*!
-@method viewDidLoad
+@method viewWillAppear:
 @discussion This method is called when the view is going to be shown.
 */
 - (void)viewWillAppear:(BOOL)animated
@@ -138,7 +138,7 @@
 }
 
 /*!
-@method handleButtonCancel:
+@method handleButtonEdit:
 @discussion This method handles the 'edit' button action, save the changes, and segues back.
 */
 - (IBAction)handleButtonEdit:(id)sender

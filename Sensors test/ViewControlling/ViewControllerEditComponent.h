@@ -8,10 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "SharedData.h"
 #import "MDAttribute.h"
 #import "MDType.h"
-#import "ViewControllerRhoRhoLocating.h"
-#import "ViewControllerRhoThetaModeling.h"
 #import "VCComponent.h"
 #import "VCComponentInfo.h"
 
