@@ -122,6 +122,18 @@
                                                    alpha:0.3
                                     ]
                           forState:UIControlStateDisabled];
+    [self.buttonAdd setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                  green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                   blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                  alpha:1.0
+                                   ]
+                         forState:UIControlStateNormal];
+    [self.buttonAdd setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                  green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                   blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                  alpha:0.3
+                                   ]
+                         forState:UIControlStateDisabled];
     // Other components
     [self.signOutButton setTitleColor:[UIColor whiteColor]
                              forState:UIControlStateNormal];
