@@ -193,12 +193,13 @@
        inViewController:(UIViewController *)viewController
   numberOfRowsInSection:(NSInteger)section
 {
-    // Get the number of metamodel elements; if access the database is imposible, warn the user.
+    // In this mode, only iBeacon devices can be positioned; if one of these items have already got a position assigned, that position must be transferred to another item
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        return [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+        return [[sharedData fromItemDataGetItemsWithSort:@"beacon"
+                                   andCredentialsUserDic:credentialsUserDic] count];
     } else { // Type not found
         [self alertUserWithTitle:@"Items won't be loaded."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
@@ -222,10 +223,10 @@
                            cell:(UITableViewCell *)cell
               forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // In this mode, only iBeacon devices can be positioned; if one of these items have already got a position assigned, that position must be transferred to another item
     
     // Configure individual cells
-        
-    // Database could not be accessed.
+    // Database could be accessed.
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
@@ -236,8 +237,8 @@
                                andCredentialsUserDic:credentialsUserDic];
         
         // Select the source of items
-        NSMutableDictionary * itemDic = [
-                                         [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+        NSMutableDictionary * itemDic = [[sharedData fromItemDataGetItemsWithSort:@"beacon"
+                                                            andCredentialsUserDic:credentialsUserDic]
                                          objectAtIndex:indexPath.row
                                          ];
         cell.textLabel.numberOfLines = 0; // Means any number
@@ -297,77 +298,10 @@
                     
                 }
             }
-        }
-        
-        // And if it is a position
-        if ([@"position" isEqualToString:itemDic[@"sort"]] && ([@"NO" isEqualToString:itemDic[@"located"]] || !itemDic[@"located"])) {
-            // If its type is set
-            RDPosition * position = itemDic[@"position"];
-            if (itemDic[@"type"]) {
-                
-                cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: %@",
-                                       itemDic[@"identifier"],
-                                       itemDic[@"type"],
-                                       position
-                                       ];
-                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-            } else {
-                
-                cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: %@",
-                                       itemDic[@"identifier"],
-                                       position
-                                       ];
-                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-            }
-            
-            // In this mode, only beacons can be aimed, and so, positions are marked
-            [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
-            [cell setTintColor:[UIColor redColor]];
-            
-        }
-        
-        // And if it is a location
-        if ([@"position" isEqualToString:itemDic[@"sort"]] && [@"YES" isEqualToString:itemDic[@"located"]]) {
-            // If its type is set
-            RDPosition * position = itemDic[@"position"];
-            if (itemDic[@"type"]) {
-                
-                if (position) {
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: %@",
-                                           itemDic[@"identifier"],
-                                           itemDic[@"type"],
-                                           position
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                } else {
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n",
-                                           itemDic[@"identifier"],
-                                           itemDic[@"type"]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                }
-                
-            } else {
-                
-                if (position) {
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: %@",
-                                           itemDic[@"identifier"],
-                                           position
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                } else {
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n",
-                                           itemDic[@"identifier"],
-                                           itemDic[@"type"]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                }
-            }
-            
-            // In this mode, only beacons can be aimed, and so, positions are marked
-            [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
-            [cell setTintColor:[UIColor redColor]];
-            
+        } else {
+            NSLog(@"[ERROR]%@ An item of sort %@ loaded as a beacon.",
+                  ERROR_DESCRIPTION_VCERTM,
+                  itemDic[@"sort"]);
         }
         
     } else { // Type not found
@@ -397,22 +331,15 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        // Load the item depending of the source
-        NSMutableDictionary * itemSelected = nil;
-        itemSelected = [
-                                              [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
-                                              objectAtIndex:indexPath.row
-                                              ];
+        // Load the item depending and set as selected
+        NSMutableDictionary * itemDic = [[sharedData fromItemDataGetItemsWithSort:@"beacon"
+                           andCredentialsUserDic:credentialsUserDic]
+        objectAtIndex:indexPath.row
+        ];
         
-        // Only beacons can be aimed, positions were marked
-        if ([@"position" isEqualToString:itemSelected[@"sort"]] && ([@"NO" isEqualToString:itemSelected[@"located"]] || !itemSelected[@"located"]))
-        {
-            [tableView deselectRowAtIndexPath:indexPath animated:NO];
-        } else {
-            [sharedData inSessionDataSetItemChosenByUser:itemSelected
-                                       toUserWithUserDic:userDic
-                                   andCredentialsUserDic:credentialsUserDic];
-        }
+        [sharedData inSessionDataSetItemChosenByUser:itemDic
+                                   toUserWithUserDic:userDic
+                               andCredentialsUserDic:credentialsUserDic];
         
     } else {
         [self alertUserWithTitle:@"Items won't be loaded."
