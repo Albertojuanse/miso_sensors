@@ -12,10 +12,6 @@
 #import "LMDelegateThetaThetaLocating.h"
 #import "MotionManager.h"
 
-static NSString * ERROR_DESCRIPTION = @"[VCETTL]";
-static NSString * IDLE_STATE_MESSAGE = @"IDLE; please, aim the reference position and tap 'Measure' for starting. Tap back for finishing.";
-static NSString * MEASURING_STATE_MESSAGE = @"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure.";
-
 /*!
  @class VCEditingDelegateThetaThetaLocating
  @discussion This class implements the protocol VCEditingDelegate to define the behaviour of the editing view controller in ThetaThetaLocating mode.
