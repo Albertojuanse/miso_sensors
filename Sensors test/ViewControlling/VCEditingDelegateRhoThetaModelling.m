@@ -37,7 +37,7 @@
 */
 - (NSString *)getErrorDescription
 {
-    return ERROR_DESCRIPTION;
+    return ERROR_DESCRIPTION_VCERTM;
 }
 
 /*!
@@ -46,7 +46,7 @@
 */
 - (NSString *)getIdleStateMessage
 {
-    return IDLE_STATE_MESSAGE;
+    return IDLE_STATE_MESSAGE_VCERTM;
 }
 
 /*!
@@ -55,7 +55,7 @@
 */
 - (NSString *)getMeasuringStateMessage
 {
-    return MEASURING_STATE_MESSAGE;
+    return MEASURING_STATE_MESSAGE_VCERTM;
 }
 
 /*!
@@ -82,17 +82,17 @@
                                                                       andCredentialsUserDic:credentialsUserDic];
     NSMutableDictionary * itemChosenByUserAsDevicePosition;
     if (itemsChosenByUser.count == 0) {
-        NSLog(@"[ERROR]%@ The collection with the items chosen by user is empty; no device position provided.", ERROR_DESCRIPTION);
+        NSLog(@"[ERROR]%@ The collection with the items chosen by user is empty; no device position provided.", ERROR_DESCRIPTION_VCERTM);
     } else {
         itemChosenByUserAsDevicePosition = [itemsChosenByUser objectAtIndex:0];
         if (itemsChosenByUser.count > 1) {
-            NSLog(@"[ERROR]%@ The collection with the items chosen by user have more than one item; the first one is set as device position.", ERROR_DESCRIPTION);
+            NSLog(@"[ERROR]%@ The collection with the items chosen by user have more than one item; the first one is set as device position.", ERROR_DESCRIPTION_VCERTM);
         }
     }
     if (itemChosenByUserAsDevicePosition) {
         RDPosition * position = itemChosenByUserAsDevicePosition[@"position"];
         if (!position) {
-            NSLog(@"[ERROR]%@ No position was found in the item chosen by user as device position; (0,0,0) is set.", ERROR_DESCRIPTION);
+            NSLog(@"[ERROR]%@ No position was found in the item chosen by user as device position; (0,0,0) is set.", ERROR_DESCRIPTION_VCERTM);
             position = [[RDPosition alloc] init];
             position.x = [NSNumber numberWithFloat:0.0];
             position.y = [NSNumber numberWithFloat:0.0];
@@ -100,7 +100,7 @@
         }
         if (!deviceUUID) {
             if (!itemChosenByUserAsDevicePosition[@"uuid"]) {
-                NSLog(@"[ERROR]%@ No UUID was found in the item chosen by user as device position; a random one set.", ERROR_DESCRIPTION);
+                NSLog(@"[ERROR]%@ No UUID was found in the item chosen by user as device position; a random one set.", ERROR_DESCRIPTION_VCERTM);
                 deviceUUID = [[NSUUID UUID] UUIDString];
             } else {
                 deviceUUID = itemChosenByUserAsDevicePosition[@"uuid"];
@@ -151,12 +151,12 @@
             [buttonMeasure setEnabled:YES];
             [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                        andWithCredentialsUserDic:credentialsUserDic];
-            [labelStatus setText:MEASURING_STATE_MESSAGE];
+            [labelStatus setText:MEASURING_STATE_MESSAGE_VCERTM];
         
             // And send the notification
             [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaModelling/start"
                                                                 object:nil];
-            NSLog(@"[NOTI]%@ Notification \"lmdRhoThetaModelling/start\" posted.", ERROR_DESCRIPTION);
+            NSLog(@"[NOTI]%@ Notification \"lmdRhoThetaModelling/start\" posted.", ERROR_DESCRIPTION_VCERTM);
             return;
         } else {
             return;
@@ -166,10 +166,10 @@
         [buttonMeasure setEnabled:YES];
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
-        [labelStatus setText:IDLE_STATE_MESSAGE];
+        [labelStatus setText:IDLE_STATE_MESSAGE_VCERTM];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaModelling/stop"
                                                             object:nil];
-        NSLog(@"[NOTI]%@ Notification \"lmdRhoThetaModelling/stop\" posted.", ERROR_DESCRIPTION);
+        NSLog(@"[NOTI]%@ Notification \"lmdRhoThetaModelling/stop\" posted.", ERROR_DESCRIPTION_VCERTM);
         return;
     }
 }
@@ -207,7 +207,7 @@
                       }
                 inViewController:viewController
          ];
-        NSLog(@"[ERROR]%@ Shared data could not be accessed while loading items.", ERROR_DESCRIPTION);
+        NSLog(@"[ERROR]%@ Shared data could not be accessed while loading items.", ERROR_DESCRIPTION_VCERTM);
     }
     
     return 0;
@@ -378,7 +378,7 @@
                       }
                 inViewController:viewController
          ];
-        NSLog(@"[ERROR]%@ Shared data could not be accessed while loading cells' item.", ERROR_DESCRIPTION);
+        NSLog(@"[ERROR]%@ Shared data could not be accessed while loading cells' item.", ERROR_DESCRIPTION_VCERTM);
     }
     
     return cell;
@@ -422,7 +422,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                       }
                 inViewController:viewController
          ];
-        NSLog(@"[ERROR]%@ Shared data could not be accessed while selecting a cell.", ERROR_DESCRIPTION);
+        NSLog(@"[ERROR]%@ Shared data could not be accessed while selecting a cell.", ERROR_DESCRIPTION_VCERTM);
     }
 }
 

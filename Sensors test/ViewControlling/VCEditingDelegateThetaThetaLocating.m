@@ -37,7 +37,7 @@
 */
 - (NSString *)getErrorDescription
 {
-    return ERROR_DESCRIPTION;
+    return ERROR_DESCRIPTION_VCETTL;
 }
 
 /*!
@@ -46,7 +46,7 @@
 */
 - (NSString *)getIdleStateMessage
 {
-    return IDLE_STATE_MESSAGE;
+    return IDLE_STATE_MESSAGE_VCETTL;
 }
 
 /*!
@@ -55,7 +55,7 @@
 */
 - (NSString *)getMeasuringStateMessage
 {
-    return MEASURING_STATE_MESSAGE;
+    return MEASURING_STATE_MESSAGE_VCETTL;
 }
 
 /*!
@@ -121,16 +121,16 @@
             [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                        andWithCredentialsUserDic:credentialsUserDic];
             
-            [labelStatus setText:MEASURING_STATE_MESSAGE];
+            [labelStatus setText:MEASURING_STATE_MESSAGE_VCETTL];
             
             // And send the notification
             // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
             // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaLocating/start" object:nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
-            NSLog(@"[NOTI]%@ Notification \"startGyroscopes\" posted.", ERROR_DESCRIPTION);
+            NSLog(@"[NOTI]%@ Notification \"startGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTL);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring"
                                                                 object:nil];
-            NSLog(@"[NOTI]%@ Notification \"startGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION);
+            NSLog(@"[NOTI]%@ Notification \"startGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTL);
             return;
         } else {
             return;
@@ -140,13 +140,13 @@
         [buttonMeasure setEnabled:YES];
         // This next line have been moved into "stopGyroscopesHeadingMeasuring" method, because the measure is generated in this case after stop measuring
         // [sharedData inSessionDataSetIdleUserWithUserDic:userDic andWithCredentialsUserDic:credentialsUserDic];
-        [labelStatus setText:IDLE_STATE_MESSAGE];
+        [labelStatus setText:IDLE_STATE_MESSAGE_VCETTL];
         // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaLocating/stop" object:nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
-        NSLog(@"[NOTI]%@ Notification \"stopGyroscopes\" posted.", ERROR_DESCRIPTION);
+        NSLog(@"[NOTI]%@ Notification \"stopGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTL);
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
                                                             object:nil];
-        NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION);
+        NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTL);
         return;
     }
 }
