@@ -62,7 +62,6 @@
 		429093E023AA4B3C000CEA6E /* ViewControllerMonitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = 429093DF23AA4B3C000CEA6E /* ViewControllerMonitoring.m */; };
 		42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 42917F02229BE12900EE6CD3 /* Blackbox.m */; };
 		4295FB2222D35D7A0024B155 /* ViewControllerMainMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */; };
-		4295FB2622D360BB0024B155 /* ViewControllerAddBeaconMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */; };
 		429FA65F22EB19DB00F3D415 /* MDType.m in Sources */ = {isa = PBXBuildFile; fileRef = 429FA65E22EB19DB00F3D415 /* MDType.m */; };
 		42A7BAD8249393FB001130DA /* ViewControllerEditing.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A7BAD7249393FB001130DA /* ViewControllerEditing.m */; };
 		42A7BADC2493B8A9001130DA /* VCEditingDelegateThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A7BADB2493B8A9001130DA /* VCEditingDelegateThetaThetaLocating.m */; };
@@ -181,8 +180,6 @@
 		42917F04229BE16500EE6CD3 /* Blackbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Blackbox.h; sourceTree = "<group>"; };
 		4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerMainMenu.m; sourceTree = "<group>"; };
 		4295FB2322D35D8D0024B155 /* ViewControllerMainMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerMainMenu.h; sourceTree = "<group>"; };
-		4295FB2422D360930024B155 /* ViewControllerAddBeaconMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerAddBeaconMenu.h; sourceTree = "<group>"; };
-		4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerAddBeaconMenu.m; sourceTree = "<group>"; };
 		429FA65E22EB19DB00F3D415 /* MDType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDType.m; sourceTree = "<group>"; };
 		42A7BAD6249393EA001130DA /* ViewControllerEditing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerEditing.h; sourceTree = "<group>"; };
 		42A7BAD7249393FB001130DA /* ViewControllerEditing.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerEditing.m; sourceTree = "<group>"; };
@@ -322,8 +319,6 @@
 				4240729923E9764300B2C696 /* ViewControllerConfigurationBeacons.m */,
 				4295FB2322D35D8D0024B155 /* ViewControllerMainMenu.h */,
 				4295FB2122D35D7A0024B155 /* ViewControllerMainMenu.m */,
-				4295FB2422D360930024B155 /* ViewControllerAddBeaconMenu.h */,
-				4295FB2522D360BB0024B155 /* ViewControllerAddBeaconMenu.m */,
 				428AF6BE22D7912400BE5374 /* ViewControllerSelectPositions.h */,
 				428AF6BF22D7915000BE5374 /* ViewControllerSelectPositions.m */,
 				42412F2B24980DF5002EB1A5 /* ViewAddComponent.xib */,
@@ -582,7 +577,6 @@
 				4242F6CB22CBACAB00C4B0B7 /* Averager.m in Sources */,
 				42412F2824980654002EB1A5 /* ViewControllerAddComponent.m in Sources */,
 				4240729D23E9D6C100B2C696 /* MDAttribute.m in Sources */,
-				4295FB2622D360BB0024B155 /* ViewControllerAddBeaconMenu.m in Sources */,
 				42612F3F24470AEB00B66BC3 /* LMRanging.m in Sources */,
 				4227989B2271F60700E07C39 /* MotionManager.m in Sources */,
 				426AD1C923FD3DEE00565D65 /* VCModesTable.m in Sources */,
