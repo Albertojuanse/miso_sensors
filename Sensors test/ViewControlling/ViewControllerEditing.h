@@ -16,6 +16,7 @@
 
 #import "VCEditingDelegate.h"
 #import "VCEditingDelegateThetaThetaLocating.h"
+#import "VCEditingDelegateRhoThetaModelling.h"
 
 #import "LMDelegateRhoThetaModelling.h"
 #import "LMDelegateRhoRhoLocating.h"

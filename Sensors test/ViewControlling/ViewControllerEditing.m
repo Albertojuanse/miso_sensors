@@ -247,6 +247,9 @@
     if ([mode isModeKey:kModeThetaThetaLocating]) {
         delegate = [[VCEditingDelegateThetaThetaLocating alloc] init];
     }
+    if ([mode isModeKey:kModeRhoThetaModelling]) {
+        delegate = [[VCEditingDelegateRhoThetaModelling alloc] init];
+    }
     
     if (delegate) {
         // Load the components from delegate
@@ -597,6 +600,12 @@
     // TODO: To notification. Aberto J. 2020/06/13.
     if ([mode isModeKey:kModeThetaThetaLocating]) {
         LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)location;
+        locatedPositionUUID = [[NSUUID UUID] UUIDString];
+        [lmdelegate setDeviceUUID:locatedPositionUUID];
+        [motion setDeviceUUID:locatedPositionUUID];
+    }
+    if ([mode isModeKey:kModeRhoThetaModelling]) {
+        LMDelegateRhoThetaModelling * lmdelegate = (LMDelegateRhoThetaModelling *)location;
         locatedPositionUUID = [[NSUUID UUID] UUIDString];
         [lmdelegate setDeviceUUID:locatedPositionUUID];
         [motion setDeviceUUID:locatedPositionUUID];
