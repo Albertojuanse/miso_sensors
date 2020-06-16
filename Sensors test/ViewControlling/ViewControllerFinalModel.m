@@ -418,7 +418,7 @@
 }
 
 /*!
- @method alertUserWithTitle:andMessage:
+ @method alertUserWithTitle:message:andHandler:
  @discussion This method alerts the user with a pop up window with a single "Ok" button given its message and title and lambda funcion handler.
  */
 - (void) alertUserWithTitle:(NSString *)title
