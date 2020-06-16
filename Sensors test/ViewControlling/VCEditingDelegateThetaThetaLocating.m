@@ -151,5 +151,48 @@
     }
 }
 
+/*!
+ @method numberOfSectionsInTableItems:inViewController:
+ @discussion Handles the upload of table items; returns the number of sections in them.
+ */
+- (NSInteger)numberOfSectionsInTableItems:(UITableView *)tableView
+                         inViewController:(UIViewController *)viewController
+{
+    // Return the number of sections.
+    return 0;
+}
 
+/*!
+ @method tableItems:inViewController:numberOfRowsInSection:
+ @discussion Handles the upload of table items; returns the number of items in them.
+ */
+- (NSInteger)tableItems:(UITableView *)tableView
+       inViewController:(UIViewController *)viewController
+  numberOfRowsInSection:(NSInteger)section
+{
+    return 0;
+}
+
+/*!
+ @method tableItems:inViewController:cell:forRowAtIndexPath:
+ @discussion Handles the upload of table items; returns each cell.
+ */
+- (UITableViewCell *)tableItems:(UITableView *)tableView
+               inViewController:(UIViewController *)viewController
+                           cell:(UITableViewCell *)cell
+              forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return cell;
+}
+
+/*!
+ @method tableItems:inViewController:didSelectRowAtIndexPath:
+ @discussion Handles the upload of table items; handles the 'select a cell' action.
+ */
+- (void)tableItems:(UITableView *)tableView
+  inViewController:(UIViewController *)viewController
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
+{
+    return;
+}
 @end

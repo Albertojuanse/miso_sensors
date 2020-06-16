@@ -35,4 +35,16 @@ static NSString * MEASURING_STATE_MESSAGE = @"MEASURING; please, do not move the
 - (void)userDidTapButtonMeasure:(UIButton *)buttonMeasure
                     whenInState:(NSString *)state
              andWithLabelStatus:(UILabel *)labelStatus;
+- (NSInteger)numberOfSectionsInTableItems:(UITableView *)tableView
+                         inViewController:(UIViewController *)viewController;
+- (NSInteger)tableItems:(UITableView *)tableView
+       inViewController:(UIViewController *)viewController
+  numberOfRowsInSection:(NSInteger)section;
+- (UITableViewCell *)tableItems:(UITableView *)tableView
+               inViewController:(UIViewController *)viewController
+                           cell:(UITableViewCell *)cell
+              forRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)tableItems:(UITableView *)tableView
+  inViewController:(UIViewController *)viewController
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 @end

@@ -640,6 +640,7 @@
     [viewControllerAddComponent setSharedData:sharedData];
     [viewControllerAddComponent setItemBeaconIdNumber:itemBeaconIdNumber];
     [viewControllerAddComponent setItemPositionIdNumber:itemPositionIdNumber];
+    [viewControllerAddComponent setVCEditingDelegate:delegate];
     
     // Configure popover layout
     UIPopoverPresentationController * popoverEditComponent =  viewControllerAddComponent.popoverPresentationController;

@@ -106,6 +106,15 @@
     itemPositionIdNumber = givenItemPositionIdNumber;
 }
 
+/*!
+@method setVCEditingDelegate:
+@discussion This method sets the id<VCEditingDelegate> which defines the behaviour of this view in each mode.
+*/
+- (void) setVCEditingDelegate:(id<VCEditingDelegate>)givenDelegate
+{
+    delegate = givenDelegate;
+}
+
 #pragma mark - Buttons event handlers
 
 /*!
@@ -167,6 +176,7 @@
 }
 
 #pragma mark - UItableView delegate methods
+// Note that this class also uses the delegated methods of <VCEditingDelegate> implementations
 /*!
  @method numberOfSectionsInTableView:
  @discussion Handles the upload of tables; returns the number of sections in them.
@@ -174,7 +184,13 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 1;
+    if (tableView == self.tableItems) {
+        // Ask view's delegate in each mode to manage this
+        return [delegate numberOfSectionsInTableItems:tableView
+                                     inViewController:self];
+    } else {
+        return 1;
+    }
 }
 
 /*!
@@ -184,24 +200,13 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == self.tableItems) {
-        // Get the number of metamodel elements; if access the database is imposible, warn the user.
-        if (
-            [sharedData validateCredentialsUserDic:credentialsUserDic]
-            )
-        {
-            return [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
-        } else { // Type not found
-            [self alertUserWithTitle:@"Items won't be loaded."
-                             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
-                          andHandler:^(UIAlertAction * action) {
-                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
-                          }
-             ];
-            NSLog(@"[ERROR][VCAC] Shared data could not be accessed while loading items.");
-        }
+        // Ask view's delegate in each mode to manage this
+        return [delegate tableItems:tableView
+                inViewController:self
+              numberOfRowsInSection:section];
+    } else {
+        return 0;
     }
-    
-    return 0;
 }
 
 /*!
@@ -218,163 +223,12 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    // Configure individual cells
     if (tableView == self.tableItems) {
-        
-        // Database could not be accessed.
-        if (
-            [sharedData validateCredentialsUserDic:credentialsUserDic]
-            )
-        {
-            // No item chosen by user
-            [sharedData inSessionDataSetItemChosenByUser:nil
-                                       toUserWithUserDic:userDic
-                                   andCredentialsUserDic:credentialsUserDic];
-            
-            // Select the source of items
-            NSMutableDictionary * itemDic = [
-                                             [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
-                                             objectAtIndex:indexPath.row
-                                             ];
-            cell.textLabel.numberOfLines = 0; // Means any number
-            
-            // If it is a beacon
-            if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
-                
-                // It representation depends on if exist its position or its type
-                if (itemDic[@"position"]) {
-                    if (itemDic[@"type"]) {
-                        
-                        RDPosition * position = itemDic[@"position"];
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: %@",
-                                               itemDic[@"identifier"],
-                                               itemDic[@"type"],
-                                               itemDic[@"uuid"],
-                                               itemDic[@"major"],
-                                               itemDic[@"minor"],
-                                               position
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                        
-                    } else {
-                        
-                        RDPosition * position = itemDic[@"position"];
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: %@",
-                                               itemDic[@"identifier"],
-                                               itemDic[@"uuid"],
-                                               itemDic[@"major"],
-                                               itemDic[@"minor"],
-                                               position
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                        
-                    }
-                } else {
-                    if (itemDic[@"type"]) {
-                        
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nmajor: %@ ; minor: %@",
-                                               itemDic[@"identifier"],
-                                               itemDic[@"type"],
-                                               itemDic[@"uuid"],
-                                               itemDic[@"major"],
-                                               itemDic[@"minor"]
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                        
-                    } else  {
-                        
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
-                                               itemDic[@"identifier"],
-                                               itemDic[@"uuid"],
-                                               itemDic[@"major"],
-                                               itemDic[@"minor"]
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                        
-                    }
-                }
-            }
-            
-            // And if it is a position
-            if ([@"position" isEqualToString:itemDic[@"sort"]] && ([@"NO" isEqualToString:itemDic[@"located"]] || !itemDic[@"located"])) {
-                // If its type is set
-                RDPosition * position = itemDic[@"position"];
-                if (itemDic[@"type"]) {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: %@",
-                                           itemDic[@"identifier"],
-                                           itemDic[@"type"],
-                                           position
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                } else {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: %@",
-                                           itemDic[@"identifier"],
-                                           position
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                }
-                
-                // In this mode, only beacons can be aimed, and so, positions are marked
-                [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
-                [cell setTintColor:[UIColor redColor]];
-                
-            }
-            
-            // And if it is a location
-            if ([@"position" isEqualToString:itemDic[@"sort"]] && [@"YES" isEqualToString:itemDic[@"located"]]) {
-                // If its type is set
-                RDPosition * position = itemDic[@"position"];
-                if (itemDic[@"type"]) {
-                    
-                    if (position) {
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: %@",
-                                               itemDic[@"identifier"],
-                                               itemDic[@"type"],
-                                               position
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    } else {
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n",
-                                               itemDic[@"identifier"],
-                                               itemDic[@"type"]
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    }
-                    
-                } else {
-                    
-                    if (position) {
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: %@",
-                                               itemDic[@"identifier"],
-                                               position
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    } else {
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n",
-                                               itemDic[@"identifier"],
-                                               itemDic[@"type"]
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    }
-                }
-                
-                // In this mode, only beacons can be aimed, and so, positions are marked
-                [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
-                [cell setTintColor:[UIColor redColor]];
-                
-            }
-            
-        } else { // Type not found
-            [self alertUserWithTitle:@"Items won't be loaded."
-                             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
-                          andHandler:^(UIAlertAction * action) {
-                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
-                          }
-             ];
-            NSLog(@"[ERROR][VCAC] Shared data could not be accessed while loading cells' item.");
-        }
+        // Ask view's delegate in each mode to manage this
+        [delegate tableItems:tableView
+            inViewController:self
+                        cell:cell
+           forRowAtIndexPath:indexPath];
     }
     
     return cell;
@@ -388,38 +242,10 @@
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.tableItems) {
-        
-        // Database could not be accessed.
-        if (
-            [sharedData validateCredentialsUserDic:credentialsUserDic]
-            )
-        {
-            // Load the item depending of the source
-            NSMutableDictionary * itemSelected = nil;
-            itemSelected = [
-                                                  [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
-                                                  objectAtIndex:indexPath.row
-                                                  ];
-            
-            // Only beacons can be aimed, positions were marked
-            if ([@"position" isEqualToString:itemSelected[@"sort"]] && ([@"NO" isEqualToString:itemSelected[@"located"]] || !itemSelected[@"located"]))
-            {
-                [tableView deselectRowAtIndexPath:indexPath animated:NO];
-            } else {
-                [sharedData inSessionDataSetItemChosenByUser:itemSelected
-                                           toUserWithUserDic:userDic
-                                       andCredentialsUserDic:credentialsUserDic];
-            }
-            
-        } else {
-            [self alertUserWithTitle:@"Items won't be loaded."
-                             message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
-                          andHandler:^(UIAlertAction * action) {
-                              // TODO: handle intrusion situations. Alberto J. 2019/09/10.
-                          }
-             ];
-            NSLog(@"[ERROR][VCAC] Shared data could not be accessed while selecting a cell.");
-        }
+        // Ask view's delegate in each mode to manage this
+        [delegate tableItems:tableView
+            inViewController:self
+     didSelectRowAtIndexPath:indexPath];
     }
 }
 @end
