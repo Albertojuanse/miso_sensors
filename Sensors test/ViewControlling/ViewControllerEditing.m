@@ -154,6 +154,49 @@
 }
 
 /*!
+@method loadComponents
+@discussion This method loads the location and motion components depending on the current mode.
+*/
+- (void)loadComponents
+{
+    // TODO: Use UUID from component 'device'. Alberto J. 2020/01/20.
+    if (!deviceUUID) {
+        deviceUUID = [[NSUUID UUID] UUIDString];
+    }
+    
+    // Strategy pattern; different location delegate for each mode
+    if ([mode isModeKey:kModeThetaThetaLocating]) {
+        delegate = [[VCEditingDelegateThetaThetaLocating alloc] init];
+    }
+    if ([mode isModeKey:kModeRhoThetaModelling]) {
+        delegate = [[VCEditingDelegateRhoThetaModelling alloc] init];
+    }
+    
+    if (delegate) {
+        // Load the components from delegate
+        errorDescription = [delegate getErrorDescription];
+        NSLog(@"[INFO]%@ Delegate loaded for ViewControllingEditing.", errorDescription);
+        
+        // Load the location manager and its delegate to define how location events are handled
+        location = [delegate loadLMDelegate];
+        // TODO: idNubers to shared data. Alberto J. 2020/06/12.
+        LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)location;
+        [lmdelegate setItemBeaconIdNumber:itemBeaconIdNumber];
+        [lmdelegate setItemPositionIdNumber:itemPositionIdNumber];
+        
+        // Load the motion manager to define how motion events are handled
+        motion = [delegate loadMotion];
+
+        // Load the messages that are shown to user in each state
+        idleStateMessage = [delegate getIdleStateMessage];
+        measuringStateMessage = [delegate getMeasuringStateMessage];
+        [self.labelStatus setText:idleStateMessage];
+    } else {
+        NSLog(@"[ERROR][VCE---] No delegate for ViewControllingEditing was loaded.");
+    }
+}
+
+/*!
 @method loadModeMetamodels
 @discussion This method loads the metamodels for this mode.
 */
@@ -232,48 +275,6 @@
     NSLog(@"[INFO]%@ Loaded %tu ontologycal types for this mode.", errorDescription, modeTypes.count);
 }
 
-/*!
-@method loadComponents
-@discussion This method loads the location and motion components depending on the current mode.
-*/
-- (void)loadComponents
-{
-    // TODO: Use UUID from component 'device'. Alberto J. 2020/01/20.
-    if (!deviceUUID) {
-        deviceUUID = [[NSUUID UUID] UUIDString];
-    }
-    
-    // Strategy pattern; different location delegate for each mode
-    if ([mode isModeKey:kModeThetaThetaLocating]) {
-        delegate = [[VCEditingDelegateThetaThetaLocating alloc] init];
-    }
-    if ([mode isModeKey:kModeRhoThetaModelling]) {
-        delegate = [[VCEditingDelegateRhoThetaModelling alloc] init];
-    }
-    
-    if (delegate) {
-        // Load the components from delegate
-        errorDescription = [delegate getErrorDescription];
-        NSLog(@"[INFO]%@ Delegate loaded for ViewControllingEditing.", errorDescription);
-        
-        // Load the location manager and its delegate to define how location events are handled
-        location = [delegate loadLMDelegate];
-        // TODO: idNubers to shared data. Alberto J. 2020/06/12.
-        LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)location;
-        [lmdelegate setItemBeaconIdNumber:itemBeaconIdNumber];
-        [lmdelegate setItemPositionIdNumber:itemPositionIdNumber];
-        
-        // Load the motion manager to define how motion events are handled
-        motion = [delegate loadMotion];
-
-        // Load the messages that are shown to user in each state
-        idleStateMessage = [delegate getIdleStateMessage];
-        measuringStateMessage = [delegate getMeasuringStateMessage];
-        [self.labelStatus setText:idleStateMessage];
-    } else {
-        NSLog(@"[ERROR][VCE---] No delegate for ViewControllingEditing was loaded.");
-    }
-}
 /*!
 @method loadEventListeners
 @discussion This method loads the event listeners for this class.
