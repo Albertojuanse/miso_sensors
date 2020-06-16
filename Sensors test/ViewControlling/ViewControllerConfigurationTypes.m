@@ -597,7 +597,7 @@ didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString * cellIdentifier = [@"Cell" stringByAppendingString:[indexPath description]];
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
     // Common to all cells
     if (cell == nil) {
