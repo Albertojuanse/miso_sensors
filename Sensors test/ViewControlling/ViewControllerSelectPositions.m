@@ -423,21 +423,8 @@
     if (tableView == self.tableItems) {
         
         // Select the source of items; both items and models are shown
-        NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
-        NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
-        
-        // Load the item depending of the source
-        NSMutableDictionary * itemDic = nil;
-        if (indexPath.row < itemsCount) {
-            itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
-                       objectAtIndex:indexPath.row];
-        }
-        if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
-            itemDic = [
-                       [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
-                       objectAtIndex:indexPath.row - itemsCount
-                       ];
-        }
+        NSMutableDictionary * itemDic = [self fromSharedDataGetItemWithIndexPath:indexPath
+                                                                    inTableItems:tableView];
         
         // The itemDic variable can be null or NO if access is not granted or there are not items stored.
         if (itemDic) {
@@ -462,97 +449,77 @@
             // If it is a beacon
             if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
                 
+                [cell.imageView setImage:[self imageForBeaconInNormalThemeColor]];
+                
                 // It representation depends on if exist its position or its type
-                if (itemDic[@"position"]) {
-                    if (itemDic[@"type"]) {
-                        
-                        RDPosition * position = itemDic[@"position"];
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
-                                               itemDic[@"identifier"],
-                                               itemDic[@"type"],
-                                               itemDic[@"uuid"],
-                                               itemDic[@"major"],
-                                               itemDic[@"minor"],
-                                               [position.x floatValue],
-                                               [position.y floatValue],
-                                               [position.z floatValue]
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                        
-                    } else {
-                        
-                        RDPosition * position = itemDic[@"position"];
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
-                                               itemDic[@"identifier"],
-                                               itemDic[@"uuid"],
-                                               itemDic[@"major"],
-                                               itemDic[@"minor"],
-                                               [position.x floatValue],
-                                               [position.y floatValue],
-                                               [position.z floatValue]
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                        
-                    }
-                } else {
-                    if (itemDic[@"type"]) {
-                        
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nmajor: %@ ; minor: %@",
-                                               itemDic[@"identifier"],
-                                               itemDic[@"type"],
-                                               itemDic[@"uuid"],
-                                               itemDic[@"major"],
-                                               itemDic[@"minor"]
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                        
-                    } else  {
-                        
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
-                                               itemDic[@"identifier"],
-                                               itemDic[@"uuid"],
-                                               itemDic[@"major"],
-                                               itemDic[@"minor"]
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                        
-                    }
+                // Compose the description
+                NSString * beaconDescription = [[NSString alloc] init];
+                beaconDescription = [beaconDescription stringByAppendingString:itemDic[@"identifier"]];;
+                beaconDescription = [beaconDescription stringByAppendingString:@" "];
+                // If its type is set
+                MDType * type = itemDic[@"type"];
+                if (type) {
+                    beaconDescription = [beaconDescription stringByAppendingString:[type description]];
                 }
+                beaconDescription = [beaconDescription stringByAppendingString:@"\n"];
+                // Must have a position
+                RDPosition * position = itemDic[@"position"];
+                if (position) {
+                    beaconDescription = [beaconDescription stringByAppendingString:[position description]];
+                    beaconDescription = [beaconDescription stringByAppendingString:@"\n"];
+                }
+                NSString * itemUUID = [itemDic[@"uuid"] substringFromIndex:24];
+                NSString * itemMajor = itemDic[@"major"];
+                NSString * itemMinor = itemDic[@"minor"];
+                beaconDescription = [beaconDescription stringByAppendingFormat:@"UUID: %@ Major: %@ Minor: %@ ",
+                                     itemUUID,
+                                     itemMajor,
+                                     itemMinor];
+                cell.textLabel.text = beaconDescription;
+                
             }
             
             // If it is a position
             if ([@"position" isEqualToString:itemDic[@"sort"]]) {
+                
+                // Set its icon
+                [cell.imageView setImage:[self imageForPositionInNormalThemeColor]];
+                
+                // Compose the description
+                NSString * positionDescription = [[NSString alloc] init];
+                positionDescription = [positionDescription stringByAppendingString:itemDic[@"identifier"]];;
+                positionDescription = [positionDescription stringByAppendingString:@" "];
                 // If its type is set
-                RDPosition * position = itemDic[@"position"];
-                if (itemDic[@"type"]) {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%.2f, %.2f, %.2f)",
-                                           itemDic[@"identifier"],
-                                           itemDic[@"type"],
-                                           [position.x floatValue],
-                                           [position.y floatValue],
-                                           [position.z floatValue]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                } else {
-                    
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%.2f, %.2f, %.2f)",
-                                           itemDic[@"identifier"],
-                                           [position.x floatValue],
-                                           [position.y floatValue],
-                                           [position.z floatValue]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                MDType * type = itemDic[@"type"];
+                if (type) {
+                    positionDescription = [positionDescription stringByAppendingString:[type description]];
                 }
+                positionDescription = [positionDescription stringByAppendingString:@"\n"];
+                // Must have a position
+                RDPosition * position = itemDic[@"position"];
+                if (position) {
+                    positionDescription = [positionDescription stringByAppendingString:[position description]];
+                } else {
+                    positionDescription = [positionDescription stringByAppendingString:@"( - , - , - )"];
+                    NSLog(@"[ERROR][VCMM] No RDPosition found in item of sort position.");
+                }
+                cell.textLabel.text = positionDescription;
+                
             }
             
             // If it is a model
             if ([@"model" isEqualToString:itemDic[@"sort"]]) {
                 
-                cell.textLabel.text = [NSString stringWithFormat:@"%@",
-                                       itemDic[@"name"]
-                                       ];
-                cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                // Set its icon
+                [cell.imageView setImage:[self imageForModelInNormalThemeColor]];
+                
+                NSString * modelDescription = itemDic[@"name"];
+                if (!modelDescription) {
+                    modelDescription = @"Unknown model";
+                    NSLog(@"[ERROR][VCMM] No name found in intem of sort model.");
+                }
+                cell.textLabel.text = modelDescription;
+                
             }
 
             
@@ -585,23 +552,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         // Manage multi-selection
         UITableViewCell *selectedCell = [tableView cellForRowAtIndexPath:indexPath];
         
-        // Select the source of items; both items are models shown
-        NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
-        NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
-        
-        // Load the item depending of the source
-        NSMutableDictionary * itemDic = nil;
-        if (indexPath.row < itemsCount) {
-            itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
-                                objectAtIndex:indexPath.row
-                                ];
-        }
-        if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
-            itemDic = [
-                                [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
-                                objectAtIndex:indexPath.row - itemsCount
-                                ];
-        }
+        NSMutableDictionary * itemDic = [self fromSharedDataGetItemWithIndexPath:indexPath
+                                                                    inTableItems:tableView];
         
         if ([selectedCell accessoryType] == UITableViewCellAccessoryNone) { // If not checkmark
             
@@ -728,6 +680,37 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 #pragma mark - Other methods
+/*!
+@method fromSharedDataGetItemWithIndexPath::inTableItems;
+@discussion This method returns the item asked or selected by user in the item's table view.
+*/
+- (NSMutableDictionary *)fromSharedDataGetItemWithIndexPath:(NSIndexPath *)indexPath
+                                               inTableItems:(UITableView *)tableView
+{
+    // Select the source of items; both items are models shown
+    NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
+    NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
+    
+    // Load the item depending of the source
+    NSMutableDictionary * itemDic = nil;
+    if (indexPath.row < itemsCount) {
+        itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
+                   objectAtIndex:indexPath.row
+                   ];
+    }
+    if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
+        itemDic = [
+                   [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
+                   objectAtIndex:indexPath.row - itemsCount
+                   ];
+    }
+    if (indexPath.row >= itemsCount + modelCount) {
+        // Empty cell
+    }
+    
+    return itemDic;
+}
+
 /*!
 @method imageForPositionInNormalThemeColor
 @discussion This method draws the position icon for table cells.

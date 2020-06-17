@@ -164,9 +164,6 @@
     // Load the saved variables
     [self loadVariables];
     
-    // Load event listeners
-    [self loadEventListeners];
-    
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableModes.delegate = self;
     self.tableModes.dataSource = self;
