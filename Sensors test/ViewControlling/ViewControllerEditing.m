@@ -513,9 +513,9 @@
     // In every state the button performs different behaviours
     NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic];
-    [delegate userDidTapButtonMeasure:self.buttonMeasure
-                          whenInState:state
-                   andWithLabelStatus:self.labelStatus];
+    [delegate whileEditingUserDidTapButtonMeasure:self.buttonMeasure
+                                      whenInState:state
+                               andWithLabelStatus:self.labelStatus];
     return;
 }
 

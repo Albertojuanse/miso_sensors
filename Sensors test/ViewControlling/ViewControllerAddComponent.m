@@ -168,8 +168,8 @@
     // Return the number of sections.
     if (tableView == self.tableItems) {
         // Ask view's delegate in each mode to manage this
-        return [delegate numberOfSectionsInTableItems:tableView
-                                     inViewController:self];
+        return [delegate whileEditingNumberOfSectionsInTableItems:tableView
+                                                 inViewController:self];
     } else {
         return 1;
     }
@@ -183,9 +183,9 @@
 {
     if (tableView == self.tableItems) {
         // Ask view's delegate in each mode to manage this
-        return [delegate tableItems:tableView
-                inViewController:self
-              numberOfRowsInSection:section];
+        return [delegate whileEditingTableItems:tableView
+                               inViewController:self
+                          numberOfRowsInSection:section];
     } else {
         return 0;
     }
@@ -207,10 +207,10 @@
     
     if (tableView == self.tableItems) {
         // Ask view's delegate in each mode to manage this
-        [delegate tableItems:tableView
-            inViewController:self
-                        cell:cell
-           forRowAtIndexPath:indexPath];
+        [delegate whileEditingTableItems:tableView
+                        inViewController:self
+                                    cell:cell
+                       forRowAtIndexPath:indexPath];
     }
     
     return cell;
@@ -225,9 +225,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.tableItems) {
         // Ask view's delegate in each mode to manage this
-        [delegate tableItems:tableView
-            inViewController:self
-     didSelectRowAtIndexPath:indexPath];
+        [delegate whileEditingTableItems:tableView
+                        inViewController:self
+                 didSelectRowAtIndexPath:indexPath];
     }
 }
 @end

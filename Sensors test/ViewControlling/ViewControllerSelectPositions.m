@@ -258,7 +258,7 @@
 - (IBAction)handleButtonGo:(id)sender
 {
     
-    NSLog(@"[INFO][VCSP] Button GO tapped.");
+    NSLog(@"[INFO][VCSP] Button 'go' tapped.");
     
     // Database could not be accessed.
     if (

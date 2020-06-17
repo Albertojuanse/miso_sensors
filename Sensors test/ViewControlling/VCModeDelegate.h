@@ -23,24 +23,44 @@
                            userDic:(NSMutableDictionary *)initUserDic
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
+#pragma mark - General VCModeDelegate methods
 - (NSString *)getErrorDescription;
 - (NSString *)getIdleStateMessage;
 - (NSString *)getMeasuringStateMessage;
+#pragma mark - Location VCModeDelegate methods
 - (id<CLLocationManagerDelegate>)loadLMDelegate;
+#pragma mark - Motion VCModeDelegate methods
 - (MotionManager *)loadMotion;
-- (void)userDidTapButtonMeasure:(UIButton *)buttonMeasure
-                    whenInState:(NSString *)state
-             andWithLabelStatus:(UILabel *)labelStatus;
-- (NSInteger)numberOfSectionsInTableItems:(UITableView *)tableView
-                         inViewController:(UIViewController *)viewController;
-- (NSInteger)tableItems:(UITableView *)tableView
-       inViewController:(UIViewController *)viewController
-  numberOfRowsInSection:(NSInteger)section;
-- (UITableViewCell *)tableItems:(UITableView *)tableView
-               inViewController:(UIViewController *)viewController
-                           cell:(UITableViewCell *)cell
-              forRowAtIndexPath:(NSIndexPath *)indexPath;
-- (void)tableItems:(UITableView *)tableView
-  inViewController:(UIViewController *)viewController
-didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
+#pragma mark - Selecting VCModeDelegate methods
+- (void)whileSelectingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
+                                  whenInState:(NSString *)state
+                           andWithLabelStatus:(UILabel *)labelStatus;
+- (NSInteger)whileSelectingNumberOfSectionsInTableItems:(UITableView *)tableView
+                                       inViewController:(UIViewController *)viewController;
+- (NSInteger)whileSelectingTableItems:(UITableView *)tableView
+                     inViewController:(UIViewController *)viewController
+                numberOfRowsInSection:(NSInteger)section;
+- (UITableViewCell *)whileSelectingTableItems:(UITableView *)tableView
+                             inViewController:(UIViewController *)viewController
+                                         cell:(UITableViewCell *)cell
+                            forRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)whileSelectingTableItems:(UITableView *)tableView
+                inViewController:(UIViewController *)viewController
+         didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
+#pragma mark - Editing VCModeDelegate methods
+- (void)whileEditingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
+                                whenInState:(NSString *)state
+                         andWithLabelStatus:(UILabel *)labelStatus;
+- (NSInteger)whileEditingNumberOfSectionsInTableItems:(UITableView *)tableView
+                                     inViewController:(UIViewController *)viewController;
+- (NSInteger)whileEditingTableItems:(UITableView *)tableView
+                   inViewController:(UIViewController *)viewController
+              numberOfRowsInSection:(NSInteger)section;
+- (UITableViewCell *)whileEditingTableItems:(UITableView *)tableView
+                           inViewController:(UIViewController *)viewController
+                                       cell:(UITableViewCell *)cell
+                          forRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)whileEditingTableItems:(UITableView *)tableView
+              inViewController:(UIViewController *)viewController
+       didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 @end

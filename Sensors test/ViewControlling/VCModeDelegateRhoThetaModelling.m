@@ -30,7 +30,7 @@
     return self;
 }
 
-#pragma mark - VCModeDelegate methods
+#pragma mark - General VCModeDelegate methods
 /*!
 @method getErrorDescription
 @discussion This method returns the description for errors that ViewControllerEditing must use when in RhoThetaModelling mode.
@@ -58,6 +58,7 @@
     return MEASURING_STATE_MESSAGE_VCERTM;
 }
 
+#pragma mark - Location VCModeDelegate methods
 /*!
 @method loadLMDelegate
 @discussion This method returns the location manager with the proper location system in RhoThetaModelling mode.
@@ -113,6 +114,7 @@
     return location;
 }
 
+#pragma mark - Motion VCModeDelegate methods
 /*!
 @method loadMotion
 @discussion This method returns the motion manager in RhoThetaModelling mode.
@@ -137,13 +139,16 @@
     return motion;
 }
 
+#pragma mark - Selecting VCModeDelegate methods
+
+#pragma mark - Editing VCModeDelegate methods
 /*!
-@method userDidTapButtonMeasure:whenInState:
+@method whileEditingUserDidTapButtonMeasure:whenInState:andWithLabelStatus:
 @discussion This method returns the behaviour when user taps 'Measure' button in RhoThetaModelling mode.
 */
-- (void)userDidTapButtonMeasure:(UIButton *)buttonMeasure
-                    whenInState:(NSString *)state
-             andWithLabelStatus:(UILabel *)labelStatus
+- (void)whileEditingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
+                                whenInState:(NSString *)state
+                         andWithLabelStatus:(UILabel *)labelStatus
 {
     if ([state isEqualToString:@"IDLE"]) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
         if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
@@ -175,23 +180,23 @@
 }
 
 /*!
- @method numberOfSectionsInTableItems:inViewController:
+ @method whileEditingNumberOfSectionsInTableItems:inViewController:
  @discussion Handles the upload of table items; returns the number of sections in them.
  */
-- (NSInteger)numberOfSectionsInTableItems:(UITableView *)tableView
-                         inViewController:(UIViewController *)viewController
+- (NSInteger)whileEditingNumberOfSectionsInTableItems:(UITableView *)tableView
+                           inViewController:(UIViewController *)viewController
 {
     // Return the number of sections.
     return 1;
 }
 
 /*!
- @method tableItems:inViewController:numberOfRowsInSection:
+ @method whileEditingTableItems:inViewController:numberOfRowsInSection:
  @discussion Handles the upload of table items; returns the number of items in them.
  */
-- (NSInteger)tableItems:(UITableView *)tableView
-       inViewController:(UIViewController *)viewController
-  numberOfRowsInSection:(NSInteger)section
+- (NSInteger)whileEditingTableItems:(UITableView *)tableView
+                   inViewController:(UIViewController *)viewController
+              numberOfRowsInSection:(NSInteger)section
 {
     // In this mode, only iBeacon devices can be positioned; if one of these items have already got a position assigned, that position must be transferred to another item
     if (
@@ -215,13 +220,13 @@
 }
 
 /*!
- @method tableItems:inViewController:cell:forRowAtIndexPath:
+ @method whileEditingTableItems:inViewController:cell:forRowAtIndexPath:
  @discussion Handles the upload of table items; returns each cell.
  */
-- (UITableViewCell *)tableItems:(UITableView *)tableView
-               inViewController:(UIViewController *)viewController
-                           cell:(UITableViewCell *)cell
-              forRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)whileEditingTableItems:(UITableView *)tableView
+                           inViewController:(UIViewController *)viewController
+                                       cell:(UITableViewCell *)cell
+                          forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // In this mode, only iBeacon devices can be positioned; if one of these items have already got a position assigned, that position must be transferred to another item
     
@@ -319,12 +324,12 @@
 }
 
 /*!
- @method tableItems:inViewController:didSelectRowAtIndexPath:
+ @method whileEditingTableItems:inViewController:didSelectRowAtIndexPath:
  @discussion Handles the upload of table items; handles the 'select a cell' action.
  */
-- (void)tableItems:(UITableView *)tableView
-  inViewController:(UIViewController *)viewController
-didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)whileEditingTableItems:(UITableView *)tableView
+              inViewController:(UIViewController *)viewController
+       didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Database could not be accessed.
     if (

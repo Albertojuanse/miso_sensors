@@ -47,17 +47,19 @@ static NSString * MEASURING_STATE_MESSAGE_VCETTL = @"MEASURING; please, do not m
 - (NSString *)getMeasuringStateMessage;
 - (id<CLLocationManagerDelegate>)loadLMDelegate;
 - (MotionManager *)loadMotion;
-- (NSInteger)numberOfSectionsInTableItems:(UITableView *)tableView
-                         inViewController:(UIViewController *)viewController;
-- (NSInteger)tableItems:(UITableView *)tableView
-       inViewController:(UIViewController *)viewController
-  numberOfRowsInSection:(NSInteger)section;
-- (UITableViewCell *)tableItems:(UITableView *)tableView
-               inViewController:(UIViewController *)viewController
-                           cell:(UITableViewCell *)cell
-              forRowAtIndexPath:(NSIndexPath *)indexPath;
-- (void)tableItems:(UITableView *)tableView
-  inViewController:(UIViewController *)viewController
-didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
-
+- (void)whileEditingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
+                                whenInState:(NSString *)state
+                         andWithLabelStatus:(UILabel *)labelStatus;
+- (NSInteger)whileEditingNumberOfSectionsInTableItems:(UITableView *)tableView
+                                     inViewController:(UIViewController *)viewController;
+- (NSInteger)whileEditingTableItems:(UITableView *)tableView
+                   inViewController:(UIViewController *)viewController
+              numberOfRowsInSection:(NSInteger)section;
+- (UITableViewCell *)whileEditingTableItems:(UITableView *)tableView
+                           inViewController:(UIViewController *)viewController
+                                       cell:(UITableViewCell *)cell
+                          forRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)whileEditingTableItems:(UITableView *)tableView
+              inViewController:(UIViewController *)viewController
+       didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 @end
