@@ -238,8 +238,6 @@
                         forState:UIControlStateNormal];
     [self.startButton setTitleColor:normalThemeColor
                            forState:UIControlStateNormal];
-    [self.calibrateButton setTitleColor:normalThemeColor
-                               forState:UIControlStateNormal];
     [self.signOutButton setTitleColor:[UIColor whiteColor]
                              forState:UIControlStateNormal];
     [self.logOutButton setTitleColor:[UIColor whiteColor]

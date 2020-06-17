@@ -60,7 +60,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *logOutButton;
 @property (weak, nonatomic) IBOutlet UITableView *tableModes;
 @property (weak, nonatomic) IBOutlet UITableView *tableItems;
-@property (weak, nonatomic) IBOutlet UIButton *calibrateButton;
 @property (weak, nonatomic) IBOutlet UIButton *startButton;
 
 // Methods for passing volatile variables that disappear when segue between views
