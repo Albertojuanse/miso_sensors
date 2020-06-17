@@ -79,6 +79,10 @@
                                 andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (MDMode *)fromSessionDataGetModeFromUserWithUserName:(NSString *)userName
                                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (id)fromSessionDataGetDelegateFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                              andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (id)fromSessionDataGetDelegateFromUserWithUserName:(NSString *)userName
+                               andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)fromSessionDataGetModesFromUserWithUserName:(NSString *)userName
                                           andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)fromSessionDataGetModesFromUserWithUserDic:(NSMutableDictionary *)givenUserDic
@@ -131,6 +135,14 @@
                                                withCredentialsUserName:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray*) fromSessionDataGetReferencesByUserDic:(NSMutableDictionary *)givenUserDic
                                    withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSNumber *)fromSessionDataGetItemPositionIdNumberOfUserDic:(NSMutableDictionary *)givenUserDic
+                                      withCredentialsUserName:(NSMutableDictionary *)credentialsUserDic;
+- (NSNumber *)fromSessionDataGetItemPositionIdNumberOfUserName:(NSString *)givenUserName
+                                       withCredentialsUserName:(NSMutableDictionary *)credentialsUserDic;
+- (NSNumber *)fromSessionDataGetItemBeaconIdNumberOfUserDic:(NSMutableDictionary *)givenUserDic
+                                    withCredentialsUserName:(NSMutableDictionary *)credentialsUserDic;
+- (NSNumber *)fromSessionDataGetItemBeaconIdNumberOfUserName:(NSString *)givenUserName
+                                     withCredentialsUserName:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific items data getters
 - (NSMutableArray *)fromItemDataGetItemsWithSort:(NSString *)sort
@@ -281,6 +293,12 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)inSessionDataSetMode:(MDMode *)givenMode
           toUserWithUserName:(NSString *)userName
        andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL)inSessionDataSetDelegate:(id)givenDelegate
+               toUserWithUserDic:(NSMutableDictionary *)userDic
+           andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL)inSessionDataSetDelegate:(id)givenDelegate
+              toUserWithUserName:(NSString *)userName
+           andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)inSessionDataSetModes:(NSMutableArray *)givenModes
             toUserWithUserDic:(NSMutableDictionary *)userDic
         andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
@@ -344,6 +362,18 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL) inSessionDataAddReference:(MDReference *)givenReference
                  toUserWithUserDic:(NSMutableDictionary *)givenUserDic
             withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL) inSessionDataSetItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
+                         toUserWithUserName:(NSString *)userName
+                     withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL) inSessionDataSetItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
+                          toUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                     withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL) inSessionDataSetItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
+                           toUserWithUserName:(NSString *)userName
+                       withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL) inSessionDataSetItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
+                            toUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                       withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific items data setters
 - (BOOL) inItemDataAddItemDic:(NSMutableDictionary *)givenItemDic

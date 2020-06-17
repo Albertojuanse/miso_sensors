@@ -35,7 +35,8 @@
 //               "role": (NSString *)role1;
 //             }
 //     "modes": (NSMutableArray *)modes;
-//     "mode": (NSString *)mode1;
+//     "mode": (MDMode *)mode1;
+//     "delegate": (id<VCEditingDelegate>)delegate1
 //     "routine": (BOOL)routine;
 //     "routineModel": (NSMutableDictionary *)routineModelDic;
 //     "state": (NSString *)state1;
@@ -43,6 +44,8 @@
 //     "itemsChosenByUser": (NSMutableArray *)items1;
 //     "typeChosenByUser": (MDType *)type1;
 //     "referencesByUser": (NSMutableArray *)references1
+//     "itemBeaconIdNumber": (NSNumber *)itemBeaconIdNumber1
+//     "itemPositionIdNumber": (NSNumber *)itemPositionIdNumber1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
 //     (···)
@@ -153,9 +156,6 @@
     
     // Components
     [self loadComponents];
-    
-    // Variables; only inizialated if they didn't be so.
-    // TODO: Pass this in every view and call the modes by index, not by string. Alberto J. 2020/01/14.
     
     // Load any saved component or model in device's persistent memory or create the demo ones if is the first time that user logs in.
     [self loadRoutine];
