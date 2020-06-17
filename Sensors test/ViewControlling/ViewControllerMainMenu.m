@@ -478,19 +478,6 @@
     }
 }
 
-/*!
-@method loadEventListeners
-@discussion This method loads the event listeners for this class.
-*/
-- (void)loadEventListeners
-{
-    // This object must listen to this events
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(calibrationFinished:)
-                                                 name:@"vcMainMenu/calibrationFinished"
-                                               object:nil];
-}
-
 #pragma mark - Instance methods
 /*!
  @method setCredentialsUserDic:
@@ -535,25 +522,6 @@
 - (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
 {
     itemPositionIdNumber = givenItemPositionIdNumber;
-}
-
-#pragma mark - Notification event handles
-/*!
- @method calibrationFinished
- @discussion This method handles the event that notifies that the calibration is done; sets the calibration button enabled.
- */
-- (void)calibrationFinished:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"vcMainMenu/calibrationFinished"]){
-        NSLog(@"[NOTI][LMR] Notification \"vcMainMenu/calibrationFinished\" recived.");
-        
-        // Deallocate location manager; ARC disposal.
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
-                                                            object:nil];
-        NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
-        locationCalibrating = nil;
-        
-        [self.calibrateButton setEnabled:YES];
-    }
 }
 
 #pragma mark - Butons event handle
@@ -1029,6 +997,7 @@
                         NSLog(@"[ERROR][VCMM] No RDPosition found in item of sort position.");
                     }
                     cell.textLabel.text = positionDescription;
+                    
                 }
                 
                 // If it is a model
@@ -1043,6 +1012,7 @@
                         NSLog(@"[ERROR][VCMM] No name found in intem of sort model.");
                     }
                     cell.textLabel.text = modelDescription;
+                    
                 }
             } else {
                 // The itemDic variable is null or NO
