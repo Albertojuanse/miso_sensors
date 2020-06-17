@@ -170,13 +170,6 @@
                                             <action selector="handleButonGo:" destination="lVP-jp-YaV" eventType="touchUpInside" id="TJw-2C-iIn"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rcc-iK-FNe">
-                                        <rect key="frame" x="674" y="492" width="62" height="30"/>
-                                        <state key="normal" title="Calibrate"/>
-                                        <connections>
-                                            <action selector="handleButonCalibrate:" destination="lVP-jp-YaV" eventType="touchUpInside" id="6vz-4i-e79"/>
-                                        </connections>
-                                    </button>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="RbC-qr-Qzv">
                                         <rect key="frame" x="32" y="538" width="704" height="394"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -195,11 +188,8 @@
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="RbC-qr-Qzv" firstAttribute="top" secondItem="rcc-iK-FNe" secondAttribute="bottom" constant="16" id="40W-Od-g5R"/>
                                     <constraint firstItem="pMp-QA-YHA" firstAttribute="top" secondItem="YnX-CR-lc7" secondAttribute="bottom" constant="16" id="6AC-Aw-hpg"/>
                                     <constraint firstAttribute="trailing" secondItem="YnX-CR-lc7" secondAttribute="trailing" constant="32" id="Ess-7D-hFr"/>
-                                    <constraint firstAttribute="trailing" secondItem="rcc-iK-FNe" secondAttribute="trailing" constant="32" id="H6U-mS-9FS"/>
-                                    <constraint firstAttribute="trailing" secondItem="rcc-iK-FNe" secondAttribute="trailing" constant="32" id="IWM-bo-yMG"/>
                                     <constraint firstItem="YnX-CR-lc7" firstAttribute="top" secondItem="Nro-qx-VM6" secondAttribute="top" constant="32" id="Kce-co-AEg"/>
                                     <constraint firstItem="bOD-bd-mR0" firstAttribute="leading" secondItem="Nro-qx-VM6" secondAttribute="leading" constant="381" id="O7g-OR-yjL"/>
                                     <constraint firstItem="RbC-qr-Qzv" firstAttribute="top" secondItem="bOD-bd-mR0" secondAttribute="bottom" constant="32" id="VTk-lr-E8l"/>
@@ -261,7 +251,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="qIZ-Y6-uAE"/>
                     <connections>
-                        <outlet property="calibrateButton" destination="rcc-iK-FNe" id="Da5-nI-dlS"/>
                         <outlet property="goButton" destination="pMp-QA-YHA" id="HDq-1g-pbc"/>
                         <outlet property="logOutButton" destination="UMS-xX-nJw" id="dFo-yQ-uee"/>
                         <outlet property="loginText" destination="qvM-wf-f09" id="jku-NG-MkC"/>
@@ -1625,10 +1614,9 @@
         <image name="miso.png" width="134.39999389648438" height="108"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="WbY-sj-piI"/>
         <segue reference="x22-tD-Meu"/>
         <segue reference="crr-mq-j8Q"/>
-        <segue reference="LlF-Fb-myL"/>
+        <segue reference="DJm-0E-zOi"/>
         <segue reference="OWJ-G0-Y79"/>
         <segue reference="R4c-cp-jPI"/>
     </inferredMetricsTieBreakers>

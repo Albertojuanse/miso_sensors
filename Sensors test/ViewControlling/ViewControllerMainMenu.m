@@ -10,6 +10,134 @@
 
 @implementation ViewControllerMainMenu
 
+// Shared data scheme; for information porpuses
+//
+//                // USER DATA //
+//
+// The schema of the userData collection is:
+//
+//  [{ "name": (NSString *)name1;                  // userDic
+//     "pass": (NSString *)pass1;
+//     "role": (NSString *)role1;
+//   },
+//   { "name": (NSString *)name2;                  // userDic
+//     (···)
+//   },
+//   (···)
+//  ]
+//
+//              // SESSION DATA //
+//
+// The schema of the sessionData collection is:
+//
+//  [{ "user": { "name": (NSString *)name1;                  // sessionDic; userDic
+//               "pass": (NSString *)pass1;
+//               "role": (NSString *)role1;
+//             }
+//     "modes": (NSMutableArray *)modes;
+//     "mode": (NSString *)mode1;
+//     "routine": (BOOL)routine;
+//     "routineModel": (NSMutableDictionary *)routineModelDic;
+//     "state": (NSString *)state1;
+//     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
+//     "itemsChosenByUser": (NSMutableArray *)items1;
+//     "typeChosenByUser": (MDType *)type1;
+//     "referencesByUser": (NSMutableArray *)references1
+//   },
+//   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
+//     (···)
+//   },
+//   (···)
+//  ]
+//
+//             // ITEMS DATA //
+//
+// The schema of the itemsData collection is:
+//
+//  [{ "sort": @"beacon" | @"position";                      //  itemDic
+//     "identifier": (NSString *)identifier1;
+//
+//     "uuid": (NSString *)uuid1;
+//
+//     "major": (NSString *)major1;
+//     "minor": (NSString *)minor1;
+//
+//     "position": (RDPosition *)position1;
+//
+//     "located": @"YES" | @"NO";
+//
+//     "type": (MDType *)type1
+//   },
+//   { "sort": @"beacon" | @"position";
+//     "identifier": (NSString *)identifier2;
+//     (···)
+//   },
+//   (···)
+//  ]
+//
+//            // MEASURES DATA //
+//
+//  [{ "user": { "name": (NSString *)name1;                  // measureDic; userDic
+//               "pass": (NSString *)pass1;
+//               "role": (NSString *)role1;
+//             }
+//     "position": (RDPosition *)position1;
+//     "itemUUID": (NSString *)itemUUID1;
+//     "deviceUUID": (NSString *)deviceUUID1;
+//     "sort" : (NSString *)type1;
+//     "measure": (id)measure1
+//   },
+//   { "user": { "name": (NSString *)name2;                  // measureDic; userDic
+//               "pass": (NSString *)pass2;
+//               "role": (NSString *)role2;
+//             }
+//     "position": (RDPosition *)position2;
+//     (···)
+//   },
+//   (···)
+//  ]
+//
+//               // TYPES DATA //
+//
+// The schema of typesData collection is
+//
+//  [ (MDType *)type1,
+//    (···)
+//  ]
+//
+//            // METAMODEL DATA //
+//
+// The schema of metamodelsData collection is
+//
+//  [ (MDMetamodel *)metamodel1,
+//    (···)
+//  ]
+//
+//              // MODEL DATA //
+//
+// The schema of modelData collection is is
+//
+//  [{ "name": name1;                                        //  modelDic
+//     "components": [
+//         { "position": (RDPosition *)position1;            //  componentDic
+//           "type": (MDType *)type1;
+//           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
+//         { "position": (RDPosition *)positionB;
+//           (···)
+//         },
+//         (···)
+//     ];
+//     "references": [
+//         (MDReference *)reference1,
+//         (···)
+//     ]
+//   },
+//   { "name": name2;                                        //  modelDic
+//     (···)
+//   },
+//  ]
+//
+
 #pragma mark - UIViewController delegated methods
 /*!
  @method viewDidLoad
@@ -20,184 +148,11 @@
     [super viewDidLoad];
     
     // Visualization
-    [self showUser];    
-    // Toolbar layout
-    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
-    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1.0
-                                    ];
-    [self.goButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1.0
-                                    ]
-                        forState:UIControlStateNormal];
-    [self.startButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1.0
-                                    ]
-                           forState:UIControlStateNormal];
-    [self.calibrateButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                        green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                         blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                        alpha:1.0
-                                         ]
-                               forState:UIControlStateNormal];
-    [self.signOutButton setTitleColor:[UIColor whiteColor]
-                             forState:UIControlStateNormal];
-    [self.logOutButton setTitleColor:[UIColor whiteColor]
-                            forState:UIControlStateNormal];
-    [self.loginText setTextColor:[UIColor whiteColor]];
+    [self showUser];
+    [self loadLayout];
     
-    
-    // Other components; only inizialated if they didn't be so
-    // Init the shared data collection with the credentials of the device user.
-    if (!sharedData) {
-        sharedData = [[SharedData alloc] initWithCredentialsUserDic:credentialsUserDic];
-        userDidLogIn = YES; // Used for some routines to be executed just one time
-    }
-    // Shared data scheme; for information porpuses
-    //
-    //                // USER DATA //
-    //
-    // The schema of the userData collection is:
-    //
-    //  [{ "name": (NSString *)name1;                  // userDic
-    //     "pass": (NSString *)pass1;
-    //     "role": (NSString *)role1;
-    //   },
-    //   { "name": (NSString *)name2;                  // userDic
-    //     (···)
-    //   },
-    //   (···)
-    //  ]
-    //
-    //              // SESSION DATA //
-    //
-    // The schema of the sessionData collection is:
-    //
-    //  [{ "user": { "name": (NSString *)name1;                  // sessionDic; userDic
-    //               "pass": (NSString *)pass1;
-    //               "role": (NSString *)role1;
-    //             }
-    //     "modes": (NSMutableArray *)modes;
-    //     "mode": (NSString *)mode1;
-    //     "routine": (BOOL)routine;
-    //     "routineModel": (NSMutableDictionary *)routineModelDic;
-    //     "state": (NSString *)state1;
-    //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
-    //     "itemsChosenByUser": (NSMutableArray *)items1;
-    //     "typeChosenByUser": (MDType *)type1;
-    //     "referencesByUser": (NSMutableArray *)references1
-    //   },
-    //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
-    //     (···)
-    //   },
-    //   (···)
-    //  ]
-    //
-    //             // ITEMS DATA //
-    //
-    // The schema of the itemsData collection is:
-    //
-    //  [{ "sort": @"beacon" | @"position";                      //  itemDic
-    //     "identifier": (NSString *)identifier1;
-    //
-    //     "uuid": (NSString *)uuid1;
-    //
-    //     "major": (NSString *)major1;
-    //     "minor": (NSString *)minor1;
-    //
-    //     "position": (RDPosition *)position1;
-    //
-    //     "located": @"YES" | @"NO";
-    //
-    //     "type": (MDType *)type1
-    //   },
-    //   { "sort": @"beacon" | @"position";
-    //     "identifier": (NSString *)identifier2;
-    //     (···)
-    //   },
-    //   (···)
-    //  ]
-    //
-    //            // MEASURES DATA //
-    //
-    //  [{ "user": { "name": (NSString *)name1;                  // measureDic; userDic
-    //               "pass": (NSString *)pass1;
-    //               "role": (NSString *)role1;
-    //             }
-    //     "position": (RDPosition *)position1;
-    //     "itemUUID": (NSString *)itemUUID1;
-    //     "deviceUUID": (NSString *)deviceUUID1;
-    //     "sort" : (NSString *)type1;
-    //     "measure": (id)measure1
-    //   },
-    //   { "user": { "name": (NSString *)name2;                  // measureDic; userDic
-    //               "pass": (NSString *)pass2;
-    //               "role": (NSString *)role2;
-    //             }
-    //     "position": (RDPosition *)position2;
-    //     (···)
-    //   },
-    //   (···)
-    //  ]
-    //
-    //               // TYPES DATA //
-    //
-    // The schema of typesData collection is
-    //
-    //  [ (MDType *)type1,
-    //    (···)
-    //  ]
-    //
-    //            // METAMODEL DATA //
-    //
-    // The schema of metamodelsData collection is
-    //
-    //  [ (MDMetamodel *)metamodel1,
-    //    (···)
-    //  ]
-    //
-    //              // MODEL DATA //
-    //
-    // The schema of modelData collection is is
-    //
-    //  [{ "name": name1;                                        //  modelDic
-    //     "components": [
-    //         { "position": (RDPosition *)position1;            //  componentDic
-    //           "type": (MDType *)type1;
-    //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
-    //         { "position": (RDPosition *)positionB;
-    //           (···)
-    //         },
-    //         (···)
-    //     ];
-    //     "references": [
-    //         (MDReference *)reference1,
-    //         (···)
-    //     ]
-    //   },
-    //   { "name": name2;                                        //  modelDic
-    //     (···)
-    //   },
-    //  ]
-    //
-    
-    // Create a session for the current user; if it joins another one later, this will be remplaced or deleted.
-    // Check if a session with this user is created before
-    if ([sharedData fromSessionDataGetSessionWithUserDic:userDic
-                                   andCredentialsUserDic:credentialsUserDic]) {
-        // Do nothing
-    } else {
-        NSMutableDictionary * sessionDic = [[NSMutableDictionary alloc] init];
-        sessionDic [@"user"] = userDic;
-        [[sharedData getSessionDataWithCredentialsUserDic:credentialsUserDic] addObject:sessionDic];
-    }
+    // Components
+    [self loadComponents];
     
     // Variables; only inizialated if they didn't be so.
     // TODO: Pass this in every view and call the modes by index, not by string. Alberto J. 2020/01/14.
@@ -209,11 +164,8 @@
     // Load the saved variables
     [self loadVariables];
     
-    // This object must listen to this events
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(calibrationFinished:)
-                                                 name:@"vcMainMenu/calibrationFinished"
-                                               object:nil];
+    // Load event listeners
+    [self loadEventListeners];
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableModes.delegate = self;
@@ -223,6 +175,15 @@
     
     [self.tableModes reloadData];
     [self.tableItems reloadData];
+    
+    // Test model
+    NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
+    infoDic[@"identifier"] = @"model@miso.uam.es";
+    infoDic[@"name"] = @"Test model";
+    [sharedData inItemDataAddItemOfSort:@"model"
+                               withUUID:[[NSUUID UUID] UUIDString]
+                            withInfoDic:infoDic
+              andWithCredentialsUserDic:credentialsUserDic];
 }
 
 /*!
@@ -259,6 +220,34 @@
 }
 
 /*!
+ @method loadLayout
+ @discussion This method loads the layout configurations.
+ */
+- (void)loadLayout
+{
+    // Toolbar layout
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                 alpha:1.0];
+    
+    self.toolbar.backgroundColor = normalThemeColor;
+    [self.goButton setTitleColor:normalThemeColor
+                        forState:UIControlStateNormal];
+    [self.startButton setTitleColor:normalThemeColor
+                           forState:UIControlStateNormal];
+    [self.calibrateButton setTitleColor:normalThemeColor
+                               forState:UIControlStateNormal];
+    [self.signOutButton setTitleColor:[UIColor whiteColor]
+                             forState:UIControlStateNormal];
+    [self.logOutButton setTitleColor:[UIColor whiteColor]
+                            forState:UIControlStateNormal];
+    [self.loginText setTextColor:[UIColor whiteColor]];
+}
+
+/*!
  @method showUser
  @discussion This method defines how user name is shown once logged.
  */
@@ -266,6 +255,31 @@
 {
     self.loginText.text = [self.loginText.text stringByAppendingString:@" "];
     self.loginText.text = [self.loginText.text stringByAppendingString:userDic[@"name"]];
+}
+
+/*!
+@method loadComponents
+@discussion This method loads the location and motion components if they don't exist.
+*/
+- (void)loadComponents
+{
+    // Other components; only inizialated if they didn't be so
+    // Init the shared data collection with the credentials of the device user.
+    if (!sharedData) {
+        sharedData = [[SharedData alloc] initWithCredentialsUserDic:credentialsUserDic];
+        userDidLogIn = YES; // Used for some routines to be executed just one time
+    }
+    
+    // Create a session for the current user; if it joins another one later, this will be remplaced or deleted.
+    // Check if a session with this user is created before
+    if ([sharedData fromSessionDataGetSessionWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic]) {
+        // Do nothing
+    } else {
+        NSMutableDictionary * sessionDic = [[NSMutableDictionary alloc] init];
+        sessionDic [@"user"] = userDic;
+        [[sharedData getSessionDataWithCredentialsUserDic:credentialsUserDic] addObject:sessionDic];
+    }
 }
 
 /*!
@@ -466,8 +480,20 @@
     }
 }
 
-#pragma mark - Instance methods
+/*!
+@method loadEventListeners
+@discussion This method loads the event listeners for this class.
+*/
+- (void)loadEventListeners
+{
+    // This object must listen to this events
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(calibrationFinished:)
+                                                 name:@"vcMainMenu/calibrationFinished"
+                                               object:nil];
+}
 
+#pragma mark - Instance methods
 /*!
  @method setCredentialsUserDic:
  @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
@@ -583,57 +609,6 @@
     [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
     
     [self performSegueWithIdentifier:@"fromMainToLogin" sender:sender];
-}
-
-/*!
- @method handleButtonCalibrate:
- @discussion This method handles the 'calibrate' button action and ask the Location Manager to do so.
- */
-- (IBAction)handleButonCalibrate:(id)sender
-{
-    // Register the current mode
-    if (
-        [sharedData validateCredentialsUserDic:credentialsUserDic]
-        )
-    {
-        // TODO: Create a location manager for this. Alberto J. 2020/01/20.
-        // Get the item chosen by user; only beacons can be calibrated
-        NSMutableDictionary * itemChosenByUser = [sharedData
-                                                  fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                  andCredentialsUserDic:credentialsUserDic
-                                                  ];
-        if (itemChosenByUser) {
-            
-            // Alloc and init the location manager
-            if (!locationCalibrating) {
-                locationCalibrating = [[LMDelegateCalibrating alloc] initWithSharedData:sharedData
-                                                                                userDic:credentialsUserDic
-                                                                             deviceUUID:deviceUUID
-                                                                  andCredentialsUserDic:credentialsUserDic];
-            }
-            
-            NSString * sort = itemChosenByUser[@"sort"];
-            if([sort isEqualToString:@"beacon"]) {
-                // Ask Location manager to calibrate the beacon
-                NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-                // Create a copy of the current position for sending it; concurrence issues prevented
-                NSString * uuidToCalibrate = itemChosenByUser[@"uuid"];
-                [data setObject:uuidToCalibrate forKey:@"calibrationUUID"];
-                // And send the notification
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/start"
-                                                                    object:nil
-                                                                  userInfo:data];
-                NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/start\" posted.");
-                [self.calibrateButton setEnabled:NO];
-            }
-            
-        } else {
-            return;
-        }
-        
-    } else {
-        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
-    }
 }
 
 /*!
@@ -939,7 +914,6 @@
 }
 
 #pragma mark - UItableView delegate methods
-
 /*!
  @method numberOfSectionsInTableView:
  @discussion Handles the upload of tables; returns the number of sections in them.
@@ -975,12 +949,12 @@
  */
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    NSString * cellIdentifier = [@"Cell" stringByAppendingString:[indexPath description]];
+    UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
     // Common to all cells
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     
     // Configure individual cells
@@ -1002,94 +976,75 @@
                 // If it is a beacon
                 if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
                     
+                    [cell.imageView setImage:[self imageForBeaconInNormalThemeColor]];
+                    
                     // It representation depends on if exist its position or its type
-                    if (itemDic[@"position"]) {
-                        if (itemDic[@"type"]) {
-                            
-                            RDPosition * position = itemDic[@"position"];
-                            cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
-                                                   itemDic[@"identifier"],
-                                                   itemDic[@"type"],
-                                                   itemDic[@"uuid"],
-                                                   itemDic[@"major"],
-                                                   itemDic[@"minor"],
-                                                   [position.x floatValue],
-                                                   [position.y floatValue],
-                                                   [position.z floatValue]
-                                                   ];
-                            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                            
-                        } else {
-                            
-                            RDPosition * position = itemDic[@"position"];
-                            cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nMajor: %@ ; Minor: %@; Position: (%.2f, %.2f, %.2f)",
-                                                   itemDic[@"identifier"],
-                                                   itemDic[@"uuid"],
-                                                   itemDic[@"major"],
-                                                   itemDic[@"minor"],
-                                                   [position.x floatValue],
-                                                   [position.y floatValue],
-                                                   [position.z floatValue]
-                                                   ];
-                            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                            
-                        }
-                    } else {
-                        if (itemDic[@"type"]) {
-                        
-                            cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ UUID: %@ \nmajor: %@ ; minor: %@",
-                                                   itemDic[@"identifier"],
-                                                   itemDic[@"type"],
-                                                   itemDic[@"uuid"],
-                                                   itemDic[@"major"],
-                                                   itemDic[@"minor"]
-                                                   ];
-                            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                            
-                        } else  {
-                            
-                            cell.textLabel.text = [NSString stringWithFormat:@"%@ UUID: %@ \nmajor: %@ ; minor: %@",
-                                                   itemDic[@"identifier"],
-                                                   itemDic[@"uuid"],
-                                                   itemDic[@"major"],
-                                                   itemDic[@"minor"]
-                                                   ];
-                            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                            
-                        }
+                    // Compose the description
+                    NSString * beaconDescription = [[NSString alloc] init];
+                    beaconDescription = [beaconDescription stringByAppendingString:itemDic[@"identifier"]];;
+                    beaconDescription = [beaconDescription stringByAppendingString:@" "];
+                    // If its type is set
+                    MDType * type = itemDic[@"type"];
+                    if (type) {
+                        beaconDescription = [beaconDescription stringByAppendingString:[type description]];
                     }
+                    beaconDescription = [beaconDescription stringByAppendingString:@"\n"];
+                    // Must have a position
+                    RDPosition * position = itemDic[@"position"];
+                    if (position) {
+                        beaconDescription = [beaconDescription stringByAppendingString:[position description]];
+                        beaconDescription = [beaconDescription stringByAppendingString:@"\n"];
+                    }
+                    NSString * itemUUID = [itemDic[@"uuid"] substringFromIndex:24];
+                    NSString * itemMajor = itemDic[@"major"];
+                    NSString * itemMinor = itemDic[@"minor"];
+                    beaconDescription = [beaconDescription stringByAppendingFormat:@"UUID: %@ Major: %@ Minor: %@ ",
+                                         itemUUID,
+                                         itemMajor,
+                                         itemMinor];
+                    cell.textLabel.text = beaconDescription;
+                    
                 }
             
                 // If it is a position
                 if ([@"position" isEqualToString:itemDic[@"sort"]]) {
+                    
+                    // Set its icon
+                    [cell.imageView setImage:[self imageForPositionInNormalThemeColor]];
+                    
+                    // Compose the description
+                    NSString * positionDescription = [[NSString alloc] init];
+                    positionDescription = [positionDescription stringByAppendingString:itemDic[@"identifier"]];;
+                    positionDescription = [positionDescription stringByAppendingString:@" "];
                     // If its type is set
-                    RDPosition * position = itemDic[@"position"];
-                    if (itemDic[@"type"]) {
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ %@ \n Position: (%.2f, %.2f, %.2f)",
-                                               itemDic[@"identifier"],
-                                               itemDic[@"type"],
-                                               [position.x floatValue],
-                                               [position.y floatValue],
-                                               [position.z floatValue]
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
-                    } else {
-                        cell.textLabel.text = [NSString stringWithFormat:@"%@ \n Position: (%.2f, %.2f, %.2f)",
-                                               itemDic[@"identifier"],
-                                               [position.x floatValue],
-                                               [position.y floatValue],
-                                               [position.z floatValue]
-                                               ];
-                        cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    MDType * type = itemDic[@"type"];
+                    if (type) {
+                        positionDescription = [positionDescription stringByAppendingString:[type description]];
                     }
+                    positionDescription = [positionDescription stringByAppendingString:@"\n"];
+                    // Must have a position
+                    RDPosition * position = itemDic[@"position"];
+                    if (position) {
+                        positionDescription = [positionDescription stringByAppendingString:[position description]];
+                    } else {
+                        positionDescription = [positionDescription stringByAppendingString:@"( - , - , - )"];
+                        NSLog(@"[ERROR][VCMM] No RDPosition found in item of sort position.");
+                    }
+                    cell.textLabel.text = positionDescription;
                 }
                 
                 // If it is a model
                 if ([@"model" isEqualToString:itemDic[@"sort"]]) {
-                    cell.textLabel.text = [NSString stringWithFormat:@"%@",
-                                           itemDic[@"name"]
-                                           ];
-                    cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+                    
+                    // Set its icon
+                    [cell.imageView setImage:[self imageForModelInNormalThemeColor]];
+                    
+                    NSString * modelDescription = itemDic[@"name"];
+                    if (!modelDescription) {
+                        modelDescription = @"Unknown model";
+                        NSLog(@"[ERROR][VCMM] No name found in intem of sort model.");
+                    }
+                    cell.textLabel.text = modelDescription;
                 }
             } else {
                 // The itemDic variable is null or NO
@@ -1295,7 +1250,7 @@ trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - Other methods
 /*!
-@method tableView:fromSharedDataGetItemWithIndexPath:inTableItems;
+@method fromSharedDataGetItemWithIndexPath::inTableItems;
 @discussion This method returns the item asked or selected by user in the item's table view.
 */
 - (NSMutableDictionary *)fromSharedDataGetItemWithIndexPath:(NSIndexPath *)indexPath
@@ -1324,4 +1279,232 @@ trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
     
     return itemDic;
 }
+
+/*!
+@method imageForPositionInNormalThemeColor
+@discussion This method draws the position icon for table cells.
+*/
+- (UIImage *)imageForPositionInNormalThemeColor
+{
+    // Create a frame for the image
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSNumber * positionWidth = layoutDic[@"canvas/position/width"];
+    NSNumber * positionHeight = layoutDic[@"canvas/position/height"];
+    CGRect rect = CGRectMake(0,
+                             0,
+                             [positionWidth integerValue],
+                             [positionHeight integerValue]);
+
+    // Create a view to embed the image using the frame
+    UIView * view = [[UIView alloc] initWithFrame:rect];
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, [[UIScreen mainScreen] scale]);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Get the rect in which the drawn must be embebed its dimensions
+    CGSize rectSize = rect.size;
+    CGFloat rectHeight = rectSize.height;
+    CGFloat rectWidth = rectSize.width;
+    CGPoint rectOrigin = rect.origin;
+    
+    // Points for Bezier path
+    CGFloat circlesCenterX = rectOrigin.x + rectWidth/2;
+    CGFloat circlesCenterY = rectOrigin.y + rectHeight/3;
+    CGPoint circlesCenter = CGPointMake(circlesCenterX, circlesCenterY);
+    CGPoint arrowPoint = CGPointMake(rectWidth/2, rectHeight);
+    
+    // Draw the path
+    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                   alpha:1.0
+    ];
+    [normalThemeColor setStroke];
+    [normalThemeColor setFill];
+    
+    UIBezierPath * outterRightBezierPath = [UIBezierPath bezierPath];
+    [outterRightBezierPath addArcWithCenter:circlesCenter radius:rectWidth/3 startAngle:3.0*M_PI/2.0 endAngle:5.0*M_PI/6.0 clockwise:NO];
+    [outterRightBezierPath addLineToPoint:arrowPoint];
+    [outterRightBezierPath fill];
+    CGContextAddPath(context, outterRightBezierPath.CGPath);
+    
+    UIBezierPath * outterLeftBezierPath = [UIBezierPath bezierPath];
+    [outterLeftBezierPath addArcWithCenter:circlesCenter radius:rectWidth/3 startAngle:3.0*M_PI/2.0 endAngle:M_PI/6.0 clockwise:YES];
+    [outterLeftBezierPath addLineToPoint:arrowPoint];
+    [outterLeftBezierPath fill];
+    CGContextAddPath(context, outterLeftBezierPath.CGPath);
+    
+    [[UIColor whiteColor] setFill]; // Clear
+    
+    UIBezierPath * innerCircleBezierPath = [UIBezierPath bezierPath];
+    [innerCircleBezierPath addArcWithCenter:circlesCenter radius:rectWidth/6 startAngle:0 endAngle:2.0*M_PI clockwise:YES];
+    [innerCircleBezierPath stroke];
+    [innerCircleBezierPath fill];
+    CGContextAddPath(context, innerCircleBezierPath.CGPath);
+    
+    // Render the image
+    UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
+/*!
+@method imageForBeaconInNormalThemeColor
+@discussion This method draws the beacon icon for table cells.
+*/
+- (UIImage *)imageForBeaconInNormalThemeColor
+{
+    // Create a frame for the image
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSNumber * positionWidth = layoutDic[@"canvas/position/width"];
+    NSNumber * positionHeight = layoutDic[@"canvas/position/height"];
+    CGRect rect = CGRectMake(0,
+                             0,
+                             [positionWidth integerValue],
+                             [positionHeight integerValue]);
+
+    // Create a view to embed the image using the frame
+    UIView * view = [[UIView alloc] initWithFrame:rect];
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, [[UIScreen mainScreen] scale]);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Get the rect in which the drawn must be embebed its dimensions
+    CGSize rectSize = rect.size;
+    CGFloat rectHeight = rectSize.height;
+    CGFloat rectWidth = rectSize.width;
+    CGPoint rectOrigin = rect.origin;
+    
+    // Points for Bezier path
+    CGFloat circlesCenterX = rectOrigin.x + rectWidth/2;
+    CGFloat circlesCenterY = rectOrigin.y + rectHeight/3;
+    CGPoint circlesCenter = CGPointMake(circlesCenterX, circlesCenterY);
+    
+    // Draw the path
+    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                 alpha:1.0
+                                  ];
+    [normalThemeColor setStroke];
+    
+    UIBezierPath * outterRightArcBezierPath = [UIBezierPath bezierPath];
+    [outterRightArcBezierPath addArcWithCenter:circlesCenter radius:rectWidth/3 startAngle:2.0*M_PI/3.0 endAngle:4.0*M_PI/3.0 clockwise:YES];
+    [outterRightArcBezierPath stroke];
+    CGContextAddPath(context, outterRightArcBezierPath.CGPath);
+    
+    UIBezierPath * outterLeftArcBezierPath = [UIBezierPath bezierPath];
+    [outterLeftArcBezierPath addArcWithCenter:circlesCenter radius:rectWidth/3 startAngle:M_PI/3.0 endAngle:5.0*M_PI/3.0 clockwise:NO];
+    [outterLeftArcBezierPath stroke];
+    CGContextAddPath(context, outterLeftArcBezierPath.CGPath);
+    
+    UIBezierPath * middleRightArcBezierPath = [UIBezierPath bezierPath];
+    [middleRightArcBezierPath addArcWithCenter:circlesCenter radius:rectWidth/4 startAngle:2.0*M_PI/3.0 endAngle:4.0*M_PI/3.0 clockwise:YES];
+    [middleRightArcBezierPath stroke];
+    CGContextAddPath(context, middleRightArcBezierPath.CGPath);
+    
+    UIBezierPath * middleLeftArcBezierPath = [UIBezierPath bezierPath];
+    [middleLeftArcBezierPath addArcWithCenter:circlesCenter radius:rectWidth/4 startAngle:M_PI/3.0 endAngle:5.0*M_PI/3.0 clockwise:NO];
+    [middleLeftArcBezierPath stroke];
+    CGContextAddPath(context, middleLeftArcBezierPath.CGPath);
+    
+    UIBezierPath * innerRightArcBezierPath = [UIBezierPath bezierPath];
+    [innerRightArcBezierPath addArcWithCenter:circlesCenter radius:rectWidth/6 startAngle:2.0*M_PI/3.0 endAngle:4.0*M_PI/3.0 clockwise:YES];
+    [innerRightArcBezierPath stroke];
+    CGContextAddPath(context, innerRightArcBezierPath.CGPath);
+    
+    UIBezierPath * innerLeftArcBezierPath = [UIBezierPath bezierPath];
+    [innerLeftArcBezierPath addArcWithCenter:circlesCenter radius:rectWidth/6 startAngle:M_PI/3.0 endAngle:5.0*M_PI/3.0 clockwise:NO];
+    [innerLeftArcBezierPath stroke];
+    CGContextAddPath(context, innerLeftArcBezierPath.CGPath);
+    
+    // Render the image
+    UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
+/*!
+@method imageForModelInNormalThemeColor
+@discussion This method draws the beacon icon for table cells.
+*/
+- (UIImage *)imageForModelInNormalThemeColor
+{
+    // Create a frame for the image
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSNumber * positionWidth = layoutDic[@"canvas/position/width"];
+    NSNumber * positionHeight = layoutDic[@"canvas/position/height"];
+    CGRect rect = CGRectMake(0,
+                             0,
+                             [positionWidth integerValue],
+                             [positionHeight integerValue]);
+
+    // Create a view to embed the image using the frame
+    UIView * view = [[UIView alloc] initWithFrame:rect];
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, [[UIScreen mainScreen] scale]);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Get the rect in which the drawn must be embebed its dimensions
+    CGSize rectSize = rect.size;
+    CGFloat rectHeight = rectSize.height;
+    CGFloat rectWidth = rectSize.width;
+    CGPoint rectOrigin = rect.origin;
+    CGFloat margin = rectWidth * 0.1;
+    CGFloat splitLineHeith = rectHeight * 0.2;
+    CGFloat minusHeith = rectHeight * 0.3;
+    CGFloat minusX = rectHeight * 0.15;
+    CGFloat minusLength = rectHeight * 0.15;
+    
+    // Points for Bezier path
+    CGPoint upperLeftCorner = CGPointMake(rectOrigin.x + margin,
+                                          rectOrigin.y + margin);
+    CGPoint upperRightCorner = CGPointMake(rectOrigin.x + rectWidth - margin,
+                                           rectOrigin.y + margin);
+    CGPoint bottomRightCorner = CGPointMake(rectOrigin.x + rectWidth - margin,
+                                            rectOrigin.y + rectHeight - margin);
+    CGPoint bottomLeftCorner = CGPointMake(rectOrigin.x + margin,
+                                           rectOrigin.y + rectHeight - margin);
+    CGPoint leftSplitLine = CGPointMake(rectOrigin.x + margin,
+                                        rectOrigin.y + margin + splitLineHeith);
+    CGPoint rightSplitLine = CGPointMake(rectOrigin.x + rectWidth - margin,
+                                         rectOrigin.y + margin + splitLineHeith);
+    CGPoint leftMinusLine = CGPointMake(rectOrigin.x + minusX,
+                                        rectOrigin.y + margin + minusHeith);
+    CGPoint rightMinusLine = CGPointMake(rectOrigin.x + minusX + minusLength,
+                                         rectOrigin.y + margin + minusHeith);
+    
+    // Draw the path
+    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                 alpha:1.0
+                                  ];
+    [normalThemeColor setStroke];
+    
+    UIBezierPath * outterSquare = [UIBezierPath bezierPath];
+    [outterSquare moveToPoint:upperLeftCorner];
+    [outterSquare addLineToPoint:upperRightCorner];
+    [outterSquare addLineToPoint:bottomRightCorner];
+    [outterSquare addLineToPoint:bottomLeftCorner];
+    [outterSquare addLineToPoint:upperLeftCorner];
+    [outterSquare moveToPoint:leftSplitLine];
+    [outterSquare addLineToPoint:rightSplitLine];
+    [outterSquare moveToPoint:leftMinusLine];
+    [outterSquare addLineToPoint:rightMinusLine];
+    [outterSquare stroke];
+    CGContextAddPath(context, outterSquare.CGPath);
+    
+    // Render the image
+    UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
 @end
