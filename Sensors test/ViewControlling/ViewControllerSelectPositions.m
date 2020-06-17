@@ -268,32 +268,15 @@
         // Get the current mode
         MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                           andCredentialsUserDic:credentialsUserDic];
-        // TODO: Different behavior depending on mode. Alberto J. 2020/01/20.
+        
         // This button can segue with different views depending on the mode chosen by the user in the main menu
         if ([mode isModeKey:kModeMonitoring]) {
             NSLog(@"[INFO][VCSP] Chosen mode is kModeMonitoring.");
             [self performSegueWithIdentifier:@"fromSelectPositionsToMONITORING" sender:sender];
             return;
-        }
-        if ([mode isModeKey:kModeRhoRhoLocating]) {
-            NSLog(@"[INFO][VCSP] Chosen mode is kModeRhoRhoLocating.");
-            [self performSegueWithIdentifier:@"fromSelectPositionsToEDITING" sender:sender];
-            return;
-        }
-        if ([mode isModeKey:kModeRhoThetaLocating]) {
-            // NSLog(@"[INFO][VCSP] Chosen mode is kModeRhoThetaLocating.");
-            // [self performSegueWithIdentifier:@"fromSelectPositionsToEDITING" sender:sender];
-            return;
-        }
-        if ([mode isModeKey:kModeRhoThetaModelling]) {
-            NSLog(@"[INFO][VCSP] Chosen mode is kModeRhoThetaModelling.");
-            [self performSegueWithIdentifier:@"fromSelectPositionsToEDITING" sender:sender];
-            return;
-        }
-        if ([mode isModeKey:kModeThetaThetaLocating]) {
-            // TODO: Go is only allowed if the user did choose at least one position in the table. Alberto J. 2020/01/20.
-            NSLog(@"[INFO][VCSP] Chosen mode is kModeThetaThetaLocating.");
-            [self performSegueWithIdentifier:@"fromSelectPositionsToEDITING" sender:sender];
+        } else {
+            [delegate whileSelectingHandleButtonGo:sender
+                                fromViewController:self];
         }
         
     } else {

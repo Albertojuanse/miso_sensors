@@ -108,11 +108,22 @@
 }
 
 #pragma mark - Selecting VCModeDelegate methods
+/*!
+@method whileSelectingHandleButtonGo:fromViewController:
+@discussion This method returns the behaviour when user taps 'Go' button in SelectPosition view ThetaThetaLocating mode.
+*/
+- (void)whileSelectingHandleButtonGo:(id)sender
+                  fromViewController:(UIViewController *)viewController
+{
+    NSLog(@"[INFO]%@ Chosen mode is kModeRhoRhoLocating.", ERROR_DESCRIPTION_VCETTL);
+    [viewController performSegueWithIdentifier:@"fromSelectPositionsToEDITING" sender:sender];
+    return;
+}
 
 #pragma mark - Editing VCModeDelegate methods    
 /*!
 @method whileEditingUserDidTapButtonMeasure:whenInState:andWithLabelStatus:
-@discussion This method returns the behaviour when user taps 'Measure' button in ThetaThetaLocating mode.
+@discussion This method returns the behaviour when user taps 'Measure' button in Editing view in ThetaThetaLocating mode.
 */
 - (void)whileEditingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
                                 whenInState:(NSString *)state

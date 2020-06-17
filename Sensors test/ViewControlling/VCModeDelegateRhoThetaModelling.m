@@ -140,11 +140,22 @@
 }
 
 #pragma mark - Selecting VCModeDelegate methods
+/*!
+@method whileSelectingHandleButtonGo:fromViewController:
+@discussion This method returns the behaviour when user taps 'Go' button in SelectPosition view RhoThetaModelling mode.
+*/
+- (void)whileSelectingHandleButtonGo:(id)sender
+                  fromViewController:(UIViewController *)viewController
+{
+    NSLog(@"[INFO]%@ Button 'go' handled from delegate.", ERROR_DESCRIPTION_VCERTM);
+    [viewController performSegueWithIdentifier:@"fromSelectPositionsToEDITING" sender:sender];
+    return;
+}
 
 #pragma mark - Editing VCModeDelegate methods
 /*!
 @method whileEditingUserDidTapButtonMeasure:whenInState:andWithLabelStatus:
-@discussion This method returns the behaviour when user taps 'Measure' button in RhoThetaModelling mode.
+@discussion This method returns the behaviour when user taps 'Measure' button in Editing view in RhoThetaModelling mode.
 */
 - (void)whileEditingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
                                 whenInState:(NSString *)state

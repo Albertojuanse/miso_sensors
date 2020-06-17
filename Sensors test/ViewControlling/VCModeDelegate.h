@@ -32,6 +32,8 @@
 #pragma mark - Motion VCModeDelegate methods
 - (MotionManager *)loadMotion;
 #pragma mark - Selecting VCModeDelegate methods
+- (void)whileSelectingHandleButtonGo:(id)sender
+                  fromViewController:(UIViewController *)viewController;
 - (void)whileSelectingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
                                   whenInState:(NSString *)state
                            andWithLabelStatus:(UILabel *)labelStatus;
