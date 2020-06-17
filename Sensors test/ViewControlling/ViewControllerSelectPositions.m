@@ -233,24 +233,6 @@
     sharedData = givenSharedData;
 }
 
-/*!
- @method setItemBeaconIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
-{
-    itemBeaconIdNumber = givenItemBeaconIdNumber;
-}
-
-/*!
- @method setItemPositionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
-{
-    itemPositionIdNumber = givenItemPositionIdNumber;
-}
-
 #pragma mark - Buttons event handlers
 
 /*!
@@ -360,8 +342,6 @@
         [viewControllerMonitoring setCredentialsUserDic:credentialsUserDic];
         [viewControllerMonitoring setUserDic:userDic];
         [viewControllerMonitoring setSharedData:sharedData];
-        [viewControllerMonitoring setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerMonitoring setItemPositionIdNumber:itemPositionIdNumber];
         
     }
     if ([[segue identifier] isEqualToString:@"fromSelectPositionsToEDITING"]) {
@@ -372,8 +352,6 @@
         [viewControllerEditing setCredentialsUserDic:credentialsUserDic];
         [viewControllerEditing setUserDic:userDic];
         [viewControllerEditing setSharedData:sharedData];
-        [viewControllerEditing setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerEditing setItemPositionIdNumber:itemPositionIdNumber];
         
     }
     return;

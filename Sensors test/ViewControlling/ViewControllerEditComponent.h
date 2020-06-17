@@ -28,10 +28,6 @@
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
     
-    // Beacons' region identifiers
-    NSNumber * itemBeaconIdNumber;
-    NSNumber * itemPositionIdNumber;
-    
     // Variables
     NSMutableDictionary * itemChosenByUser;
     NSMutableArray * modeTypes;
@@ -48,8 +44,6 @@
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void) setSharedData:(SharedData *)givenSharedData;
-- (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
-- (void) setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void) setModeTypes:(NSMutableArray *)givenModeTypes;
 
 @end

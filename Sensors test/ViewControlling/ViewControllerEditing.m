@@ -181,8 +181,6 @@
         location = [delegate loadLMDelegate];
         // TODO: idNubers to shared data. Alberto J. 2020/06/12.
         LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)location;
-        [lmdelegate setItemBeaconIdNumber:itemBeaconIdNumber];
-        [lmdelegate setItemPositionIdNumber:itemPositionIdNumber];
         
         // Load the motion manager to define how motion events are handled
         motion = [delegate loadMotion];
@@ -379,8 +377,6 @@
         [viewControllerEditComponent setCredentialsUserDic:credentialsUserDic];
         [viewControllerEditComponent setUserDic:userDic];
         [viewControllerEditComponent setSharedData:sharedData];
-        [viewControllerEditComponent setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerEditComponent setItemPositionIdNumber:itemPositionIdNumber];
         [viewControllerEditComponent setModeTypes:modeTypes];
         // Configure popover layout
         NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
@@ -523,24 +519,6 @@
 }
 
 /*!
- @method setItemBeaconIdNumber:
- @discussion This method sets the NSNumber variable 'itemBeaconIdNumber'.
- */
-- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
-{
-    itemBeaconIdNumber = givenItemBeaconIdNumber;
-}
-
-/*!
- @method setItemPositionIdNumber:
- @discussion This method sets the NSNumber variable 'itemPositionIdNumber'.
- */
-- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
-{
-    itemPositionIdNumber = givenItemPositionIdNumber;
-}
-
-/*!
  @method setDeviceUUID:
  @discussion This method sets the NSString variable 'deviceUUID'.
  */
@@ -639,8 +617,6 @@
     [viewControllerAddComponent setCredentialsUserDic:credentialsUserDic];
     [viewControllerAddComponent setUserDic:userDic];
     [viewControllerAddComponent setSharedData:sharedData];
-    [viewControllerAddComponent setItemBeaconIdNumber:itemBeaconIdNumber];
-    [viewControllerAddComponent setItemPositionIdNumber:itemPositionIdNumber];
     [viewControllerAddComponent setVCEditingDelegate:delegate];
     
     // Configure popover layout
@@ -670,8 +646,6 @@
         [viewControllerSelectPositions setCredentialsUserDic:credentialsUserDic];
         [viewControllerSelectPositions setUserDic:userDic];
         [viewControllerSelectPositions setSharedData:sharedData];
-        [viewControllerSelectPositions setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
@@ -691,8 +665,6 @@
         [viewControllerFinalModel setCredentialsUserDic:credentialsUserDic];
         [viewControllerFinalModel setUserDic:userDic];
         [viewControllerFinalModel setSharedData:sharedData];
-        [viewControllerFinalModel setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerFinalModel setItemPositionIdNumber:itemPositionIdNumber];
         return;
     }
     

@@ -283,24 +283,6 @@
 }
 
 /*!
- @method setItemBeaconIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
-{
-    itemBeaconIdNumber = givenItemBeaconIdNumber;
-}
-
-/*!
- @method setItemPositionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
-{
-    itemPositionIdNumber = givenItemPositionIdNumber;
-}
-
-/*!
  @method setDeviceUUID:
  @discussion This method sets the NSString variable 'deviceUUID'.
  */
@@ -512,8 +494,6 @@
         [viewControllerFinalModel setCredentialsUserDic:credentialsUserDic];
         [viewControllerFinalModel setUserDic:userDic];
         [viewControllerFinalModel setSharedData:sharedData];
-        [viewControllerFinalModel setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerFinalModel setItemPositionIdNumber:itemPositionIdNumber];
         return;
     }
     

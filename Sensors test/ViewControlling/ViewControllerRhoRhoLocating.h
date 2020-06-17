@@ -31,9 +31,6 @@
     NSMutableDictionary * userDic;
     
     // Variables
-    // Beacons' region identifiers
-    NSNumber * itemBeaconIdNumber;
-    NSNumber * itemPositionIdNumber;
     NSString * deviceUUID;
     MDMode * mode;
     NSMutableArray * modeMetamodels;
@@ -58,8 +55,6 @@
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void) setSharedData:(SharedData *)givenSharedData;
 - (void) setLocationManager:(LMDelegateRhoRhoLocating *)givenLocation;
-- (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
-- (void) setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void) setDeviceUUID:(NSString *)givenDeviceUUID;
 
 @end

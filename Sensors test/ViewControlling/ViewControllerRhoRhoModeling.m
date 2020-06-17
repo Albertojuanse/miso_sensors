@@ -240,24 +240,6 @@
     location = givenLocation;
 }
 
-/*!
- @method setItemBeaconIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
-{
-    itemBeaconIdNumber = givenItemBeaconIdNumber;
-}
-
-/*!
- @method setItemPositionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
-{
-    itemPositionIdNumber = givenItemPositionIdNumber;
-}
-
 #pragma mark - Buttons event handlers
 
 /*!

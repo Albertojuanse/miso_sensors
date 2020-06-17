@@ -22,10 +22,6 @@
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
-    // Beacons' region identifiers
-    NSNumber * itemBeaconIdNumber;
-    NSNumber * itemPositionIdNumber;
-    NSString * deviceUUID;
     
     // Components
     SharedData * sharedData;
@@ -37,6 +33,7 @@
     CLHeading * currentCompassHeading;
     CLHeading * lastMeasuredHeading;
     BOOL needMeasureHeading;
+    NSString * deviceUUID;
     
 }
 
@@ -47,8 +44,6 @@
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void)setUserDic:(NSMutableDictionary *)givenUserDic;
-- (void)setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
-- (void)setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void)setDeviceUUID:(NSString *)givenDeviceUUID;
 - (void)setPosition:(RDPosition *)givenPosition;
 - (RDPosition *)getPosition;

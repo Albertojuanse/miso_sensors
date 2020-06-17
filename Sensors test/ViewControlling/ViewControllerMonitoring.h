@@ -29,12 +29,8 @@
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
     
-    // Beacons' region identifiers
-    NSNumber * itemBeaconIdNumber;
-    NSNumber * itemPositionIdNumber;
-    NSString * locatedPositionUUID; // This one changes when the user measures and generates a new position for the device.
-    
     // Variables
+    NSString * locatedPositionUUID; // This one changes when the user measures and generates a new position for the device.
     NSMutableDictionary * itemChosenByUserAsDevicePosition;
     MDMode * mode;
     
@@ -53,8 +49,6 @@
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void) setSharedData:(SharedData *)givenSharedData;
-- (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
-- (void) setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 
 @end
 

@@ -181,24 +181,6 @@
 }
 
 /*!
- @method setItemBeaconIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
-{
-    itemBeaconIdNumber = givenItemBeaconIdNumber;
-}
-
-/*!
- @method setItemPositionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
-{
-    itemPositionIdNumber = givenItemPositionIdNumber;
-}
-
-/*!
  @method setItemChosenByUser:
  @discussion This method sets the NSMutableDictionary variable 'itemChosenByUser'.
  */

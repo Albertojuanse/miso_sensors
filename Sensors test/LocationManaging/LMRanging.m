@@ -110,24 +110,6 @@
 }
 
 /*!
- @method setItemBeaconIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
-{
-    itemBeaconIdNumber = givenItemBeaconIdNumber;
-}
-
-/*!
- @method setItemPositionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
-{
-    itemPositionIdNumber = givenItemPositionIdNumber;
-}
-
-/*!
  @method setDeviceUUID:
  @discussion This method sets the UUID to identify the measures when self-locating.
  */
@@ -809,6 +791,9 @@
         //locatedPositions = [rhoThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
     }
 
+
+    NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
+                                                                          withCredentialsUserName:credentialsUserDic];
     if (locatedPositions) {
         // Save the positions as located items.
         NSArray *positionKeys = [locatedPositions allKeys];
@@ -843,9 +828,15 @@
     // Save information
     NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
     [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
+    // itemBeaconIdNumber
+    NSNumber * itemBeaconIdNumber = [sharedData fromSessionDataGetItemBeaconIdNumberOfUserDic:userDic
+                                                                      withCredentialsUserName:credentialsUserDic];
     NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
-    NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
     [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+    // itemPositionIdNumber
+    itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
+                                                               withCredentialsUserName:credentialsUserDic];
+    NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
     [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
 
     NSLog(@"[INFO][LMR] Generated locations:");

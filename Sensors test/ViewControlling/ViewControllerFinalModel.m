@@ -161,24 +161,6 @@
     sharedData = givenSharedData;
 }
 
-/*!
- @method setItemBeaconIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
-{
-    itemBeaconIdNumber = givenItemBeaconIdNumber;
-}
-
-/*!
- @method setItemPositionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
-{
-    itemPositionIdNumber = givenItemPositionIdNumber;
-}
-
 #pragma mark - Butons event handle
 
 /*!
@@ -457,8 +439,6 @@
         [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
         [viewControllerMainMenu setUserDic:userDic];
         [viewControllerMainMenu setSharedData:sharedData];
-        [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
         
     }
 }

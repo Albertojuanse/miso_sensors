@@ -35,9 +35,7 @@
     NSMutableDictionary * targetItem;
     BOOL flagReference;
     
-    // Beacons' region identifiers
-    NSNumber * itemBeaconIdNumber;
-    NSNumber * itemPositionIdNumber;
+    // Variables
     NSString * locatedPositionUUID; // This one changes when the user measures and generates a new position for the device.
     NSString * deviceUUID;
     MDMode * mode;
@@ -63,8 +61,6 @@
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void) setSharedData:(SharedData *)givenSharedData;
 - (void) setLocationManager:(LMDelegateRhoRhoLocating *)givenLocation;
-- (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
-- (void) setItemPositionIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void) setDeviceUUID:(NSString *)givenDeviceUUID;
 
 @end

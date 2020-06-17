@@ -114,8 +114,6 @@
                                                            rhoRhoSystem:rhoRhoSystem
                                                              deviceUUID:deviceUUID
                                                   andCredentialsUserDic:credentialsUserDic];
-        [location setItemBeaconIdNumber:itemBeaconIdNumber];
-        [location setItemPositionIdNumber:itemPositionIdNumber];
     }
     
     // Initial state
@@ -284,24 +282,6 @@
 }
 
 /*!
- @method setItemBeaconIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
-{
-    itemBeaconIdNumber = givenItemBeaconIdNumber;
-}
-
-/*!
- @method setItemPositionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
-{
-    itemPositionIdNumber = givenItemPositionIdNumber;
-}
-
-/*!
  @method setDeviceUUID:
  @discussion This method sets the NSString variable 'deviceUUID'.
  */
@@ -438,8 +418,6 @@
         [viewControllerSelectPositions setCredentialsUserDic:credentialsUserDic];
         [viewControllerSelectPositions setUserDic:userDic];
         [viewControllerSelectPositions setSharedData:sharedData];
-        [viewControllerSelectPositions setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRholocating/stop"
@@ -459,8 +437,6 @@
         [viewControllerModellingRhoRhoLocating setCredentialsUserDic:credentialsUserDic];
         [viewControllerModellingRhoRhoLocating setUserDic:userDic];
         [viewControllerModellingRhoRhoLocating setSharedData:sharedData];
-        [viewControllerModellingRhoRhoLocating setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerModellingRhoRhoLocating setItemPositionIdNumber:itemPositionIdNumber];
         [viewControllerModellingRhoRhoLocating setDeviceUUID:deviceUUID];
         return;
     }

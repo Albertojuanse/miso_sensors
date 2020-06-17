@@ -284,51 +284,37 @@
 - (void)loadVariables
 {
     // Variables for naming porpuses; each new component created increases this counters to generate unique names.
-    // TODO: These variables to session dic in shared data. Alberto J. 2020/01/20.
-    if (!itemBeaconIdNumber) {
-        // Search for variables from device memory
-        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-        NSData * areIdNumbersData = [userDefaults objectForKey:@"es.uam.miso/variables/areIdNumbers"];
-        NSString * areIdNumbers;
-        if (areIdNumbersData) {
-            areIdNumbers = [NSKeyedUnarchiver unarchiveObjectWithData:areIdNumbersData];
-        }
-        if (areIdNumbersData && areIdNumbers && [areIdNumbers isEqualToString:@"YES"]) {
-            
-            // Existing saved data
-            // Retrieve the items using the index
-            
-            // Retrieve the variables
-            NSData * itemBeaconIdNumberData = [userDefaults objectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-            // ...and retrieve each item
-            itemBeaconIdNumber = [NSKeyedUnarchiver unarchiveObjectWithData:itemBeaconIdNumberData];
-            
-            NSLog(@"[INFO][VCMM] Variable itemBeaconIdNumber found in device.");
-            
-        }
+    
+    // Search for variables from device memory
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    NSData * areIdNumbersData = [userDefaults objectForKey:@"es.uam.miso/variables/areIdNumbers"];
+    NSString * areIdNumbers;
+    if (areIdNumbersData) {
+        areIdNumbers = [NSKeyedUnarchiver unarchiveObjectWithData:areIdNumbersData];
     }
     
-    if (!itemPositionIdNumber) {
-        // Search for variables from device memory
-        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-        NSData * areIdNumbersData = [userDefaults objectForKey:@"es.uam.miso/variables/areIdNumbers"];
-        NSString * areIdNumbers;
-        if (areIdNumbersData) {
-            areIdNumbers = [NSKeyedUnarchiver unarchiveObjectWithData:areIdNumbersData];
-        }
-        if (areIdNumbersData && areIdNumbers && [areIdNumbers isEqualToString:@"YES"]) {
-            
-            // Existing saved data
-            // Retrieve the items using the index
-            
-            // Retrieve the variables
-            NSData * itemPositionIdNumberData = [userDefaults objectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-            // ...and retrieve each item
-            itemPositionIdNumber = [NSKeyedUnarchiver unarchiveObjectWithData:itemPositionIdNumberData];
-            
-            NSLog(@"[INFO][VCMM] Variable itemPositionIdNumber found in device.");
-            
-        }
+    if (areIdNumbersData && areIdNumbers && [areIdNumbers isEqualToString:@"YES"]) {
+        
+        // Existing saved data
+        // Retrieve the items using the index
+        
+        // Retrieve the variables
+        NSData * itemBeaconIdNumberData = [userDefaults objectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+        // ...and retrieve each item
+        NSNumber * itemBeaconIdNumber = [NSKeyedUnarchiver unarchiveObjectWithData:itemBeaconIdNumberData];
+        [sharedData inSessionDataSetItemBeaconIdNumber:itemBeaconIdNumber
+                                     toUserWithUserDic:userDic
+                                withCredentialsUserDic:credentialsUserDic];
+        NSLog(@"[INFO][VCMM] Variable itemBeaconIdNumber found in device.");
+        
+        NSData * itemPositionIdNumberData = [userDefaults objectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
+        // ...and retrieve each item
+        NSNumber * itemPositionIdNumber = [NSKeyedUnarchiver unarchiveObjectWithData:itemPositionIdNumberData];
+        [sharedData inSessionDataSetItemPositionIdNumber:itemPositionIdNumber
+                                       toUserWithUserDic:userDic
+                                  withCredentialsUserDic:credentialsUserDic];
+        NSLog(@"[INFO][VCMM] Variable itemPositionIdNumber found in device.");
+        
     }
 }
 
@@ -503,24 +489,6 @@
     sharedData = givenSharedData;
 }
 
-/*!
- @method setItemBeaconIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
-{
-    itemBeaconIdNumber = givenItemBeaconIdNumber;
-}
-
-/*!
- @method setItemPositionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
-{
-    itemPositionIdNumber = givenItemPositionIdNumber;
-}
-
 #pragma mark - Butons event handle
 /*!
  @method handleButtonSingOut:
@@ -540,9 +508,15 @@
     // Save information
     NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
     [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
+    // itemBeaconIdNumber
+    NSNumber * itemBeaconIdNumber = [sharedData fromSessionDataGetItemBeaconIdNumberOfUserDic:userDic
+                                                                      withCredentialsUserName:credentialsUserDic];
     NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
-    NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
     [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+    // itemPositionIdNumber
+    NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
+                                                                          withCredentialsUserName:credentialsUserDic];
+    NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
     [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
     
     [self performSegueWithIdentifier:@"fromMainToLogin" sender:sender];
@@ -566,9 +540,15 @@
     // Save information
     NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
     [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
+    // itemBeaconIdNumber
+    NSNumber * itemBeaconIdNumber = [sharedData fromSessionDataGetItemBeaconIdNumberOfUserDic:userDic
+                                                                      withCredentialsUserName:credentialsUserDic];
     NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
-    NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
     [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+    // itemPositionIdNumber
+    NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
+                                                                          withCredentialsUserName:credentialsUserDic];
+    NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
     [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
     
     [self performSegueWithIdentifier:@"fromMainToLogin" sender:sender];
@@ -870,8 +850,6 @@
         [viewControllerSelectPositions setCredentialsUserDic:credentialsUserDic];
         [viewControllerSelectPositions setUserDic:userDic];
         [viewControllerSelectPositions setSharedData:sharedData];
-        [viewControllerSelectPositions setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
         
     }
 }
@@ -1167,9 +1145,6 @@ trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
                             [viewControllerItemSettings setCredentialsUserDic:credentialsUserDic];
                             [viewControllerItemSettings setUserDic:userDic];
                             [viewControllerItemSettings setSharedData:sharedData];
-                            [viewControllerItemSettings setItemBeaconIdNumber:itemBeaconIdNumber];
-                            [viewControllerItemSettings setItemPositionIdNumber:itemPositionIdNumber];
-                            [viewControllerItemSettings setItemChosenByUser:itemDic];
                             [viewControllerItemSettings setDeviceUUID:deviceUUID];
                             // Configure popover layout
                             UIPopoverPresentationController * popoverItemSettings =  viewControllerItemSettings.popoverPresentationController;

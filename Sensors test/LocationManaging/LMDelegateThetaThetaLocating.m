@@ -141,24 +141,6 @@
 }
 
 /*!
- @method setItemBeaconIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
-{
-    itemBeaconIdNumber = givenItemBeaconIdNumber;
-}
-
-/*!
- @method setItemPositionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
-{
-    itemPositionIdNumber = givenItemPositionIdNumber;
-}
-
-/*!
  @method getPosition
  @discussion This method gets the device's position.
  */
@@ -426,6 +408,8 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
             // Ask radiolocation of beacons if posible...
             locatedPositions = [thetaThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
             // ...and save them as a located item.
+            NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
+                                                                                  withCredentialsUserName:credentialsUserDic];
             NSArray *positionKeys = [locatedPositions allKeys];
             for (id positionKey in positionKeys) {
                 NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
@@ -479,9 +463,15 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         // Save information
         NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
         [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
+        // itemBeaconIdNumber
+        NSNumber * itemBeaconIdNumber = [sharedData fromSessionDataGetItemBeaconIdNumberOfUserDic:userDic
+                                                                          withCredentialsUserName:credentialsUserDic];
         NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
-        NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
         [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+        // itemPositionIdNumber
+        NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
+                                                                              withCredentialsUserName:credentialsUserDic];
+        NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
         [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
         
     } else { // If is idle...

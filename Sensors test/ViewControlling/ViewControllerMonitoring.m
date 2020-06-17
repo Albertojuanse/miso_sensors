@@ -80,8 +80,6 @@
                                                         userDic:userDic
                                                      deviceUUID:deviceUUID
                                           andCredentialsUserDic:credentialsUserDic];
-    [location setItemBeaconIdNumber:itemBeaconIdNumber];
-    [location setItemPositionIdNumber:itemPositionIdNumber];
     
     // Get chosen item and set as device position
     NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
@@ -188,24 +186,6 @@
 - (void) setSharedData:(SharedData *)givenSharedData
 {
     sharedData = givenSharedData;
-}
-
-/*!
- @method setItemBeaconIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
-{
-    itemBeaconIdNumber = givenItemBeaconIdNumber;
-}
-
-/*!
- @method setItemPositionIdNumber:
- @discussion This method sets the NSMutableArray variable 'beaconsAndPositionsRegistered'.
- */
-- (void) setItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
-{
-    itemPositionIdNumber = givenItemPositionIdNumber;
 }
 
 #pragma mark - Buttons event handlers
@@ -328,8 +308,6 @@
         [viewControllerSelectPositions setCredentialsUserDic:credentialsUserDic];
         [viewControllerSelectPositions setUserDic:userDic];
         [viewControllerSelectPositions setSharedData:sharedData];
-        [viewControllerSelectPositions setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerSelectPositions setItemPositionIdNumber:itemPositionIdNumber];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdMonitoring/stop"
@@ -349,8 +327,6 @@
         [viewControllerFinalModel setCredentialsUserDic:credentialsUserDic];
         [viewControllerFinalModel setUserDic:userDic];
         [viewControllerFinalModel setSharedData:sharedData];
-        [viewControllerFinalModel setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerFinalModel setItemPositionIdNumber:itemPositionIdNumber];
         return;
     }
     if ([[segue identifier] isEqualToString:@"fromMONITORINGToMain"]) {
@@ -361,8 +337,6 @@
         [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
         [viewControllerMainMenu setUserDic:userDic];
         [viewControllerMainMenu setSharedData:sharedData];
-        [viewControllerMainMenu setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerMainMenu setItemPositionIdNumber:itemPositionIdNumber];
         
         // Ask Location manager to clean the measures taken and reset its position.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdMonitoring/stop"
