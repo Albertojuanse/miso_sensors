@@ -288,23 +288,22 @@
         }
         if ([mode isModeKey:kModeRhoRhoLocating]) {
             NSLog(@"[INFO][VCSP] Chosen mode is kModeRhoRhoLocating.");
-            [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_RHO_LOCATING" sender:sender];
+            [self performSegueWithIdentifier:@"fromSelectPositionsToEDITING" sender:sender];
             return;
         }
         if ([mode isModeKey:kModeRhoThetaLocating]) {
             // NSLog(@"[INFO][VCSP] Chosen mode is kModeRhoThetaLocating.");
-            // [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_THETA_LOCATING" sender:sender];
+            // [self performSegueWithIdentifier:@"fromSelectPositionsToEDITING" sender:sender];
             return;
         }
         if ([mode isModeKey:kModeRhoThetaModelling]) {
             NSLog(@"[INFO][VCSP] Chosen mode is kModeRhoThetaModelling.");
-            [self performSegueWithIdentifier:@"fromSelectPositionsToRHO_THETA_MODELING" sender:sender];
+            [self performSegueWithIdentifier:@"fromSelectPositionsToEDITING" sender:sender];
             return;
         }
         if ([mode isModeKey:kModeThetaThetaLocating]) {
             // TODO: Go is only allowed if the user did choose at least one position in the table. Alberto J. 2020/01/20.
             NSLog(@"[INFO][VCSP] Chosen mode is kModeThetaThetaLocating.");
-            // [self performSegueWithIdentifier:@"fromSelectPositionsToTHETA_THETA_LOCATING" sender:sender];
             [self performSegueWithIdentifier:@"fromSelectPositionsToEDITING" sender:sender];
         }
         
@@ -363,18 +362,6 @@
         [viewControllerMonitoring setSharedData:sharedData];
         [viewControllerMonitoring setItemBeaconIdNumber:itemBeaconIdNumber];
         [viewControllerMonitoring setItemPositionIdNumber:itemPositionIdNumber];
-        
-    }
-    if ([[segue identifier] isEqualToString:@"fromSelectPositionsToRHO_RHO_LOCATING"]) {
-        
-        // Get destination view
-        ViewControllerRhoRhoLocating * viewControllerRhoRhoLocating = [segue destinationViewController];
-        // Set the variables
-        [viewControllerRhoRhoLocating setCredentialsUserDic:credentialsUserDic];
-        [viewControllerRhoRhoLocating setUserDic:userDic];
-        [viewControllerRhoRhoLocating setSharedData:sharedData];
-        [viewControllerRhoRhoLocating setItemBeaconIdNumber:itemBeaconIdNumber];
-        [viewControllerRhoRhoLocating setItemPositionIdNumber:itemPositionIdNumber];
         
     }
     if ([[segue identifier] isEqualToString:@"fromSelectPositionsToEDITING"]) {
