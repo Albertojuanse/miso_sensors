@@ -1,14 +1,14 @@
 //
-//  VCEditingDelegateThetaThetaLocating.m
+//  VCModeDelegateThetaThetaLocating.m
 //  Sensors test
 //
 //  Created by Alberto J. on 12/06/2020.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 
-#import "VCEditingDelegateThetaThetaLocating.h"
+#import "VCModeDelegateThetaThetaLocating.h"
 
-@implementation VCEditingDelegateThetaThetaLocating : NSObject
+@implementation VCModeDelegateThetaThetaLocating : NSObject
 
 /*!
  @method initWithSharedData:userDic:deviceUUID:andCredentialsUserDic:
@@ -30,7 +30,7 @@
     return self;
 }
 
-#pragma mark - VCEditingDelegate methods
+#pragma mark - VCModeDelegate methods
 /*!
 @method getErrorDescription
 @discussion This method returns the description for errors that ViewControllerEditing must use when in ThetaThetaLocating mode.

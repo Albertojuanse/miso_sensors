@@ -90,9 +90,9 @@
 
 /*!
 @method setVCEditingDelegate:
-@discussion This method sets the id<VCEditingDelegate> which defines the behaviour of this view in each mode.
+@discussion This method sets the id<VCModeDelegate> which defines the behaviour of this view in each mode.
 */
-- (void) setVCEditingDelegate:(id<VCEditingDelegate>)givenDelegate
+- (void) setVCEditingDelegate:(id<VCModeDelegate>)givenDelegate
 {
     delegate = givenDelegate;
 }
@@ -158,7 +158,7 @@
 }
 
 #pragma mark - UItableView delegate methods
-// Note that this class also uses the delegated methods of <VCEditingDelegate> implementations
+// Note that this class also uses the delegated methods of <VCModeDelegate> implementations
 /*!
  @method numberOfSectionsInTableView:
  @discussion Handles the upload of tables; returns the number of sections in them.

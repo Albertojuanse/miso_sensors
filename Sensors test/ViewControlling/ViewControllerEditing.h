@@ -14,9 +14,9 @@
 #import "ViewControllerAddComponent.h"
 #import "ViewControllerEditComponent.h"
 
-#import "VCEditingDelegate.h"
-#import "VCEditingDelegateThetaThetaLocating.h"
-#import "VCEditingDelegateRhoThetaModelling.h"
+#import "VCModeDelegate.h"
+#import "VCModeDelegateThetaThetaLocating.h"
+#import "VCModeDelegateRhoThetaModelling.h"
 
 #import "LMDelegateRhoThetaModelling.h"
 #import "LMDelegateRhoRhoLocating.h"
@@ -43,7 +43,7 @@
     id<CLLocationManagerDelegate> location;
     MotionManager * motion;
     // Delegate class with the methods to define the behaviour of this view in each mode
-    id<VCEditingDelegate> delegate;
+    id<VCModeDelegate> delegate;
     
     // Session and user context
     // The first credentials dictionary is for security issues and its proprietary is the one who logs-in in the device; the second one is used for identifying purposes; in multiuser context, the first one is used in the device for accessing data, etc. while the second one is shared to the rest of users when a measure is taken or something is changed to indicate who did it.

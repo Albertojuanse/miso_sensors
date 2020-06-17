@@ -1,14 +1,14 @@
 //
-//  VCEditingDelegateRhoThetaModelling.m
+//  VCModeDelegateRhoThetaModelling.m
 //  Sensors test
 //
 //  Created by MISO on 13/06/2020.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 
-#import "VCEditingDelegateRhoThetaModelling.h"
+#import "VCModeDelegateRhoThetaModelling.h"
 
-@implementation VCEditingDelegateRhoThetaModelling : NSObject
+@implementation VCModeDelegateRhoThetaModelling : NSObject
 
 /*!
  @method initWithSharedData:userDic:deviceUUID:andCredentialsUserDic:
@@ -30,7 +30,7 @@
     return self;
 }
 
-#pragma mark - VCEditingDelegate methods
+#pragma mark - VCModeDelegate methods
 /*!
 @method getErrorDescription
 @discussion This method returns the description for errors that ViewControllerEditing must use when in RhoThetaModelling mode.

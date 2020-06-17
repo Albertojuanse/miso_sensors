@@ -1,5 +1,5 @@
 //
-//  VCEditingDelegateRhoThetaModelling.h
+//  VCModeDelegateRhoThetaModelling.h
 //  Sensors test
 //
 //  Created by MISO on 13/06/2020.
@@ -7,7 +7,7 @@
 //
 
 #include <Foundation/Foundation.h>
-#import "VCEditingDelegate.h"
+#import "VCModeDelegate.h"
 #import "RDPosition.h"
 #import "RDRhoThetaSystem.h"
 #import "LMDelegateRhoThetaModelling.h"
@@ -18,10 +18,10 @@ static NSString * IDLE_STATE_MESSAGE_VCERTM = @"IDLE; please, aim the iBeacon de
 static NSString * MEASURING_STATE_MESSAGE_VCERTM = @"MEASURING; please, do not move the device. Tap 'Measure' again for finishing measure.";
 
 /*!
- @class VCEditingDelegateRhoThetaModelling
- @discussion This class implements the protocol VCEditingDelegate to define the behaviour of the editing view controller in RhoThetaModelling mode.
+ @class VCModeDelegateRhoThetaModelling
+ @discussion This class implements the protocol VCModeDelegate to define the behaviour of the editing view controller in RhoThetaModelling mode.
  */
-@interface VCEditingDelegateRhoThetaModelling: NSObject<VCEditingDelegate>{
+@interface VCModeDelegateRhoThetaModelling: NSObject<VCModeDelegate>{
     
     // Session and user context
     NSMutableDictionary * credentialsUserDic;

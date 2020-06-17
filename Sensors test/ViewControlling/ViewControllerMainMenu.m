@@ -36,7 +36,7 @@
 //             }
 //     "modes": (NSMutableArray *)modes;
 //     "mode": (MDMode *)mode1;
-//     "delegate": (id<VCEditingDelegate>)delegate1
+//     "delegate": (id<VCModeDelegate>)delegate1
 //     "routine": (BOOL)routine;
 //     "routineModel": (NSMutableDictionary *)routineModelDic;
 //     "state": (NSString *)state1;
@@ -635,7 +635,7 @@
                 [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:userDic];
-                [sharedData inSessionDataSetDelegate:[[VCEditingDelegateRhoThetaModelling alloc] init]
+                [sharedData inSessionDataSetDelegate:[[VCModeDelegateRhoThetaModelling alloc] init]
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
@@ -664,7 +664,7 @@
                 [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:credentialsUserDic];
-                [sharedData inSessionDataSetDelegate:[[VCEditingDelegateThetaThetaLocating alloc] init]
+                [sharedData inSessionDataSetDelegate:[[VCModeDelegateThetaThetaLocating alloc] init]
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];

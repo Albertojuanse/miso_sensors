@@ -11,7 +11,7 @@
 #import "SharedData.h"
 #import "MDAttribute.h"
 #import "MDType.h"
-#import "VCEditingDelegate.h"
+#import "VCModeDelegate.h"
 #import "VCComponent.h"
 #import "VCComponentInfo.h"
 
@@ -24,7 +24,7 @@
     // Other components
     SharedData * sharedData;
     // Delegate class with the methods to define the behaviour of this view in each mode
-    id<VCEditingDelegate> delegate;
+    id<VCModeDelegate> delegate;
     
     // Session and user context
     // The first credentials dictionary is for security issues and its proprietary is the one who logs-in in the device; the second one is used for identifying purposes; in multiuser context, the first one is used in the device for accessing data, etc. while the second one is shared to the rest of users when a measure is taken or something is changed to indicate who did it.
@@ -43,6 +43,6 @@
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void) setSharedData:(SharedData *)givenSharedData;
-- (void) setVCEditingDelegate:(id<VCEditingDelegate>)givenDelegate;
+- (void) setVCEditingDelegate:(id<VCModeDelegate>)givenDelegate;
 
 @end

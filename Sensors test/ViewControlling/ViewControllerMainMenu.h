@@ -20,8 +20,8 @@
 #import "ViewControllerLogin.h"
 #import "ViewControllerSelectPositions.h"
 #import "ViewControllerItemSettings.h"
-#import "VCEditingDelegateRhoThetaModelling.h"
-#import "VCEditingDelegateThetaThetaLocating.h"
+#import "VCModeDelegateRhoThetaModelling.h"
+#import "VCModeDelegateThetaThetaLocating.h"
 
 /*!
  @class ViewControllerMainMenu

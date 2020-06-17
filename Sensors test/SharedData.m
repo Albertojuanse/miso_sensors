@@ -34,7 +34,7 @@
 //             }
 //     "modes": (NSMutableArray *)modes;
 //     "mode": (MDMode *)mode1;
-//     "delegate": (id<VCEditingDelegate>)delegate1
+//     "delegate": (id<VCModeDelegate>)delegate1
 //     "routine": (BOOL)routine;
 //     "routineModel": (NSMutableDictionary *)routineModelDic;
 //     "state": (NSString *)state1;
@@ -565,7 +565,7 @@
 //             }
 //     "modes": (NSMutableArray *)modes;
 //     "mode": (MDMode *)mode1;
-//     "delegate": (id<VCEditingDelegate>)delegate1
+//     "delegate": (id<VCModeDelegate>)delegate1
 //     "routine": (BOOL)routine;
 //     "routineModel": (NSMutableDictionary *)routineModelDic;
 //     "state": (NSString *)state1;
@@ -2713,7 +2713,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 //             }
 //     "modes": (NSMutableArray *)modes;
 //     "mode": (MDMode *)mode1;
-//     "delegate": (id<VCEditingDelegate>)delegate1
+//     "delegate": (id<VCModeDelegate>)delegate1
 //     "routine": (BOOL)routine;
 //     "routineModel": (NSMutableDictionary *)routineModelDic;
 //     "state": (NSString *)state1;
