@@ -11,7 +11,6 @@
 @implementation ViewControllerSelectPositions
 
 #pragma mark - UIViewController delegated methods
-
 /*!
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
@@ -212,7 +211,6 @@
 }
 
 #pragma mark - Instance methods
-
 /*!
  @method setCredentialsUserDic:
  @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
@@ -241,7 +239,6 @@
 }
 
 #pragma mark - Buttons event handlers
-
 /*!
  @method handleButtonBack:
  @discussion This method handles the 'back' button action and segue back to the main menu; 'prepareForSegue:sender:' method is called before.
@@ -348,7 +345,6 @@
 }
 
 #pragma mark - UItableView delegate methods
-
 /*!
  @method numberOfSectionsInTableView:
  @discussion Handles the upload of tables; returns the number of sections in them.
@@ -389,119 +385,11 @@
     
     // Configure individual cells
     if (tableView == self.tableItems) {
-        
-        // Select the source of items; both items and models are shown
-        NSMutableDictionary * itemDic = [self fromSharedDataGetItemWithIndexPath:indexPath
-                                                                    inTableItems:tableView];
-        
-        // The itemDic variable can be null or NO if access is not granted or there are not items stored.
-        if (itemDic) {
-            cell.textLabel.numberOfLines = 0; // Means any number
-            
-            // Check if the item is already selected; when in a routine it happens
-            BOOL selected = [sharedData fromSessionDataIsChosenItemByUser:itemDic
-                                                        byUserWithUserDic:userDic
-                                                    andCredentialsUserDic:userDic];
-            if (selected) {
-                [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-            }
-            
-            // Only if the item have a position can be selected; not prevent selecting models
-            if (!itemDic[@"position"]) {
-                if (![@"model" isEqualToString:itemDic[@"sort"]]) {
-                    [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
-                    [cell setTintColor:[UIColor redColor]];
-                }
-            }
-            
-            // If it is a beacon
-            if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
-                
-                [cell.imageView setImage:[self imageForBeaconInNormalThemeColor]];
-                
-                // It representation depends on if exist its position or its type
-                // Compose the description
-                NSString * beaconDescription = [[NSString alloc] init];
-                beaconDescription = [beaconDescription stringByAppendingString:itemDic[@"identifier"]];;
-                beaconDescription = [beaconDescription stringByAppendingString:@" "];
-                // If its type is set
-                MDType * type = itemDic[@"type"];
-                if (type) {
-                    beaconDescription = [beaconDescription stringByAppendingString:[type description]];
-                }
-                beaconDescription = [beaconDescription stringByAppendingString:@"\n"];
-                // Must have a position
-                RDPosition * position = itemDic[@"position"];
-                if (position) {
-                    beaconDescription = [beaconDescription stringByAppendingString:[position description]];
-                    beaconDescription = [beaconDescription stringByAppendingString:@"\n"];
-                }
-                NSString * itemUUID = [itemDic[@"uuid"] substringFromIndex:24];
-                NSString * itemMajor = itemDic[@"major"];
-                NSString * itemMinor = itemDic[@"minor"];
-                beaconDescription = [beaconDescription stringByAppendingFormat:@"UUID: %@ Major: %@ Minor: %@ ",
-                                     itemUUID,
-                                     itemMajor,
-                                     itemMinor];
-                cell.textLabel.text = beaconDescription;
-                
-            }
-            
-            // If it is a position
-            if ([@"position" isEqualToString:itemDic[@"sort"]]) {
-                
-                // Set its icon
-                [cell.imageView setImage:[self imageForPositionInNormalThemeColor]];
-                
-                // Compose the description
-                NSString * positionDescription = [[NSString alloc] init];
-                positionDescription = [positionDescription stringByAppendingString:itemDic[@"identifier"]];;
-                positionDescription = [positionDescription stringByAppendingString:@" "];
-                // If its type is set
-                MDType * type = itemDic[@"type"];
-                if (type) {
-                    positionDescription = [positionDescription stringByAppendingString:[type description]];
-                }
-                positionDescription = [positionDescription stringByAppendingString:@"\n"];
-                // Must have a position
-                RDPosition * position = itemDic[@"position"];
-                if (position) {
-                    positionDescription = [positionDescription stringByAppendingString:[position description]];
-                } else {
-                    positionDescription = [positionDescription stringByAppendingString:@"( - , - , - )"];
-                    NSLog(@"[ERROR][VCMM] No RDPosition found in item of sort position.");
-                }
-                cell.textLabel.text = positionDescription;
-                
-            }
-            
-            // If it is a model
-            if ([@"model" isEqualToString:itemDic[@"sort"]]) {
-                
-                // Set its icon
-                [cell.imageView setImage:[self imageForModelInNormalThemeColor]];
-                
-                NSString * modelDescription = itemDic[@"name"];
-                if (!modelDescription) {
-                    modelDescription = @"Unknown model";
-                    NSLog(@"[ERROR][VCMM] No name found in intem of sort model.");
-                }
-                cell.textLabel.text = modelDescription;
-                
-            }
-
-            
-        } else {
-            // The itemDic variable is null or NO
-            NSLog(@"[VCMM][ERROR] No items found for showing.");
-            if (indexPath.row == 0) {
-                cell.textLabel.text = @"No items found.";
-                cell.textLabel.textColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0];
-            } else {
-                cell.textLabel.text = @"Error loading item";
-                cell.textLabel.textColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0];
-            }
-        }
+        // Ask mode's delegate in each mode to manage this
+        cell = [delegate whileSelectingTableItems:tableView
+                                 inViewController:self
+                                             cell:cell
+                                forRowAtIndexPath:indexPath];
     }
     return cell;
 }
@@ -516,169 +404,15 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     NSLog(@"[INFO][VCSP] User did select the row %tu", indexPath.row);
     if (tableView == self.tableItems) {
         
-        // The table was set in 'viewDidLoad' as multiple-selecting
-        // Manage multi-selection
-        UITableViewCell *selectedCell = [tableView cellForRowAtIndexPath:indexPath];
+        [delegate whileSelectingTableItems:tableView
+                          inViewController:self
+                   didSelectRowAtIndexPath:indexPath];
         
-        NSMutableDictionary * itemDic = [self fromSharedDataGetItemWithIndexPath:indexPath
-                                                                    inTableItems:tableView];
-        
-        if ([selectedCell accessoryType] == UITableViewCellAccessoryNone) { // If not checkmark
-            
-            // Only models and items with position can be selected
-            if (![@"model" isEqualToString:itemDic[@"sort"]]) {
-                if (itemDic[@"position"]) {
-                    [selectedCell setAccessoryType:UITableViewCellAccessoryCheckmark];
-                    [sharedData  inSessionDataSetAsChosenItem:itemDic
-                                            toUserWithUserDic:userDic
-                                       withCredentialsUserDic:credentialsUserDic];
-                } else {
-                    [selectedCell setAccessoryType:UITableViewCellAccessoryDetailButton];
-                    [selectedCell setTintColor:[UIColor redColor]];
-                }
-                
-            } else { // if model
-                
-                [selectedCell setAccessoryType:UITableViewCellAccessoryCheckmark];
-                // Retrieve the components, verify if they exists as items, and if not, add them
-                NSMutableArray * components = itemDic[@"components"];
-                for (NSMutableDictionary * eachComponent in components) {
-                    if ([sharedData fromItemDataIsItemWithInfoDic:eachComponent andCredentialsUserDic:credentialsUserDic]) {
-                        [sharedData  inSessionDataSetAsChosenItem:eachComponent
-                                                toUserWithUserDic:userDic
-                                           withCredentialsUserDic:credentialsUserDic];
-                    } else { // If it does not exist, just add it and set as chosen
-                        BOOL savedItem = [sharedData inItemDataAddItemDic:eachComponent withCredentialsUserDic:credentialsUserDic];
-                        [sharedData  inSessionDataSetAsChosenItem:eachComponent
-                                                toUserWithUserDic:userDic
-                                           withCredentialsUserDic:credentialsUserDic];
-                        if (savedItem) {
-                            // PERSISTENT: SAVE ITEM
-                            // Save them in persistent memory
-                            NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-                            // TODO: Assign items by user. Alberto J. 15/11/2019.
-                            // Now there are items
-                            NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
-                            if (areItemsData) {
-                                [userDefaults removeObjectForKey:@"es.uam.miso/data/items/areItems"];
-                            }
-                            areItemsData = nil; // ARC disposing
-                            areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-                            [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
-                            
-                            // Get the index in which names of items are saved for retrieve them later
-                            NSData * itemsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/items/index"];
-                            NSMutableArray * itemsIndex;
-                            if (itemsIndexData) {
-                                itemsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:itemsIndexData];
-                                [userDefaults removeObjectForKey:@"es.uam.miso/data/items/index"];
-                            } else {
-                                itemsIndex = [[NSMutableArray alloc] init];
-                            }
-                            
-                            // Get the item as it was saved in shared data
-                            NSMutableArray * itemDics = [sharedData fromItemDataGetItemsWithIdentifier:eachComponent[@"identifier"]
-                                                                                 andCredentialsUserDic:credentialsUserDic];
-                            if (itemDics.count == 0) {
-                                NSLog(@"[ERROR][VCSP] Saved item %@ could not be retrieved from shared data.", eachComponent[@"identifier"]);
-                                break;
-                            } else {
-                                if (itemDics.count > 1) {
-                                    NSLog(@"[ERROR][VCSP] More than one saved item with identifier %@.", eachComponent[@"identifier"]);
-                                    break;
-                                }
-                            }
-                            NSMutableDictionary * itemDic = [itemDics objectAtIndex:0];
-                            
-                            // Create a NSData for the item and save it using its name
-                            // Item's name
-                            NSString * itemIdentifier = itemDic[@"identifier"];
-                            // Save the name in the index
-                            [itemsIndex addObject:itemIdentifier];
-                            // Create the item's data and archive it
-                            NSData * itemData = [NSKeyedArchiver archivedDataWithRootObject:itemDic];
-                            NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
-                            [userDefaults setObject:itemData forKey:itemKey];
-                            // And save the new index
-                            itemsIndexData = nil; // ARC disposing
-                            itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
-                            [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
-                            NSLog(@"[INFO][VCAB] Item saved in device memory.");
-                            // END PERSISTENT: SAVE ITEM
-                        } else {
-                            NSLog(@"[ERROR][VCSP] Item from model %@ could not be stored as an item.", eachComponent[@"position"]);
-                        }
-                    }
-                }
-                
-            }
-            
-        } else { // If checkmark or detail mark
-            
-            // Only models and items with position can be selected
-            if (![@"model" isEqualToString:itemDic[@"sort"]]) {
-                if (itemDic[@"position"]) {
-                    [selectedCell setAccessoryType:UITableViewCellAccessoryNone];
-                    [sharedData  inSessionDataSetAsNotChosenItem:itemDic
-                                               toUserWithUserDic:userDic
-                                          withCredentialsUserDic:credentialsUserDic];
-                } else {
-                    [selectedCell setAccessoryType:UITableViewCellAccessoryDetailButton];
-                    [selectedCell setTintColor:[UIColor redColor]];
-                }
-            
-            } else { // if model
-                
-                [selectedCell setAccessoryType:UITableViewCellAccessoryNone];
-                // Retrieve the components, verify if they exists as items, and if not, add them
-                NSMutableArray * components = itemDic[@"components"];
-                for (NSMutableDictionary * eachComponent in components) {
-                    [sharedData  inSessionDataSetAsNotChosenItem:eachComponent
-                                               toUserWithUserDic:userDic
-                                          withCredentialsUserDic:credentialsUserDic];
-                }
-                
-            }
-            
-        }
-        
-        [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
     return;
 }
 
 #pragma mark - Other methods
-/*!
-@method fromSharedDataGetItemWithIndexPath::inTableItems;
-@discussion This method returns the item asked or selected by user in the item's table view.
-*/
-- (NSMutableDictionary *)fromSharedDataGetItemWithIndexPath:(NSIndexPath *)indexPath
-                                               inTableItems:(UITableView *)tableView
-{
-    // Select the source of items; both items are models shown
-    NSInteger itemsCount = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic] count];
-    NSInteger modelCount = [[sharedData getModelDataWithCredentialsUserDic:credentialsUserDic] count];
-    
-    // Load the item depending of the source
-    NSMutableDictionary * itemDic = nil;
-    if (indexPath.row < itemsCount) {
-        itemDic = [[sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic]
-                   objectAtIndex:indexPath.row
-                   ];
-    }
-    if (indexPath.row >= itemsCount && indexPath.row < itemsCount + modelCount) {
-        itemDic = [
-                   [sharedData getModelDataWithCredentialsUserDic:credentialsUserDic]
-                   objectAtIndex:indexPath.row - itemsCount
-                   ];
-    }
-    if (indexPath.row >= itemsCount + modelCount) {
-        // Empty cell
-    }
-    
-    return itemDic;
-}
-
 /*!
 @method imageForPositionInNormalThemeColor
 @discussion This method draws the position icon for table cells.

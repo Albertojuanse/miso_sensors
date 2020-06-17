@@ -206,11 +206,11 @@
     }
     
     if (tableView == self.tableItems) {
-        // Ask view's delegate in each mode to manage this
-        [delegate whileEditingTableItems:tableView
-                        inViewController:self
-                                    cell:cell
-                       forRowAtIndexPath:indexPath];
+        // Ask mode's delegate in each mode to manage this
+        cell = [delegate whileEditingTableItems:tableView
+                               inViewController:self
+                                           cell:cell
+                              forRowAtIndexPath:indexPath];
     }
     
     return cell;
