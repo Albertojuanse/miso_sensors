@@ -69,70 +69,35 @@
     // Toolbar layout
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                 alpha:1.0];
+    UIColor * disabledThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1.0
-                                    ];
-    [self.buttonMeasure setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                      green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                       blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                      alpha:1.0
-                                       ]
+                                                   alpha:0.3];
+    
+    self.toolbar.backgroundColor = normalThemeColor;
+    [self.buttonMeasure setTitleColor:normalThemeColor
                              forState:UIControlStateNormal];
-    [self.buttonMeasure setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                      green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                       blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                      alpha:0.3
-                                       ]
+    [self.buttonMeasure setTitleColor:disabledThemeColor
                              forState:UIControlStateDisabled];
-    [self.buttonFinish setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                      blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                     alpha:1.0
-                                      ]
+    [self.buttonFinish setTitleColor:normalThemeColor
                             forState:UIControlStateNormal];
-    [self.buttonFinish setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                      blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                     alpha:0.3
-                                      ]
+    [self.buttonFinish setTitleColor:disabledThemeColor
                             forState:UIControlStateDisabled];
-    [self.buttonNext setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1.0
-                                    ]
+    [self.buttonNext setTitleColor:normalThemeColor
                           forState:UIControlStateNormal];
-    [self.buttonNext setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:0.3
-                                    ]
+    [self.buttonNext setTitleColor:disabledThemeColor
                           forState:UIControlStateDisabled];
-    [self.buttonBack setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1.0
-                                    ]
+    [self.buttonBack setTitleColor:normalThemeColor
                           forState:UIControlStateNormal];
-    [self.buttonBack setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:0.3
-                                    ]
+    [self.buttonBack setTitleColor:disabledThemeColor
                           forState:UIControlStateDisabled];
-    [self.buttonAdd setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                  green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                   blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                  alpha:1.0
-                                   ]
+    [self.buttonAdd setTitleColor:normalThemeColor
                          forState:UIControlStateNormal];
-    [self.buttonAdd setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                  green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                   blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                  alpha:0.3
-                                   ]
+    [self.buttonAdd setTitleColor:disabledThemeColor
                          forState:UIControlStateDisabled];
     // Other components
     [self.signOutButton setTitleColor:[UIColor whiteColor]
@@ -165,22 +130,16 @@
     }
     
     // Strategy pattern; different location delegate for each mode
-    if ([mode isModeKey:kModeThetaThetaLocating]) {
-        delegate = [[VCEditingDelegateThetaThetaLocating alloc] init];
-    }
-    if ([mode isModeKey:kModeRhoThetaModelling]) {
-        delegate = [[VCEditingDelegateRhoThetaModelling alloc] init];
-    }
+    delegate = [sharedData fromSessionDataGetDelegateFromUserWithUserDic:userDic
+                                                   andCredentialsUserDic:credentialsUserDic];
     
     if (delegate) {
         // Load the components from delegate
         errorDescription = [delegate getErrorDescription];
-        NSLog(@"[INFO]%@ Delegate loaded for ViewControllingEditing.", errorDescription);
+        NSLog(@"[INFO]%@ Delegate loaded for ViewControllerEditing.", errorDescription);
         
         // Load the location manager and its delegate to define how location events are handled
         location = [delegate loadLMDelegate];
-        // TODO: idNubers to shared data. Alberto J. 2020/06/12.
-        LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)location;
         
         // Load the motion manager to define how motion events are handled
         motion = [delegate loadMotion];
@@ -190,7 +149,7 @@
         measuringStateMessage = [delegate getMeasuringStateMessage];
         [self.labelStatus setText:idleStateMessage];
     } else {
-        NSLog(@"[ERROR][VCE---] No delegate for ViewControllingEditing was loaded.");
+        NSLog(@"[ERROR][VCE---] No delegate for ViewControllerEditing was loaded.");
     }
 }
 

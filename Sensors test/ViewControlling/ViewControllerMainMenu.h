@@ -20,6 +20,8 @@
 #import "ViewControllerLogin.h"
 #import "ViewControllerSelectPositions.h"
 #import "ViewControllerItemSettings.h"
+#import "VCEditingDelegateRhoThetaModelling.h"
+#import "VCEditingDelegateThetaThetaLocating.h"
 
 /*!
  @class ViewControllerMainMenu
@@ -38,10 +40,8 @@
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
     
-    // Modes
-    MDMode * chosenMode;
-    
     // Variables
+    MDMode * chosenMode;
     NSString * deviceUUID;
     
     // Login

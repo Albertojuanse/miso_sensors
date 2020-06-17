@@ -283,8 +283,10 @@
  */
 - (void)loadVariables
 {
-    // Variables for naming porpuses; each new component created increases this counters to generate unique names.
+    // The mode chosen by user each time must be nil in each load
+    chosenMode = nil;
     
+    // Variables for naming porpuses; each new component created increases this counters to generate unique names.
     // Search for variables from device memory
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
     NSData * areIdNumbersData = [userDefaults objectForKey:@"es.uam.miso/variables/areIdNumbers"];
@@ -581,6 +583,8 @@
             if (foundMode) {
                 NSLog(@"[INFO][CVMM] Next mode in routine \"%@\".", [foundMode description]);
                 chosenMode = foundMode;
+                
+                // Once found, the routine is the same than when 'go' button is tapped
                 [self handleButonGo:nil];
                 
             } else {
@@ -613,6 +617,7 @@
         // If user did select a row in the table
         if (chosenMode) {
             
+            // For each mode, set it in shared data and instantiate the proper delegate
             if ([chosenMode isModeKey:kModeMonitoring]) { // MONITORING
                 [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
@@ -630,19 +635,22 @@
                 [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:userDic];
+                [sharedData inSessionDataSetDelegate:[[VCEditingDelegateRhoThetaModelling alloc] init]
+                                   toUserWithUserDic:userDic
+                               andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
             if ([chosenMode isModeKey:kModeThetaThetaModelling]) { // THETA_THETA_MODELING
                 [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:userDic];
-                [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+                // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
             if ([chosenMode isModeKey:kModeRhoRhoLocating]) { // RHO_RHO_LOCATING
                 [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:userDic];
-                [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+                // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
                 return;
             }
             if ([chosenMode isModeKey:kModeRhoThetaLocating]) { // RHO_THETA_LOCATING
@@ -656,6 +664,9 @@
                 [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:credentialsUserDic];
+                [sharedData inSessionDataSetDelegate:[[VCEditingDelegateThetaThetaLocating alloc] init]
+                                   toUserWithUserDic:userDic
+                               andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
             // TODO: Move this to final model view. Alberto J. 2020/01/20

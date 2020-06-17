@@ -24,6 +24,9 @@
     [self showUser];
     [self loadLayout];
     
+    // Components
+    [self loadComponents];
+    
     // All items must be set as not chosen by user everytime
     [self uncheckAllItemsAsChosenByUser];
     
@@ -35,8 +38,7 @@
             
             // Get temporal model
             NSMutableDictionary * routineModelDic = [sharedData fromSessionDataGetRoutineModelFromUserWithUserDic:userDic
-                                                                                       andCredentialsUserDic:credentialsUserDic
-                                           ];
+                                                                                       andCredentialsUserDic:credentialsUserDic];
             
             // Set each component as chosen one
             if (routineModelDic) {
@@ -119,34 +121,23 @@
     // Toolbar layout
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                 alpha:1.0];
+    UIColor * disabledThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1.0
-                                    ];
-    [self.backButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1.0
-                                    ]
+                                                   alpha:0.3];
+    
+    self.toolbar.backgroundColor = normalThemeColor;
+    [self.backButton setTitleColor:normalThemeColor
                           forState:UIControlStateNormal];
-    [self.backButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:0.3
-                                    ]
+    [self.backButton setTitleColor:disabledThemeColor
                           forState:UIControlStateDisabled];
-    [self.goButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1.0
-                                    ]
+    [self.goButton setTitleColor:normalThemeColor
                           forState:UIControlStateNormal];
-    [self.goButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:0.3
-                                    ]
+    [self.goButton setTitleColor:disabledThemeColor
                           forState:UIControlStateDisabled];
     [self.signOutButton setTitleColor:[UIColor whiteColor]
                              forState:UIControlStateNormal];
@@ -163,6 +154,22 @@
 {
     self.loginText.text = [self.loginText.text stringByAppendingString:@" "];
     self.loginText.text = [self.loginText.text stringByAppendingString:userDic[@"name"]];
+}
+
+/*!
+@method loadComponents
+@discussion This method loads the components depending on the current mode.
+*/
+- (void)loadComponents
+{
+    // Strategy pattern; different location delegate for each mode
+    delegate = [sharedData fromSessionDataGetDelegateFromUserWithUserDic:userDic
+                                                   andCredentialsUserDic:credentialsUserDic];
+    if (delegate) {
+        NSLog(@"[INFO][VCSP] Delegate loaded.");
+    } else {
+        NSLog(@"[ERROR][VCSP] No delegate found.");
+    }
 }
 
 /*!

@@ -42,7 +42,6 @@
     RDThetaThetaSystem * thetaThetaSystem;
     id<CLLocationManagerDelegate> location;
     MotionManager * motion;
-    
     // Delegate class with the methods to define the behaviour of this view in each mode
     id<VCEditingDelegate> delegate;
     
