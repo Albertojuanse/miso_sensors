@@ -17,6 +17,7 @@
 #import "LMDelegateHeading.h"
 #import "LMDelegateCalibrating.h"
 #import "VCToolbar.h"
+#import "VCDrawings.h"
 #import "ViewControllerLogin.h"
 #import "ViewControllerSelectPositions.h"
 #import "ViewControllerItemSettings.h"

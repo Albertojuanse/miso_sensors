@@ -8,6 +8,7 @@
 
 #include <Foundation/Foundation.h>
 #import "VCModeDelegate.h"
+#import "VCDrawings.h"
 #import "RDPosition.h"
 #import "RDRhoThetaSystem.h"
 #import "LMDelegateRhoThetaModelling.h"

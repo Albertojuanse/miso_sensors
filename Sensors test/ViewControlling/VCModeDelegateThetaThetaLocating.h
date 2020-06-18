@@ -8,6 +8,7 @@
 
 #include <Foundation/Foundation.h>
 #import "VCModeDelegate.h"
+#import "VCDrawings.h"
 #import "RDThetaThetaSystem.h"
 #import "LMDelegateThetaThetaLocating.h"
 #import "MotionManager.h"

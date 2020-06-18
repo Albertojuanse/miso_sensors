@@ -212,7 +212,7 @@
         // If it is a beacon
         if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
             
-            [cell.imageView setImage:[self imageForBeaconInNormalThemeColor]];
+            [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
             
             // It representation depends on if exist its position or its type
             // Compose the description
@@ -246,7 +246,7 @@
         if ([@"position" isEqualToString:itemDic[@"sort"]]) {
             
             // Set its icon
-            [cell.imageView setImage:[self imageForPositionInNormalThemeColor]];
+            [cell.imageView setImage:[VCDrawings imageForPositionInNormalThemeColor]];
             
             // Compose the description
             NSString * positionDescription = [[NSString alloc] init];
@@ -274,7 +274,7 @@
         if ([@"model" isEqualToString:itemDic[@"sort"]]) {
             
             // Set its icon
-            [cell.imageView setImage:[self imageForModelInNormalThemeColor]];
+            [cell.imageView setImage:[VCDrawings imageForModelInNormalThemeColor]];
             
             NSString * modelDescription = itemDic[@"name"];
             if (!modelDescription) {

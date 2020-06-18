@@ -29,6 +29,7 @@
 		4227989B2271F60700E07C39 /* MotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227989A2271F60700E07C39 /* MotionManager.m */; };
 		42300BDB2330E03000E2385F /* VCComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = 42300BDA2330E03000E2385F /* VCComponent.m */; };
 		42364B27236AE0BA00C387E5 /* MDReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 42364B26236AE0BA00C387E5 /* MDReference.m */; };
+		423A46DD249B58E600BF0265 /* VCDrawings.m in Sources */ = {isa = PBXBuildFile; fileRef = 423A46DC249B58E600BF0265 /* VCDrawings.m */; };
 		423CE15724226CC100C24DF8 /* ViewEditComponent.xib in Resources */ = {isa = PBXBuildFile; fileRef = 423CE15624226CC100C24DF8 /* ViewEditComponent.xib */; };
 		4240729723E9761700B2C696 /* ViewControllerConfigurationTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 4240729623E9761700B2C696 /* ViewControllerConfigurationTypes.m */; };
 		4240729A23E9764300B2C696 /* ViewControllerConfigurationBeacons.m in Sources */ = {isa = PBXBuildFile; fileRef = 4240729923E9764300B2C696 /* ViewControllerConfigurationBeacons.m */; };
@@ -119,6 +120,8 @@
 		42300BDA2330E03000E2385F /* VCComponent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCComponent.m; sourceTree = "<group>"; };
 		42364B25236AE09D00C387E5 /* MDReference.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDReference.h; sourceTree = "<group>"; };
 		42364B26236AE0BA00C387E5 /* MDReference.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDReference.m; sourceTree = "<group>"; };
+		423A46DB249B58CC00BF0265 /* VCDrawings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCDrawings.h; sourceTree = "<group>"; };
+		423A46DC249B58E600BF0265 /* VCDrawings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCDrawings.m; sourceTree = "<group>"; };
 		423CE15624226CC100C24DF8 /* ViewEditComponent.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewEditComponent.xib; sourceTree = "<group>"; };
 		4240729523E975D300B2C696 /* ViewControllerConfigurationTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerConfigurationTypes.h; sourceTree = "<group>"; };
 		4240729623E9761700B2C696 /* ViewControllerConfigurationTypes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerConfigurationTypes.m; sourceTree = "<group>"; };
@@ -414,6 +417,8 @@
 		42BE9EA323DB5117002D08FA /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				423A46DB249B58CC00BF0265 /* VCDrawings.h */,
+				423A46DC249B58E600BF0265 /* VCDrawings.m */,
 				421E741E245B20A700AC8FC8 /* Calibration.png */,
 				42776ACC23F30D9400CE44A0 /* beacon.png */,
 				427828BB23E322F8005D19B3 /* metamodel.png */,
@@ -558,6 +563,7 @@
 				42ED9F6D23D7415500537FE6 /* LMDelegateRhoRhoLocating.m in Sources */,
 				4240729723E9761700B2C696 /* ViewControllerConfigurationTypes.m in Sources */,
 				429FA65F22EB19DB00F3D415 /* MDType.m in Sources */,
+				423A46DD249B58E600BF0265 /* VCDrawings.m in Sources */,
 				42F07CD02359C86E00134FFA /* SDPersistantMutableDictionary.m in Sources */,
 				42F07CD32359CB6200134FFA /* NSMutableArray+Printable.m in Sources */,
 				4276127422C0EE91007BDED8 /* SharedData.m in Sources */,
