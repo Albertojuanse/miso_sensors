@@ -55,9 +55,6 @@ static NSString * MEASURING_STATE_MESSAGE_VCERTM = @"MEASURING; please, do not m
 #pragma mark - Selecting VCModeDelegate methods
 - (void)whileSelectingHandleButtonGo:(id)sender
                   fromViewController:(UIViewController *)viewController;
-- (void)whileSelectingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
-                                  whenInState:(NSString *)state
-                           andWithLabelStatus:(UILabel *)labelStatus;
 - (NSInteger)whileSelectingNumberOfSectionsInTableItems:(UITableView *)tableView
                                        inViewController:(UIViewController *)viewController;
 - (NSInteger)whileSelectingTableItems:(UITableView *)tableView
