@@ -635,7 +635,11 @@
                 [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:userDic];
-                [sharedData inSessionDataSetDelegate:[[VCModeDelegateRhoThetaModelling alloc] init]
+                [sharedData inSessionDataSetDelegate:[[VCModeDelegateRhoThetaModelling alloc]
+                                                      initWithSharedData:sharedData
+                                                      userDic:userDic
+                                                      deviceUUID:deviceUUID
+                                                      andCredentialsUserDic:credentialsUserDic]
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
@@ -664,7 +668,11 @@
                 [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:credentialsUserDic];
-                [sharedData inSessionDataSetDelegate:[[VCModeDelegateThetaThetaLocating alloc] init]
+                [sharedData inSessionDataSetDelegate:[[VCModeDelegateThetaThetaLocating alloc]
+                                                      initWithSharedData:sharedData
+                                                      userDic:userDic
+                                                      deviceUUID:deviceUUID
+                                                      andCredentialsUserDic:credentialsUserDic]
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
                 [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
