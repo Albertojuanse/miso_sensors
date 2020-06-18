@@ -7,6 +7,7 @@
 //
 
 #include <Foundation/Foundation.h>
+#import "MDType.h"
 #import "VCModeDelegate.h"
 #import "VCDrawings.h"
 #import "RDPosition.h"
