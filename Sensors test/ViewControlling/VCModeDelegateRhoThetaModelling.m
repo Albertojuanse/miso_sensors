@@ -649,6 +649,9 @@
               inViewController:(UIViewController *)viewController
        didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // In RhoThetaModelling, only iBeacon devices can be positioned.
+    // If one of these items have already got a position assigned, that position must be transferred to another item
+    
     // Database could not be accessed.
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
