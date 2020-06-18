@@ -153,6 +153,9 @@
                                          cell:(UITableViewCell *)cell
                             forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // In ThetaThetaLocating, only if the item have a position can be selected.
+    // Also, models can be selected to add its items all of them toguether.
+    
     // Select the source of items; both items and models are shown
     NSMutableDictionary * itemDic = [self fromSharedDataGetItemWithIndexPath:indexPath
                                                                 inTableItems:tableView];
@@ -169,7 +172,7 @@
             [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
         }
         
-        // Only if the item have a position can be selected; not prevent selecting models
+        // Prevent selecting others than positioned items unless models.
         if (!itemDic[@"position"]) {
             if (![@"model" isEqualToString:itemDic[@"sort"]]) {
                 [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
@@ -276,6 +279,9 @@
                 inViewController:(UIViewController *)viewController
          didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 {
+    // In ThetaThetaLocating, only if the item have a position can be selected.
+    // Also, models can be selected to add its items all of them toguether.
+    
     // The table was set in 'viewDidLoad' as multiple-selecting
     // Manage multi-selection
     UITableViewCell *selectedCell = [tableView cellForRowAtIndexPath:indexPath];
@@ -286,13 +292,14 @@
     if ([selectedCell accessoryType] == UITableViewCellAccessoryNone) { // If not checkmark
         
         // Only models and items with position can be selected
-        if (![@"model" isEqualToString:itemDic[@"sort"]]) {
+        if (![@"model" isEqualToString:itemDic[@"sort"]]) { // if item
             if (itemDic[@"position"]) {
                 [selectedCell setAccessoryType:UITableViewCellAccessoryCheckmark];
                 [sharedData  inSessionDataSetAsChosenItem:itemDic
                                         toUserWithUserDic:userDic
                                    withCredentialsUserDic:credentialsUserDic];
             } else {
+                NSLog(@"[ERROR]%@ While selecting, an item with no position found without AccesoryDetail in red.", ERROR_DESCRIPTION_VCETTL);
                 [selectedCell setAccessoryType:UITableViewCellAccessoryDetailButton];
                 [selectedCell setTintColor:[UIColor redColor]];
             }
@@ -300,6 +307,7 @@
         } else { // if model
             
             [selectedCell setAccessoryType:UITableViewCellAccessoryCheckmark];
+            
             // Retrieve the components, verify if they exists as items, and if not, add them
             NSMutableArray * components = itemDic[@"components"];
             for (NSMutableDictionary * eachComponent in components) {
@@ -378,11 +386,13 @@
         // Only models and items with position can be selected
         if (![@"model" isEqualToString:itemDic[@"sort"]]) {
             if (itemDic[@"position"]) {
+                // Deselect
                 [selectedCell setAccessoryType:UITableViewCellAccessoryNone];
                 [sharedData  inSessionDataSetAsNotChosenItem:itemDic
                                            toUserWithUserDic:userDic
                                       withCredentialsUserDic:credentialsUserDic];
             } else {
+                NSLog(@"[ERROR]%@ While selecting, an item with no position found without AccesoryDetail in red.", ERROR_DESCRIPTION_VCETTL);
                 [selectedCell setAccessoryType:UITableViewCellAccessoryDetailButton];
                 [selectedCell setTintColor:[UIColor redColor]];
             }
@@ -390,7 +400,7 @@
         } else { // if model
             
             [selectedCell setAccessoryType:UITableViewCellAccessoryNone];
-            // Retrieve the components, verify if they exists as items, and if not, add them
+            // Retrieve the components
             NSMutableArray * components = itemDic[@"components"];
             for (NSMutableDictionary * eachComponent in components) {
                 [sharedData  inSessionDataSetAsNotChosenItem:eachComponent
