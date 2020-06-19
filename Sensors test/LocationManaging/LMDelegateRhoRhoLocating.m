@@ -67,11 +67,11 @@
         // This object must listen to this events
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(start:)
-                                                     name:@"lmdRhoRholocating/start"
+                                                     name:@"lmdRhoRhoLocating/start"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(stop:)
-                                                     name:@"lmdRhoRholocating/stop"
+                                                     name:@"lmdRhoRhoLocating/stop"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reset:)
@@ -342,8 +342,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  @discussion This method asks the Location Manager to start positioning the device using beacons.
  */
 - (void) start:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"lmdRhoRholocating/start"]){
-        NSLog(@"[NOTI][LMRRL] Notification \"lmdRhoRholocating/start\" recived.");
+    if ([[notification name] isEqualToString:@"lmdRhoRhoLocating/start"]){
+        NSLog(@"[NOTI][LMRRL] Notification \"lmdRhoRhoLocating/start\" recived.");
         
         // Register the beacons only if posible.
         [self locationManager:locationManager didChangeAuthorizationStatus:CLLocationManager.authorizationStatus];
@@ -431,8 +431,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  @discussion This method asks the Location Manager to stop positioning the device using beacons.
  */
 - (void) stop:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"lmdRhoRholocating/stop"]){
-        NSLog(@"[NOTI][LMRRL] Notification \"lmdRhoRholocating/stop\" recived.");
+    if ([[notification name] isEqualToString:@"lmdRhoRhoLocating/stop"]){
+        NSLog(@"[NOTI][LMRRL] Notification \"lmdRhoRhoLocating/stop\" recived.");
         // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];

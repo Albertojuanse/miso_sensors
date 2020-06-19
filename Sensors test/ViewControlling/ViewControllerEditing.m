@@ -607,6 +607,13 @@
         [viewControllerSelectPositions setSharedData:sharedData];
         
         // Ask Location manager to clean the measures taken and reset its position.
+        // TODO: This to each delegate. Alberto J. 2019/06/19
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRhoLocating/stop"
+                                                            object:nil];
+        NSLog(@"[NOTI][VCRRL] Notification \"lmdRhoRhoLocating/stop\" posted.");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmd/reset"
+                                                            object:nil];
+        NSLog(@"[NOTI][VCRRL] Notification \"lmd/reset\" posted.");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
                                                             object:nil];
         NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", errorDescription);
