@@ -2,7 +2,7 @@
 //  ViewControllerConfigurationMetamodels.h
 //  Sensors test
 //
-//  Created by MISO on 24/1/20.
+//  Created by Alberto J. on 24/1/20.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 

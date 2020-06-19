@@ -2,7 +2,7 @@
 //  ViewControllerEditComponent.m
 //  Sensors test
 //
-//  Created by MISO on 17/03/2020.
+//  Created by Alberto J. on 17/03/2020.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 

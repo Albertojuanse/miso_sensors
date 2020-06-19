@@ -2,7 +2,7 @@
 //  MDAttribute.m
 //  Sensors test
 //
-//  Created by MISO on 4/2/20.
+//  Created by Alberto J. on 4/2/20.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 

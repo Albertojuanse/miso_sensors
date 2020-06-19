@@ -2,7 +2,7 @@
 //  VCPosition.m
 //  Sensors test
 //
-//  Created by MISO on 23/03/2020.
+//  Created by Alberto J. on 23/03/2020.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 

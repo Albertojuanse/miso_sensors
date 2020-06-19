@@ -2,7 +2,7 @@
 //  Averager.h
 //  Sensors test
 //
-//  Created by MISO on 2/7/19.
+//  Created by Alberto J. on 2/7/19.
 //  Copyright © 2019 MISO. All rights reserved.
 //
 
