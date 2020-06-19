@@ -644,7 +644,7 @@
         ];
         
         // The beacons with positions have got a detailMark
-        if ([selectedCell accessoryType] == UITableViewCellAccessoryNone) { // If detailed
+        if ([selectedCell accessoryType] == UITableViewCellAccessoryDetailButton) { // If detailed
             
             // Ask user to transfer the position
             [self askUserToTransferPositionFromItemDic:itemDic
@@ -653,17 +653,13 @@
             
             
         } else {  // If not detailed
+            
             // Set as chosen
             [sharedData inSessionDataSetItemChosenByUser:itemDic
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
+
         }
-        
-        // Inform canvas about changes
-        NSLog(@"[NOTI]%@ Notification \"canvas/refresh\" posted.", ERROR_DESCRIPTION_VCETTL);
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"canvas/refresh"
-         object:nil];
         
     } else {
         [self alertUserWithTitle:@"Items won't be loaded."
@@ -676,7 +672,6 @@
         NSLog(@"[ERROR]%@ Shared data could not be accessed while selecting a cell.", ERROR_DESCRIPTION_VCETTL);
     }
     
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 /*!

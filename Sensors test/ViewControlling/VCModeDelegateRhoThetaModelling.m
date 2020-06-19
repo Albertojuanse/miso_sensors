@@ -591,7 +591,7 @@
         // If it is a beacon
         if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
             
-                        [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
+            [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
             
             // It representation depends on if exist its position or its type
             // Compose the description
@@ -666,7 +666,7 @@
         ];
         
         // The beacons with positions have got a detailMark
-        if ([selectedCell accessoryType] == UITableViewCellAccessoryNone) { // If detailed
+        if ([selectedCell accessoryType] == UITableViewCellAccessoryDetailButton) { // If detailed
             
             // Ask user to transfer the position
             [self askUserToTransferPositionFromItemDic:itemDic
@@ -675,17 +675,13 @@
             
             
         } else {  // If not detailed
+            
             // Set as chosen
             [sharedData inSessionDataSetItemChosenByUser:itemDic
                                        toUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic];
+
         }
-        
-        // Inform canvas about changes
-        NSLog(@"[NOTI]%@ Notification \"canvas/refresh\" posted.", ERROR_DESCRIPTION_VCERTM);
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"canvas/refresh"
-         object:nil];
         
     } else {
         [self alertUserWithTitle:@"Items won't be loaded."
@@ -697,8 +693,6 @@
          ];
         NSLog(@"[ERROR]%@ Shared data could not be accessed while selecting a cell.", ERROR_DESCRIPTION_VCERTM);
     }
-    
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 /*!
@@ -770,7 +764,7 @@
     }
     
     NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
-    withCredentialsUserName:credentialsUserDic];
+                                                                          withCredentialsUserName:credentialsUserDic];
     NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
     itemPositionIdNumber = [NSNumber numberWithInteger:[itemPositionIdNumber integerValue] + 1];
     positionId = [positionId stringByAppendingString:@"@miso.uam.es"];

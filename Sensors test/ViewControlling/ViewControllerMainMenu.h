@@ -13,6 +13,7 @@
 #import "MDMetamodel.h"
 #import "MDType.h"
 #import "MDMode.h"
+#import "RDPosition.h"
 #import "LMDelegateGPS.h"
 #import "LMDelegateHeading.h"
 #import "LMDelegateCalibrating.h"
