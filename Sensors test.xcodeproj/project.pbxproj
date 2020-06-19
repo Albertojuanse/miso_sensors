@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4204EF8E249D07D1000A4403 /* VCModeDelegateRhoRhoLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 4204EF8D249D07D1000A4403 /* VCModeDelegateRhoRhoLocating.m */; };
 		421550EF23D9B67F00945294 /* PListLayout.plist in Resources */ = {isa = PBXBuildFile; fileRef = 421550EE23D9B67F00945294 /* PListLayout.plist */; };
 		421550F223D9BA5500945294 /* ViewControllerConfigurationModes.m in Sources */ = {isa = PBXBuildFile; fileRef = 421550F123D9BA5500945294 /* ViewControllerConfigurationModes.m */; };
 		421550F823D9F3AB00945294 /* VCToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 421550F723D9F3AB00945294 /* VCToolbar.m */; };
@@ -84,6 +85,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4204EF8C249D07C1000A4403 /* VCModeDelegateRhoRhoLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCModeDelegateRhoRhoLocating.h; sourceTree = "<group>"; };
+		4204EF8D249D07D1000A4403 /* VCModeDelegateRhoRhoLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCModeDelegateRhoRhoLocating.m; sourceTree = "<group>"; };
 		421550EE23D9B67F00945294 /* PListLayout.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PListLayout.plist; sourceTree = "<group>"; };
 		421550F023D9BA3900945294 /* ViewControllerConfigurationModes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerConfigurationModes.h; sourceTree = "<group>"; };
 		421550F123D9BA5500945294 /* ViewControllerConfigurationModes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerConfigurationModes.m; sourceTree = "<group>"; };
@@ -350,6 +353,8 @@
 				42A7BADB2493B8A9001130DA /* VCModeDelegateThetaThetaLocating.m */,
 				42BF99672495327A00070DF0 /* VCModeDelegateRhoThetaModelling.h */,
 				42BF99682495328B00070DF0 /* VCModeDelegateRhoThetaModelling.m */,
+				4204EF8C249D07C1000A4403 /* VCModeDelegateRhoRhoLocating.h */,
+				4204EF8D249D07D1000A4403 /* VCModeDelegateRhoRhoLocating.m */,
 			);
 			path = ViewControlling;
 			sourceTree = "<group>";
@@ -541,6 +546,7 @@
 				42E4B7E823D8BE03003888C0 /* MDMetamodel.m in Sources */,
 				427A9402241ACBA2001FCCCC /* VCComponentInfo.m in Sources */,
 				428B7C6022E089B200B0C660 /* RDThetaThetaSystem.m in Sources */,
+				4204EF8E249D07D1000A4403 /* VCModeDelegateRhoRhoLocating.m in Sources */,
 				42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */,
 				426501BD22A03B4300BE20B7 /* Canvas.m in Sources */,
 				426501C322A03B5200BE20B7 /* RDPosition.m in Sources */,
