@@ -2,7 +2,7 @@
 //  VCModeDelegateRhoThetaModelling.h
 //  Sensors test
 //
-//  Created by MISO on 13/06/2020.
+//  Created by Alberto J. on 13/06/2020.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 

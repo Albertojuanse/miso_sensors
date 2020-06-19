@@ -455,7 +455,12 @@
                                 whenInState:(NSString *)state
                          andWithLabelStatus:(UILabel *)labelStatus
 {
-    if ([state isEqualToString:@"IDLE"]) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
+    if (
+        [sharedData fromSessionDataIsIdleUserWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
         // If user did chose a position to aim
         if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic]) {
@@ -478,7 +483,12 @@
             return;
         }
     }
-    if ([state isEqualToString:@"MEASURING"]) { // If 'Measuring' is tapped, ask stop measuring.
+    if (
+        [sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic
+                                        andCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // If 'Measuring' is tapped, ask stop measuring.
         [buttonMeasure setEnabled:YES];
         // This next line have been moved into "stopGyroscopesHeadingMeasuring" method, because the measure is generated in this case after stop measuring
         // [sharedData inSessionDataSetIdleUserWithUserDic:userDic andWithCredentialsUserDic:credentialsUserDic];

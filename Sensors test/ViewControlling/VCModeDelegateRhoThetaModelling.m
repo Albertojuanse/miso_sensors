@@ -2,7 +2,7 @@
 //  VCModeDelegateRhoThetaModelling.m
 //  Sensors test
 //
-//  Created by MISO on 13/06/2020.
+//  Created by Alberto J. on 13/06/2020.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 
@@ -486,7 +486,12 @@
                                 whenInState:(NSString *)state
                          andWithLabelStatus:(UILabel *)labelStatus
 {
-    if ([state isEqualToString:@"IDLE"]) { // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
+    if (
+        [sharedData fromSessionDataIsIdleUserWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
         if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic]) {
             [buttonMeasure setEnabled:YES];
@@ -502,8 +507,13 @@
         } else {
             return;
         }
-    }
-    if ([state isEqualToString:@"MEASURING"]) { // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
+    }    
+    if (
+        [sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic
+                                        andCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
         [buttonMeasure setEnabled:YES];
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
