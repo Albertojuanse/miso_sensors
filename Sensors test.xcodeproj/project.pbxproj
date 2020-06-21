@@ -68,6 +68,7 @@
 		42A44139249F862700915971 /* VCModeDelegateRhoThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A44138249F862700915971 /* VCModeDelegateRhoThetaLocating.m */; };
 		42A4413C249F880000915971 /* LMDelegateRhoThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A4413B249F880000915971 /* LMDelegateRhoThetaLocating.m */; };
 		42A4413F249F89CF00915971 /* LMDelegateThetaThetaModelling.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A4413E249F89CF00915971 /* LMDelegateThetaThetaModelling.m */; };
+		42A44142249F8ECD00915971 /* VCModeDelegateThetaThetaModelling.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A44141249F8ECD00915971 /* VCModeDelegateThetaThetaModelling.m */; };
 		42A7BAD8249393FB001130DA /* ViewControllerEditing.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A7BAD7249393FB001130DA /* ViewControllerEditing.m */; };
 		42A7BADC2493B8A9001130DA /* VCModeDelegateThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A7BADB2493B8A9001130DA /* VCModeDelegateThetaThetaLocating.m */; };
 		42B676EE23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B676ED23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m */; };
@@ -194,6 +195,8 @@
 		42A4413B249F880000915971 /* LMDelegateRhoThetaLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateRhoThetaLocating.m; sourceTree = "<group>"; };
 		42A4413D249F895E00915971 /* LMDelegateThetaThetaModelling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateThetaThetaModelling.h; sourceTree = "<group>"; };
 		42A4413E249F89CF00915971 /* LMDelegateThetaThetaModelling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateThetaThetaModelling.m; sourceTree = "<group>"; };
+		42A44140249F8EBB00915971 /* VCModeDelegateThetaThetaModelling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCModeDelegateThetaThetaModelling.h; sourceTree = "<group>"; };
+		42A44141249F8ECD00915971 /* VCModeDelegateThetaThetaModelling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCModeDelegateThetaThetaModelling.m; sourceTree = "<group>"; };
 		42A7BAD6249393EA001130DA /* ViewControllerEditing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerEditing.h; sourceTree = "<group>"; };
 		42A7BAD7249393FB001130DA /* ViewControllerEditing.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerEditing.m; sourceTree = "<group>"; };
 		42A7BAD92493B4C4001130DA /* VCModeDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCModeDelegate.h; sourceTree = "<group>"; };
@@ -360,6 +363,8 @@
 				42BF99672495327A00070DF0 /* VCModeDelegateRhoThetaModelling.h */,
 				42A7BADA2493B899001130DA /* VCModeDelegateThetaThetaLocating.h */,
 				42A7BADB2493B8A9001130DA /* VCModeDelegateThetaThetaLocating.m */,
+				42A44140249F8EBB00915971 /* VCModeDelegateThetaThetaModelling.h */,
+				42A44141249F8ECD00915971 /* VCModeDelegateThetaThetaModelling.m */,
 			);
 			path = ViewControlling;
 			sourceTree = "<group>";
@@ -550,6 +555,7 @@
 				42E4B7E823D8BE03003888C0 /* MDMetamodel.m in Sources */,
 				427A9402241ACBA2001FCCCC /* VCComponentInfo.m in Sources */,
 				428B7C6022E089B200B0C660 /* RDThetaThetaSystem.m in Sources */,
+				42A44142249F8ECD00915971 /* VCModeDelegateThetaThetaModelling.m in Sources */,
 				42A44139249F862700915971 /* VCModeDelegateRhoThetaLocating.m in Sources */,
 				4204EF8E249D07D1000A4403 /* VCModeDelegateRhoRhoLocating.m in Sources */,
 				42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */,
