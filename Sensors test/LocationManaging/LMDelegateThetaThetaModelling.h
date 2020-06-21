@@ -1,8 +1,8 @@
 //
-//  LMDelegateThetaThetaLocating.h
+//  LMDelegateThetaThetaModelling.h
 //  Sensors test
 //
-//  Created by Alberto J. on 20/1/20.
+//  Created by Alberto J. on 21/06/2020.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 
@@ -14,10 +14,10 @@
 #import "SharedData.h"
 
 /*!
- @class LMDelegateThetaThetaLocating
- @discussion This class implements the protocol CLLocationManagerDelegate to handle the events of location manager in kModeThetaThetaLocating mode.
+ @class LMDelegateThetaThetaModelling
+ @discussion This class implements the protocol CLLocationManagerDelegate to handle the events of location manager in kModeThetaThetaModelling mode.
  */
-@interface LMDelegateThetaThetaLocating: NSObject<CLLocationManagerDelegate>{
+@interface LMDelegateThetaThetaModelling: NSObject<CLLocationManagerDelegate>{
     
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
