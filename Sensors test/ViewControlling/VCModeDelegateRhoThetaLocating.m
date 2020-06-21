@@ -1,14 +1,14 @@
 //
-//  VCModeDelegateRhoRhoModelling.m
+//  VCModeDelegateRhoThetaLocating.m
 //  Sensors test
 //
 //  Created by Alberto J. on 21/06/2020.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 
-#import "VCModeDelegateRhoRhoModelling.h"
+#import "VCModeDelegateRhoThetaLocating.h"
 
-@implementation VCModeDelegateRhoRhoModelling : NSObject
+@implementation VCModeDelegateRhoThetaLocating : NSObject
 
 /*!
  @method initWithSharedData:userDic:deviceUUID:andCredentialsUserDic:
@@ -33,67 +33,67 @@
 #pragma mark - General VCModeDelegate methods
 /*!
 @method getErrorDescription
-@discussion This method returns the description for errors that ViewControllerEditing must use when in RhoRhoModelling mode.
+@discussion This method returns the description for errors that ViewControllerEditing must use when in RhoThetaLocating mode.
 */
 - (NSString *)getErrorDescription
 {
-    return ERROR_DESCRIPTION_VCERRM;
+    return ERROR_DESCRIPTION_VCERTL;
 }
 
 /*!
 @method getIdleStateMessage
-@discussion This method returns the label test for Idle state in RhoRhoModelling mode.
+@discussion This method returns the label test for Idle state in RhoThetaLocating mode.
 */
 - (NSString *)getIdleStateMessage
 {
-    return IDLE_STATE_MESSAGE_VCERRM;
+    return IDLE_STATE_MESSAGE_VCERTL;
 }
 
 /*!
 @method getMeasuringStateMessage
-@discussion This method returns the label test for Measuring state in RhoRhoModelling mode.
+@discussion This method returns the label test for Measuring state in RhoThetaLocating mode.
 */
 - (NSString *)getMeasuringStateMessage
 {
-    return MEASURING_STATE_MESSAGE_VCERRM;
+    return MEASURING_STATE_MESSAGE_VCERTL;
 }
 
 #pragma mark - Location VCModeDelegate methods
 /*!
 @method loadLMDelegate
-@discussion This method returns the location manager with the proper location system in RhoRhoModelling mode.
+@discussion This method returns the location manager with the proper location system in RhoThetaLocating mode.
 */
 - (id<CLLocationManagerDelegate>)loadLMDelegate
 {
-    if (!rhoRhoSystem) {
-        rhoRhoSystem = [[RDRhoRhoSystem alloc] initWithSharedData:sharedData
+    if (!rhoThetaSystem) {
+        rhoThetaSystem = [[RDRhoThetaSystem alloc] initWithSharedData:sharedData
                                                               userDic:userDic
                                                            deviceUUID:deviceUUID
                                                 andCredentialsUserDic:credentialsUserDic];
     }
     if (!location) {
         // Load the location manager and its delegate, the component which device uses to handle location events.
-        location = [[LMDelegateRhoRhoModelling alloc] initWithSharedData:sharedData
-                                                                    userDic:userDic
-                                                            rhoRhoSystem:rhoRhoSystem
-                                                                deviceUUID:deviceUUID
-                                                     andCredentialsUserDic:credentialsUserDic];
+        location = [[LMDelegateRhoThetaLocating alloc] initWithSharedData:sharedData
+                                                                  userDic:userDic
+                                                           rhoThetaSystem:rhoThetaSystem
+                                                               deviceUUID:deviceUUID
+                                                    andCredentialsUserDic:credentialsUserDic];
     }
     NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
                                                                       andCredentialsUserDic:credentialsUserDic];
     NSMutableDictionary * itemChosenByUserAsDevicePosition;
     if (itemsChosenByUser.count == 0) {
-        NSLog(@"[ERROR]%@ The collection with the items chosen by user is empty; no device position provided.", ERROR_DESCRIPTION_VCERRM);
+        NSLog(@"[ERROR]%@ The collection with the items chosen by user is empty; no device position provided.", ERROR_DESCRIPTION_VCERTL);
     } else {
         itemChosenByUserAsDevicePosition = [itemsChosenByUser objectAtIndex:0];
         if (itemsChosenByUser.count > 1) {
-            NSLog(@"[ERROR]%@ The collection with the items chosen by user have more than one item; the first one is set as device position.", ERROR_DESCRIPTION_VCERRM);
+            NSLog(@"[ERROR]%@ The collection with the items chosen by user have more than one item; the first one is set as device position.", ERROR_DESCRIPTION_VCERTL);
         }
     }
     if (itemChosenByUserAsDevicePosition) {
         RDPosition * position = itemChosenByUserAsDevicePosition[@"position"];
         if (!position) {
-            NSLog(@"[ERROR]%@ No position was found in the item chosen by user as device position; (0,0,0) is set.", ERROR_DESCRIPTION_VCERRM);
+            NSLog(@"[ERROR]%@ No position was found in the item chosen by user as device position; (0,0,0) is set.", ERROR_DESCRIPTION_VCERTL);
             position = [[RDPosition alloc] init];
             position.x = [NSNumber numberWithFloat:0.0];
             position.y = [NSNumber numberWithFloat:0.0];
@@ -101,13 +101,13 @@
         }
         if (!deviceUUID) {
             if (!itemChosenByUserAsDevicePosition[@"uuid"]) {
-                NSLog(@"[ERROR]%@ No UUID was found in the item chosen by user as device position; a random one set.", ERROR_DESCRIPTION_VCERRM);
+                NSLog(@"[ERROR]%@ No UUID was found in the item chosen by user as device position; a random one set.", ERROR_DESCRIPTION_VCERTL);
                 deviceUUID = [[NSUUID UUID] UUIDString];
             } else {
                 deviceUUID = itemChosenByUserAsDevicePosition[@"uuid"];
             }
         }
-        [rhoRhoSystem setDeviceUUID:deviceUUID];
+        [rhoThetaSystem setDeviceUUID:deviceUUID];
         [location setPosition:position];
         [location setDeviceUUID:deviceUUID];
     }
@@ -117,22 +117,37 @@
 #pragma mark - Motion VCModeDelegate methods
 /*!
 @method loadMotion
-@discussion This method returns the motion manager in RhoRhoModelling mode.
+@discussion This method returns the motion manager in RhoThetaLocating mode.
 */
 - (MotionManager *)loadMotion
 {
-    return nil;
+    if (!motion) {
+        motion = [[MotionManager alloc] initWithSharedData:sharedData
+                                                   userDic:credentialsUserDic
+                                            rhoThetaSystem:rhoThetaSystem
+                                                deviceUUID:deviceUUID
+                                     andCredentialsUserDic:credentialsUserDic];
+        
+        // TODO: make this configurable or properties. Alberto J. 2019/09/13.
+        motion.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
+        motion.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
+        motion.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.acce_biasBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.gyro_measuresBuffer_capacity = [NSNumber numberWithInt:500];
+        motion.gyro_biasBuffer_capacity = [NSNumber numberWithInt:500];
+    }
+    return motion;
 }
 
 #pragma mark - Selecting VCModeDelegate methods
 /*!
 @method whileSelectingHandleButtonGo:fromViewController:
-@discussion This method returns the behaviour when user taps 'Go' button in SelectPosition view RhoRhoModelling mode.
+@discussion This method returns the behaviour when user taps 'Go' button in SelectPosition view RhoThetaLocating mode.
 */
 - (void)whileSelectingHandleButtonGo:(id)sender
                   fromViewController:(UIViewController *)viewController
 {
-    NSLog(@"[INFO]%@ Button 'go' handled from delegate.", ERROR_DESCRIPTION_VCERRM);
+    NSLog(@"[INFO]%@ Button 'go' handled from delegate.", ERROR_DESCRIPTION_VCERTL);
     [viewController performSegueWithIdentifier:@"fromSelectPositionsToEDITING" sender:sender];
     return;
 }
@@ -170,7 +185,7 @@
                                          cell:(UITableViewCell *)cell
                             forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // In RhoRhoModelling, only iBeacon devices can be positioned.
+    // In RhoThetaLocating, only if the item have a position can be selected.
     // Also, models can be selected to add its items all of them toguether.
     
     // Select the source of items; both items and models are shown
@@ -251,7 +266,7 @@
                 positionDescription = [positionDescription stringByAppendingString:[position description]];
             } else {
                 positionDescription = [positionDescription stringByAppendingString:@"( - , - , - )"];
-                NSLog(@"[ERROR]%@ No RDPosition found in item of sort position.", ERROR_DESCRIPTION_VCERRM);
+                NSLog(@"[ERROR]%@ No RDPosition found in item of sort position.", ERROR_DESCRIPTION_VCERTL);
             }
             cell.textLabel.text = positionDescription;
             
@@ -266,7 +281,7 @@
             NSString * modelDescription = itemDic[@"name"];
             if (!modelDescription) {
                 modelDescription = @"Unknown model";
-                NSLog(@"[ERROR]%@ No name found in intem of sort model.", ERROR_DESCRIPTION_VCERRM);
+                NSLog(@"[ERROR]%@ No name found in intem of sort model.", ERROR_DESCRIPTION_VCERTL);
             }
             cell.textLabel.text = modelDescription;
             
@@ -274,7 +289,7 @@
         
     } else {
         // The itemDic variable is null or NO
-        NSLog(@"[ERROR]%@ No items found for showing.", ERROR_DESCRIPTION_VCERRM);
+        NSLog(@"[ERROR]%@ No items found for showing.", ERROR_DESCRIPTION_VCERTL);
         if (indexPath.row == 0) {
             cell.textLabel.text = @"No items found.";
             cell.textLabel.textColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0];
@@ -295,7 +310,7 @@
                 inViewController:(UIViewController *)viewController
          didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-    // In RhoRhoModelling, only iBeacon devices can be positioned.
+    // In RhoThetaLocating, only if the item have a position can be selected.
     // Also, models can be selected to add its items all of them toguether.
      
     // The table was set in 'viewDidLoad' as multiple-selecting
@@ -315,7 +330,7 @@
                                         toUserWithUserDic:userDic
                                    withCredentialsUserDic:credentialsUserDic];
             } else {
-                NSLog(@"[ERROR]%@ While selecting, an item with no position found without AccesoryDetail in red.", ERROR_DESCRIPTION_VCERRM);
+                NSLog(@"[ERROR]%@ While selecting, an item with no position found without AccesoryDetail in red.", ERROR_DESCRIPTION_VCERTL);
                 [selectedCell setAccessoryType:UITableViewCellAccessoryDetailButton];
                 [selectedCell setTintColor:[UIColor redColor]];
             }
@@ -364,11 +379,11 @@
                         NSMutableArray * itemDics = [sharedData fromItemDataGetItemsWithIdentifier:eachComponent[@"identifier"]
                                                                              andCredentialsUserDic:credentialsUserDic];
                         if (itemDics.count == 0) {
-                            NSLog(@"[ERROR]%@ Saved item %@ could not be retrieved from shared data.", eachComponent[@"identifier"], ERROR_DESCRIPTION_VCERRM);
+                            NSLog(@"[ERROR]%@ Saved item %@ could not be retrieved from shared data.", eachComponent[@"identifier"], ERROR_DESCRIPTION_VCERTL);
                             break;
                         } else {
                             if (itemDics.count > 1) {
-                                NSLog(@"[ERROR]%@ More than one saved item with identifier %@.", eachComponent[@"identifier"], ERROR_DESCRIPTION_VCERRM);
+                                NSLog(@"[ERROR]%@ More than one saved item with identifier %@.", eachComponent[@"identifier"], ERROR_DESCRIPTION_VCERTL);
                                 break;
                             }
                         }
@@ -387,10 +402,10 @@
                         itemsIndexData = nil; // ARC disposing
                         itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
                         [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
-                        NSLog(@"[INFO]%@ Item saved in device memory.", ERROR_DESCRIPTION_VCERRM);
+                        NSLog(@"[INFO]%@ Item saved in device memory.", ERROR_DESCRIPTION_VCERTL);
                         // END PERSISTENT: SAVE ITEM
                     } else {
-                        NSLog(@"[ERROR]%@ Item from model %@ could not be stored as an item.", ERROR_DESCRIPTION_VCERRM, eachComponent[@"position"]);
+                        NSLog(@"[ERROR]%@ Item from model %@ could not be stored as an item.", ERROR_DESCRIPTION_VCERTL, eachComponent[@"position"]);
                     }
                 }
             }
@@ -408,7 +423,7 @@
                                            toUserWithUserDic:userDic
                                       withCredentialsUserDic:credentialsUserDic];
             } else {
-                NSLog(@"[ERROR]%@ While selecting, an item with no position found without AccesoryDetail in red.", ERROR_DESCRIPTION_VCERRM);
+                NSLog(@"[ERROR]%@ While selecting, an item with no position found without AccesoryDetail in red.", ERROR_DESCRIPTION_VCERTL);
                 [selectedCell setAccessoryType:UITableViewCellAccessoryDetailButton];
                 [selectedCell setTintColor:[UIColor redColor]];
             }
@@ -465,47 +480,47 @@
 #pragma mark - Editing VCModeDelegate methods
 /*!
 @method whileEditingUserDidTapButtonMeasure:whenInState:andWithLabelStatus:
-@discussion This method returns the behaviour when user taps 'Measure' button in Editing view in RhoRhoModelling mode.
+@discussion This method returns the behaviour when user taps 'Measure' button in Editing view in RhoThetaLocating mode.
 */
 - (void)whileEditingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
                                 whenInState:(NSString *)state
                          andWithLabelStatus:(UILabel *)labelStatus
 {
-    // In every state the button performs different behaviours
     if (
         [sharedData fromSessionDataIsIdleUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic]
         )
     {
-        // If idle, user can measuring; if 'Measuring' is tapped, user asks start measuring.
+        // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
         if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic]) {
-            [buttonMeasure setEnabled:NO];
+            [buttonMeasure setEnabled:YES];
             [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                        andWithCredentialsUserDic:credentialsUserDic];
-            [labelStatus setText:MEASURING_STATE_MESSAGE_VCERRM];
-            
+            [labelStatus setText:MEASURING_STATE_MESSAGE_VCERTL];
+        
             // And send the notification
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRhoModelling/start"
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaLocating/start"
                                                                 object:nil];
-            NSLog(@"[NOTI]%@ Notification \"lmdRhoRhoModelling/start\" posted.", ERROR_DESCRIPTION_VCERRM);
+            NSLog(@"[NOTI]%@ Notification \"lmdRhoThetaLocating/start\" posted.", ERROR_DESCRIPTION_VCERTL);
+            return;
         } else {
+            return;
         }
-        return;
     }
     if (
         [sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic
                                         andCredentialsUserDic:credentialsUserDic]
         )
     {
-        // If measuring, user can go idle; if 'Measuring' is tapped, user asks stop measuring.
+        // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
         [buttonMeasure setEnabled:YES];
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
-        [labelStatus setText:IDLE_STATE_MESSAGE_VCERRM];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRhoModelling/stop"
+        [labelStatus setText:IDLE_STATE_MESSAGE_VCERTL];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaLocating/stop"
                                                             object:nil];
-        NSLog(@"[NOTI]%@ Notification \"lmdRhoRhoModelling/stop\" posted.",ERROR_DESCRIPTION_VCERRM);
+        NSLog(@"[NOTI]%@ Notification \"lmdRhoThetaLocating/stop\" posted.", ERROR_DESCRIPTION_VCERTL);
         return;
     }
 }
@@ -515,7 +530,7 @@
  @discussion Handles the upload of table items; returns the number of sections in them.
  */
 - (NSInteger)whileEditingNumberOfSectionsInTableItems:(UITableView *)tableView
-                                     inViewController:(UIViewController *)viewController
+                           inViewController:(UIViewController *)viewController
 {
     // Return the number of sections.
     return 1;
@@ -529,7 +544,7 @@
                    inViewController:(UIViewController *)viewController
               numberOfRowsInSection:(NSInteger)section
 {
-    // In RhoRhoModelling, only iBeacon devices can be positioned.
+    // In RhoThetaLocating, only iBeacon devices can be positioned.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
     // In this mode, only iBeacon devices can be positioned;
@@ -547,7 +562,7 @@
                       }
                 inViewController:viewController
          ];
-        NSLog(@"[ERROR]%@ Shared data could not be accessed while loading items.", ERROR_DESCRIPTION_VCERRM);
+        NSLog(@"[ERROR]%@ Shared data could not be accessed while loading items.", ERROR_DESCRIPTION_VCERTL);
     }
     
     return 0;
@@ -562,7 +577,7 @@
                                        cell:(UITableViewCell *)cell
                           forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // In RhoRhoModelling, only iBeacon devices can be positioned.
+    // In RhoThetaLocating, only iBeacon devices can be positioned.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
     // Configure individual cells
@@ -618,7 +633,7 @@
 
         } else {
             NSLog(@"[ERROR]%@ An item of sort %@ loaded as a beacon.",
-                  ERROR_DESCRIPTION_VCERRM,
+                  ERROR_DESCRIPTION_VCERTL,
                   itemDic[@"sort"]);
         }
         
@@ -630,7 +645,7 @@
                       }
                 inViewController:viewController
          ];
-        NSLog(@"[ERROR]%@ Shared data could not be accessed while loading cells' item.", ERROR_DESCRIPTION_VCERRM);
+        NSLog(@"[ERROR]%@ Shared data could not be accessed while loading cells' item.", ERROR_DESCRIPTION_VCERTL);
     }
     
     return cell;
@@ -644,7 +659,7 @@
               inViewController:(UIViewController *)viewController
        didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // In RhoRhoModelling, only iBeacon devices can be positioned.
+    // In RhoThetaLocating, only iBeacon devices can be positioned.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
     // Database could not be accessed.
@@ -686,7 +701,7 @@
                       }
                 inViewController:viewController
          ];
-        NSLog(@"[ERROR]%@ Shared data could not be accessed while selecting a cell.", ERROR_DESCRIPTION_VCERRM);
+        NSLog(@"[ERROR]%@ Shared data could not be accessed while selecting a cell.", ERROR_DESCRIPTION_VCERTL);
     }
 }
 
@@ -700,7 +715,7 @@
 {
     UIAlertController * alertTransferPosition = [UIAlertController
                                                  alertControllerWithTitle:@"Position found"
-                                             message:@"This device has already a position assigned. Do you want to transfer it into a single position object?"
+                                             message:@"This iBeacon device has already a position assigned. Do you want to transfer it into a single position object?"
                                              preferredStyle:UIAlertControllerStyleAlert
                                              ];
     
@@ -773,7 +788,7 @@
     if (savedItem) {
         
     } else {
-        NSLog(@"[ERROR]%@ Located position %@ could not be stored as an item.", infoDic[@"position"], ERROR_DESCRIPTION_VCERRM);
+        NSLog(@"[ERROR]%@ Located position %@ could not be stored as an item.", infoDic[@"position"], ERROR_DESCRIPTION_VCERTL);
     }
     
     // Save variables in device memory
