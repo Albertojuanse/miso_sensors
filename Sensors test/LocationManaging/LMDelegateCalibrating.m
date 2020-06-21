@@ -425,7 +425,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  */
 - (void) stop:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"lmdCalibrating/stop"]) {
-        NSLog(@"[NOTI][LMM] Notification \"lmdCalibrating/stop\" recived.");
+        NSLog(@"[NOTI][LMC] Notification \"lmdCalibrating/stop\" recived.");
         // Delete registered regions and heading updates
         [self stopRoutine];
     }

@@ -66,6 +66,8 @@
 		429FA65F22EB19DB00F3D415 /* MDType.m in Sources */ = {isa = PBXBuildFile; fileRef = 429FA65E22EB19DB00F3D415 /* MDType.m */; };
 		42A44133249F7B5800915971 /* VCModeDelegateRhoRhoModelling.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A44132249F7B5800915971 /* VCModeDelegateRhoRhoModelling.m */; };
 		42A44136249F829D00915971 /* LMDelegateRhoRhoModelling.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A44135249F829D00915971 /* LMDelegateRhoRhoModelling.m */; };
+		42A44139249F862700915971 /* VCModeDelegateRhoThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A44138249F862700915971 /* VCModeDelegateRhoThetaLocating.m */; };
+		42A4413C249F880000915971 /* LMDelegateRhoThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A4413B249F880000915971 /* LMDelegateRhoThetaLocating.m */; };
 		42A7BAD8249393FB001130DA /* ViewControllerEditing.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A7BAD7249393FB001130DA /* ViewControllerEditing.m */; };
 		42A7BADC2493B8A9001130DA /* VCModeDelegateThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42A7BADB2493B8A9001130DA /* VCModeDelegateThetaThetaLocating.m */; };
 		42B676EE23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B676ED23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m */; };
@@ -188,6 +190,10 @@
 		42A44132249F7B5800915971 /* VCModeDelegateRhoRhoModelling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCModeDelegateRhoRhoModelling.m; sourceTree = "<group>"; };
 		42A44134249F828300915971 /* LMDelegateRhoRhoModelling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateRhoRhoModelling.h; sourceTree = "<group>"; };
 		42A44135249F829D00915971 /* LMDelegateRhoRhoModelling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateRhoRhoModelling.m; sourceTree = "<group>"; };
+		42A44137249F860C00915971 /* VCModeDelegateRhoThetaLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCModeDelegateRhoThetaLocating.h; sourceTree = "<group>"; };
+		42A44138249F862700915971 /* VCModeDelegateRhoThetaLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCModeDelegateRhoThetaLocating.m; sourceTree = "<group>"; };
+		42A4413A249F87F000915971 /* LMDelegateRhoThetaLocating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateRhoThetaLocating.h; sourceTree = "<group>"; };
+		42A4413B249F880000915971 /* LMDelegateRhoThetaLocating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateRhoThetaLocating.m; sourceTree = "<group>"; };
 		42A7BAD6249393EA001130DA /* ViewControllerEditing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewControllerEditing.h; sourceTree = "<group>"; };
 		42A7BAD7249393FB001130DA /* ViewControllerEditing.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewControllerEditing.m; sourceTree = "<group>"; };
 		42A7BAD92493B4C4001130DA /* VCModeDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCModeDelegate.h; sourceTree = "<group>"; };
@@ -293,6 +299,8 @@
 				42A44135249F829D00915971 /* LMDelegateRhoRhoModelling.m */,
 				42B676EF23D5E964005E3CBD /* LMDelegateRhoThetaModelling.h */,
 				42B676F023D5E972005E3CBD /* LMDelegateRhoThetaModelling.m */,
+				42A4413A249F87F000915971 /* LMDelegateRhoThetaLocating.h */,
+				42A4413B249F880000915971 /* LMDelegateRhoThetaLocating.m */,
 				42B676EC23D5B5AD005E3CBD /* LMDelegateThetaThetaLocating.h */,
 				42B676ED23D5B5BA005E3CBD /* LMDelegateThetaThetaLocating.m */,
 				42263BB624479AB300161AB2 /* LMDelegateGPS.h */,
@@ -342,14 +350,16 @@
 				42A7BAD6249393EA001130DA /* ViewControllerEditing.h */,
 				42A7BAD7249393FB001130DA /* ViewControllerEditing.m */,
 				42A7BAD92493B4C4001130DA /* VCModeDelegate.h */,
-				42A7BADA2493B899001130DA /* VCModeDelegateThetaThetaLocating.h */,
-				42A7BADB2493B8A9001130DA /* VCModeDelegateThetaThetaLocating.m */,
-				42BF99672495327A00070DF0 /* VCModeDelegateRhoThetaModelling.h */,
-				42BF99682495328B00070DF0 /* VCModeDelegateRhoThetaModelling.m */,
 				4204EF8C249D07C1000A4403 /* VCModeDelegateRhoRhoLocating.h */,
 				4204EF8D249D07D1000A4403 /* VCModeDelegateRhoRhoLocating.m */,
 				42A44131249F7B4E00915971 /* VCModeDelegateRhoRhoModelling.h */,
 				42A44132249F7B5800915971 /* VCModeDelegateRhoRhoModelling.m */,
+				42BF99672495327A00070DF0 /* VCModeDelegateRhoThetaModelling.h */,
+				42BF99682495328B00070DF0 /* VCModeDelegateRhoThetaModelling.m */,
+				42A44137249F860C00915971 /* VCModeDelegateRhoThetaLocating.h */,
+				42A44138249F862700915971 /* VCModeDelegateRhoThetaLocating.m */,
+				42A7BADA2493B899001130DA /* VCModeDelegateThetaThetaLocating.h */,
+				42A7BADB2493B8A9001130DA /* VCModeDelegateThetaThetaLocating.m */,
 			);
 			path = ViewControlling;
 			sourceTree = "<group>";
@@ -540,6 +550,7 @@
 				42E4B7E823D8BE03003888C0 /* MDMetamodel.m in Sources */,
 				427A9402241ACBA2001FCCCC /* VCComponentInfo.m in Sources */,
 				428B7C6022E089B200B0C660 /* RDThetaThetaSystem.m in Sources */,
+				42A44139249F862700915971 /* VCModeDelegateRhoThetaLocating.m in Sources */,
 				4204EF8E249D07D1000A4403 /* VCModeDelegateRhoRhoLocating.m in Sources */,
 				42917F03229BE12900EE6CD3 /* Blackbox.m in Sources */,
 				426501BD22A03B4300BE20B7 /* Canvas.m in Sources */,
@@ -561,6 +572,7 @@
 				422798932271F37800E07C39 /* main.m in Sources */,
 				422798852271F37800E07C39 /* AppDelegate.m in Sources */,
 				42ED9F6D23D7415500537FE6 /* LMDelegateRhoRhoLocating.m in Sources */,
+				42A4413C249F880000915971 /* LMDelegateRhoThetaLocating.m in Sources */,
 				4240729723E9761700B2C696 /* ViewControllerConfigurationTypes.m in Sources */,
 				429FA65F22EB19DB00F3D415 /* MDType.m in Sources */,
 				423A46DD249B58E600BF0265 /* VCDrawings.m in Sources */,

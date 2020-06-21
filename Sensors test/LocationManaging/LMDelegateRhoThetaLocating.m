@@ -1,14 +1,14 @@
 //
-//  LMDelegteRhoThetaModelling.m
+//  LMDelegateRhoThetaLocating.m
 //  Sensors test
 //
-//  Created by Alberto J. on 20/1/20.
+//  Created by Alberto J. on 21/06/2020.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 
-#import "LMDelegateRhoThetaModelling.h"
+#import "LMDelegateRhoThetaLocating.h"
 
-@implementation LMDelegateRhoThetaModelling : NSObject
+@implementation LMDelegateRhoThetaLocating : NSObject
 
 /*!
  @method init
@@ -67,18 +67,18 @@
         // This object must listen to this events
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(start:)
-                                                     name:@"lmdRhoThetaModelling/start"
+                                                     name:@"lmdRhoThetaLocating/start"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(stop:)
-                                                     name:@"lmdRhoThetaModelling/stop"
+                                                     name:@"lmdRhoThetaLocating/stop"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reset:)
                                                      name:@"lmd/reset"
                                                    object:nil];
         
-        NSLog(@"[INFO][LMRTM] LocationManager prepared for kModeRhoThetaModelling mode.");
+        NSLog(@"[INFO][LMRTL] LocationManager prepared for kModeRhoThetaLocating mode.");
     }
     
     return self;
@@ -173,26 +173,26 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
     switch (status) {
         case kCLAuthorizationStatusNotDetermined:
             // Request authorization initially
-            NSLog(@"[ERROR][LMRTM] Authorization is not known.");
+            NSLog(@"[ERROR][LMRTL] Authorization is not known.");
             
         case kCLAuthorizationStatusRestricted:
             // Disable location features
-            NSLog(@"[ERROR][LMRTM] User restricts localization services.");
+            NSLog(@"[ERROR][LMRTL] User restricts localization services.");
             break;
             
         case kCLAuthorizationStatusDenied:
             // Disable location features
-            NSLog(@"[ERROR][LMRTM] User doesn't allow localization services.");
+            NSLog(@"[ERROR][LMRTL] User doesn't allow localization services.");
             break;
             
         case kCLAuthorizationStatusAuthorizedAlways:
             // Enable location features
-            NSLog(@"[INFO][LMRTM] User allows 'always' localization services.");
+            NSLog(@"[INFO][LMRTL] User allows 'always' localization services.");
             break;
             
         case kCLAuthorizationStatusAuthorizedWhenInUse:
             // Enable location features
-            NSLog(@"[INFO][LMRTM] User allows 'when-in-use' localization services.");
+            NSLog(@"[INFO][LMRTL] User allows 'when-in-use' localization services.");
             break;
             
         default:
@@ -201,27 +201,27 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
     
     // Error management
     if ([CLLocationManager locationServicesEnabled]) {
-        NSLog(@"[INFO][LMRTM] Location services enabled.");
+        NSLog(@"[INFO][LMRTL] Location services enabled.");
     }else{
-        NSLog(@"[ERROR][LMRTM] Location services not enabled.");
+        NSLog(@"[ERROR][LMRTL] Location services not enabled.");
     }
     
     if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]]) {
-        NSLog(@"[INFO][LMRTM] Monitoring available for class CLBeaconRegion.");
+        NSLog(@"[INFO][LMRTL] Monitoring available for class CLBeaconRegion.");
     }else{
-        NSLog(@"[ERROR][LMRTM] Monitoring not available for class CLBeaconRegion.");
+        NSLog(@"[ERROR][LMRTL] Monitoring not available for class CLBeaconRegion.");
     }
     
     if ([CLLocationManager isRangingAvailable]) {
-        NSLog(@"[INFO][LMRTM] Ranging available.");
+        NSLog(@"[INFO][LMRTL] Ranging available.");
     }else{
-        NSLog(@"[ERROR][LMRTM] Ranging not available.");
+        NSLog(@"[ERROR][LMRTL] Ranging not available.");
     }
     
     if ([CLLocationManager headingAvailable]) {
-        NSLog(@"[INFO][LMRTM] Heading available.");
+        NSLog(@"[INFO][LMRTL] Heading available.");
     }else{
-        NSLog(@"[ERROR][LMRTM] Heading not available.");
+        NSLog(@"[ERROR][LMRTL] Heading not available.");
     }
 }
 
@@ -237,8 +237,8 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
     // Start ranging
     [manager startRangingBeaconsInRegion:region];
     
-    NSLog(@"[INFO][LMRTM] Device ranged a region:");
-    NSLog(@"[INFO][LMRTM] -> %@", [[region proximityUUID] UUIDString]);
+    NSLog(@"[INFO][LMRTL] Device ranged a region:");
+    NSLog(@"[INFO][LMRTL] -> %@", [[region proximityUUID] UUIDString]);
     //NSLog([NSString stringWithFormat:@"[INFO] Device ranged a region: %@", [[region proximityUUID] UUIDString]]);
 }
 
@@ -249,8 +249,8 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 - (void)locationManager:(CLLocationManager *)manager
 rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
               withError:(NSError *)error {
-    NSLog(@"[ERROR][LMRTM] Device failed in raging a region:");
-    NSLog(@"[ERROR][LMRTM] -> %@", [[region proximityUUID] UUIDString]);
+    NSLog(@"[ERROR][LMRTL] Device failed in raging a region:");
+    NSLog(@"[ERROR][LMRTL] -> %@", [[region proximityUUID] UUIDString]);
 }
 
 /*!
@@ -277,7 +277,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          ];
          */
         // TODO: handle intrusion situations. Alberto J. 2019/09/10.
-        NSLog(@"[ERROR][LMRTM] Shared data could not be accessed when beacon ranged.");
+        NSLog(@"[ERROR][LMRTL] Shared data could not be accessed when beacon ranged.");
         return;
     }
     
@@ -292,7 +292,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                                             andCredentialsUserDic:credentialsUserDic];
             
             // If a monitoring type system; needs to save the UUID
-            if ([mode isModeKey:kModeRhoThetaModelling]) {
+            if ([mode isModeKey:kModeRhoThetaLocating]) {
                 
                 // For every ranged beacon...
                 for (CLBeacon *beacon in beacons) {
@@ -317,7 +317,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                         
                         // If the UUID is not found, the measure cannot be saved
                         if (!itemUUID) {
-                            NSLog(@"[ERROR][LMRTM] Measure not saved since the item selected had no UUID.");
+                            NSLog(@"[ERROR][LMRTL] Measure not saved since the item selected had no UUID.");
                             return;
                         } else {
                                 
@@ -348,14 +348,14 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                             }
                         }
                     } else {
-                        NSLog(@"[ERROR][LMRTM] Measure not saved since user did not choose any item.");
+                        NSLog(@"[ERROR][LMRTL] Measure not saved since user did not choose any item.");
                         return;
                     }
                     
                 }
                 
                 // Notify that there are new measures
-                NSLog(@"[NOTI][LMRTM] Notification \"ranging/newMeasuresAvalible\" posted.");
+                NSLog(@"[NOTI][LMRTL] Notification \"ranging/newMeasuresAvalible\" posted.");
                 [[NSNotificationCenter defaultCenter]
                  postNotificationName:@"ranging/newMeasuresAvalible"
                  object:nil];
@@ -399,7 +399,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
          }
          ];
          */
-        NSLog(@"[ERROR][LMRTM] Shared data could not be accessed while starting travel.");
+        NSLog(@"[ERROR][LMRTL] Shared data could not be accessed while starting travel.");
         return;
     }
     
@@ -412,7 +412,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                                         andCredentialsUserDic:credentialsUserDic];
         
         // If a rho type system
-        if ([mode isModeKey:kModeRhoThetaModelling]) {
+        if ([mode isModeKey:kModeRhoThetaLocating]) {
             
             // The heading measures in this mode are only saved if there is already any beacon measure saved...
             if(isItemChosenByUserRanged) {
@@ -442,7 +442,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                andWithCredentialsUserDic:credentialsUserDic];
                 }
             } else {
-                NSLog(@"[INFO][LMRTM] User did choose a UUID source that is not being ranging; disposing.");
+                NSLog(@"[INFO][LMRTL] User did choose a UUID source that is not being ranging; disposing.");
             }
         }
         
@@ -471,8 +471,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  @discussion This method asks the Location Manager to start positioning the device using compass and iBeacons.
  */
 - (void) start:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"lmdRhoThetaModelling/start"]){
-        NSLog(@"[NOTI][LMRTM] Notification \"lmdRhoThetaModelling/start\" recived.");
+    if ([[notification name] isEqualToString:@"lmdRhoThetaLocating/start"]){
+        NSLog(@"[NOTI][LMRTL] Notification \"lmdRhoThetaLocating/start\" recived.");
         
         // Register the beacons only if posible.
         [self locationManager:locationManager didChangeAuthorizationStatus:CLLocationManager.authorizationStatus];
@@ -492,7 +492,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
              }
              ];
              */
-            NSLog(@"[ERROR][LMRTM] Shared data could not be accessed while starting locating measure.");
+            NSLog(@"[ERROR][LMRTL] Shared data could not be accessed while starting locating measure.");
             return;
         }
         
@@ -507,7 +507,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
            CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
             
-            if ([mode isModeKey:kModeRhoThetaModelling]) {
+            if ([mode isModeKey:kModeRhoThetaLocating]) {
                 
                 // Resgiter the regions to be monitorized
                 for (NSMutableDictionary * itemDic in items) {
@@ -527,8 +527,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                         [monitoredRegions addObject:region];
                         
                         [locationManager startRangingBeaconsInRegion:region];
-                        NSLog(@"[INFO][LMRTM] Device monitorizes a region:");
-                        NSLog(@"[INFO][LMRTM] -> %@", [[region proximityUUID] UUIDString]);
+                        NSLog(@"[INFO][LMRTL] Device monitorizes a region:");
+                        NSLog(@"[INFO][LMRTL] -> %@", [[region proximityUUID] UUIDString]);
                         
                         // But if its position is loaded, the user wants to use it to locate itself against them
                         if (itemDic[@"position"]) {
@@ -544,7 +544,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 // Start heading mesures
                 [locationManager startUpdatingHeading];
                 
-                NSLog(@"[INFO][LMRTM] Start updating compass and iBeacons.");
+                NSLog(@"[INFO][LMRTL] Start updating compass and iBeacons.");
             }
             
         }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied ||
@@ -552,7 +552,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             [self stopRoutine];
             [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                                   andWithCredentialsUserDic:credentialsUserDic];
-            NSLog(@"[ERROR][LMRTM] Location services not allowed; updating compass and iBeacons.");
+            NSLog(@"[ERROR][LMRTL] Location services not allowed; updating compass and iBeacons.");
         }
     }
 }
@@ -562,13 +562,13 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  @discussion This method asks the Location Manager to stop positioning the device using compass and iBeacons.
  */
 - (void) stop:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"lmdRhoThetaModelling/start"]){
-        NSLog(@"[NOTI][LMRTM] Notification \"lmdRhoThetaModelling/start\" recived.");
+    if ([[notification name] isEqualToString:@"lmdRhoThetaLocating/start"]){
+        NSLog(@"[NOTI][LMRTL] Notification \"lmdRhoThetaLocating/start\" recived.");
         // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         [self stopRoutine];
-        NSLog(@"[INFO][LMRTM] Stop updating compass and iBeacons.");
+        NSLog(@"[INFO][LMRTL] Stop updating compass and iBeacons.");
     }
 }
 
@@ -597,7 +597,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 - (void) reset:(NSNotification *) notification
 {
     if ([[notification name] isEqualToString:@"lmd/reset"]){
-        NSLog(@"[NOTI][LMRTM] Notification \"lmd/reset\" recived.");
+        NSLog(@"[NOTI][LMRTL] Notification \"lmd/reset\" recived.");
         
         // Instance variables
         // Set device's location at the origin

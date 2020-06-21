@@ -363,7 +363,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
              }
              ];
              */
-            NSLog(@"[ERROR][LMM] Shared data could not be accessed while starting locating measure.");
+            NSLog(@"[ERROR][LMRRL] Shared data could not be accessed while starting locating measure.");
             return;
         }
         
@@ -399,8 +399,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                         [monitoredRegions addObject:region];
                         
                         [locationManager startRangingBeaconsInRegion:region];
-                        NSLog(@"[INFO][LMM] Device monitorizes a region:");
-                        NSLog(@"[INFO][LMM] -> %@", [[region proximityUUID] UUIDString]);
+                        NSLog(@"[INFO][LMRRL] Device monitorizes a region:");
+                        NSLog(@"[INFO][LMRRL] -> %@", [[region proximityUUID] UUIDString]);
                         
                         // But if its position is loaded, the user wants to use it to locate itself against them
                         if (itemDic[@"position"]) {
