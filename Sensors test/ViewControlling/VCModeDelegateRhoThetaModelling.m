@@ -788,7 +788,7 @@
     if (savedItem) {
         
     } else {
-        NSLog(@"[ERROR][LMTTL] Located position %@ could not be stored as an item.", infoDic[@"position"]);
+        NSLog(@"[ERROR]%@ Located position %@ could not be stored as an item.", infoDic[@"position"], ERROR_DESCRIPTION_VCERTM);
     }
     
     // Save variables in device memory

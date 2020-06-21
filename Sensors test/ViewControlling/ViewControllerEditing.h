@@ -18,8 +18,9 @@
 #import "VCModeDelegateThetaThetaLocating.h"
 #import "VCModeDelegateRhoThetaModelling.h"
 
-#import "LMDelegateRhoThetaModelling.h"
 #import "LMDelegateRhoRhoLocating.h"
+#import "LMDelegateRhoRhoModelling.h"
+#import "LMDelegateRhoThetaModelling.h"
 #import "LMDelegateThetaThetaLocating.h"
 
 #import "RDRhoRhoSystem.h"

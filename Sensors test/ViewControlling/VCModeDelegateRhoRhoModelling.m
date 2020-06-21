@@ -1,14 +1,14 @@
 //
-//  VCModeDelegateThetaThetaLocating.m
+//  VCModeDelegateRhoRhoModelling.m
 //  Sensors test
 //
-//  Created by Alberto J. on 12/06/2020.
+//  Created by Alberto J. on 21/06/2020.
 //  Copyright © 2020 MISO. All rights reserved.
 //
 
-#import "VCModeDelegateThetaThetaLocating.h"
+#import "VCModeDelegateRhoRhoModelling.h"
 
-@implementation VCModeDelegateThetaThetaLocating : NSObject
+@implementation VCModeDelegateRhoRhoModelling : NSObject
 
 /*!
  @method initWithSharedData:userDic:deviceUUID:andCredentialsUserDic:
@@ -33,51 +33,83 @@
 #pragma mark - General VCModeDelegate methods
 /*!
 @method getErrorDescription
-@discussion This method returns the description for errors that ViewControllerEditing must use when in ThetaThetaLocating mode.
+@discussion This method returns the description for errors that ViewControllerEditing must use when in RhoRhoModelling mode.
 */
 - (NSString *)getErrorDescription
 {
-    return ERROR_DESCRIPTION_VCETTL;
+    return ERROR_DESCRIPTION_VCERRM;
 }
 
 /*!
 @method getIdleStateMessage
-@discussion This method returns the label test for Idle state in ThetaThetaLocating mode.
+@discussion This method returns the label test for Idle state in RhoRhoModelling mode.
 */
 - (NSString *)getIdleStateMessage
 {
-    return IDLE_STATE_MESSAGE_VCETTL;
+    return IDLE_STATE_MESSAGE_VCERRM;
 }
 
 /*!
 @method getMeasuringStateMessage
-@discussion This method returns the label test for Measuring state in ThetaThetaLocating mode.
+@discussion This method returns the label test for Measuring state in RhoRhoModelling mode.
 */
 - (NSString *)getMeasuringStateMessage
 {
-    return MEASURING_STATE_MESSAGE_VCETTL;
+    return MEASURING_STATE_MESSAGE_VCERRM;
 }
 
 #pragma mark - Location VCModeDelegate methods
 /*!
 @method loadLMDelegate
-@discussion This method returns the location manager with the proper location system in ThetaThetaLocating mode.
+@discussion This method returns the location manager with the proper location system in RhoRhoModelling mode.
 */
 - (id<CLLocationManagerDelegate>)loadLMDelegate
 {
-    if (!thetaThetaSystem) {
-        thetaThetaSystem = [[RDThetaThetaSystem alloc] initWithSharedData:sharedData
-                                                                  userDic:userDic
-                                                               deviceUUID:deviceUUID
-                                                    andCredentialsUserDic:credentialsUserDic];
+    if (!rhoRhoSystem) {
+        rhoRhoSystem = [[RDRhoRhoSystem alloc] initWithSharedData:sharedData
+                                                              userDic:userDic
+                                                           deviceUUID:deviceUUID
+                                                andCredentialsUserDic:credentialsUserDic];
     }
     if (!location) {
         // Load the location manager and its delegate, the component which device uses to handle location events.
-        location = [[LMDelegateThetaThetaLocating alloc] initWithSharedData:sharedData
+        location = [[LMDelegateRhoRhoModelling alloc] initWithSharedData:sharedData
                                                                     userDic:userDic
-                                                           thetaThetaSystem:thetaThetaSystem
-                                                                 deviceUUID:deviceUUID
-                                                      andCredentialsUserDic:credentialsUserDic];
+                                                            rhoRhoSystem:rhoRhoSystem
+                                                                deviceUUID:deviceUUID
+                                                     andCredentialsUserDic:credentialsUserDic];
+    }
+    NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
+                                                                      andCredentialsUserDic:credentialsUserDic];
+    NSMutableDictionary * itemChosenByUserAsDevicePosition;
+    if (itemsChosenByUser.count == 0) {
+        NSLog(@"[ERROR]%@ The collection with the items chosen by user is empty; no device position provided.", ERROR_DESCRIPTION_VCERRM);
+    } else {
+        itemChosenByUserAsDevicePosition = [itemsChosenByUser objectAtIndex:0];
+        if (itemsChosenByUser.count > 1) {
+            NSLog(@"[ERROR]%@ The collection with the items chosen by user have more than one item; the first one is set as device position.", ERROR_DESCRIPTION_VCERRM);
+        }
+    }
+    if (itemChosenByUserAsDevicePosition) {
+        RDPosition * position = itemChosenByUserAsDevicePosition[@"position"];
+        if (!position) {
+            NSLog(@"[ERROR]%@ No position was found in the item chosen by user as device position; (0,0,0) is set.", ERROR_DESCRIPTION_VCERRM);
+            position = [[RDPosition alloc] init];
+            position.x = [NSNumber numberWithFloat:0.0];
+            position.y = [NSNumber numberWithFloat:0.0];
+            position.z = [NSNumber numberWithFloat:0.0];
+        }
+        if (!deviceUUID) {
+            if (!itemChosenByUserAsDevicePosition[@"uuid"]) {
+                NSLog(@"[ERROR]%@ No UUID was found in the item chosen by user as device position; a random one set.", ERROR_DESCRIPTION_VCERRM);
+                deviceUUID = [[NSUUID UUID] UUIDString];
+            } else {
+                deviceUUID = itemChosenByUserAsDevicePosition[@"uuid"];
+            }
+        }
+        [rhoRhoSystem setDeviceUUID:deviceUUID];
+        [location setPosition:position];
+        [location setDeviceUUID:deviceUUID];
     }
     return location;
 }
@@ -85,37 +117,22 @@
 #pragma mark - Motion VCModeDelegate methods
 /*!
 @method loadMotion
-@discussion This method returns the motion manager in ThetaThetaLocating mode.
+@discussion This method returns the motion manager in RhoRhoModelling mode.
 */
 - (MotionManager *)loadMotion
 {
-    if (!motion) {
-        motion = [[MotionManager alloc] initWithSharedData:sharedData
-                                                   userDic:credentialsUserDic
-                                          thetaThetaSystem:thetaThetaSystem
-                                                deviceUUID:deviceUUID
-                                     andCredentialsUserDic:credentialsUserDic];
-        
-        // TODO: make this configurable or properties. Alberto J. 2019/09/13.
-        motion.acce_sensitivity_threshold = [NSNumber numberWithFloat:0.01];
-        motion.gyro_sensitivity_threshold = [NSNumber numberWithFloat:0.015];
-        motion.acce_measuresBuffer_capacity = [NSNumber numberWithInt:500];
-        motion.acce_biasBuffer_capacity = [NSNumber numberWithInt:500];
-        motion.gyro_measuresBuffer_capacity = [NSNumber numberWithInt:500];
-        motion.gyro_biasBuffer_capacity = [NSNumber numberWithInt:500];
-    }
-    return motion;
+    return nil;
 }
 
 #pragma mark - Selecting VCModeDelegate methods
 /*!
 @method whileSelectingHandleButtonGo:fromViewController:
-@discussion This method returns the behaviour when user taps 'Go' button in SelectPosition view ThetaThetaLocating mode.
+@discussion This method returns the behaviour when user taps 'Go' button in SelectPosition view RhoRhoModelling mode.
 */
 - (void)whileSelectingHandleButtonGo:(id)sender
                   fromViewController:(UIViewController *)viewController
 {
-    NSLog(@"[INFO]%@ Button 'go' handled from delegate.", ERROR_DESCRIPTION_VCETTL);
+    NSLog(@"[INFO]%@ Button 'go' handled from delegate.", ERROR_DESCRIPTION_VCERRM);
     [viewController performSegueWithIdentifier:@"fromSelectPositionsToEDITING" sender:sender];
     return;
 }
@@ -153,7 +170,7 @@
                                          cell:(UITableViewCell *)cell
                             forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // In ThetaThetaLocating, only if the item have a position can be selected.
+    // In RhoRhoModelling, iBeacon devices can be positioned only from positioned items.
     // Also, models can be selected to add its items all of them toguether.
     
     // Select the source of items; both items and models are shown
@@ -196,7 +213,6 @@
                 beaconDescription = [beaconDescription stringByAppendingString:[type description]];
             }
             beaconDescription = [beaconDescription stringByAppendingString:@"\n"];
-            // Must have a position
             RDPosition * position = itemDic[@"position"];
             if (position) {
                 beaconDescription = [beaconDescription stringByAppendingString:[position description]];
@@ -235,7 +251,7 @@
                 positionDescription = [positionDescription stringByAppendingString:[position description]];
             } else {
                 positionDescription = [positionDescription stringByAppendingString:@"( - , - , - )"];
-                NSLog(@"[ERROR]%@ No RDPosition found in item of sort position.", ERROR_DESCRIPTION_VCETTL);
+                NSLog(@"[ERROR]%@ No RDPosition found in item of sort position.", ERROR_DESCRIPTION_VCERRM);
             }
             cell.textLabel.text = positionDescription;
             
@@ -250,7 +266,7 @@
             NSString * modelDescription = itemDic[@"name"];
             if (!modelDescription) {
                 modelDescription = @"Unknown model";
-                NSLog(@"[ERROR]%@ No name found in intem of sort model.", ERROR_DESCRIPTION_VCETTL);
+                NSLog(@"[ERROR]%@ No name found in intem of sort model.", ERROR_DESCRIPTION_VCERRM);
             }
             cell.textLabel.text = modelDescription;
             
@@ -258,7 +274,7 @@
         
     } else {
         // The itemDic variable is null or NO
-        NSLog(@"[ERROR]%@ No items found for showing.", ERROR_DESCRIPTION_VCETTL);
+        NSLog(@"[ERROR]%@ No items found for showing.", ERROR_DESCRIPTION_VCERRM);
         if (indexPath.row == 0) {
             cell.textLabel.text = @"No items found.";
             cell.textLabel.textColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0];
@@ -279,9 +295,9 @@
                 inViewController:(UIViewController *)viewController
          didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-    // In ThetaThetaLocating, only if the item have a position can be selected.
+    // In RhoRhoModelling, iBeacon devices can be positioned only from positioned items.
     // Also, models can be selected to add its items all of them toguether.
-    
+     
     // The table was set in 'viewDidLoad' as multiple-selecting
     // Manage multi-selection
     UITableViewCell *selectedCell = [tableView cellForRowAtIndexPath:indexPath];
@@ -299,7 +315,7 @@
                                         toUserWithUserDic:userDic
                                    withCredentialsUserDic:credentialsUserDic];
             } else {
-                NSLog(@"[ERROR]%@ While selecting, an item with no position found without AccesoryDetail in red.", ERROR_DESCRIPTION_VCETTL);
+                NSLog(@"[ERROR]%@ While selecting, an item with no position found without AccesoryDetail in red.", ERROR_DESCRIPTION_VCERRM);
                 [selectedCell setAccessoryType:UITableViewCellAccessoryDetailButton];
                 [selectedCell setTintColor:[UIColor redColor]];
             }
@@ -348,11 +364,11 @@
                         NSMutableArray * itemDics = [sharedData fromItemDataGetItemsWithIdentifier:eachComponent[@"identifier"]
                                                                              andCredentialsUserDic:credentialsUserDic];
                         if (itemDics.count == 0) {
-                            NSLog(@"[ERROR]%@ Saved item %@ could not be retrieved from shared data.", eachComponent[@"identifier"], ERROR_DESCRIPTION_VCETTL);
+                            NSLog(@"[ERROR]%@ Saved item %@ could not be retrieved from shared data.", eachComponent[@"identifier"], ERROR_DESCRIPTION_VCERRM);
                             break;
                         } else {
                             if (itemDics.count > 1) {
-                                NSLog(@"[ERROR]%@ More than one saved item with identifier %@.", eachComponent[@"identifier"], ERROR_DESCRIPTION_VCETTL);
+                                NSLog(@"[ERROR]%@ More than one saved item with identifier %@.", eachComponent[@"identifier"], ERROR_DESCRIPTION_VCERRM);
                                 break;
                             }
                         }
@@ -371,10 +387,10 @@
                         itemsIndexData = nil; // ARC disposing
                         itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
                         [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
-                        NSLog(@"[INFO]%@ Item saved in device memory.", ERROR_DESCRIPTION_VCETTL);
+                        NSLog(@"[INFO]%@ Item saved in device memory.", ERROR_DESCRIPTION_VCERRM);
                         // END PERSISTENT: SAVE ITEM
                     } else {
-                        NSLog(@"[ERROR]%@ Item from model %@ could not be stored as an item.", ERROR_DESCRIPTION_VCETTL, eachComponent[@"position"]);
+                        NSLog(@"[ERROR]%@ Item from model %@ could not be stored as an item.", ERROR_DESCRIPTION_VCERRM, eachComponent[@"position"]);
                     }
                 }
             }
@@ -392,7 +408,7 @@
                                            toUserWithUserDic:userDic
                                       withCredentialsUserDic:credentialsUserDic];
             } else {
-                NSLog(@"[ERROR]%@ While selecting, an item with no position found without AccesoryDetail in red.", ERROR_DESCRIPTION_VCETTL);
+                NSLog(@"[ERROR]%@ While selecting, an item with no position found without AccesoryDetail in red.", ERROR_DESCRIPTION_VCERRM);
                 [selectedCell setAccessoryType:UITableViewCellAccessoryDetailButton];
                 [selectedCell setTintColor:[UIColor redColor]];
             }
@@ -446,59 +462,50 @@
     return itemDic;
 }
 
-#pragma mark - Editing VCModeDelegate methods    
+#pragma mark - Editing VCModeDelegate methods
 /*!
 @method whileEditingUserDidTapButtonMeasure:whenInState:andWithLabelStatus:
-@discussion This method returns the behaviour when user taps 'Measure' button in Editing view in ThetaThetaLocating mode.
+@discussion This method returns the behaviour when user taps 'Measure' button in Editing view in RhoRhoModelling mode.
 */
 - (void)whileEditingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
                                 whenInState:(NSString *)state
                          andWithLabelStatus:(UILabel *)labelStatus
 {
+    // In every state the button performs different behaviours
     if (
         [sharedData fromSessionDataIsIdleUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic]
         )
     {
-        // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
-        // If user did chose a position to aim
+        // If idle, user can measuring; if 'Measuring' is tapped, user asks start measuring.
         if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic]) {
-            [buttonMeasure setEnabled:YES];
+            [buttonMeasure setEnabled:NO];
             [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                        andWithCredentialsUserDic:credentialsUserDic];
-            
-            [labelStatus setText:MEASURING_STATE_MESSAGE_VCETTL];
+            [labelStatus setText:MEASURING_STATE_MESSAGE_VCERRM];
             
             // And send the notification
-            // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
-            // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaLocating/start" object:nil];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
-            NSLog(@"[NOTI]%@ Notification \"startGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTL);
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring"
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRhoModelling/start"
                                                                 object:nil];
-            NSLog(@"[NOTI]%@ Notification \"startGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTL);
-            return;
+            NSLog(@"[NOTI]%@ Notification \"lmdRhoRhoModelling/start\" posted.", ERROR_DESCRIPTION_VCERRM);
         } else {
-            return;
         }
+        return;
     }
     if (
         [sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic
                                         andCredentialsUserDic:credentialsUserDic]
         )
     {
-        // If 'Measuring' is tapped, ask stop measuring.
+        // If measuring, user can go idle; if 'Measuring' is tapped, user asks stop measuring.
         [buttonMeasure setEnabled:YES];
-        // This next line have been moved into "stopGyroscopesHeadingMeasuring" method, because the measure is generated in this case after stop measuring
-        // [sharedData inSessionDataSetIdleUserWithUserDic:userDic andWithCredentialsUserDic:credentialsUserDic];
-        [labelStatus setText:IDLE_STATE_MESSAGE_VCETTL];
-        // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaLocating/stop" object:nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
-        NSLog(@"[NOTI]%@ Notification \"stopGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTL);
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                              andWithCredentialsUserDic:credentialsUserDic];
+        [labelStatus setText:IDLE_STATE_MESSAGE_VCERRM];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRhoModelling/stop"
                                                             object:nil];
-        NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTL);
+        NSLog(@"[NOTI]%@ Notification \"lmdRhoRhoModelling/stop\" posted.",ERROR_DESCRIPTION_VCERRM);
         return;
     }
 }
@@ -508,7 +515,7 @@
  @discussion Handles the upload of table items; returns the number of sections in them.
  */
 - (NSInteger)whileEditingNumberOfSectionsInTableItems:(UITableView *)tableView
-                           inViewController:(UIViewController *)viewController
+                                     inViewController:(UIViewController *)viewController
 {
     // Return the number of sections.
     return 1;
@@ -522,7 +529,7 @@
                    inViewController:(UIViewController *)viewController
               numberOfRowsInSection:(NSInteger)section
 {
-    // In ThetaThetaLocating, only iBeacon devices or new positions can be positioned.
+    // In RhoRhoModelling, iBeacon devices can be positioned only from positioned items.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
     // In this mode, only iBeacon devices can be positioned;
@@ -540,7 +547,7 @@
                       }
                 inViewController:viewController
          ];
-        NSLog(@"[ERROR]%@ Shared data could not be accessed while loading items.", ERROR_DESCRIPTION_VCETTL);
+        NSLog(@"[ERROR]%@ Shared data could not be accessed while loading items.", ERROR_DESCRIPTION_VCERRM);
     }
     
     return 0;
@@ -555,7 +562,7 @@
                                        cell:(UITableViewCell *)cell
                           forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // In ThetaThetaLocating, only iBeacon devices or new positions can be positioned.
+    // In RhoRhoModelling, iBeacon devices can be positioned only from positioned items.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
     // Configure individual cells
@@ -579,7 +586,7 @@
         // If it is a beacon
         if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
             
-                        [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
+            [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
             
             // It representation depends on if exist its position or its type
             // Compose the description
@@ -611,7 +618,7 @@
 
         } else {
             NSLog(@"[ERROR]%@ An item of sort %@ loaded as a beacon.",
-                  ERROR_DESCRIPTION_VCETTL,
+                  ERROR_DESCRIPTION_VCERRM,
                   itemDic[@"sort"]);
         }
         
@@ -623,7 +630,7 @@
                       }
                 inViewController:viewController
          ];
-        NSLog(@"[ERROR]%@ Shared data could not be accessed while loading cells' item.", ERROR_DESCRIPTION_VCETTL);
+        NSLog(@"[ERROR]%@ Shared data could not be accessed while loading cells' item.", ERROR_DESCRIPTION_VCERRM);
     }
     
     return cell;
@@ -637,7 +644,7 @@
               inViewController:(UIViewController *)viewController
        didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // In ThetaThetaLocating, only iBeacon devices or new positions can be positioned.
+    // In RhoRhoModelling, iBeacon devices can be positioned only from positioned items.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
     // Database could not be accessed.
@@ -679,9 +686,8 @@
                       }
                 inViewController:viewController
          ];
-        NSLog(@"[ERROR]%@ Shared data could not be accessed while selecting a cell.", ERROR_DESCRIPTION_VCETTL);
+        NSLog(@"[ERROR]%@ Shared data could not be accessed while selecting a cell.", ERROR_DESCRIPTION_VCERRM);
     }
-    
 }
 
 /*!
@@ -694,7 +700,7 @@
 {
     UIAlertController * alertTransferPosition = [UIAlertController
                                                  alertControllerWithTitle:@"Position found"
-                                             message:@"This iBeacon device has already a position assigned. Do you want to transfer it into a single position object?"
+                                             message:@"This device has already a position assigned. Do you want to transfer it into a single position object?"
                                              preferredStyle:UIAlertControllerStyleAlert
                                              ];
     
@@ -753,7 +759,7 @@
     }
     
     NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
-    withCredentialsUserName:credentialsUserDic];
+                                                                          withCredentialsUserName:credentialsUserDic];
     NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
     itemPositionIdNumber = [NSNumber numberWithInteger:[itemPositionIdNumber integerValue] + 1];
     positionId = [positionId stringByAppendingString:@"@miso.uam.es"];
@@ -767,7 +773,7 @@
     if (savedItem) {
         
     } else {
-        NSLog(@"[ERROR]%@ Located position %@ could not be stored as an item.", infoDic[@"position"], ERROR_DESCRIPTION_VCETTL);
+        NSLog(@"[ERROR]%@ Located position %@ could not be stored as an item.", infoDic[@"position"], ERROR_DESCRIPTION_VCERRM);
     }
     
     // Save variables in device memory

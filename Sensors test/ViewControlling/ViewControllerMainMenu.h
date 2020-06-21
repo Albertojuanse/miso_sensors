@@ -23,6 +23,7 @@
 #import "ViewControllerSelectPositions.h"
 #import "ViewControllerItemSettings.h"
 #import "VCModeDelegateRhoRhoLocating.h"
+#import "VCModeDelegateRhoRhoModelling.h"
 #import "VCModeDelegateRhoThetaModelling.h"
 #import "VCModeDelegateThetaThetaLocating.h"
 

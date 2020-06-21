@@ -642,8 +642,14 @@
                 [sharedData inSessionDataSetMode:chosenMode
                                toUserWithUserDic:userDic
                            andCredentialsUserDic:userDic];
-                return;
-                // [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
+                [sharedData inSessionDataSetDelegate:[[VCModeDelegateRhoRhoModelling alloc]
+                                                      initWithSharedData:sharedData
+                                                      userDic:userDic
+                                                      deviceUUID:deviceUUID
+                                                      andCredentialsUserDic:credentialsUserDic]
+                                   toUserWithUserDic:userDic
+                               andCredentialsUserDic:credentialsUserDic];
+                [self performSegueWithIdentifier:@"fromMainToSelectPositions" sender:sender];
             }
             if ([chosenMode isModeKey:kModeRhoThetaModelling]) { // RHO_THETA_MODELING
                 [sharedData inSessionDataSetMode:chosenMode
