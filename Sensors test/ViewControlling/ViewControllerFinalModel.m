@@ -11,7 +11,6 @@
 @implementation ViewControllerFinalModel
 
 #pragma mark - UIViewController delegated methods
-
 /*!
  @method viewDidLoad
  @discussion This method initializes some properties once the object has been loaded.
@@ -22,43 +21,7 @@
     
     // Visualization
     [self showUser];
-    // Toolbar layout
-    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
-    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1.0
-                                    ];
-    [self.buttonSubmit setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                      green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                       blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                      alpha:1.0
-                                       ]
-                             forState:UIControlStateNormal];
-    [self.buttonSubmit setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                      green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                       blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                      alpha:0.3
-                                       ]
-                             forState:UIControlStateDisabled];
-    [self.buttonFinish setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                    alpha:1.0
-                                     ]
-                           forState:UIControlStateNormal];
-    [self.buttonFinish setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                    alpha:0.3
-                                     ]
-                           forState:UIControlStateDisabled];
-    [self.signOutButton setTitleColor:[UIColor whiteColor]
-                             forState:UIControlStateNormal];
-    [self.logOutButton setTitleColor:[UIColor whiteColor]
-                            forState:UIControlStateNormal];
-    [self.loginText setTextColor:[UIColor whiteColor]];
+    [self loadLayout];
     
     // Check if in routine
     NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
@@ -132,8 +95,41 @@
     self.loginText.text = [self.loginText.text stringByAppendingString:userDic[@"name"]];
 }
 
-#pragma mark - Instance methods
+/*!
+ @method loadLayout
+ @discussion This method loads the layout configurations.
+ */
+- (void)loadLayout
+{
+    // Toolbar layout
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                 alpha:1.0];
+    UIColor * disabledThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                   alpha:0.3];
+    
+    self.toolbar.backgroundColor = normalThemeColor;
+    [self.buttonSubmit setTitleColor:normalThemeColor
+                             forState:UIControlStateNormal];
+    [self.buttonSubmit setTitleColor:disabledThemeColor
+                             forState:UIControlStateDisabled];
+    [self.buttonFinish setTitleColor:normalThemeColor
+                           forState:UIControlStateNormal];
+    [self.buttonFinish setTitleColor:disabledThemeColor
+                           forState:UIControlStateDisabled];
+    [self.signOutButton setTitleColor:[UIColor whiteColor]
+                             forState:UIControlStateNormal];
+    [self.logOutButton setTitleColor:[UIColor whiteColor]
+                            forState:UIControlStateNormal];
+    [self.loginText setTextColor:[UIColor whiteColor]];
+}
 
+#pragma mark - Instance methods
 /*!
  @method setCredentialsUserDic:
  @discussion This method sets the NSMutableDictionary with the security purposes user credentials.

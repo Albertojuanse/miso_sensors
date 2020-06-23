@@ -157,7 +157,7 @@
     // Components
     [self loadComponents];
     
-    // Load any saved component or model in device's persistent memory or create the demo ones if is the first time that user logs in.
+    // Load any saved component or model in device's persistent memory and routine.
     [self loadRoutine];
     [self loadModels];
     
@@ -174,6 +174,7 @@
     [self.tableItems reloadData];
     
     // Test model
+    // TODO: Remove all this. Alberto J. 2020/06/23.
     NSMutableArray * itemsDic = [sharedData fromItemDataGetItemsWithIdentifier:@"test_model@miso.uam.es"
                                                          andCredentialsUserDic:credentialsUserDic];
     if (itemsDic.count == 0) {
@@ -272,7 +273,8 @@
 */
 - (void)loadComponents
 {
-    // Other components; only inizialated if they didn't be so
+    // Initialize them only if they don't be so.
+    
     // Init the shared data collection with the credentials of the device user.
     if (!sharedData) {
         sharedData = [[SharedData alloc] initWithCredentialsUserDic:credentialsUserDic];
@@ -283,7 +285,7 @@
     // Check if a session with this user is created before
     if ([sharedData fromSessionDataGetSessionWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic]) {
-        // Do nothing
+        // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
     } else {
         NSMutableDictionary * sessionDic = [[NSMutableDictionary alloc] init];
         sessionDic [@"user"] = userDic;
@@ -331,6 +333,8 @@
                                   withCredentialsUserDic:credentialsUserDic];
         NSLog(@"[INFO][VCMM] Variable itemPositionIdNumber found in device.");
         
+    } else {
+        NSLog(@"[ERROR][VCMM] Missing itemPositionIdNumber or itemBeaconIdNumber in device.");
     }
 }
 
@@ -429,7 +433,7 @@
         }
         
         if (!registerCorrect) {
-            NSLog(@"[ERROR][VCMM] Register of items incorrect; user credentials granted?.");
+            NSLog(@"[ERROR][VCMM] Register of items incorrect; check user credentials.");
         }
         
         // That way, when a logged in user returns to main manu this routine is not repited.
@@ -598,12 +602,12 @@
                 NSLog(@"[INFO][CVMM] Next mode in routine \"%@\".", [foundMode description]);
                 chosenMode = foundMode;
                 
-                // Once found, the routine is the same than when 'go' button is tapped
+                // Once found, segue to the mode
                 [self handleButonGo:nil];
                 
             } else {
                 NSLog(@"[INFO][CVMM] Routine finished.");
-                // TODO: Alert the user.
+                // TODO: Alert the user. Alberto J. 2020/06/23.
             }
             
         } else {
