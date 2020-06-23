@@ -20,81 +20,13 @@
     [super viewDidLoad];
     
     // Visualization
-    // Toolbar layout
-    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
-    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    [self.cancelButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                      blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                     alpha:1.0
-                                      ]
-                            forState:UIControlStateNormal];
-    [self.editButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                    alpha:1.0
-                                    ]
-                          forState:UIControlStateNormal];
-    [self.calibrateButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                        green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                         blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                        alpha:1.0
-                                         ]
-                               forState:UIControlStateNormal];
-    [self.calibrateButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                        green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                         blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                        alpha:0.3
-                                    ]
-                               forState:UIControlStateDisabled];
-    [self.calibrateButton setEnabled:YES];
-    [self.firstButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                    alpha:1.0
-                                     ]
-                           forState:UIControlStateNormal];
-    [self.firstButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                    alpha:0.3
-                                     ]
-                           forState:UIControlStateDisabled];
-    [self.firstButton setEnabled:NO];
-    [self.secondButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                     alpha:1.0
-                                      ]
-                            forState:UIControlStateNormal];
-    [self.secondButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                      blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                     alpha:0.3
-                                      ]
-                            forState:UIControlStateDisabled];
-    [self.secondButton setEnabled:NO];
+    [self loadLayout];
     
     // Variables
     calibrating = NO;
     
-    // This object must listen to this events
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(firstStepFinished:)
-                                                 name:@"vcItemSettings/firstStepFinished"
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(firstStepFinishedWithErrors:)
-                                                 name:@"vcItemSettings/firstStepFinishedWithErrors"
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(secondStepFinished:)
-                                                 name:@"vcItemSettings/secondStepFinished"
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(secondStepFinishedWithErrors:)
-                                                 name:@"vcItemSettings/secondStepFinishedWithErrors"
-                                               object:nil];
+    // Load event listeners
+    [self loadEventListeners];
 }
 
 /*!
@@ -150,6 +82,70 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+/*!
+ @method loadLayout
+ @discussion This method loads the layout configurations.
+ */
+- (void)loadLayout
+{
+    // Toolbar layout
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                 alpha:1.0];
+    UIColor * disabledThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                   alpha:0.3];
+    
+    [self.cancelButton setTitleColor:normalThemeColor
+                            forState:UIControlStateNormal];
+    [self.editButton setTitleColor:normalThemeColor
+                          forState:UIControlStateNormal];
+    [self.calibrateButton setTitleColor:normalThemeColor
+                               forState:UIControlStateNormal];
+    [self.calibrateButton setTitleColor:disabledThemeColor
+                               forState:UIControlStateDisabled];
+    [self.calibrateButton setEnabled:YES];
+    [self.firstButton setTitleColor:normalThemeColor
+                           forState:UIControlStateNormal];
+    [self.firstButton setTitleColor:disabledThemeColor
+                           forState:UIControlStateDisabled];
+    [self.firstButton setEnabled:NO];
+    [self.secondButton setTitleColor:normalThemeColor
+                            forState:UIControlStateNormal];
+    [self.secondButton setTitleColor:disabledThemeColor
+                            forState:UIControlStateDisabled];
+    [self.secondButton setEnabled:NO];
+}
+
+/*!
+@method loadEventListeners
+@discussion This method loads the event listeners for this class.
+*/
+- (void)loadEventListeners
+{
+    // This object must listen to this events
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(firstStepFinished:)
+                                                 name:@"vcItemSettings/firstStepFinished"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(firstStepFinishedWithErrors:)
+                                                 name:@"vcItemSettings/firstStepFinishedWithErrors"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(secondStepFinished:)
+                                                 name:@"vcItemSettings/secondStepFinished"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(secondStepFinishedWithErrors:)
+                                                 name:@"vcItemSettings/secondStepFinishedWithErrors"
+                                               object:nil];
 }
 
 #pragma mark - Instance methods
