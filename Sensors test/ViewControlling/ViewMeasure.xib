@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina3_5" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <viewController id="Z7R-FJ-OQv" customClass="ViewControllerMeasure">
+            <view key="view" contentMode="scaleToFill" id="iFh-qz-dND">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MLq-mX-oT4">
+                        <rect key="frame" x="16" y="336" width="288" height="128"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="128" id="LZp-Vl-k6w"/>
+                        </constraints>
+                    </imageView>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="p4H-Hw-n20">
+                        <rect key="frame" x="16" y="16" width="288" height="304"/>
+                    </imageView>
+                </subviews>
+                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                <constraints>
+                    <constraint firstItem="p4H-Hw-n20" firstAttribute="top" secondItem="dj1-o7-DKG" secondAttribute="top" constant="16" id="Dgs-0V-fAk"/>
+                    <constraint firstItem="dj1-o7-DKG" firstAttribute="trailing" secondItem="p4H-Hw-n20" secondAttribute="trailing" constant="16" id="QEP-1l-TNF"/>
+                    <constraint firstItem="dj1-o7-DKG" firstAttribute="trailing" secondItem="MLq-mX-oT4" secondAttribute="trailing" constant="16" id="YD9-s0-hqY"/>
+                    <constraint firstItem="MLq-mX-oT4" firstAttribute="leading" secondItem="dj1-o7-DKG" secondAttribute="leading" constant="16" id="bXv-pv-Kmq"/>
+                    <constraint firstItem="p4H-Hw-n20" firstAttribute="leading" secondItem="dj1-o7-DKG" secondAttribute="leading" constant="16" id="hw6-3b-qBz"/>
+                    <constraint firstItem="MLq-mX-oT4" firstAttribute="top" secondItem="p4H-Hw-n20" secondAttribute="bottom" constant="16" id="ky9-Nh-vpM"/>
+                    <constraint firstItem="dj1-o7-DKG" firstAttribute="bottom" secondItem="MLq-mX-oT4" secondAttribute="bottom" constant="16" id="plD-Cc-OZF"/>
+                </constraints>
+                <viewLayoutGuide key="safeArea" id="dj1-o7-DKG"/>
+            </view>
+            <connections>
+                <outlet property="measureImageView" destination="MLq-mX-oT4" id="7z4-sT-Smn"/>
+                <outlet property="tutorialImageView" destination="p4H-Hw-n20" id="jPl-u5-phA"/>
+            </connections>
+            <point key="canvasLocation" x="129.375" y="810"/>
+        </viewController>
+    </objects>
+</document>

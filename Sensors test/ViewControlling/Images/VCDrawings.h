@@ -18,5 +18,7 @@
 + (UIImage *)imageForPositionInNormalThemeColor;
 + (UIImage *)imageForBeaconInNormalThemeColor;
 + (UIImage *)imageForModelInNormalThemeColor;
++ (UIImage *)imageForMeasureInNormalThemeColor;
++ (UIImage *)imageForMeasureInDisabledThemeColor;
 
 @end

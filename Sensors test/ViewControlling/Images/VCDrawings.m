@@ -237,4 +237,162 @@
     return image;
 }
 
+/*!
+@method imageForMeasureInNormalThemeColor
+@discussion This method draws the measure icon for buttons.
+*/
++ (UIImage *)imageForMeasureInNormalThemeColor
+{
+    // Create a frame for the image
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSNumber * positionWidth = layoutDic[@"canvas/position/width"];
+    NSNumber * positionHeight = layoutDic[@"canvas/position/height"];
+    CGRect rect = CGRectMake(0,
+                             0,
+                             [positionWidth integerValue],
+                             [positionHeight integerValue]);
+
+    // Create a view to embed the image using the frame
+    UIView * view = [[UIView alloc] initWithFrame:rect];
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, [[UIScreen mainScreen] scale]);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Get the rect in which the drawn must be embebed its dimensions
+    CGSize rectSize = rect.size;
+    CGFloat rectHeight = rectSize.height;
+    CGFloat rectWidth = rectSize.width;
+    CGPoint rectOrigin = rect.origin;
+    CGFloat margin = rectWidth * 0.1;
+    CGFloat splitLineHeith = rectHeight * 0.2;
+    CGFloat minusHeith = rectHeight * 0.3;
+    CGFloat minusX = rectHeight * 0.15;
+    CGFloat minusLength = rectHeight * 0.15;
+    
+    // Points for Bezier path
+    CGPoint upperLeftCorner = CGPointMake(rectOrigin.x + margin,
+                                          rectOrigin.y + margin);
+    CGPoint upperRightCorner = CGPointMake(rectOrigin.x + rectWidth - margin,
+                                           rectOrigin.y + margin);
+    CGPoint bottomRightCorner = CGPointMake(rectOrigin.x + rectWidth - margin,
+                                            rectOrigin.y + rectHeight - margin);
+    CGPoint bottomLeftCorner = CGPointMake(rectOrigin.x + margin,
+                                           rectOrigin.y + rectHeight - margin);
+    CGPoint leftSplitLine = CGPointMake(rectOrigin.x + margin,
+                                        rectOrigin.y + margin + splitLineHeith);
+    CGPoint rightSplitLine = CGPointMake(rectOrigin.x + rectWidth - margin,
+                                         rectOrigin.y + margin + splitLineHeith);
+    CGPoint leftMinusLine = CGPointMake(rectOrigin.x + minusX,
+                                        rectOrigin.y + margin + minusHeith);
+    CGPoint rightMinusLine = CGPointMake(rectOrigin.x + minusX + minusLength,
+                                         rectOrigin.y + margin + minusHeith);
+    
+    // Draw the path
+    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                 alpha:1.0
+                                  ];
+    [normalThemeColor setStroke];
+    
+    UIBezierPath * outterSquare = [UIBezierPath bezierPath];
+    [outterSquare moveToPoint:upperLeftCorner];
+    [outterSquare addLineToPoint:upperRightCorner];
+    [outterSquare addLineToPoint:bottomRightCorner];
+    [outterSquare addLineToPoint:bottomLeftCorner];
+    [outterSquare addLineToPoint:upperLeftCorner];
+    [outterSquare moveToPoint:leftSplitLine];
+    [outterSquare addLineToPoint:rightSplitLine];
+    [outterSquare moveToPoint:leftMinusLine];
+    [outterSquare addLineToPoint:rightMinusLine];
+    [outterSquare stroke];
+    CGContextAddPath(context, outterSquare.CGPath);
+    
+    // Render the image
+    UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
+/*!
+@method imageForMeasureInDisabledThemeColor
+@discussion This method draws the measure icon for buttons.
+*/
++ (UIImage *)imageForMeasureInDisabledThemeColor
+{
+    // Create a frame for the image
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSNumber * positionWidth = layoutDic[@"canvas/position/width"];
+    NSNumber * positionHeight = layoutDic[@"canvas/position/height"];
+    CGRect rect = CGRectMake(0,
+                             0,
+                             [positionWidth integerValue],
+                             [positionHeight integerValue]);
+
+    // Create a view to embed the image using the frame
+    UIView * view = [[UIView alloc] initWithFrame:rect];
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, [[UIScreen mainScreen] scale]);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Get the rect in which the drawn must be embebed its dimensions
+    CGSize rectSize = rect.size;
+    CGFloat rectHeight = rectSize.height;
+    CGFloat rectWidth = rectSize.width;
+    CGPoint rectOrigin = rect.origin;
+    CGFloat margin = rectWidth * 0.1;
+    CGFloat splitLineHeith = rectHeight * 0.2;
+    CGFloat minusHeith = rectHeight * 0.3;
+    CGFloat minusX = rectHeight * 0.15;
+    CGFloat minusLength = rectHeight * 0.15;
+    
+    // Points for Bezier path
+    CGPoint upperLeftCorner = CGPointMake(rectOrigin.x + margin,
+                                          rectOrigin.y + margin);
+    CGPoint upperRightCorner = CGPointMake(rectOrigin.x + rectWidth - margin,
+                                           rectOrigin.y + margin);
+    CGPoint bottomRightCorner = CGPointMake(rectOrigin.x + rectWidth - margin,
+                                            rectOrigin.y + rectHeight - margin);
+    CGPoint bottomLeftCorner = CGPointMake(rectOrigin.x + margin,
+                                           rectOrigin.y + rectHeight - margin);
+    CGPoint leftSplitLine = CGPointMake(rectOrigin.x + margin,
+                                        rectOrigin.y + margin + splitLineHeith);
+    CGPoint rightSplitLine = CGPointMake(rectOrigin.x + rectWidth - margin,
+                                         rectOrigin.y + margin + splitLineHeith);
+    CGPoint leftMinusLine = CGPointMake(rectOrigin.x + minusX,
+                                        rectOrigin.y + margin + minusHeith);
+    CGPoint rightMinusLine = CGPointMake(rectOrigin.x + minusX + minusLength,
+                                         rectOrigin.y + margin + minusHeith);
+    
+    // Draw the path
+    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                                                 alpha:0.3
+                                  ];
+    [normalThemeColor setStroke];
+    
+    UIBezierPath * outterSquare = [UIBezierPath bezierPath];
+    [outterSquare moveToPoint:upperLeftCorner];
+    [outterSquare addLineToPoint:upperRightCorner];
+    [outterSquare addLineToPoint:bottomRightCorner];
+    [outterSquare addLineToPoint:bottomLeftCorner];
+    [outterSquare addLineToPoint:upperLeftCorner];
+    [outterSquare moveToPoint:leftSplitLine];
+    [outterSquare addLineToPoint:rightSplitLine];
+    [outterSquare moveToPoint:leftMinusLine];
+    [outterSquare addLineToPoint:rightMinusLine];
+    [outterSquare stroke];
+    CGContextAddPath(context, outterSquare.CGPath);
+    
+    // Render the image
+    UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
 @end
