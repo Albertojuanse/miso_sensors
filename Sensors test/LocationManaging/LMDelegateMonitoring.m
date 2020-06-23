@@ -481,7 +481,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 - (void) reset:(NSNotification *) notification
 {
     if ([[notification name] isEqualToString:@"lmd/reset"]){
-        NSLog(@"[NOTI][LM] Notification \"lmd/reset\" recived.");
+        NSLog(@"[NOTI][LMM] Notification \"lmd/reset\" recived.");
         
         // Instance variables
         // Set device's location at the origin

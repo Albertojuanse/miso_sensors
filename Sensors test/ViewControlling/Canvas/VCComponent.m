@@ -175,10 +175,10 @@
     // When user taps this view, the edit component view must be presented
     // And send the notification
     NSLog(@"[INFO][VCC] User did tap on the view %@", uuid);
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"chooseItem"
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"vcEditing/chooseItem"
                                                         object:self
                                                       userInfo:nil];
-    NSLog(@"[NOTI][LM] Notification \"chooseItem\" posted.");
+    NSLog(@"[NOTI][LM] Notification \"vcEditing/chooseItem\" posted.");
 }
 
 /*!
@@ -190,10 +190,10 @@
     // When user taps this view, the edit component view must be presented
     // And send the notification
     NSLog(@"[INFO][VCC] User did double tap on the view %@", uuid);
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"presentEditComponentView"
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"vcEditing/presentEditComponentView"
                                                         object:self
                                                       userInfo:nil];
-    NSLog(@"[NOTI][LM] Notification \"presentEditComponentView\" posted.");
+    NSLog(@"[NOTI][LM] Notification \"vcEditing/presentEditComponentView\" posted.");
 }
 
 #pragma mark - NSItemProviderWriting methods
@@ -380,10 +380,10 @@
             NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
             dataDic[@"sourceView"] = self;
             dataDic[@"targetView"] = droppedVCComponent;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"createReference"
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"vcEditing/createReference"
                                                                 object:nil
                                                               userInfo:dataDic];
-            NSLog(@"[NOTI][LM] Notification \"createReference\" posted.");
+            NSLog(@"[NOTI][LM] Notification \"vcEditing/createReference\" posted.");
         }
          ];
     }

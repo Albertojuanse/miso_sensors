@@ -76,10 +76,10 @@
             NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
             dataDic[@"sourceView"] = self;
             dataDic[@"targetView"] = droppedVCComponent;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"createReference"
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"vcEditing/createReference"
                                                                 object:nil
                                                               userInfo:dataDic];
-            NSLog(@"[NOTI][VCCo] Notification \"createReference\" posted.");
+            NSLog(@"[NOTI][VCCo] Notification \"vcEditing/createReference\" posted.");
         }
          ];
     }
@@ -96,10 +96,10 @@
             NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
             dataDic[@"sourceView"] = self;
             dataDic[@"targetView"] = droppedComponent;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"createReference"
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"vcEditing/createReference"
                                                                 object:nil
                                                               userInfo:dataDic];
-            NSLog(@"[NOTI][VCCo] Notification \"createReference\" posted.");
+            NSLog(@"[NOTI][VCCo] Notification \"vcEditing/createReference\" posted.");
         }
          ];
     }
@@ -116,10 +116,10 @@
             NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
             dataDic[@"sourceView"] = self;
             dataDic[@"targetView"] = droppedComponent;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"createReference"
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"vcEditing/createReference"
                                                                 object:nil
                                                               userInfo:dataDic];
-            NSLog(@"[NOTI][VCCo] Notification \"createReference\" posted.");
+            NSLog(@"[NOTI][VCCo] Notification \"vcEditing/createReference\" posted.");
         }
          ];
     }
@@ -136,10 +136,10 @@
             NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
             dataDic[@"sourceView"] = self;
             dataDic[@"targetView"] = droppedComponent;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"createReference"
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"vcEditing/createReference"
                                                                 object:nil
                                                               userInfo:dataDic];
-            NSLog(@"[NOTI][VCCo] Notification \"createReference\" posted.");
+            NSLog(@"[NOTI][VCCo] Notification \"vcEditing/createReference\" posted.");
         }
          ];
     }

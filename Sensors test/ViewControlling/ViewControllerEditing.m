@@ -241,15 +241,20 @@
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(chooseItem:)
-                                                 name:@"chooseItem"
+                                                 name:@"vcEditing/chooseItem"
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(presentEditComponentView:)
-                                                 name:@"presentEditComponentView"
+                                                 name:@"vcEditing/presentEditComponentView"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(presentMeasureView:)
+                                                 name:@"vcEditing/presentMeasureView"
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(createReference:)
-                                                 name:@"createReference"
+                                                 name:@"vcEditing/createReference"
                                                object:nil];
 }
 
@@ -258,10 +263,10 @@
  @method chooseItem:
  @discussion This method is called when user taps over and sets a component as chosen item.
  */
-- (void) chooseItem:(NSNotification *) notification
+- (void) chooseItem:(NSNotification *)notification
 {
-    if ([[notification name] isEqualToString:@"chooseItem"]){
-        NSLog(@"[NOTI]%@ Notification \"chooseItem\" recived.", errorDescription);
+    if ([[notification name] isEqualToString:@"vcEditing/chooseItem"]){
+        NSLog(@"[NOTI]%@ Notification \"vcEditing/chooseItem\" recived.", errorDescription);
         
         // User did choose an item; get it...
         VCComponent * sourceViewChosenByUser = [notification object];
@@ -360,10 +365,10 @@
  @method createReference:
  @discussion This method creates a reference between two components in the model.
  */
-- (void)createReference:(NSNotification *) notification
+- (void)createReference:(NSNotification *)notification
 {
-    if ([[notification name] isEqualToString:@"createReference"]){
-        NSLog(@"[NOTI]%@ Notification \"createReference\" recived.", errorDescription);
+    if ([[notification name] isEqualToString:@"vcEditing/createReference"]){
+        NSLog(@"[NOTI]%@ Notification \"vcEditing/createReference\" recived.", errorDescription);
     
         // Retrieve notification data
         NSDictionary * dataDic = [notification userInfo];
