@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "VCDrawings.h"
+#import "VCModeDelegate.h"
 
 /*!
  @class ViewControllerMeasure
@@ -16,9 +17,18 @@
  */
 @interface ViewControllerMeasure : UIViewController <UIPopoverPresentationControllerDelegate> {
     
+    // Components
+    id<VCModeDelegate> delegate;
+    
+    // Variables
+    NSMutableDictionary * itemDic;
+    
 }
 
 @property (weak, nonatomic) IBOutlet UIImageView * tutorialImageView;
-@property (weak, nonatomic) IBOutlet UIImageView * measureImageView;
+@property (weak, nonatomic) IBOutlet UIButton * measureButton;
+
+- (void) setItemDicToMeasure:(NSMutableDictionary *)givenItemDic;
+- (void) setDelegate:(id<VCModeDelegate>)givenDelegate;
 
 @end

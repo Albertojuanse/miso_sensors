@@ -47,9 +47,6 @@
                 inViewController:(UIViewController *)viewController
          didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 #pragma mark - Editing VCModeDelegate methods
-- (void)whileEditingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
-                                whenInState:(NSString *)state
-                         andWithLabelStatus:(UILabel *)labelStatus;
 - (NSInteger)whileEditingNumberOfSectionsInTableItems:(UITableView *)tableView
                                      inViewController:(UIViewController *)viewController;
 - (NSInteger)whileEditingTableItems:(UITableView *)tableView
@@ -62,4 +59,7 @@
 - (void)whileEditingTableItems:(UITableView *)tableView
               inViewController:(UIViewController *)viewController
        didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
+#pragma mark - Adding VCModeDelegate methods
+- (void)whileAddingUserDidTapMeasure:(UIButton *)buttonMeasure
+                    toMeasureItemDic:(NSMutableDictionary *)itemDic;
 @end

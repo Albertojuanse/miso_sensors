@@ -21,15 +21,9 @@
     
     // Visualization
     UIImage * measureImage = [VCDrawings imageForMeasureInNormalThemeColor];
-    [self.measureImageView setImage:measureImage];
+    [self.measureButton setImage:measureImage forState:UIControlStateNormal];
     UIImage * tutorialImage = [UIImage imageNamed:@"Measure rhoTheta.png"];
     [self.tutorialImageView setImage:tutorialImage];
-    
-    // Gestures
-    UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(measureImageViewTapped)];
-    singleTap.numberOfTapsRequired = 1;
-    self.measureImageView.userInteractionEnabled = YES;
-    [self.measureImageView addGestureRecognizer:singleTap];
 }
 
 /*!
@@ -51,16 +45,35 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - Instance methods
+/*!
+ @method setItemDicToMeasure:
+ @discussion This method sets the NSMutableDictionary variable 'itemDic'.
+ */
+- (void) setItemDicToMeasure:(NSMutableDictionary *)givenItemDic
+{
+    itemDic = givenItemDic;
+}
+
+/*!
+ @method setDelegate:
+ @discussion This method sets the id<VCModeDelegate> variable 'delegate'.
+ */
+- (void) setDelegate:(id<VCModeDelegate>)givenDelegate
+{
+    delegate = givenDelegate;
+}
+
 
 #pragma mark - Buttons event handlers
 /*!
- @method measureImageViewTapped
- @discussion This method handles the 'measure' imageView action and starts the measure.
+ @method handleButtonMeasure:
+ @discussion This method handles the action in which the Measure button is pressed.
  */
-- (void) measureImageViewTapped
+- (IBAction)handleButtonMeasure:(id)sender
 {
-    // Visualization
-    [self.measureImageView setImage:[VCDrawings imageForMeasureInNormalThemeColor]];
+    [delegate whileAddingUserDidTapMeasure:self.measureButton
+                          toMeasureItemDic:itemDic];
 }
 
 /*!

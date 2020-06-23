@@ -79,38 +79,6 @@
                                                                 deviceUUID:deviceUUID
                                                      andCredentialsUserDic:credentialsUserDic];
     }
-    NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                                      andCredentialsUserDic:credentialsUserDic];
-    NSMutableDictionary * itemChosenByUserAsDevicePosition;
-    if (itemsChosenByUser.count == 0) {
-        NSLog(@"[ERROR]%@ The collection with the items chosen by user is empty; no device position provided.", ERROR_DESCRIPTION_VCERTM);
-    } else {
-        itemChosenByUserAsDevicePosition = [itemsChosenByUser objectAtIndex:0];
-        if (itemsChosenByUser.count > 1) {
-            NSLog(@"[ERROR]%@ The collection with the items chosen by user have more than one item; the first one is set as device position.", ERROR_DESCRIPTION_VCERTM);
-        }
-    }
-    if (itemChosenByUserAsDevicePosition) {
-        RDPosition * position = itemChosenByUserAsDevicePosition[@"position"];
-        if (!position) {
-            NSLog(@"[ERROR]%@ No position was found in the item chosen by user as device position; (0,0,0) is set.", ERROR_DESCRIPTION_VCERTM);
-            position = [[RDPosition alloc] init];
-            position.x = [NSNumber numberWithFloat:0.0];
-            position.y = [NSNumber numberWithFloat:0.0];
-            position.z = [NSNumber numberWithFloat:0.0];
-        }
-        if (!deviceUUID) {
-            if (!itemChosenByUserAsDevicePosition[@"uuid"]) {
-                NSLog(@"[ERROR]%@ No UUID was found in the item chosen by user as device position; a random one set.", ERROR_DESCRIPTION_VCERTM);
-                deviceUUID = [[NSUUID UUID] UUIDString];
-            } else {
-                deviceUUID = itemChosenByUserAsDevicePosition[@"uuid"];
-            }
-        }
-        [rhoThetaSystem setDeviceUUID:deviceUUID];
-        [location setPosition:position];
-        [location setDeviceUUID:deviceUUID];
-    }
     return location;
 }
 
@@ -479,53 +447,6 @@
 
 #pragma mark - Editing VCModeDelegate methods
 /*!
-@method whileEditingUserDidTapButtonMeasure:whenInState:andWithLabelStatus:
-@discussion This method returns the behaviour when user taps 'Measure' button in Editing view in RhoThetaModelling mode.
-*/
-- (void)whileEditingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
-                                whenInState:(NSString *)state
-                         andWithLabelStatus:(UILabel *)labelStatus
-{
-    if (
-        [sharedData fromSessionDataIsIdleUserWithUserDic:userDic
-                                   andCredentialsUserDic:credentialsUserDic]
-        )
-    {
-        // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
-        if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic]) {
-            [buttonMeasure setEnabled:YES];
-            [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
-                                       andWithCredentialsUserDic:credentialsUserDic];
-            [labelStatus setText:MEASURING_STATE_MESSAGE_VCERTM];
-        
-            // And send the notification
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaModelling/start"
-                                                                object:nil];
-            NSLog(@"[NOTI]%@ Notification \"lmdRhoThetaModelling/start\" posted.", ERROR_DESCRIPTION_VCERTM);
-            return;
-        } else {
-            return;
-        }
-    }    
-    if (
-        [sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic
-                                        andCredentialsUserDic:credentialsUserDic]
-        )
-    {
-        // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
-        [buttonMeasure setEnabled:YES];
-        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
-                              andWithCredentialsUserDic:credentialsUserDic];
-        [labelStatus setText:IDLE_STATE_MESSAGE_VCERTM];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaModelling/stop"
-                                                            object:nil];
-        NSLog(@"[NOTI]%@ Notification \"lmdRhoThetaModelling/stop\" posted.", ERROR_DESCRIPTION_VCERTM);
-        return;
-    }
-}
-
-/*!
  @method whileEditingNumberOfSectionsInTableItems:inViewController:
  @discussion Handles the upload of table items; returns the number of sections in them.
  */
@@ -544,7 +465,7 @@
                    inViewController:(UIViewController *)viewController
               numberOfRowsInSection:(NSInteger)section
 {
-    // In RhoThetaModelling, only iBeacon devices can be positioned.
+    // In RhoThetaModelling, only iBeacon devices can be positioned from a known position.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
     // In this mode, only iBeacon devices can be positioned;
@@ -577,7 +498,7 @@
                                        cell:(UITableViewCell *)cell
                           forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // In RhoThetaModelling, only iBeacon devices can be positioned.
+    // In RhoThetaModelling, only iBeacon devices can be positioned from a known position.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
     // Configure individual cells
@@ -585,12 +506,7 @@
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
-    {
-        // No item chosen by user
-        [sharedData inSessionDataSetItemChosenByUser:nil
-                                   toUserWithUserDic:userDic
-                               andCredentialsUserDic:credentialsUserDic];
-        
+    {       
         // Select the source of items
         NSMutableDictionary * itemDic = [[sharedData fromItemDataGetItemsWithSort:@"beacon"
                                                             andCredentialsUserDic:credentialsUserDic]
@@ -659,7 +575,7 @@
               inViewController:(UIViewController *)viewController
        didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // In RhoThetaModelling, only iBeacon devices can be positioned.
+    // In RhoThetaModelling, only iBeacon devices can be positioned from a known position.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
     // Database could not be accessed.
@@ -667,30 +583,51 @@
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        UITableViewCell * selectedCell = [tableView cellForRowAtIndexPath:indexPath];
         
-        // Load the item depending and set as selected
-        NSMutableDictionary * itemDic = [[sharedData fromItemDataGetItemsWithSort:@"beacon"
-                           andCredentialsUserDic:credentialsUserDic]
-        objectAtIndex:indexPath.row
-        ];
+        // First, verify that the user did choose a position to measure from.
+        if ([self processItemChosenByUser]) {
         
-        // The beacons with positions have got a detailMark
-        if ([selectedCell accessoryType] == UITableViewCellAccessoryDetailButton) { // If detailed
+            UITableViewCell * selectedCell = [tableView cellForRowAtIndexPath:indexPath];
             
-            // Ask user to transfer the position
-            [self askUserToTransferPositionFromItemDic:itemDic
-                                          ofTableItems:tableView
-                                      inViewController:viewController];
+            // Load the item depending and set as selected
+            NSMutableDictionary * itemDic = [[sharedData fromItemDataGetItemsWithSort:@"beacon"
+                                                                andCredentialsUserDic:credentialsUserDic]
+            objectAtIndex:indexPath.row
+            ];
             
+            // The beacons with positions have got a detailMark
+            if ([selectedCell accessoryType] == UITableViewCellAccessoryDetailButton) { // If detailed
+                
+                // Ask user to transfer the position
+                [self askUserToTransferPositionFromItemDic:itemDic
+                                              ofTableItems:tableView
+                                          inViewController:viewController];
+                
+                
+            } else {  // If not detailed
+                
+                // Ask view to start the measure interface; send the item chosen to measure.
+                NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
+                dataDic[@"itemDic"] = itemDic;
+                [[NSNotificationCenter defaultCenter]
+                 postNotificationName:@"vcEditing/presentMeasureView"
+                 object:self
+                 userInfo:dataDic];
+                NSLog(@"[NOTI]%@ Notification \"vcEditing/presentMeasureView\" posted.", ERROR_DESCRIPTION_VCERTM);
+                
+                // Dismiss the add view.
+                [viewController dismissViewControllerAnimated:YES completion:nil];
+                
+            }
             
-        } else {  // If not detailed
-            
-            // Set as chosen
-            [sharedData inSessionDataSetItemChosenByUser:itemDic
-                                       toUserWithUserDic:userDic
-                                   andCredentialsUserDic:credentialsUserDic];
-
+        } else {
+            [self alertUserWithTitle:@"No device position chosen."
+                            message:[NSString stringWithFormat:@"The user did not choose a position as device's position. please, choose in the model the device's location."]
+                         andHandler:^(UIAlertAction * action) {
+                [viewController dismissViewControllerAnimated:YES completion:nil];
+            }
+                    inViewController:viewController
+             ];
         }
         
     } else {
@@ -702,6 +639,46 @@
                 inViewController:viewController
          ];
         NSLog(@"[ERROR]%@ Shared data could not be accessed while selecting a cell.", ERROR_DESCRIPTION_VCERTM);
+    }
+}
+
+/*!
+@method processItemChosenByUser
+@discussion This method verifies that user did choose the position to measure from and process it.
+*/
+-(BOOL)processItemChosenByUser
+{
+    NSMutableDictionary * itemChosenByUser = [sharedData
+                                              fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                              andCredentialsUserDic:credentialsUserDic
+                                              ];
+    if (itemChosenByUser) {
+        RDPosition * position = itemChosenByUser[@"position"];
+        if (!position) {
+            NSLog(@"[ERROR]%@ No position was found in the item chosen by user as device position; (0,0,0) is set.", ERROR_DESCRIPTION_VCERTM);
+            position = [[RDPosition alloc] init];
+            position.x = [NSNumber numberWithFloat:0.0];
+            position.y = [NSNumber numberWithFloat:0.0];
+            position.z = [NSNumber numberWithFloat:0.0];
+            itemChosenByUser[@"position"] = position;
+        }
+        NSString * uuid = itemChosenByUser[@"uuid"];
+        if (!uuid) {
+            NSLog(@"[ERROR]%@ No UUID was found in the item chosen by user as device position; a random one set.", ERROR_DESCRIPTION_VCERTM);
+            deviceUUID = [[NSUUID UUID] UUIDString];
+            itemChosenByUser[@"uuid"] = deviceUUID;
+        } else {
+            deviceUUID = itemChosenByUser[@"uuid"];
+        }
+        [rhoThetaSystem setDeviceUUID:deviceUUID];
+        [location setPosition:position];
+        [location setDeviceUUID:deviceUUID];
+        [motion setPosition:position];
+        [motion setDeviceUUID:deviceUUID];
+        
+        return YES;
+    } else {
+        return NO;
     }
 }
 
@@ -814,6 +791,67 @@
     
     // Upload table
     [tableView reloadData];
+}
+
+#pragma mark - Adding VCModeDelegate methods
+/*!
+@method whileAddingUserDidTapMeasure:toMeasureItemDic:
+@discussion This method returns the behaviour when user taps 'Measure' button in Add view in RhoThetaModelling mode to measure the selected item.
+*/
+- (void)whileAddingUserDidTapMeasure:(UIButton *)buttonMeasure
+                    toMeasureItemDic:(NSMutableDictionary *)itemDic
+
+{
+    if (
+        [sharedData fromSessionDataIsIdleUserWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
+        if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                                        andCredentialsUserDic:credentialsUserDic]) {
+            
+            // Update current state
+            [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
+                                       andWithCredentialsUserDic:credentialsUserDic];
+        
+            // Change button layout
+            UIImage * startMeasureIcon = [VCDrawings imageForMeasureInNormalThemeColor];
+            [buttonMeasure setImage:startMeasureIcon forState:UIControlStateNormal];
+            
+            // And send the notification to start measure
+            NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
+            dataDic[@"itemDic"] = itemDic;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaModelling/start"
+                                                                object:nil
+                                                              userInfo:dataDic];
+            NSLog(@"[NOTI]%@ Notification \"lmdRhoThetaModelling/start\" posted.", ERROR_DESCRIPTION_VCERTM);
+            return;
+        } else {
+            return;
+        }
+    }
+    if (
+        [sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic
+                                        andCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
+        
+        // Update current state
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                              andWithCredentialsUserDic:credentialsUserDic];
+        
+        // Change button layout
+        UIImage * startMeasureIcon = [VCDrawings imageForMeasureInDisabledThemeColor];
+        [buttonMeasure setImage:startMeasureIcon forState:UIControlStateNormal];
+        
+        // And send the notification to stop measure
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaModelling/stop"
+                                                            object:nil];
+        NSLog(@"[NOTI]%@ Notification \"lmdRhoThetaModelling/stop\" posted.", ERROR_DESCRIPTION_VCERTM);
+        return;
+    }
 }
 
 #pragma mark - Other methods

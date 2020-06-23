@@ -571,10 +571,6 @@
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        // No item chosen by user
-        [sharedData inSessionDataSetItemChosenByUser:nil
-                                   toUserWithUserDic:userDic
-                               andCredentialsUserDic:credentialsUserDic];
         
         // Select the source of items
         NSMutableDictionary * itemDic = [[sharedData fromItemDataGetItemsWithSort:@"beacon"

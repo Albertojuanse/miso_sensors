@@ -1157,29 +1157,22 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lkn-Mp-7ch" userLabel="Canvas" customClass="Canvas">
                                         <rect key="frame" x="32" y="92" width="704" height="847"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="psd-ZE-J9o">
-                                                <rect key="frame" x="613" y="785" width="59" height="30"/>
-                                                <state key="normal" title="Measure"/>
-                                                <connections>
-                                                    <action selector="handleButtonMeasure:" destination="okL-35-9pm" eventType="touchUpInside" id="XMl-4t-7zC"/>
-                                                </connections>
-                                            </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aVK-XL-Kwy">
-                                                <rect key="frame" x="549" y="785" width="32" height="30"/>
+                                                <rect key="frame" x="640" y="785" width="32" height="30"/>
                                                 <state key="normal" title="Next"/>
                                                 <connections>
                                                     <action selector="handleButtonNext:" destination="okL-35-9pm" eventType="touchUpInside" id="bzY-pL-xA0"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xub-Bw-BYp">
-                                                <rect key="frame" x="483" y="785" width="34" height="30"/>
+                                                <rect key="frame" x="574" y="785" width="34" height="30"/>
                                                 <state key="normal" title="Back"/>
                                                 <connections>
                                                     <action selector="handleButtonBack:" destination="okL-35-9pm" eventType="touchUpInside" id="IdH-l2-m5C"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cwf-Zo-7tw">
-                                                <rect key="frame" x="410" y="785" width="41" height="30"/>
+                                                <rect key="frame" x="501" y="785" width="41" height="30"/>
                                                 <state key="normal" title="Finish"/>
                                                 <connections>
                                                     <action selector="handleButtonFinish:" destination="okL-35-9pm" eventType="touchUpInside" id="SIJ-Rs-Rhc"/>
@@ -1201,11 +1194,9 @@
                                             <constraint firstItem="pC1-jv-prk" firstAttribute="top" secondItem="Lkn-Mp-7ch" secondAttribute="top" constant="32" id="EXw-XV-lz7"/>
                                             <constraint firstItem="aVK-XL-Kwy" firstAttribute="leading" secondItem="Xub-Bw-BYp" secondAttribute="trailing" constant="32" id="Lg8-4Z-fbm"/>
                                             <constraint firstAttribute="bottom" secondItem="Xub-Bw-BYp" secondAttribute="bottom" constant="32" id="Q0t-YA-ASb"/>
-                                            <constraint firstAttribute="trailing" secondItem="psd-ZE-J9o" secondAttribute="trailing" constant="32" id="Sfj-ay-Ee4"/>
                                             <constraint firstAttribute="bottom" secondItem="aVK-XL-Kwy" secondAttribute="bottom" constant="32" id="anx-Oc-rkb"/>
+                                            <constraint firstAttribute="trailing" secondItem="aVK-XL-Kwy" secondAttribute="trailing" constant="32" id="btd-ZU-O93"/>
                                             <constraint firstItem="Xub-Bw-BYp" firstAttribute="leading" secondItem="cwf-Zo-7tw" secondAttribute="trailing" constant="32" id="jxe-RP-AMl"/>
-                                            <constraint firstItem="psd-ZE-J9o" firstAttribute="leading" secondItem="aVK-XL-Kwy" secondAttribute="trailing" constant="32" id="msv-Tb-r3t"/>
-                                            <constraint firstAttribute="bottom" secondItem="psd-ZE-J9o" secondAttribute="bottom" constant="32" id="uFr-5o-06l"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QG3-lL-fir" customClass="VCToolbar">
@@ -1272,7 +1263,6 @@
                         <outlet property="buttonAdd" destination="pC1-jv-prk" id="gOs-lA-YqG"/>
                         <outlet property="buttonBack" destination="Xub-Bw-BYp" id="gAn-Cq-CCc"/>
                         <outlet property="buttonFinish" destination="cwf-Zo-7tw" id="Mvh-6C-ig7"/>
-                        <outlet property="buttonMeasure" destination="psd-ZE-J9o" id="aiT-6K-ReB"/>
                         <outlet property="buttonNext" destination="aVK-XL-Kwy" id="HNR-0Z-Twp"/>
                         <outlet property="canvas" destination="Lkn-Mp-7ch" id="gAM-lh-vkf"/>
                         <outlet property="labelStatus" destination="2gF-xs-nhO" id="SKS-cI-4cu"/>
@@ -1294,8 +1284,8 @@
         <image name="miso.png" width="134.39999389648438" height="108"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="crr-mq-j8Q"/>
-        <segue reference="DJm-0E-zOi"/>
+        <segue reference="ama-gS-GxY"/>
+        <segue reference="LlF-Fb-myL"/>
         <segue reference="jUo-Ud-pm0"/>
         <segue reference="Eai-Xz-BxM"/>
     </inferredMetricsTieBreakers>

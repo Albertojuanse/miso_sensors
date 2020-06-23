@@ -15,30 +15,33 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MLq-mX-oT4">
-                        <rect key="frame" x="16" y="336" width="288" height="128"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="128" id="LZp-Vl-k6w"/>
-                        </constraints>
-                    </imageView>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="p4H-Hw-n20">
                         <rect key="frame" x="16" y="16" width="288" height="304"/>
                     </imageView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bee-uQ-zrD">
+                        <rect key="frame" x="16" y="336" width="288" height="128"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="128" id="4GO-Es-oWa"/>
+                        </constraints>
+                        <connections>
+                            <action selector="handleButtonMeasure:" destination="Z7R-FJ-OQv" eventType="touchUpInside" id="lpJ-Rh-HtZ"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                 <constraints>
+                    <constraint firstItem="dj1-o7-DKG" firstAttribute="bottom" secondItem="bee-uQ-zrD" secondAttribute="bottom" constant="16" id="36J-jA-4x1"/>
                     <constraint firstItem="p4H-Hw-n20" firstAttribute="top" secondItem="dj1-o7-DKG" secondAttribute="top" constant="16" id="Dgs-0V-fAk"/>
                     <constraint firstItem="dj1-o7-DKG" firstAttribute="trailing" secondItem="p4H-Hw-n20" secondAttribute="trailing" constant="16" id="QEP-1l-TNF"/>
-                    <constraint firstItem="dj1-o7-DKG" firstAttribute="trailing" secondItem="MLq-mX-oT4" secondAttribute="trailing" constant="16" id="YD9-s0-hqY"/>
-                    <constraint firstItem="MLq-mX-oT4" firstAttribute="leading" secondItem="dj1-o7-DKG" secondAttribute="leading" constant="16" id="bXv-pv-Kmq"/>
+                    <constraint firstItem="dj1-o7-DKG" firstAttribute="trailing" secondItem="bee-uQ-zrD" secondAttribute="trailing" constant="16" id="Wnm-te-eAV"/>
                     <constraint firstItem="p4H-Hw-n20" firstAttribute="leading" secondItem="dj1-o7-DKG" secondAttribute="leading" constant="16" id="hw6-3b-qBz"/>
-                    <constraint firstItem="MLq-mX-oT4" firstAttribute="top" secondItem="p4H-Hw-n20" secondAttribute="bottom" constant="16" id="ky9-Nh-vpM"/>
-                    <constraint firstItem="dj1-o7-DKG" firstAttribute="bottom" secondItem="MLq-mX-oT4" secondAttribute="bottom" constant="16" id="plD-Cc-OZF"/>
+                    <constraint firstItem="bee-uQ-zrD" firstAttribute="leading" secondItem="dj1-o7-DKG" secondAttribute="leading" constant="16" id="jQg-2Y-agP"/>
+                    <constraint firstItem="bee-uQ-zrD" firstAttribute="top" secondItem="p4H-Hw-n20" secondAttribute="bottom" constant="16" id="oWu-S7-iSr"/>
                 </constraints>
                 <viewLayoutGuide key="safeArea" id="dj1-o7-DKG"/>
             </view>
             <connections>
-                <outlet property="measureImageView" destination="MLq-mX-oT4" id="7z4-sT-Smn"/>
+                <outlet property="measureButton" destination="bee-uQ-zrD" id="Lqr-wl-kOf"/>
                 <outlet property="tutorialImageView" destination="p4H-Hw-n20" id="jPl-u5-phA"/>
             </connections>
             <point key="canvasLocation" x="129.375" y="810"/>

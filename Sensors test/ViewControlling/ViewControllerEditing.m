@@ -79,10 +79,6 @@
                                                    alpha:0.3];
     
     self.toolbar.backgroundColor = normalThemeColor;
-    [self.buttonMeasure setTitleColor:normalThemeColor
-                             forState:UIControlStateNormal];
-    [self.buttonMeasure setTitleColor:disabledThemeColor
-                             forState:UIControlStateDisabled];
     [self.buttonFinish setTitleColor:normalThemeColor
                             forState:UIControlStateNormal];
     [self.buttonFinish setTitleColor:disabledThemeColor
@@ -105,7 +101,6 @@
     [self.logOutButton setTitleColor:[UIColor whiteColor]
                             forState:UIControlStateNormal];
     [self.loginText setTextColor:[UIColor whiteColor]];
-    [self.buttonMeasure setEnabled:YES];
 }
 
 /*!
@@ -300,10 +295,10 @@
  @method presentEditComponentView:
  @discussion This method is called when user double taps over and component on canvas and presents modally the pop up view to edit that component.
  */
-- (void) presentEditComponentView:(NSNotification *) notification
+- (void) presentEditComponentView:(NSNotification *)notification
 {
-    if ([[notification name] isEqualToString:@"presentEditComponentView"]){
-        NSLog(@"[NOTI]%@ Notification \"presentEditComponentView\" recived.", errorDescription);
+    if ([[notification name] isEqualToString:@"vcEditing/presentEditComponentView"]){
+        NSLog(@"[NOTI]%@ Notification \"vcEditing/presentEditComponentView\" recived.", errorDescription);
         
         // User did choose an item; get it...
         VCComponent * sourceViewChosenByUser = [notification object];
@@ -357,6 +352,41 @@
         [popoverEditComponent setPermittedArrowDirections:UIPopoverArrowDirectionAny];
         // Show the view
         [self presentViewController:viewControllerEditComponent animated:YES completion:nil];
+    }
+    return;
+}
+
+/*!
+ @method presentMeasureView:
+ @discussion This method is called when user choses the item that wants to add to the model and presents modally the pop up view to  measure it.
+ */
+- (void) presentMeasureView:(NSNotification *)notification
+{
+    if ([[notification name] isEqualToString:@"vcEditing/presentMeasureView"]){
+        NSLog(@"[NOTI]%@ Notification \"vcEditing/presentMeasureView\" recived.", errorDescription);
+        
+        // Retrieve notification data
+        NSDictionary * dataDic = [notification userInfo];
+        NSMutableDictionary * itemDic = dataDic[@"itemDic"];
+        
+        // Present the view as a pop up
+        ViewControllerMeasure * viewControllerMeasure = [[[NSBundle mainBundle]
+                                                          loadNibNamed:@"ViewControllerMeasure"
+                                                          owner:self
+                                                          options:nil]
+                                                         objectAtIndex:0];
+        [viewControllerMeasure setModalPresentationStyle:UIModalPresentationPopover];
+        // Set the variables
+        [viewControllerMeasure setItemDicToMeasure:itemDic];
+        
+        // Configure popover layout
+        UIPopoverPresentationController * popoverMeasure =  viewControllerMeasure.popoverPresentationController;
+        [popoverMeasure setDelegate:viewControllerMeasure];
+        [popoverMeasure setSourceView:self.buttonAdd];
+        [popoverMeasure setSourceRect:CGRectMake(0,0,1,1)];
+        [popoverMeasure setPermittedArrowDirections:UIPopoverArrowDirectionAny];
+        // Show the view
+        [self presentViewController:viewControllerMeasure animated:YES completion:nil];
     }
     return;
 }
@@ -492,38 +522,6 @@
 }
 
 #pragma mark - Buttons event handlers
-/*!
- @method handleButtonMeasure:
- @discussion This method handles the action in which the Measure button is pressed; it must disable 'Travel' control buttons and ask location manager delegate to start measuring.
- */
-- (IBAction)handleButtonMeasure:(id)sender
-{
-    // First, validate the access to the data shared collection
-    if (
-        [sharedData validateCredentialsUserDic:credentialsUserDic]
-        )
-    {
-        
-    } else {
-        [self alertUserWithTitle:@"Measure won't be started."
-                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
-                      andHandler:^(UIAlertAction * action) {
-                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
-                      }
-         ];
-        NSLog(@"[ERROR]%@ Shared data could not be accessed while starting travel.", errorDescription);
-        return;
-    }
-    
-    // In every state the button performs different behaviours
-    NSString * state = [sharedData fromSessionDataGetStateFromUserWithUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic];
-    [delegate whileEditingUserDidTapButtonMeasure:self.buttonMeasure
-                                      whenInState:state
-                               andWithLabelStatus:self.labelStatus];
-    return;
-}
-
 /*!
  @method handleButtonBack:
  @discussion This method dismiss this view and ask main menu view to be displayed; 'prepareForSegue:sender:' method is called before.
