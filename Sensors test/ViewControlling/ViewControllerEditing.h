@@ -19,6 +19,7 @@
 #import "VCModeDelegateThetaThetaLocating.h"
 #import "VCModeDelegateRhoThetaModelling.h"
 
+#import "LMRanging.h"
 #import "LMDelegateRhoRhoLocating.h"
 #import "LMDelegateRhoRhoModelling.h"
 #import "LMDelegateRhoThetaModelling.h"
@@ -43,6 +44,7 @@
     RDRhoThetaSystem * rhoThetaSystem;
     RDThetaThetaSystem * thetaThetaSystem;
     id<CLLocationManagerDelegate> location;
+    LMRanging * ranger;
     MotionManager * motion;
     // Delegate class with the methods to define the behaviour of this view in each mode
     id<VCModeDelegate> delegate;

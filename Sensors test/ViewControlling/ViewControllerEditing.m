@@ -135,6 +135,7 @@
         
         // Load the location manager and its delegate to define how location events are handled
         location = [delegate loadLMDelegate];
+        ranger = [delegate loadLMRanging];
         
         // Load the motion manager to define how motion events are handled
         motion = [delegate loadMotion];

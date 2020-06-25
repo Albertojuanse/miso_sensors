@@ -9,6 +9,7 @@
 #include <Foundation/Foundation.h>
 #include <UIKit/UIKit.h>
 #include <CoreLocation/CoreLocation.h>
+#import "LMRanging.h"
 #import "MotionManager.h"
 #import "SharedData.h"
 
@@ -29,6 +30,7 @@
 - (NSString *)getMeasuringStateMessage;
 #pragma mark - Location VCModeDelegate methods
 - (id<CLLocationManagerDelegate>)loadLMDelegate;
+- (LMRanging *)loadLMRanging;
 #pragma mark - Motion VCModeDelegate methods
 - (MotionManager *)loadMotion;
 #pragma mark - Selecting VCModeDelegate methods

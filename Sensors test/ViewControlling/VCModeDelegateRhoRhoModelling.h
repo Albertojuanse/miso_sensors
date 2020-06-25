@@ -51,6 +51,7 @@ static NSString * MEASURING_STATE_MESSAGE_VCERRM = @"MEASURING; please, do not m
 - (NSString *)getMeasuringStateMessage;
 #pragma mark - Location VCModeDelegate methods
 - (id<CLLocationManagerDelegate>)loadLMDelegate;
+- (LMRanging *)loadLMRanging;
 #pragma mark - Motion VCModeDelegate methods
 - (MotionManager *)loadMotion;
 #pragma mark - Selecting VCModeDelegate methods
