@@ -29,10 +29,11 @@
     CLLocationManager * locationManager;
     
     // Variables
-    RDPosition * position;  // Current position of device
-    BOOL isItemChosenByUserRanged;
-    NSNumber * lastHeadingPosition;
+    RDPosition * devicePosition;  // Current position of device
     NSString * deviceUUID;
+    NSString * itemToMeasureUUID;
+    BOOL isItemToMeasureRanged;
+    NSNumber * lastHeadingPosition;
     
     // Data store
     NSMutableArray * monitoredRegions;
