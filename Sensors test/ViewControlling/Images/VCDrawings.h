@@ -15,6 +15,8 @@
  */
 @interface VCDrawings: NSObject
 
++ (UIColor *)getNormalThemeColor;
++ (UIColor *)getDisabledThemeColor;
 + (UIImage *)imageForPositionInNormalThemeColor;
 + (UIImage *)imageForBeaconInNormalThemeColor;
 + (UIImage *)imageForModelInNormalThemeColor;

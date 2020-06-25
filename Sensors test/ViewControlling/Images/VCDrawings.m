@@ -10,6 +10,38 @@
 
 @implementation VCDrawings
 
+#pragma mark - Color methods
+/*!
+@method getNormalThemeColor
+@discussion This method returns the default theme color to normal states.
+*/
++ (UIColor *)getNormalThemeColor
+{
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    return [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                           green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                            blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                           alpha:1.0
+            ];
+}
+
+/*!
+@method getDisabledThemeColor
+@discussion This method returns the default theme color to disabled states.
+*/
++ (UIColor *)getDisabledThemeColor
+{
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    return [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
+                           green:[layoutDic[@"navbar/green"] floatValue]/255.0
+                            blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
+                           alpha:0.3
+            ];
+}
+
+#pragma mark - Drawing methods
 /*!
 @method imageForPositionInNormalThemeColor
 @discussion This method draws the position icon for table cells.
@@ -45,11 +77,7 @@
     CGPoint arrowPoint = CGPointMake(rectWidth/2, rectHeight);
     
     // Draw the path
-    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                   alpha:1.0
-    ];
+    UIColor * normalThemeColor = [self getNormalThemeColor];
     [normalThemeColor setStroke];
     [normalThemeColor setFill];
     
@@ -114,11 +142,7 @@
     CGPoint circlesCenter = CGPointMake(circlesCenterX, circlesCenterY);
     
     // Draw the path
-    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                 alpha:1.0
-                                  ];
+    UIColor * normalThemeColor = [self getNormalThemeColor];
     [normalThemeColor setStroke];
     
     UIBezierPath * outterRightArcBezierPath = [UIBezierPath bezierPath];
@@ -210,11 +234,7 @@
                                          rectOrigin.y + margin + minusHeith);
     
     // Draw the path
-    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                 alpha:1.0
-                                  ];
+    UIColor * normalThemeColor = [self getNormalThemeColor];
     [normalThemeColor setStroke];
     
     UIBezierPath * outterSquare = [UIBezierPath bezierPath];
@@ -289,11 +309,7 @@
                                          rectOrigin.y + margin + minusHeith);
     
     // Draw the path
-    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                 alpha:1.0
-                                  ];
+    UIColor * normalThemeColor = [self getNormalThemeColor];
     [normalThemeColor setStroke];
     
     UIBezierPath * outterSquare = [UIBezierPath bezierPath];
@@ -368,12 +384,8 @@
                                          rectOrigin.y + margin + minusHeith);
     
     // Draw the path
-    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                 alpha:0.3
-                                  ];
-    [normalThemeColor setStroke];
+    UIColor * disabledThemeColor = [self getDisabledThemeColor];
+    [disabledThemeColor setStroke];
     
     UIBezierPath * outterSquare = [UIBezierPath bezierPath];
     [outterSquare moveToPoint:upperLeftCorner];
