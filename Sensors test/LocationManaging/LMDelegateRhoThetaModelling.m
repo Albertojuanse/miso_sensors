@@ -294,6 +294,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             // If a monitoring type system; needs to save the UUID
             if ([mode isModeKey:kModeRhoThetaModelling]) {
                 
+                BOOL newMeasuresSaved = NO;
                 // For every ranged beacon...
                 for (CLBeacon *beacon in beacons) {
                     
@@ -325,6 +326,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                             }
                             
                             isItemToMeasureRanged = YES;
+                            newMeasuresSaved = YES;
                             // Save the measure
                             [sharedData inMeasuresDataSetMeasure:beacon
                                                           ofSort:@"rssi"
@@ -342,11 +344,16 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     
                 }
                 
-                // Notify that there are new measures
-                NSLog(@"[NOTI][LMRTM] Notification \"ranging/newMeasuresAvalible\" posted.");
-                [[NSNotificationCenter defaultCenter]
-                 postNotificationName:@"ranging/newMeasuresAvalible"
-                 object:nil];
+                if(newMeasuresSaved){
+                    // Notify that there are new measures
+                    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+                    [data setObject:itemToMeasureUUID forKey:@"calibrationUUID"];
+                    NSLog(@"[NOTI][LMRTM] Notification \"ranging/newMeasuresAvalible\" posted.");
+                    [[NSNotificationCenter defaultCenter]
+                     postNotificationName:@"ranging/newMeasuresAvalible"
+                     object:nil
+                     userInfo:data];
+                }
                                     
             } else {
                 NSLog(@"[ERROR][LMRTM] Calling mode is not kModeRhoThetaModelling.");
