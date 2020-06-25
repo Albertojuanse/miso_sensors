@@ -606,17 +606,19 @@
                 
             } else {  // If not detailed
                 
-                // Ask view to start the measure interface; send the item chosen to measure.
-                NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
-                dataDic[@"itemDic"] = itemDic;
-                [[NSNotificationCenter defaultCenter]
-                 postNotificationName:@"vcEditing/presentMeasureView"
-                 object:self
-                 userInfo:dataDic];
-                NSLog(@"[NOTI]%@ Notification \"vcEditing/presentMeasureView\" posted.", ERROR_DESCRIPTION_VCERTM);
-                
                 // Dismiss the add view.
-                [viewController dismissViewControllerAnimated:YES completion:nil];
+                [viewController dismissViewControllerAnimated:NO completion:^(void)
+                {
+                    // Ask view to start the measure interface; send the item chosen to measure.
+                    NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
+                    dataDic[@"itemDic"] = itemDic;
+                    [[NSNotificationCenter defaultCenter]
+                     postNotificationName:@"vcEditing/presentMeasureView"
+                     object:self
+                     userInfo:dataDic];
+                    NSLog(@"[NOTI]%@ Notification \"vcEditing/presentMeasureView\" posted.", ERROR_DESCRIPTION_VCERTM);
+                }
+                 ];
                 
             }
             
@@ -798,7 +800,7 @@
 @method whileAddingUserDidTapMeasure:toMeasureItemDic:
 @discussion This method returns the behaviour when user taps 'Measure' button in Add view in RhoThetaModelling mode to measure the selected item.
 */
-- (void)whileAddingUserDidTapMeasure:(UIButton *)buttonMeasure
+- (void)whileAddingUserDidTapMeasure:(UIButton *)measureButton
                     toMeasureItemDic:(NSMutableDictionary *)itemDic
 
 {
@@ -808,16 +810,15 @@
         )
     {
         // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
-        if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic]) {
+        if (itemDic) {
             
             // Update current state
             [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                        andWithCredentialsUserDic:credentialsUserDic];
         
             // Change button layout
-            UIImage * startMeasureIcon = [VCDrawings imageForMeasureInNormalThemeColor];
-            [buttonMeasure setImage:startMeasureIcon forState:UIControlStateNormal];
+            UIImage * startMeasureIcon = [VCDrawings imageForMeasureInDisabledThemeColor];
+            [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
             
             // And send the notification to start measure
             NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
@@ -828,6 +829,7 @@
             NSLog(@"[NOTI]%@ Notification \"lmdRhoThetaModelling/start\" posted.", ERROR_DESCRIPTION_VCERTM);
             return;
         } else {
+            NSLog(@"[ERROR]%@ No item chosen to be measured.", ERROR_DESCRIPTION_VCERTM);
             return;
         }
     }
@@ -843,8 +845,8 @@
                               andWithCredentialsUserDic:credentialsUserDic];
         
         // Change button layout
-        UIImage * startMeasureIcon = [VCDrawings imageForMeasureInDisabledThemeColor];
-        [buttonMeasure setImage:startMeasureIcon forState:UIControlStateNormal];
+        UIImage * startMeasureIcon = [VCDrawings imageForMeasureInNormalThemeColor];
+        [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
         
         // And send the notification to stop measure
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaModelling/stop"

@@ -24,7 +24,7 @@
                             <constraint firstAttribute="height" constant="128" id="4GO-Es-oWa"/>
                         </constraints>
                         <connections>
-                            <action selector="handleButtonMeasure:" destination="Z7R-FJ-OQv" eventType="touchUpInside" id="lpJ-Rh-HtZ"/>
+                            <action selector="handleMeasureButton:" destination="Z7R-FJ-OQv" eventType="touchUpInside" id="VOr-xd-ACK"/>
                         </connections>
                     </button>
                 </subviews>

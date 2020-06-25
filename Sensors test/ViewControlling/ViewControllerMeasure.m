@@ -22,6 +22,7 @@
     // Visualization
     UIImage * measureImage = [VCDrawings imageForMeasureInNormalThemeColor];
     [self.measureButton setImage:measureImage forState:UIControlStateNormal];
+    [self.measureButton setTintColor:[VCDrawings getNormalThemeColor]];
     UIImage * tutorialImage = [UIImage imageNamed:@"Measure rhoTheta.png"];
     [self.tutorialImageView setImage:tutorialImage];
 }
@@ -67,13 +68,16 @@
 
 #pragma mark - Buttons event handlers
 /*!
- @method handleButtonMeasure:
- @discussion This method handles the action in which the Measure button is pressed.
- */
-- (IBAction)handleButtonMeasure:(id)sender
-{
-    [delegate whileAddingUserDidTapMeasure:self.measureButton
-                          toMeasureItemDic:itemDic];
+@method handleMeasureButton:
+@discussion This method handles the action in which the Measure button is pressed.
+*/
+- (IBAction)handleMeasureButton:(id)sender {
+    if(delegate) {
+        [delegate whileAddingUserDidTapMeasure:self.measureButton
+                              toMeasureItemDic:itemDic];
+    } else {
+        NSLog(@"[ERROR][VCM] Delegate for this mode not found.");
+    }
 }
 
 /*!

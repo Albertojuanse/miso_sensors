@@ -371,12 +371,13 @@
         
         // Present the view as a pop up
         ViewControllerMeasure * viewControllerMeasure = [[[NSBundle mainBundle]
-                                                          loadNibNamed:@"ViewControllerMeasure"
+                                                          loadNibNamed:@"ViewMeasure"
                                                           owner:self
                                                           options:nil]
                                                          objectAtIndex:0];
         [viewControllerMeasure setModalPresentationStyle:UIModalPresentationPopover];
         // Set the variables
+        [viewControllerMeasure setDelegate:delegate];
         [viewControllerMeasure setItemDicToMeasure:itemDic];
         
         // Configure popover layout
@@ -386,7 +387,7 @@
         [popoverMeasure setSourceRect:CGRectMake(0,0,1,1)];
         [popoverMeasure setPermittedArrowDirections:UIPopoverArrowDirectionAny];
         // Show the view
-        [self presentViewController:viewControllerMeasure animated:YES completion:nil];
+        [self presentViewController:viewControllerMeasure animated:NO completion:nil];
     }
     return;
 }
