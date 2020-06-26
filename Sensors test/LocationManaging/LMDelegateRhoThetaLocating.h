@@ -30,7 +30,7 @@
     
     // Variables
     RDPosition * position;  // Current position of device
-    BOOL isItemChosenByUserRanged;
+    BOOL isItemToMeasureRanged;
     NSNumber * lastHeadingPosition;
     NSString * deviceUUID;
     

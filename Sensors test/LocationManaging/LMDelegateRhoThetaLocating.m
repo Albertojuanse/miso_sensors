@@ -321,12 +321,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                             return;
                         } else {
                                 
-                            // The measure is saved only if event's uuid and the chosen one are the same; also, the heading measures only will be saved if becons measures are saved, when 'isItemChosenByUserRanged' is true.
+                            // The measure is saved only if event's uuid and the chosen one are the same; also, the heading measures only will be saved if becons measures are saved, when 'isItemToMeasureRanged' is true.
                             if ([itemUUID isEqualToString:uuid]) {
                                 
                                 // Conditional clausule for an specific issue with Apple devices' heading measures:
-                                if (!isItemChosenByUserRanged) {
-                                    // Device does not deliver heading measures unless new values available; when RSSI measures from the chosen item is saved, can occur that no heading is saved until user moves the device. If it happens, the delegated method 'locationManager:didUpdateHeading:' is never called, and so, this method saves its value once. If 'isItemChosenByUserRanged' flag is false means this is the first time that this item is ranged, and thus, this heading is saved as a first heading measure to, at least, save one.
+                                if (!isItemToMeasureRanged) {
+                                    // Device does not deliver heading measures unless new values available; when RSSI measures from the chosen item is saved, can occur that no heading is saved until user moves the device. If it happens, the delegated method 'locationManager:didUpdateHeading:' is never called, and so, this method saves its value once. If 'isItemToMeasureRanged' flag is false means this is the first time that this item is ranged, and thus, this heading is saved as a first heading measure to, at least, save one.
                                     [sharedData inMeasuresDataSetMeasure:lastHeadingPosition
                                                                   ofSort:@"heading"
                                                             withItemUUID:itemUUID
@@ -336,7 +336,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                                andWithCredentialsUserDic:credentialsUserDic];
                                 }
                                 
-                                isItemChosenByUserRanged = YES;
+                                isItemToMeasureRanged = YES;
                                 // Save the measure
                                 [sharedData inMeasuresDataSetMeasure:beacon
                                                               ofSort:@"rssi"
@@ -415,7 +415,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         if ([mode isModeKey:kModeRhoThetaLocating]) {
             
             // The heading measures in this mode are only saved if there is already any beacon measure saved...
-            if(isItemChosenByUserRanged) {
+            if(isItemToMeasureRanged) {
                 // ...and if the user did select the item to aim to, whose item dictionary is stored in session dictionary as 'itemChosenByUser'.
                 NSMutableDictionary * itemChosenByUserDic = [sharedData
                                                              fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
@@ -606,7 +606,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         position.y = [NSNumber numberWithFloat:0.0];
         position.z = [NSNumber numberWithFloat:0.0];
         
-        isItemChosenByUserRanged = NO;
+        isItemToMeasureRanged = NO;
         // Heading is not delivered unless new values available; when RSSI measures from the chosen UUID is saved, no heading is saved until user moves the device; thus, this location is saved if no heading measure is taken
         lastHeadingPosition = nil;
         
