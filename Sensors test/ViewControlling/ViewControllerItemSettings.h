@@ -50,7 +50,7 @@
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void) setSharedData:(SharedData *)givenSharedData;
-- (void) setItemBeaconIdNumber:(NSNumber *)givenRegionIdNumber;
 - (void) setDeviceUUID:(NSString *)givenDeviceUUID;
+- (void) setItemChosenByUser:(NSMutableDictionary *)givenItemChosenByUser;
 
 @end

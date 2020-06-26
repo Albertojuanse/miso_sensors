@@ -1210,6 +1210,7 @@ trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
                             [viewControllerItemSettings setUserDic:userDic];
                             [viewControllerItemSettings setSharedData:sharedData];
                             [viewControllerItemSettings setDeviceUUID:deviceUUID];
+                            [viewControllerItemSettings setItemChosenByUser:itemDic];
                             // Configure popover layout
                             UIPopoverPresentationController * popoverItemSettings =  viewControllerItemSettings.popoverPresentationController;
                             [popoverItemSettings setDelegate:viewControllerItemSettings];

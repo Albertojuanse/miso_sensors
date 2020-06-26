@@ -249,7 +249,7 @@
         // Deallocate location manager; ARC disposal.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
                                                             object:nil];
-        NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+        NSLog(@"[NOTI][VCIS] Notification \"lmdCalibrating/stop\" posted.");
         // Remove all measures
         [sharedData resetMeasuresWithCredentialsUserDic:credentialsUserDic];
         location = nil;
@@ -275,7 +275,7 @@
         // Deallocate location manager; ARC disposal.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
                                                             object:nil];
-        NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+        NSLog(@"[NOTI][VCIS] Notification \"lmdCalibrating/stop\" posted.");
         // Remove all measures
         [sharedData resetMeasuresWithCredentialsUserDic:credentialsUserDic];
         location = nil;
@@ -323,7 +323,7 @@
         // Deallocate location manager; ARC disposal.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
                                                             object:nil];
-        NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+        NSLog(@"[NOTI][VCIS] Notification \"lmdCalibrating/stop\" posted.");
         // Remove all measures
         [sharedData resetMeasuresWithCredentialsUserDic:credentialsUserDic];
         location = nil;
@@ -346,7 +346,7 @@
     // Deallocate location manager; ARC disposal.
     [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
                                                         object:nil];
-    NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+    NSLog(@"[NOTI][VCIS] Notification \"lmdCalibrating/stop\" posted.");
     location = nil;
     ranger = nil;
     [self dismissViewControllerAnimated:YES completion:Nil];
@@ -363,7 +363,7 @@
     // Deallocate location manager; ARC disposal.
     [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
                                                         object:nil];
-    NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/stop\" posted.");
+    NSLog(@"[NOTI][VCIS] Notification \"lmdCalibrating/stop\" posted.");
     location = nil;
     ranger = nil;
     [self dismissViewControllerAnimated:YES completion:Nil];
@@ -410,12 +410,13 @@
     NSMutableDictionary * data = [[NSMutableDictionary alloc] init];
     // Create a copy of the current position for sending it; concurrence issues prevented
     NSString * uuidToCalibrate = itemChosenByUser[@"uuid"];
+    NSLog(@"[INFO][VCIS] User asked to start first calibration step with UUID: %@", uuidToCalibrate);
     [data setObject:uuidToCalibrate forKey:@"calibrationUUID"];
     // And send the notification
     [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/startFirstStep"
                                                         object:nil
                                                       userInfo:data];
-    NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/startFirstStep\" posted.");
+    NSLog(@"[NOTI][VCIS] Notification \"lmdCalibrating/startFirstStep\" posted.");
     
 }
 
@@ -433,9 +434,10 @@
     [self.secondButton setEnabled:NO];
     
     // Notify to location manager
+    NSLog(@"[INFO][VCIS] User asked to start second calibration step.");
     [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/startSecondStep"
                                                         object:nil];
-    NSLog(@"[NOTI][VCMM] Notification \"lmdCalibrating/startSecondStep\" posted.");
+    NSLog(@"[NOTI][VCIS] Notification \"lmdCalibrating/startSecondStep\" posted.");
     
 }
 
