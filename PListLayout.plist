@@ -36,5 +36,9 @@
 	<integer>20</integer>
 	<key>pickers/rowWidth</key>
 	<integer>200</integer>
+	<key>buttons/big/measure/height</key>
+	<integer>100</integer>
+	<key>buttons/big/measure/width</key>
+	<integer>100</integer>
 </dict>
 </plist>
