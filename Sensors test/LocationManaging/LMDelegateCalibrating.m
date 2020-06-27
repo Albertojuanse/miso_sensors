@@ -73,6 +73,10 @@
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(stop:)
                                                      name:@"lmdCalibrating/stop"
+                                                   object:nil];        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(rangingMeasureFinishedWithErrors:)
+                                                     name:@"lmd/rangingMeasureFinishedWithErrors"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reset:)
@@ -428,6 +432,20 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         NSLog(@"[NOTI][LMC] Notification \"lmdCalibrating/stop\" recived.");
         // Delete registered regions and heading updates
         [self stopRoutine];
+    }
+}
+
+/*!
+ @method rangingMeasureFinishedWithErrors:
+ @discussion This method asks the Location Manager to stop positioning the device due an error, and reset the measures.
+ */
+- (void) rangingMeasureFinishedWithErrors:(NSNotification *) notification {
+    if ([[notification name] isEqualToString:@"lmd/rangingMeasureFinishedWithErrors"]){
+        NSLog(@"[NOTI][LMRTM] Notification \"lmd/rangingMeasureFinishedWithErrors\" recived.");
+        [self stopRoutine];
+        // Components
+        [sharedData resetMeasuresWithCredentialsUserDic:credentialsUserDic];
+        NSLog(@"[INFO][LMRTM] Stop updating compass and iBeacons.");
     }
 }
 
