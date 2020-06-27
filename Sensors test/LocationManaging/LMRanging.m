@@ -32,36 +32,52 @@
                                                      name:@"ranging/reset"
                                                    object:nil];
         
-        // Get calibration costants.
+        // Get calibration variables
         NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLocating" ofType:@"plist"];
         NSDictionary * locatingDic = [NSDictionary dictionaryWithContentsOfFile:path];
-        if (!minNumberOfIterations){
-            NSNumber * minNumberOfIterationsSaved = locatingDic[@"calibration/measures/minNumber"];
-            minNumberOfIterations = [minNumberOfIterationsSaved integerValue];
+        if (!minIterations){
+            NSNumber * minIterationsSaved = locatingDic[@"calibration/measures/minNumber"];
+            minIterations = [minIterationsSaved integerValue];
         }
-        minNumberOfIterationsOfFirstStep = minNumberOfIterations;
-        minNumberOfIterationsOfSecondStep = minNumberOfIterations;
-        if (!maxNumberOfIterations){
-            NSNumber * maxNumberOfIterationsSaved = locatingDic[@"calibration/measures/maxNumber"];
-            maxNumberOfIterations = [maxNumberOfIterationsSaved integerValue];
+        minIterationsStep1 = minIterations;
+        minIterationsStep2 = minIterations;
+        if (!maxIterations){
+            NSNumber * maxIterationsSaved = locatingDic[@"calibration/measures/maxNumber"];
+            maxIterations = [maxIterationsSaved integerValue];
         }
-        maxNumberOfIterationsOfFirstStep = maxNumberOfIterations;
-        maxNumberOfIterationsOfSecondStep = maxNumberOfIterations;
+        maxIterationsStep1 = maxIterations;
+        maxIterationsStep2 = maxIterations;
         if (!gaussThreshold) {
             NSNumber * gaussThresholdSaved = locatingDic[@"calibration/measures/gaussThreshold"];
             gaussThreshold = [gaussThresholdSaved floatValue]/100.0;
         }
-        if (!minNumberOfMeasuresAfterGauss) {
-            NSNumber * minNumberOfMeasuresAfterGaussSaved = locatingDic[@"calibration/measures/minMeasuresAfterGauss"];
-            minNumberOfMeasuresAfterGauss = [minNumberOfMeasuresAfterGaussSaved floatValue];
+        if (!minMeasuresAfterGauss) {
+            NSNumber * minMeasuresAfterGaussSaved = locatingDic[@"calibration/measures/minMeasuresAfterGauss"];
+            minMeasuresAfterGauss = [minMeasuresAfterGaussSaved floatValue];
         }
-        numberOfConsecutiveInvalidMeasures = 0;
-        if (!maxNumberOfConsecutiveInvalidMeasures) {
-            NSNumber * maxNumberOfConsecutiveInvalidMeasuresSaved = locatingDic[@"calibration/measures/maxNumberOfConsecutiveInvalidMeasures"];
-            maxNumberOfConsecutiveInvalidMeasures = [maxNumberOfConsecutiveInvalidMeasuresSaved integerValue];
+        consecutiveInvalidIterations = 0;
+        if (!maxConsecutiveInvalidIterations) {
+            NSNumber * maxConsecutiveInvalidIterationsSaved = locatingDic[@"calibration/measures/maxConsecutiveInvalidIterations"];
+            maxConsecutiveInvalidIterations = [maxConsecutiveInvalidIterationsSaved integerValue];
         }
         
         firstStepFinished = NO;
+        
+        // Get Ranging variables
+        if (!minMeasures){
+            NSNumber * minMeasuresSaved = locatingDic[@"measure/minNumber"];
+            minMeasures = [minMeasuresSaved integerValue];
+        }
+        if (!maxMeasures){
+            NSNumber * maxMeasuresSaved = locatingDic[@"measure/maxNumber"];
+            maxMeasures = [maxMeasuresSaved integerValue];
+        }
+        validMeasures = 0;
+        consecutiveInvalidMeasures = 0;
+        if (!maxConsecutiveInvalidMeasures) {
+            NSNumber * maxConsecutiveInvalidMeasuresSaved = locatingDic[@"measure/maxNumberOfConsecutiveInvalidMeasures"];
+            maxConsecutiveInvalidMeasures = [maxConsecutiveInvalidMeasuresSaved integerValue];
+        }
         
         NSLog(@"[INFO][LMR] LM Ranging module prepared.");
     }
@@ -155,7 +171,7 @@
         // This is verified here to count all the measures taken and not only the valid ones.
         if (
             [calibrationAtRefDistanceMeasures count] > 0 &&
-            [calibrationAtRefDistanceMeasures count] < maxNumberOfIterationsOfFirstStep
+            [calibrationAtRefDistanceMeasures count] < maxIterationsStep1
             )
         {
           [self processCalibrationAtRefDistanceMeasures:calibrationAtRefDistanceMeasures];
@@ -173,7 +189,7 @@
                                                                       withCredentialsUserDic:credentialsUserDic];
         if (
             [calibrationAtOtherDistanceMeasures count] > 0 &&
-            [calibrationAtOtherDistanceMeasures count] < maxNumberOfIterationsOfSecondStep
+            [calibrationAtOtherDistanceMeasures count] < maxIterationsStep2
             )
         {
             [self processCalibrationAtOtherDistanceMeasures:calibrationAtOtherDistanceMeasures];
@@ -227,9 +243,9 @@
         }
         
         // Gather all RSSI measured values
-        NSInteger invalidMeasures = 0;
-        numberOfConsecutiveInvalidMeasures = 0;
-        BOOL consecutiveInvalidMeasures = NO;
+        NSInteger invalidIterations = 0;
+        consecutiveInvalidIterations = 0;
+        BOOL consecutiveInvalidIterationsFlag = NO;
         NSMutableArray * beacons = [[NSMutableArray alloc] init];
         for (NSMutableDictionary * eachMeasure in calibrationAtRefDistanceMeasures) {
             
@@ -242,31 +258,31 @@
                 // Check the device's accuracy; if not less than 0 means not calibrated by Apple device
                 if ([eachBeacon rssi] < 0) {
                     [beacons addObject:eachBeacon];
-                    numberOfConsecutiveInvalidMeasures = 0;
+                    consecutiveInvalidIterations = 0;
                 } else {
-                    invalidMeasures++;
-                    numberOfConsecutiveInvalidMeasures++;
+                    invalidIterations++;
+                    consecutiveInvalidIterations++;
                 }
                 
-                if (numberOfConsecutiveInvalidMeasures >= maxNumberOfConsecutiveInvalidMeasures) {
-                    consecutiveInvalidMeasures = YES;
+                if (consecutiveInvalidIterations >= maxConsecutiveInvalidIterations) {
+                    consecutiveInvalidIterationsFlag = YES;
                 }
                 
             } else {
                 NSLog(@"[LMR][ERROR] A measure taken from another item different to the calibrating one: %@", eachMeasureUUID);
             }
         }
-        if (invalidMeasures > 0) {
-            NSLog(@"[WARNING][LMR] Some of the measures taken were invalid: %tu; not using them.", invalidMeasures);
+        if (invalidIterations > 0) {
+            NSLog(@"[WARNING][LMR] Some of the measures taken were invalid: %tu; not using them.", invalidIterations);
         }
-        if (consecutiveInvalidMeasures) {
+        if (consecutiveInvalidIterationsFlag) {
             NSLog(@"[ERROR][LMR] Too much measures taken were invalid: %tu/%tu; aborting.",
-                  numberOfConsecutiveInvalidMeasures,
-                  maxNumberOfConsecutiveInvalidMeasures
+                  consecutiveInvalidIterations,
+                  maxConsecutiveInvalidIterations
                   );
             // Notify the view that calibration is finished with errors.
             NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-            [data setObject:@"consecutiveInvalidMeasures" forKey:@"consecutiveInvalidMeasures"];
+            [data setObject:@"consecutiveInvalidIterations" forKey:@"consecutiveInvalidIterations"];
             NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/firstStepFinishedWithErrors\" posted.");
             [[NSNotificationCenter defaultCenter]
              postNotificationName:@"vcItemSettings/firstStepFinishedWithErrors"
@@ -275,18 +291,18 @@
         }
         
         // Decide if the number of measures is enough for calibration
-        if (beacons.count < minNumberOfIterationsOfFirstStep) {
+        if (beacons.count < minIterationsStep1) {
             
             NSLog(@"[INFO][LMR] %tu/%tu valid measures taken; not calibrating.",
                   beacons.count,
-                  minNumberOfIterationsOfFirstStep
+                  minIterationsStep1
                   );
             
         } else {
             
             NSLog(@"[INFO][LMR] %tu/%tu valid measures taken; calibrating.",
                   beacons.count,
-                  minNumberOfIterationsOfFirstStep
+                  minIterationsStep1
                   );
             
             // Calibrate measures
@@ -325,9 +341,9 @@
     }
     
     // Gather all RSSI measured values
-    NSInteger invalidMeasures = 0;
-    numberOfConsecutiveInvalidMeasures = 0;
-    BOOL consecutiveInvalidMeasures = NO;
+    NSInteger invalidIterations = 0;
+    consecutiveInvalidIterations = 0;
+    BOOL consecutiveInvalidIterationsFlag = NO;
     NSMutableArray * beacons = [[NSMutableArray alloc] init];
     for (NSMutableDictionary * eachMeasure in calibrationAtOtherDistanceMeasures) {
         
@@ -340,31 +356,31 @@
             // Check the device's accuracy; if not less than 0 means not calibrated by Apple device
             if ([eachBeacon rssi] < 0) {
                 [beacons addObject:eachBeacon];
-                numberOfConsecutiveInvalidMeasures = 0;
+                consecutiveInvalidIterations = 0;
             } else {
-                invalidMeasures++;
-                numberOfConsecutiveInvalidMeasures++;
+                invalidIterations++;
+                consecutiveInvalidIterations++;
             }
             
-            if (numberOfConsecutiveInvalidMeasures >= maxNumberOfConsecutiveInvalidMeasures) {
-                consecutiveInvalidMeasures = YES;
+            if (consecutiveInvalidIterations >= maxConsecutiveInvalidIterations) {
+                consecutiveInvalidIterationsFlag = YES;
             }
             
         } else {
             NSLog(@"[LMR][ERROR] A measure taken from another item different to the calibrating one: %@", eachMeasureUUID);
         }
     }
-    if (invalidMeasures > 0) {
-        NSLog(@"[WARNING][LMR] Some of the measures taken were invalid: %tu; not using them.", invalidMeasures);
+    if (invalidIterations > 0) {
+        NSLog(@"[WARNING][LMR] Some of the measures taken were invalid: %tu; not using them.", invalidIterations);
     }
-    if (consecutiveInvalidMeasures) {
+    if (consecutiveInvalidIterationsFlag) {
         NSLog(@"[ERROR][LMR] Too much measures taken were invalid: %tu/%tu; aborting second step.",
-              numberOfConsecutiveInvalidMeasures,
-              maxNumberOfConsecutiveInvalidMeasures
+              consecutiveInvalidIterations,
+              maxConsecutiveInvalidIterations
               );
         // Notify the view that calibration is finished with errors.
         NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-        [data setObject:@"consecutiveInvalidMeasures" forKey:@"consecutiveInvalidMeasures"];
+        [data setObject:@"consecutiveInvalidIterations" forKey:@"consecutiveInvalidIterations"];
         NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/secondStepFinishedWithErrors\" posted.");
         [[NSNotificationCenter defaultCenter]
          postNotificationName:@"vcItemSettings/secondStepFinishedWithErrors"
@@ -374,19 +390,19 @@
     
     // Decide if the number of measures is enough for calibration
     if (
-        beacons.count < minNumberOfIterationsOfSecondStep
+        beacons.count < minIterationsStep2
         )
     {
         NSLog(@"[INFO][LMR] %tu/%tu valid measures taken; not calibrating at second step.",
               beacons.count,
-              minNumberOfIterationsOfSecondStep
+              minIterationsStep2
               );
         
     } else {
         
         NSLog(@"[INFO][LMR] %tu/%tu valid measures taken; calibrating at second step.",
               beacons.count,
-              minNumberOfIterationsOfSecondStep
+              minIterationsStep2
               );
     
         // Calibrate measures
@@ -464,10 +480,10 @@
     NSMutableArray * filteredRSSIValues = [self gaussianFilterOfMeasures:rssiValues];
     
     // Not a valid subset if there are less than a minimum number of measures
-    if (filteredRSSIValues.count < minNumberOfMeasuresAfterGauss) {
+    if (filteredRSSIValues.count < minMeasuresAfterGauss) {
         NSLog(@"[INFO][LMR] %tu/%tu are too few measures after gaussian filter; not calibrating.",
               filteredRSSIValues.count,
-              minNumberOfMeasuresAfterGauss
+              minMeasuresAfterGauss
               );
         return NO;
     }
@@ -546,10 +562,10 @@
     NSMutableArray * filteredRSSIValues = [self gaussianFilterOfMeasures:rssiValues];
     
     // Not a valid subset if there are less than a minimum number of measures
-    if (filteredRSSIValues.count < minNumberOfMeasuresAfterGauss) {
+    if (filteredRSSIValues.count < minMeasuresAfterGauss) {
         NSLog(@"[INFO][LMR] %tu/%tu are too few measures after gaussian filter; not calibrating.",
               filteredRSSIValues.count,
-              minNumberOfMeasuresAfterGauss
+              minMeasuresAfterGauss
               );
         return NO;
     }
@@ -748,6 +764,24 @@
         
         // Get its information and correct it
         NSNumber * recivedRSSI = [NSNumber numberWithInteger:[beacon rssi]];
+        
+        // Check the device's accuracy; if not less than 0 means not calibrated by Apple device
+        BOOL consecutiveInvalidMeasuresFlag = NO;
+        if (recivedRSSI < 0) {
+            consecutiveInvalidMeasures = 0;
+            validMeasures++;
+        } else {
+            consecutiveInvalidMeasures++;
+        }
+        if (consecutiveInvalidMeasures >= maxConsecutiveInvalidMeasures) {
+            consecutiveInvalidMeasuresFlag = YES;
+        }
+        
+        if (consecutiveInvalidMeasures > 0) {
+            NSLog(@"[WARNING][LMR] Some consecutive measures taken were invalid: %tu; not using them.", consecutiveInvalidMeasures);
+        }
+        
+        // Correct the valid measures
         NSNumber * correctedDistance = [NSNumber numberWithFloat:
                                         powf(
                                              10.0,
@@ -773,15 +807,37 @@
                                   atPosition:measurePosition
                               takenByUserDic:measureUserDic
                    andWithCredentialsUserDic:credentialsUserDic];
+        
+        // Check errors to finish the measure
+        if (consecutiveInvalidMeasuresFlag) {
+            NSLog(@"[ERROR][LMR] Too much measures taken were invalid: %tu/%tu; aborting.",
+                  consecutiveInvalidMeasures,
+                  maxConsecutiveInvalidMeasures
+                  );
+            // Notify the view and LMDelegate that measure is finished with errors.
+            NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+            [data setObject:@"consecutiveInvalidIterations" forKey:@"consecutiveInvalidIterations"];
+            
+            NSLog(@"[NOTI][LMR] Notification \"vcMeasure/rangingMeasureFinishedWithErrors\" posted.");
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"vcMeasure/rangingMeasureFinishedWithErrors"
+             object:nil
+             userInfo:data];            
+            
+            // Reset state
+            validMeasures = 0;
+            consecutiveInvalidMeasures = 0;
+        }
+        
     }
 
     // Ask radiolocation of beacons if posible
     // Precision is arbitrary set to 10 cm
     // TODO: Make this configurable. Alberto J. 2019/09/12.
     NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                 [NSNumber numberWithFloat:0.1], @"xPrecision",
-                                 [NSNumber numberWithFloat:0.1], @"yPrecision",
-                                 [NSNumber numberWithFloat:0.1], @"zPrecision",
+                                 [NSNumber numberWithFloat:0.2], @"xPrecision",
+                                 [NSNumber numberWithFloat:0.2], @"yPrecision",
+                                 [NSNumber numberWithFloat:0.2], @"zPrecision",
                                  nil];
     NSMutableDictionary * locatedPositions;
     if ([mode isModeKey:kModeRhoThetaModelling]) {
@@ -851,6 +907,16 @@
     [[NSNotificationCenter defaultCenter]
      postNotificationName:@"canvas/refresh"
      object:nil];
+    
+    // Check if measures are enough to finish
+    if (validMeasures > minMeasures) {
+        NSLog(@"[NOTI][LMR] Notification \"vcMeasure/rangingMeasureFinished\" posted.");
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"vcMeasure/rangingMeasureFinished"
+         object:nil];
+        validMeasures = 0;
+        consecutiveInvalidMeasures = 0;
+    }
     
     return;
 }

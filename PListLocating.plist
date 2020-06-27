@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>measure/minNumber</key>
+	<integer>5</integer>
+	<key>measure/maxNumber</key>
+	<integer>10</integer>
+	<key>measure/maxNumberOfConsecutiveInvalidMeasures</key>
+	<integer>3</integer>
 	<key>calibration/measures/minNumber</key>
 	<integer>15</integer>
 	<key>calibration/measures/maxNumber</key>
@@ -10,7 +16,7 @@
 	<integer>80</integer>
 	<key>calibration/measures/minMeasuresAfterGauss</key>
 	<integer>5</integer>
-	<key>calibration/measures/maxNumberOfConsecutiveInvalidMeasures</key>
+	<key>calibration/measures/maxConsecutiveInvalidIterations</key>
 	<integer>10</integer>
 	<key>calibration/init/refRSSI</key>
 	<integer>-60</integer>

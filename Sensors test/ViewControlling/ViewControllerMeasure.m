@@ -25,6 +25,9 @@
     [self.measureButton setTintColor:[VCDrawings getNormalThemeColor]];
     UIImage * tutorialImage = [UIImage imageNamed:@"Measure rhoTheta.png"];
     [self.tutorialImageView setImage:tutorialImage];
+    
+    // Load event listeners
+    [self loadEventListeners];
 }
 
 /*!
@@ -46,6 +49,23 @@
     // Dispose of any resources that can be recreated.
 }
 
+/*!
+@method loadEventListeners
+@discussion This method loads the event listeners for this class.
+*/
+- (void)loadEventListeners
+{
+    // This object must listen to this events
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(rangingMeasureFinishedWithErrors:)
+                                                 name:@"vcMeasure/rangingMeasureFinishedWithErrors"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(rangingMeasureFinished:)
+                                                 name:@"vcMeasure/rangingMeasureFinished"
+                                               object:nil];
+}
+
 #pragma mark - Instance methods
 /*!
  @method setItemDicToMeasure:
@@ -65,6 +85,31 @@
     delegate = givenDelegate;
 }
 
+#pragma mark - Notification event handles
+/*!
+ @method rangingMeasureFinished:
+ @discussion This method handles the event that notifies that the measure did finish.
+ */
+- (void)rangingMeasureFinished:(NSNotification *)notification {
+    if ([[notification name] isEqualToString:@"vcMeasure/rangingMeasureFinished"]){
+        NSLog(@"[NOTI][LMM] Notification \"vcMeasure/rangingMeasureFinished\" recived.");
+        [delegate whileAddingRangingMeasureFinishedInViewController:self
+                                                  withMeasureButton:self.measureButton];
+    }
+}
+
+/*!
+ @method rangingMeasureFinishedWithErrors:
+ @discussion This method handles the event that notifies that the measure did finish with errors.
+ */
+- (void)rangingMeasureFinishedWithErrors:(NSNotification *)notification {
+    if ([[notification name] isEqualToString:@"vcMeasure/rangingMeasureFinishedWithErrors"]){
+        NSLog(@"[NOTI][LMM] Notification \"vcMeasure/rangingMeasureFinishedWithErrors\" recived.");
+        [delegate whileAddingRangingMeasureFinishedWithErrorsInViewController:self
+                                                                 notification:notification
+                                                            withMeasureButton:self.measureButton];
+    }
+}
 
 #pragma mark - Buttons event handlers
 /*!

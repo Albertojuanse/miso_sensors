@@ -869,6 +869,90 @@
     }
 }
 
+/*!
+@method whileAddingRangingMeasureFinishedInViewController:withMeasureButton:
+@discussion This method returns the behaviour when the notification "rangingMeasureFinished" is recived in Add view in RhoThetaModelling mode to measure the selected item.
+*/
+- (void)whileAddingRangingMeasureFinishedInViewController:(UIViewController *)viewController
+                                        withMeasureButton:(UIButton *)measureButton
+{
+    // Update current state
+    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                          andWithCredentialsUserDic:credentialsUserDic];
+    
+    // Change button layout
+    UIImage * startMeasureIcon = [VCDrawings imageForMeasureInNormalThemeColor];
+    [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
+    
+    // And send the notification to stop measure
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaModelling/stop"
+                                                        object:nil];
+    NSLog(@"[NOTI]%@ Notification \"lmdRhoThetaModelling/stop\" posted.", ERROR_DESCRIPTION_VCERTM);
+    
+    // Notify user
+    [self alertUserWithTitle:@"Measure finished"
+                    message:[NSString stringWithFormat:@""]
+                 andHandler:^(UIAlertAction * action) {}
+           inViewController:viewController
+    ];
+    return;
+}
+
+/*!
+@method whileAddingRangingMeasureFinishedWithErrorsInViewController:notification:withMeasureButton:
+@discussion This method returns the behaviour when the notification "rangingMeasureFinishedWithErrors" is recived in Add view in RhoThetaModelling mode to measure the selected item.
+*/
+- (void)whileAddingRangingMeasureFinishedWithErrorsInViewController:(UIViewController *)viewController
+                                                       notification:(NSNotification *)notification
+                                                  withMeasureButton:(UIButton *)measureButton
+{
+    // Update current state
+    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                          andWithCredentialsUserDic:credentialsUserDic];
+    
+    // Change button layout
+    UIImage * startMeasureIcon = [VCDrawings imageForMeasureInNormalThemeColor];
+    [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
+    
+    // And send the notification to stop measure and notify user
+    NSDictionary * data = notification.userInfo;
+    NSString * consecutiveInvalidMeasuresError = data[@"consecutiveInvalidMeasures"];
+    if (consecutiveInvalidMeasuresError) {
+        if ([consecutiveInvalidMeasuresError isEqualToString:@"consecutiveInvalidMeasures"]) {
+            
+            // Notify
+            NSLog(@"[NOTI]%@ Notification \"lmd/rangingMeasureFinishedWithErrors\" posted.", ERROR_DESCRIPTION_VCERTM);
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"lmd/rangingMeasureFinishedWithErrors"
+             object:nil
+             userInfo:data];
+            
+            // Alert the user
+            [self alertUserWithTitle:@"Measure error"
+                             message:@"Measure process failed in its first step due to too many measures were invalid. Please, try again."
+                          andHandler:^(UIAlertAction * action) {}
+                    inViewController:viewController
+             ];
+        }
+    } else {
+        
+        // Notify
+        NSLog(@"[NOTI]%@ Notification \"lmd/rangingMeasureFinishedWithErrors\" posted.", ERROR_DESCRIPTION_VCERTM);
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"lmd/rangingMeasureFinishedWithErrors"
+         object:nil];
+        
+        // Alert the user
+        [self alertUserWithTitle:@"Measure error"
+                         message:@"Measure process failed in its first step due an unknown error. Please, try again."
+                      andHandler:^(UIAlertAction * action) {}
+                inViewController:viewController
+         ];
+    }
+    
+    return;
+}
+
 #pragma mark - Other methods
 /*!
  @method alertUserWithTitle:message:andHandler:inViewController:

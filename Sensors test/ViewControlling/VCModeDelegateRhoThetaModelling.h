@@ -85,4 +85,9 @@ static NSString * MEASURING_STATE_MESSAGE_VCERTM = @"MEASURING; please, do not m
 #pragma mark - Adding VCModeDelegate methods
 - (void)whileAddingUserDidTapMeasure:(UIButton *)buttonMeasure
                     toMeasureItemDic:(NSMutableDictionary *)itemDic;
+- (void)whileAddingRangingMeasureFinishedInViewController:(UIViewController *)viewController
+                                        withMeasureButton:(UIButton *)measureButton;
+- (void)whileAddingRangingMeasureFinishedWithErrorsInViewController:(UIViewController *)viewController
+                                                       notification:(NSNotification *)notification
+                                                  withMeasureButton:(UIButton *)measureButton;
 @end

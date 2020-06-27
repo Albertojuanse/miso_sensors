@@ -30,19 +30,26 @@
     // Variables
     NSString * calibrationUUID;
     NSMutableDictionary * itemToCalibrate;
-    NSInteger minNumberOfIterations;
-    NSInteger maxNumberOfIterations;
-    NSInteger minNumberOfIterationsOfFirstStep;
-    NSInteger maxNumberOfIterationsOfFirstStep;
-    NSInteger minNumberOfIterationsOfSecondStep;
-    NSInteger maxNumberOfIterationsOfSecondStep;
-    NSInteger minNumberOfMeasuresAfterGauss;
-    NSInteger numberOfConsecutiveInvalidMeasures;
-    NSInteger maxNumberOfConsecutiveInvalidMeasures;
+    // Calibration variables
+    NSInteger minIterations;
+    NSInteger maxIterations;
+    NSInteger minIterationsStep1;
+    NSInteger maxIterationsStep1;
+    NSInteger minIterationsStep2;
+    NSInteger maxIterationsStep2;
+    NSInteger minMeasuresAfterGauss;
+    NSInteger consecutiveInvalidIterations;
+    NSInteger maxConsecutiveInvalidIterations;
     BOOL firstStepFinished;
     float gaussThreshold;
+    // Ranging variables
+    NSInteger minMeasures;
+    NSInteger maxMeasures;
+    NSInteger validMeasures;
+    NSInteger consecutiveInvalidMeasures;
+    NSInteger maxConsecutiveInvalidMeasures;
     
-    // Orchestration variables
+    
 }
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
