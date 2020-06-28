@@ -36,6 +36,7 @@ static NSString * MEASURING_STATE_MESSAGE_VCERTL = @"MEASURING; please, do not m
     LMDelegateRhoThetaLocating * location;
     RDRhoThetaSystem * rhoThetaSystem;
     MotionManager * motion;
+    LMRanging * ranger;
     
     // Constants
     

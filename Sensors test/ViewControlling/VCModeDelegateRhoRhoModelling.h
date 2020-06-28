@@ -36,6 +36,7 @@ static NSString * MEASURING_STATE_MESSAGE_VCERRM = @"MEASURING; please, do not m
     LMDelegateRhoRhoModelling * location;
     RDRhoRhoSystem * rhoRhoSystem;
     MotionManager * motion;
+    LMRanging * ranger;
     
     // Constants
     

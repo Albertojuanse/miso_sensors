@@ -13,6 +13,7 @@
 #import "RDPosition.h"
 #import "RDRhoThetaSystem.h"
 #import "LMDelegateRhoThetaModelling.h"
+#import "LMRanging.h"
 #import "MotionManager.h"
 
 static NSString * ERROR_DESCRIPTION_VCERTM = @"[VCERTM]";
@@ -36,6 +37,7 @@ static NSString * MEASURING_STATE_MESSAGE_VCERTM = @"MEASURING; please, do not m
     LMDelegateRhoThetaModelling * location;
     RDRhoThetaSystem * rhoThetaSystem;
     MotionManager * motion;
+    LMRanging * ranger;
     
     // Constants
     

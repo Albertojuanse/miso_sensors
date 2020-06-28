@@ -104,6 +104,66 @@
     return self;
 }
 
+/*!
+ @method initWithSharedData:rhoRhoSystem:userDic:deviceUUID:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
+ */
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
+                      rhoRhoSystem:(RDRhoRhoSystem *)initRhoRhoSystem
+                           userDic:(NSMutableDictionary *)initUserDic
+                        deviceUUID:(NSString *)initDeviceUUID
+             andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
+{
+    self = [self initWithSharedData:initSharedData
+                            userDic:initUserDic
+                         deviceUUID:initDeviceUUID
+              andCredentialsUserDic:initCredentialsUserDic];
+    if (self) {
+        rhoRhoSystem = initRhoRhoSystem;
+    }
+    return self;
+}
+
+/*!
+ @method initWithSharedData:rhoThetaSystem:userDic:deviceUUID:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
+ */
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
+                    rhoThetaSystem:(RDRhoThetaSystem *)initRhoThetaSystem
+                           userDic:(NSMutableDictionary *)initUserDic
+                        deviceUUID:(NSString *)initDeviceUUID
+             andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
+{
+    self = [self initWithSharedData:initSharedData
+                            userDic:initUserDic
+                         deviceUUID:initDeviceUUID
+              andCredentialsUserDic:initCredentialsUserDic];
+    if (self) {
+        rhoThetaSystem = initRhoThetaSystem;
+    }
+    return self;
+}
+
+/*!
+ @method initWithSharedData:thetaThetaSystem:userDic:deviceUUID:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
+ */
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
+                  thetaThetaSystem:(RDThetaThetaSystem *)initThetaThetaSystem
+                           userDic:(NSMutableDictionary *)initUserDic
+                        deviceUUID:(NSString *)initDeviceUUID
+             andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
+{
+    self = [self initWithSharedData:initSharedData
+                            userDic:initUserDic
+                         deviceUUID:initDeviceUUID
+              andCredentialsUserDic:initCredentialsUserDic];
+    if (self) {
+        thetaThetaSystem = initThetaThetaSystem;
+    }
+    return self;
+}
+
 #pragma mark - Instance methods
 /*!
  @method setCredentialUserDic:
@@ -841,16 +901,16 @@
                                  nil];
     NSMutableDictionary * locatedPositions;
     if ([mode isModeKey:kModeRhoThetaModelling]) {
-        //locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithPrecisions:precisions];
+        locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithPrecisions:precisions];
     }
     else if ([mode isModeKey:kModeRhoThetaModelling]) {
         //locatedPositions = [rhoThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
     }
-
-
-    NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
-                                                                          withCredentialsUserName:credentialsUserDic];
+    
     if (locatedPositions) {
+        NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
+        withCredentialsUserName:credentialsUserDic];
+        
         // Save the positions as located items.
         NSArray *positionKeys = [locatedPositions allKeys];
         for (id positionKey in positionKeys) {
@@ -871,42 +931,42 @@
             }
         }
         
-    }
+        // Save variables in device memory
+        // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
+        // Remove previous collection
+        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+        [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
+        [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+        [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
+
+        // Save information
+        NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+        [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
+        // itemBeaconIdNumber
+        NSNumber * itemBeaconIdNumber = [sharedData fromSessionDataGetItemBeaconIdNumberOfUserDic:userDic
+                                                                          withCredentialsUserName:credentialsUserDic];
+        NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
+        [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+        // itemPositionIdNumber
+        itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
+                                                                   withCredentialsUserName:credentialsUserDic];
+        NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
+        [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
+
+        NSLog(@"[INFO][LMR] Generated locations:");
+        NSLog(@"[INFO][LMR]  -> %@",  [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                              andCredentialsUserDic:credentialsUserDic]);
+
+        NSLog(@"[INFO][LMR] Generated measures:");
+        NSLog(@"[INFO][LMR]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
         
-    // Save variables in device memory
-    // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
-    // Remove previous collection
-    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-
-    // Save information
-    NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-    [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
-    // itemBeaconIdNumber
-    NSNumber * itemBeaconIdNumber = [sharedData fromSessionDataGetItemBeaconIdNumberOfUserDic:userDic
-                                                                      withCredentialsUserName:credentialsUserDic];
-    NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
-    [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-    // itemPositionIdNumber
-    itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
-                                                               withCredentialsUserName:credentialsUserDic];
-    NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
-    [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-
-    NSLog(@"[INFO][LMR] Generated locations:");
-    NSLog(@"[INFO][LMR]  -> %@",  [sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                            andCredentialsUserDic:credentialsUserDic]);
-
-    NSLog(@"[INFO][LMR] Generated measures:");
-    NSLog(@"[INFO][LMR]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
-
-    // Ask view controller to refresh the canvas
-    NSLog(@"[NOTI][LMR] Notification \"canvas/refresh\" posted.");
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:@"canvas/refresh"
-     object:nil];
+        // Ask view controller to refresh the canvas
+        NSLog(@"[NOTI][LMR] Notification \"canvas/refresh\" posted.");
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"canvas/refresh"
+         object:nil];
+        
+    }
     
     // Check if measures are enough to finish
     if (validMeasures > minMeasures) {

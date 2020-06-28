@@ -120,12 +120,22 @@
 */
 - (LMRanging *)loadLMRanging
 {
-    LMRanging * ranger = [[LMRanging alloc] initWithSharedData:sharedData
-                                                       userDic:userDic
-                                                    deviceUUID:deviceUUID
-                                         andCredentialsUserDic:credentialsUserDic];
+    if (!rhoRhoSystem) {
+        rhoRhoSystem = [[RDRhoRhoSystem alloc] initWithSharedData:sharedData
+                                                          userDic:userDic
+                                                       deviceUUID:deviceUUID
+                                            andCredentialsUserDic:credentialsUserDic];
+    }
+    if (!ranger) {
+        ranger = [[LMRanging alloc] initWithSharedData:sharedData
+                                          rhoRhoSystem:rhoRhoSystem
+                                               userDic:userDic
+                                            deviceUUID:deviceUUID
+                                 andCredentialsUserDic:credentialsUserDic];
+    }
     return ranger;
 }
+
 
 #pragma mark - Motion VCModeDelegate methods
 /*!

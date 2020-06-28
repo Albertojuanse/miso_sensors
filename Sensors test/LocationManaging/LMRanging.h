@@ -11,6 +11,9 @@
 #import <math.h>
 #import "MDMode.h"
 #import "RDPosition.h"
+#import "RDRhoRhoSystem.h"
+#import "RDRhoThetaSystem.h"
+#import "RDThetaThetaSystem.h"
 #import "SharedData.h"
 
 /*!
@@ -26,6 +29,9 @@
     
     // Components
     SharedData * sharedData;
+    RDRhoRhoSystem * rhoRhoSystem;
+    RDRhoThetaSystem * rhoThetaSystem;
+    RDThetaThetaSystem * thetaThetaSystem;
     
     // Variables
     NSString * calibrationUUID;
@@ -53,6 +59,21 @@
 }
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
+                           userDic:(NSMutableDictionary *)initUserDic
+                        deviceUUID:(NSString *)initDeviceUUID
+             andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
+                      rhoRhoSystem:(RDRhoRhoSystem *)initRhoRhoSystem
+                           userDic:(NSMutableDictionary *)initUserDic
+                        deviceUUID:(NSString *)initDeviceUUID
+             andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
+                    rhoThetaSystem:(RDRhoThetaSystem *)initRhoThetaSystem
+                           userDic:(NSMutableDictionary *)initUserDic
+                        deviceUUID:(NSString *)initDeviceUUID
+             andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
+- (instancetype)initWithSharedData:(SharedData *)initSharedData
+                  thetaThetaSystem:(RDThetaThetaSystem *)initThetaThetaSystem
                            userDic:(NSMutableDictionary *)initUserDic
                         deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;

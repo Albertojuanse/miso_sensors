@@ -88,11 +88,7 @@
 */
 - (LMRanging *)loadLMRanging
 {
-    LMRanging * ranger = [[LMRanging alloc] initWithSharedData:sharedData
-                                                       userDic:userDic
-                                                    deviceUUID:deviceUUID
-                                         andCredentialsUserDic:credentialsUserDic];
-    return ranger;
+    return nil;
 }
 
 #pragma mark - Motion VCModeDelegate methods
