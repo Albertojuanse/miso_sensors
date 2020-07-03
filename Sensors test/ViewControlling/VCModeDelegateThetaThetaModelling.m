@@ -163,7 +163,7 @@
                             forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // In ThetaThetaModelling, only if the item have a position can be selected.
-    // Also, models can be selected to add its items all of them toguether.
+    // Also, models can be selected to add its items all of them together.
     
     // Select the source of items; both items and models are shown
     NSMutableDictionary * itemDic = [self fromSharedDataGetItemWithIndexPath:indexPath
@@ -194,7 +194,7 @@
             
             [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
             
-            // It representation depends on if exist its position or its type
+            // Its description depends on if exist its position or its type
             // Compose the description
             NSString * beaconDescription = [[NSString alloc] init];
             beaconDescription = [beaconDescription stringByAppendingString:itemDic[@"identifier"]];;
@@ -289,7 +289,7 @@
          didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 {
     // In ThetaThetaModelling, only if the item have a position can be selected.
-    // Also, models can be selected to add its items all of them toguether.
+    // Also, models can be selected to add its items all of them together.
     
     // The table was set in 'viewDidLoad' as multiple-selecting
     // Manage multi-selection
@@ -457,62 +457,6 @@
 
 #pragma mark - Editing VCModeDelegate methods
 /*!
-@method whileEditingUserDidTapButtonMeasure:whenInState:andWithLabelStatus:
-@discussion This method returns the behaviour when user taps 'Measure' button in Editing view in ThetaThetaModelling mode.
-*/
-- (void)whileEditingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
-                                whenInState:(NSString *)state
-                         andWithLabelStatus:(UILabel *)labelStatus
-{
-    if (
-        [sharedData fromSessionDataIsIdleUserWithUserDic:userDic
-                                   andCredentialsUserDic:credentialsUserDic]
-        )
-    {
-        // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
-        // If user did chose a position to aim
-        if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic]) {
-            [buttonMeasure setEnabled:YES];
-            [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
-                                       andWithCredentialsUserDic:credentialsUserDic];
-            
-            [labelStatus setText:MEASURING_STATE_MESSAGE_VCETTM];
-            
-            // And send the notification
-            // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
-            // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaModelling/start" object:nil];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
-            NSLog(@"[NOTI]%@ Notification \"startGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTM);
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring"
-                                                                object:nil];
-            NSLog(@"[NOTI]%@ Notification \"startGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTM);
-            return;
-        } else {
-            return;
-        }
-    }
-    if (
-        [sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic
-                                        andCredentialsUserDic:credentialsUserDic]
-        )
-    {
-        // If 'Measuring' is tapped, ask stop measuring.
-        [buttonMeasure setEnabled:YES];
-        // This next line have been moved into "stopGyroscopesHeadingMeasuring" method, because the measure is generated in this case after stop measuring
-        // [sharedData inSessionDataSetIdleUserWithUserDic:userDic andWithCredentialsUserDic:credentialsUserDic];
-        [labelStatus setText:IDLE_STATE_MESSAGE_VCETTM];
-        // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaModelling/stop" object:nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
-        NSLog(@"[NOTI]%@ Notification \"stopGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTM);
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
-                                                            object:nil];
-        NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTM);
-        return;
-    }
-}
-
-/*!
  @method whileEditingNumberOfSectionsInTableItems:inViewController:
  @discussion Handles the upload of table items; returns the number of sections in them.
  */
@@ -531,16 +475,16 @@
                    inViewController:(UIViewController *)viewController
               numberOfRowsInSection:(NSInteger)section
 {
-    // In ThetaThetaModelling, only iBeacon devices or new positions can be positioned.
+    // In ThetaThetaModelling, any device or new positions can be positioned.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
-    // In this mode, only iBeacon devices can be positioned;
+    // In this mode, any device can be positioned, and new positions can be located, so an aditional row is added.
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
         return [[sharedData fromItemDataGetItemsWithSort:@"beacon"
-                                   andCredentialsUserDic:credentialsUserDic] count];
+                                   andCredentialsUserDic:credentialsUserDic] count] + 1;
     } else { // Type not found
         [self alertUserWithTitle:@"Items won't be loaded."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
@@ -564,7 +508,7 @@
                                        cell:(UITableViewCell *)cell
                           forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // In ThetaThetaModelling, only iBeacon devices or new positions can be positioned.
+    // In ThetaThetaModelling, any device or new positions can be positioned, so an aditional row was added.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
     // Configure individual cells
@@ -573,50 +517,57 @@
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {        
-        // Select the source of items
-        NSMutableDictionary * itemDic = [[sharedData fromItemDataGetItemsWithSort:@"beacon"
-                                                            andCredentialsUserDic:credentialsUserDic]
-                                         objectAtIndex:indexPath.row
-                                         ];
-        cell.textLabel.numberOfLines = 0; // Means any number
+        // Check weather it is a cell with an item or the extra one
+        NSMutableArray * itemsDic = [sharedData fromItemDataGetItemsWithSort:@"beacon"
+                                                       andCredentialsUserDic:credentialsUserDic];
         
-        // If it is a beacon
-        if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
-            
-                        [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
-            
-            // It representation depends on if exist its position or its type
-            // Compose the description
-            NSString * beaconDescription = [[NSString alloc] init];
-            beaconDescription = [beaconDescription stringByAppendingString:itemDic[@"identifier"]];;
-            beaconDescription = [beaconDescription stringByAppendingString:@" "];
-            // If its type is set
-            MDType * type = itemDic[@"type"];
-            if (type) {
-                beaconDescription = [beaconDescription stringByAppendingString:[type description]];
-            }
-            beaconDescription = [beaconDescription stringByAppendingString:@"\n"];
-            RDPosition * position = itemDic[@"position"];
-            if (position) {
-                beaconDescription = [beaconDescription stringByAppendingString:[position description]];
-                beaconDescription = [beaconDescription stringByAppendingString:@"\n"];
-                
-                // Inform that this item has a position
-                [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
-            }
-            NSString * itemUUID = [itemDic[@"uuid"] substringFromIndex:24];
-            NSString * itemMajor = itemDic[@"major"];
-            NSString * itemMinor = itemDic[@"minor"];
-            beaconDescription = [beaconDescription stringByAppendingFormat:@"UUID: %@ Major: %@ Minor: %@ ",
-                                 itemUUID,
-                                 itemMajor,
-                                 itemMinor];
-            cell.textLabel.text = beaconDescription;
-
+        if (indexPath.section > itemsDic.count - 1) {
+            cell.textLabel.text = [NSString stringWithFormat:@"+"];
+            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            cell.textLabel.textAlignment = NSTextAlignmentCenter;
         } else {
-            NSLog(@"[ERROR]%@ An item of sort %@ loaded as a beacon.",
-                  ERROR_DESCRIPTION_VCETTM,
-                  itemDic[@"sort"]);
+            // Select the source of items
+            NSMutableDictionary * itemDic = [itemsDic objectAtIndex:indexPath.row];
+            cell.textLabel.numberOfLines = 0; // Means any number
+            
+            // If it is a beacon
+            if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
+                
+                            [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
+                
+                // Its description depends on if exist its position or its type
+                // Compose the description
+                NSString * beaconDescription = [[NSString alloc] init];
+                beaconDescription = [beaconDescription stringByAppendingString:itemDic[@"identifier"]];;
+                beaconDescription = [beaconDescription stringByAppendingString:@" "];
+                // If its type is set
+                MDType * type = itemDic[@"type"];
+                if (type) {
+                    beaconDescription = [beaconDescription stringByAppendingString:[type description]];
+                }
+                beaconDescription = [beaconDescription stringByAppendingString:@"\n"];
+                RDPosition * position = itemDic[@"position"];
+                if (position) {
+                    beaconDescription = [beaconDescription stringByAppendingString:[position description]];
+                    beaconDescription = [beaconDescription stringByAppendingString:@"\n"];
+                    
+                    // Inform that this item has a position
+                    [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
+                }
+                NSString * itemUUID = [itemDic[@"uuid"] substringFromIndex:24];
+                NSString * itemMajor = itemDic[@"major"];
+                NSString * itemMinor = itemDic[@"minor"];
+                beaconDescription = [beaconDescription stringByAppendingFormat:@"UUID: %@ Major: %@ Minor: %@ ",
+                                     itemUUID,
+                                     itemMajor,
+                                     itemMinor];
+                cell.textLabel.text = beaconDescription;
+
+            } else {
+                NSLog(@"[ERROR]%@ An item of sort %@ loaded as a beacon.",
+                      ERROR_DESCRIPTION_VCETTM,
+                      itemDic[@"sort"]);
+            }
         }
         
     } else { // Type not found
@@ -641,7 +592,7 @@
               inViewController:(UIViewController *)viewController
        didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // In ThetaThetaModelling, only iBeacon devices or new positions can be positioned.
+    // In ThetaThetaModelling, any device or new positions can be positioned, so an aditional row was added.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
     // Database could not be accessed.
@@ -649,30 +600,58 @@
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        UITableViewCell * selectedCell = [tableView cellForRowAtIndexPath:indexPath];
         
-        // Load the item depending and set as selected
-        NSMutableDictionary * itemDic = [[sharedData fromItemDataGetItemsWithSort:@"beacon"
-                           andCredentialsUserDic:credentialsUserDic]
-        objectAtIndex:indexPath.row
-        ];
-        
-        // The beacons with positions have got a detailMark
-        if ([selectedCell accessoryType] == UITableViewCellAccessoryDetailButton) { // If detailed
+        // First, verify that the user did choose a position to measure from.
+        if ([self processItemChosenByUser]) {
             
-            // Ask user to transfer the position
-            [self askUserToTransferPositionFromItemDic:itemDic
-                                          ofTableItems:tableView
-                                      inViewController:viewController];
+            // Check weather it is a cell with an item or the extra one
+            NSMutableArray * itemsDic = [sharedData fromItemDataGetItemsWithSort:@"beacon"
+                                                           andCredentialsUserDic:credentialsUserDic];
             
-            
-        } else {  // If not detailed
-            
-            // Set as chosen
-            [sharedData inSessionDataSetItemChosenByUser:itemDic
-                                       toUserWithUserDic:userDic
-                                   andCredentialsUserDic:credentialsUserDic];
+            if (indexPath.section > itemsDic.count - 1) {
+                // N U E V A  P O S I C I Ó N
+            } else {
+                // Select the source of items
+                UITableViewCell * selectedCell = [tableView cellForRowAtIndexPath:indexPath];
+                
+                // Load the item depending and set as selected
+                NSMutableDictionary * itemDic = [itemsDic objectAtIndex:indexPath.row];
+                
+                // The beacons with positions have got a detailMark
+                if ([selectedCell accessoryType] == UITableViewCellAccessoryDetailButton) { // If detailed
+                    
+                    // Ask user to transfer the position
+                    [self askUserToTransferPositionFromItemDic:itemDic
+                                                  ofTableItems:tableView
+                                              inViewController:viewController];
+                    
+                    
+                } else {  // If not detailed
+                    
+                    // Dismiss the add view.
+                    [viewController dismissViewControllerAnimated:NO completion:^(void)
+                    {
+                        // Ask view to start the measure interface; send the item chosen to measure.
+                        NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
+                        dataDic[@"itemDic"] = itemDic;
+                        [[NSNotificationCenter defaultCenter]
+                         postNotificationName:@"vcEditing/presentMeasureView"
+                         object:self
+                         userInfo:dataDic];
+                        NSLog(@"[NOTI]%@ Notification \"vcEditing/presentMeasureView\" posted.", ERROR_DESCRIPTION_VCETTM);
+                    }
+                     ];
 
+                }
+            }
+        } else {
+            [self alertUserWithTitle:@"No device position chosen."
+                             message:[NSString stringWithFormat:@"The user did not choose a position as device's position. please, choose in the model the device's location."]
+                          andHandler:^(UIAlertAction * action) {
+                [viewController dismissViewControllerAnimated:YES completion:nil];
+            }
+                    inViewController:viewController
+             ];
         }
         
     } else {
@@ -686,6 +665,46 @@
         NSLog(@"[ERROR]%@ Shared data could not be accessed while selecting a cell.", ERROR_DESCRIPTION_VCETTM);
     }
     
+}
+
+/*!
+@method processItemChosenByUser
+@discussion This method verifies that user did choose the position to measure from and process it.
+*/
+-(BOOL)processItemChosenByUser
+{
+    NSMutableDictionary * itemChosenByUser = [sharedData
+                                              fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                              andCredentialsUserDic:credentialsUserDic
+                                              ];
+    if (itemChosenByUser) {
+        RDPosition * position = itemChosenByUser[@"position"];
+        if (!position) {
+            NSLog(@"[ERROR]%@ No position was found in the item chosen by user as device position; (0,0,0) is set.", ERROR_DESCRIPTION_VCETTM);
+            position = [[RDPosition alloc] init];
+            position.x = [NSNumber numberWithFloat:0.0];
+            position.y = [NSNumber numberWithFloat:0.0];
+            position.z = [NSNumber numberWithFloat:0.0];
+            itemChosenByUser[@"position"] = position;
+        }
+        NSString * uuid = itemChosenByUser[@"uuid"];
+        if (!uuid) {
+            NSLog(@"[ERROR]%@ No UUID was found in the item chosen by user as device position; a random one set.", ERROR_DESCRIPTION_VCETTM);
+            deviceUUID = [[NSUUID UUID] UUIDString];
+            itemChosenByUser[@"uuid"] = deviceUUID;
+        } else {
+            deviceUUID = itemChosenByUser[@"uuid"];
+        }
+        [thetaThetaSystem setDeviceUUID:deviceUUID];
+        [location setPosition:position];
+        [location setDeviceUUID:deviceUUID];
+        [motion setPosition:position];
+        [motion setDeviceUUID:deviceUUID];
+        
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 /*!
@@ -797,6 +816,163 @@
     
     // Upload table
     [tableView reloadData];
+}
+
+#pragma mark - Adding VCModeDelegate methods
+/*!
+@method whileAddingUserDidTapMeasure:toMeasureItemDic:
+@discussion This method returns the behaviour when user taps 'Measure' button in Add view in ThetaThetaModelling mode to measure the selected item.
+*/
+- (void)whileAddingUserDidTapMeasure:(UIButton *)measureButton
+                    toMeasureItemDic:(NSMutableDictionary *)itemDic
+{
+    // In every state the button performs different behaviours
+    if (
+        [sharedData fromSessionDataIsIdleUserWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
+        if (itemDic) {
+            
+            // Update current state
+            [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
+                                       andWithCredentialsUserDic:credentialsUserDic];
+            
+            // Change button layout
+            UIImage * startMeasureIcon = [VCDrawings imageForMeasureInDisabledThemeColor];
+            [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
+            
+            // And send the notification to start measure
+            NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
+            dataDic[@"itemDic"] = itemDic;
+            // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
+            // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaModelling/start" object:nil userInfo:dataDic];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
+            NSLog(@"[NOTI]%@ Notification \"startGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTM);
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring"
+                                                                object:nil
+                                                              userInfo:dataDic];
+            NSLog(@"[NOTI]%@ Notification \"startGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTM);
+            return;
+        } else {
+            NSLog(@"[ERROR]%@ No item chosen to be measured.", ERROR_DESCRIPTION_VCETTM);
+            return;
+        }
+    }
+    if (
+        [sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic
+                                        andCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
+        
+        // Update current state
+        // This next line have been moved into "stopGyroscopesHeadingMeasuring" method, because the measure is generated in this case after stop measuring
+        // [sharedData inSessionDataSetIdleUserWithUserDic:userDic andWithCredentialsUserDic:credentialsUserDic];
+        
+        // Change button layout
+        UIImage * startMeasureIcon = [VCDrawings imageForMeasureInNormalThemeColor];
+        [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
+        
+        // And send the notification to stop measure
+        // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
+        //[[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaModelling/stop" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
+        NSLog(@"[NOTI]%@ Notification \"stopGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTM);
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
+                                                            object:nil];
+        NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTM);
+        return;
+    }
+}
+
+/*!
+@method whileAddingRangingMeasureFinishedInViewController:withMeasureButton:
+@discussion This method returns the behaviour when the notification "rangingMeasureFinished" is recived in Add view in ThetaThetaModelling mode to measure the selected item.
+*/
+- (void)whileAddingRangingMeasureFinishedInViewController:(UIViewController *)viewController
+                                        withMeasureButton:(UIButton *)measureButton
+{
+    // Update current state
+    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                          andWithCredentialsUserDic:credentialsUserDic];
+    
+    // Change button layout
+    UIImage * startMeasureIcon = [VCDrawings imageForMeasureInNormalThemeColor];
+    [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
+    
+    // And send the notification to stop measure
+    // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
+    //[[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaModelling/stop" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
+    NSLog(@"[NOTI]%@ Notification \"stopGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTM);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
+                                                        object:nil];
+    NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTM);
+    
+    // Notify user
+    [self alertUserWithTitle:@"Measure finished"
+                    message:[NSString stringWithFormat:@""]
+                 andHandler:^(UIAlertAction * action) {}
+           inViewController:viewController
+    ];
+    return;
+}
+
+/*!
+@method whileAddingRangingMeasureFinishedWithErrorsInViewController:notification:withMeasureButton:
+@discussion This method returns the behaviour when the notification "rangingMeasureFinishedWithErrors" is recived in Add view in ThetaThetaModelling mode to measure the selected item.
+*/
+- (void)whileAddingRangingMeasureFinishedWithErrorsInViewController:(UIViewController *)viewController
+                                                       notification:(NSNotification *)notification
+                                                  withMeasureButton:(UIButton *)measureButton
+{
+    // Update current state
+    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                          andWithCredentialsUserDic:credentialsUserDic];
+    
+    // Change button layout
+    UIImage * startMeasureIcon = [VCDrawings imageForMeasureInNormalThemeColor];
+    [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
+    
+    // And send the notification to stop measure and notify user
+    NSDictionary * data = notification.userInfo;
+    NSString * consecutiveInvalidMeasuresError = data[@"consecutiveInvalidMeasures"];
+    if (consecutiveInvalidMeasuresError) {
+        if ([consecutiveInvalidMeasuresError isEqualToString:@"consecutiveInvalidMeasures"]) {
+            
+            // Notify
+            NSLog(@"[NOTI]%@ Notification \"lmd/rangingMeasureFinishedWithErrors\" posted.", ERROR_DESCRIPTION_VCETTM);
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"lmd/rangingMeasureFinishedWithErrors"
+             object:nil
+             userInfo:data];
+            
+            // Alert the user
+            [self alertUserWithTitle:@"Measure error"
+                             message:@"Measure process failed in its first step due to too many measures were invalid. Please, try again."
+                          andHandler:^(UIAlertAction * action) {}
+                    inViewController:viewController
+             ];
+        }
+    } else {
+        
+        // Notify
+        NSLog(@"[NOTI]%@ Notification \"lmd/rangingMeasureFinishedWithErrors\" posted.", ERROR_DESCRIPTION_VCETTM);
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"lmd/rangingMeasureFinishedWithErrors"
+         object:nil];
+        
+        // Alert the user
+        [self alertUserWithTitle:@"Measure error"
+                         message:@"Measure process failed in its first step due an unknown error. Please, try again."
+                      andHandler:^(UIAlertAction * action) {}
+                inViewController:viewController
+         ];
+    }
+    
+    return;
 }
 
 #pragma mark - Other methods
