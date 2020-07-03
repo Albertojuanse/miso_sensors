@@ -13,6 +13,7 @@
 #import "RDPosition.h"
 #import "RDRhoThetaSystem.h"
 #import "LMDelegateRhoThetaLocating.h"
+#import "LMRanging.h"
 #import "MotionManager.h"
 
 static NSString * ERROR_DESCRIPTION_VCERTL = @"[VCERTL]";
@@ -71,9 +72,6 @@ static NSString * MEASURING_STATE_MESSAGE_VCERTL = @"MEASURING; please, do not m
                 inViewController:(UIViewController *)viewController
          didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 #pragma mark - Editing VCModeDelegate methods
-- (void)whileEditingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
-                                whenInState:(NSString *)state
-                         andWithLabelStatus:(UILabel *)labelStatus;
 - (NSInteger)whileEditingNumberOfSectionsInTableItems:(UITableView *)tableView
                                      inViewController:(UIViewController *)viewController;
 - (NSInteger)whileEditingTableItems:(UITableView *)tableView
@@ -86,5 +84,13 @@ static NSString * MEASURING_STATE_MESSAGE_VCERTL = @"MEASURING; please, do not m
 - (void)whileEditingTableItems:(UITableView *)tableView
               inViewController:(UIViewController *)viewController
        didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
+#pragma mark - Adding VCModeDelegate methods
+- (void)whileAddingUserDidTapMeasure:(UIButton *)buttonMeasure
+                    toMeasureItemDic:(NSMutableDictionary *)itemDic;
+- (void)whileAddingRangingMeasureFinishedInViewController:(UIViewController *)viewController
+                                        withMeasureButton:(UIButton *)measureButton;
+- (void)whileAddingRangingMeasureFinishedWithErrorsInViewController:(UIViewController *)viewController
+                                                       notification:(NSNotification *)notification
+                                                  withMeasureButton:(UIButton *)measureButton;
 
 @end
