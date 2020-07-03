@@ -79,38 +79,6 @@
                                                                 deviceUUID:deviceUUID
                                                      andCredentialsUserDic:credentialsUserDic];
     }
-    NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                                      andCredentialsUserDic:credentialsUserDic];
-    NSMutableDictionary * itemChosenByUserAsDevicePosition;
-    if (itemsChosenByUser.count == 0) {
-        NSLog(@"[ERROR]%@ The collection with the items chosen by user is empty; no device position provided.", ERROR_DESCRIPTION_VCERRL);
-    } else {
-        itemChosenByUserAsDevicePosition = [itemsChosenByUser objectAtIndex:0];
-        if (itemsChosenByUser.count > 1) {
-            NSLog(@"[ERROR]%@ The collection with the items chosen by user have more than one item; the first one is set as device position.", ERROR_DESCRIPTION_VCERRL);
-        }
-    }
-    if (itemChosenByUserAsDevicePosition) {
-        RDPosition * position = itemChosenByUserAsDevicePosition[@"position"];
-        if (!position) {
-            NSLog(@"[ERROR]%@ No position was found in the item chosen by user as device position; (0,0,0) is set.", ERROR_DESCRIPTION_VCERRL);
-            position = [[RDPosition alloc] init];
-            position.x = [NSNumber numberWithFloat:0.0];
-            position.y = [NSNumber numberWithFloat:0.0];
-            position.z = [NSNumber numberWithFloat:0.0];
-        }
-        if (!deviceUUID) {
-            if (!itemChosenByUserAsDevicePosition[@"uuid"]) {
-                NSLog(@"[ERROR]%@ No UUID was found in the item chosen by user as device position; a random one set.", ERROR_DESCRIPTION_VCERRL);
-                deviceUUID = [[NSUUID UUID] UUIDString];
-            } else {
-                deviceUUID = itemChosenByUserAsDevicePosition[@"uuid"];
-            }
-        }
-        [rhoRhoSystem setDeviceUUID:deviceUUID];
-        [location setPosition:position];
-        [location setDeviceUUID:deviceUUID];
-    }
     return location;
 }
 
@@ -194,7 +162,7 @@
                             forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // In RhoRhoLocating, only if the item have a position can be selected.
-    // Also, models can be selected to add its items all of them toguether.
+    // Also, models can be selected to add its items all of them together.
     
     // Select the source of items; both items and models are shown
     NSMutableDictionary * itemDic = [self fromSharedDataGetItemWithIndexPath:indexPath
@@ -225,7 +193,7 @@
             
             [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
             
-            // It representation depends on if exist its position or its type
+            // Its description depends on if exist its position or its type
             // Compose the description
             NSString * beaconDescription = [[NSString alloc] init];
             beaconDescription = [beaconDescription stringByAppendingString:itemDic[@"identifier"]];;
@@ -319,7 +287,7 @@
          didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 {
     // In RhoRhoLocating, only if the item have a position can be selected.
-    // Also, models can be selected to add its items all of them toguether.
+    // Also, models can be selected to add its items all of them together.
      
     // The table was set in 'viewDidLoad' as multiple-selecting
     // Manage multi-selection
@@ -487,53 +455,6 @@
 
 #pragma mark - Editing VCModeDelegate methods
 /*!
-@method whileEditingUserDidTapButtonMeasure:whenInState:andWithLabelStatus:
-@discussion This method returns the behaviour when user taps 'Measure' button in Editing view in RhoRhoLocating mode.
-*/
-- (void)whileEditingUserDidTapButtonMeasure:(UIButton *)buttonMeasure
-                                whenInState:(NSString *)state
-                         andWithLabelStatus:(UILabel *)labelStatus
-{
-    // In every state the button performs different behaviours
-    if (
-        [sharedData fromSessionDataIsIdleUserWithUserDic:userDic
-                                   andCredentialsUserDic:credentialsUserDic]
-        )
-    {
-        // If idle, user can measuring; if 'Measuring' is tapped, user asks start measuring.
-        if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic]) {
-            [buttonMeasure setEnabled:NO];
-            [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
-                                       andWithCredentialsUserDic:credentialsUserDic];
-            [labelStatus setText:MEASURING_STATE_MESSAGE_VCERRL];
-            
-            // And send the notification
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRhoLocating/start"
-                                                                object:nil];
-            NSLog(@"[NOTI]%@ Notification \"lmdRhoRhoLocating/start\" posted.", ERROR_DESCRIPTION_VCERRL);
-        } else {
-        }
-        return;
-    }
-    if (
-        [sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic
-                                        andCredentialsUserDic:credentialsUserDic]
-        )
-    {
-        // If measuring, user can go idle; if 'Measuring' is tapped, user asks stop measuring.
-        [buttonMeasure setEnabled:YES];
-        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
-                              andWithCredentialsUserDic:credentialsUserDic];
-        [labelStatus setText:IDLE_STATE_MESSAGE_VCERRL];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRhoLocating/stop"
-                                                            object:nil];
-        NSLog(@"[NOTI]%@ Notification \"lmdRhoRhoLocating/stop\" posted.",ERROR_DESCRIPTION_VCERRL);
-        return;
-    }
-}
-
-/*!
  @method whileEditingNumberOfSectionsInTableItems:inViewController:
  @discussion Handles the upload of table items; returns the number of sections in them.
  */
@@ -552,8 +473,26 @@
                    inViewController:(UIViewController *)viewController
               numberOfRowsInSection:(NSInteger)section
 {
-    // In RhoRhoLocating, only a mesuring device can be positioned.
+    // In RhoRhoLocating, any device or new positions can be positioned.
     // If one of these items have already got a position assigned, that position must be transferred to another item
+    
+    // In this mode, any device can be positioned, and new positions can be located, so an aditional row is added.
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        return [[sharedData fromItemDataGetItemsWithSort:@"beacon"
+        andCredentialsUserDic:credentialsUserDic] count] + 1;
+    } else { // Type not found
+        [self alertUserWithTitle:@"Items won't be loaded."
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+                inViewController:viewController
+         ];
+        NSLog(@"[ERROR]%@ Shared data could not be accessed while loading items.", ERROR_DESCRIPTION_VCERRL);
+    }
     
     return 0;
 }
@@ -567,8 +506,78 @@
                                        cell:(UITableViewCell *)cell
                           forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // In RhoRhoLocating, only a mesuring device can be positioned.
+    // In RhoRhoLocating, any device or new positions can be positioned, so an aditional row was added.
     // If one of these items have already got a position assigned, that position must be transferred to another item
+    
+    // Configure individual cells
+    // Database could be accessed.
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // Check weather it is a cell with an item or the extra one
+        NSMutableArray * itemsDic = [sharedData fromItemDataGetItemsWithSort:@"beacon"
+                                                       andCredentialsUserDic:credentialsUserDic];
+        
+        if (indexPath.section > itemsDic.count - 1) {
+            cell.textLabel.text = [NSString stringWithFormat:@"+"];
+            cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
+            cell.textLabel.textAlignment = NSTextAlignmentCenter;
+        } else {
+            // Select the source of items
+            NSMutableDictionary * itemDic = [itemsDic objectAtIndex:indexPath.row];
+            cell.textLabel.numberOfLines = 0; // Means any number
+            
+            // If it is a beacon
+            if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
+                
+                            [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
+                
+                // Its description depends on if exist its position or its type
+                // Compose the description
+                NSString * beaconDescription = [[NSString alloc] init];
+                beaconDescription = [beaconDescription stringByAppendingString:itemDic[@"identifier"]];;
+                beaconDescription = [beaconDescription stringByAppendingString:@" "];
+                // If its type is set
+                MDType * type = itemDic[@"type"];
+                if (type) {
+                    beaconDescription = [beaconDescription stringByAppendingString:[type description]];
+                }
+                beaconDescription = [beaconDescription stringByAppendingString:@"\n"];
+                RDPosition * position = itemDic[@"position"];
+                if (position) {
+                    beaconDescription = [beaconDescription stringByAppendingString:[position description]];
+                    beaconDescription = [beaconDescription stringByAppendingString:@"\n"];
+                    
+                    // Inform that this item has a position
+                    [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
+                }
+                NSString * itemUUID = [itemDic[@"uuid"] substringFromIndex:24];
+                NSString * itemMajor = itemDic[@"major"];
+                NSString * itemMinor = itemDic[@"minor"];
+                beaconDescription = [beaconDescription stringByAppendingFormat:@"UUID: %@ Major: %@ Minor: %@ ",
+                                     itemUUID,
+                                     itemMajor,
+                                     itemMinor];
+                cell.textLabel.text = beaconDescription;
+
+            } else {
+                NSLog(@"[ERROR]%@ An item of sort %@ loaded as a beacon.",
+                      ERROR_DESCRIPTION_VCERRL,
+                      itemDic[@"sort"]);
+            }
+        }
+        
+    } else { // Type not found
+        [self alertUserWithTitle:@"Items won't be loaded."
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+                inViewController:viewController
+         ];
+        NSLog(@"[ERROR]%@ Shared data could not be accessed while loading cells' item.", ERROR_DESCRIPTION_VCERRL);
+    }
     
     return cell;
 }
@@ -581,8 +590,119 @@
               inViewController:(UIViewController *)viewController
        didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // In RhoRhoLocating, only a mesuring device can be positioned.
+    // In RhoRhoLocating, any device or new positions can be positioned, so an aditional row was added.
     // If one of these items have already got a position assigned, that position must be transferred to another item
+    
+    // Database could not be accessed.
+    if (
+        [sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        
+        // First, verify that the user did choose a position to measure to.
+        if ([self processItemChosenByUser]) {
+            
+            // Check weather it is a cell with an item or the extra one
+            NSMutableArray * itemsDic = [sharedData fromItemDataGetItemsWithSort:@"beacon"
+                                                           andCredentialsUserDic:credentialsUserDic];
+            
+            if (indexPath.section > itemsDic.count - 1) {
+                // N U E V A  P O S I C I Ó N
+            } else {
+                // Select the source of items
+                UITableViewCell * selectedCell = [tableView cellForRowAtIndexPath:indexPath];
+                
+                // Load the item depending and set as selected
+                NSMutableDictionary * itemDic = [itemsDic objectAtIndex:indexPath.row];
+                
+                // The beacons with positions have got a detailMark
+                if ([selectedCell accessoryType] == UITableViewCellAccessoryDetailButton) { // If detailed
+                    
+                    // Ask user to transfer the position
+                    [self askUserToTransferPositionFromItemDic:itemDic
+                                                  ofTableItems:tableView
+                                              inViewController:viewController];
+                    
+                    
+                } else {  // If not detailed
+                    
+                    // Dismiss the add view.
+                    [viewController dismissViewControllerAnimated:NO completion:^(void)
+                    {
+                        // Ask view to start the measure interface; send the item chosen to measure.
+                        NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
+                        dataDic[@"itemDic"] = itemDic;
+                        [[NSNotificationCenter defaultCenter]
+                         postNotificationName:@"vcEditing/presentMeasureView"
+                         object:self
+                         userInfo:dataDic];
+                        NSLog(@"[NOTI]%@ Notification \"vcEditing/presentMeasureView\" posted.", ERROR_DESCRIPTION_VCERRL);
+                    }
+                     ];
+
+                }
+            }
+        } else {
+            [self alertUserWithTitle:@"No device position chosen."
+                             message:[NSString stringWithFormat:@"The user did not choose a position as device's position. please, choose in the model the device's location."]
+                          andHandler:^(UIAlertAction * action) {
+                [viewController dismissViewControllerAnimated:YES completion:nil];
+            }
+                    inViewController:viewController
+             ];
+        }
+        
+    } else {
+        [self alertUserWithTitle:@"Items won't be loaded."
+                         message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
+                      andHandler:^(UIAlertAction * action) {
+                          // TODO: handle intrusion situations. Alberto J. 2019/09/10.
+                      }
+                inViewController:viewController
+         ];
+        NSLog(@"[ERROR]%@ Shared data could not be accessed while selecting a cell.", ERROR_DESCRIPTION_VCERRL);
+    }
+    
+}
+
+/*!
+@method processItemChosenByUser
+@discussion This method verifies that user did choose the position to measure from and process it.
+*/
+-(BOOL)processItemChosenByUser
+{
+    NSMutableDictionary * itemChosenByUser = [sharedData
+                                              fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
+                                              andCredentialsUserDic:credentialsUserDic
+                                              ];
+    if (itemChosenByUser) {
+        RDPosition * position = itemChosenByUser[@"position"];
+        if (!position) {
+            NSLog(@"[ERROR]%@ No position was found in the item chosen by user as device position; (0,0,0) is set.", ERROR_DESCRIPTION_VCERRL);
+            position = [[RDPosition alloc] init];
+            position.x = [NSNumber numberWithFloat:0.0];
+            position.y = [NSNumber numberWithFloat:0.0];
+            position.z = [NSNumber numberWithFloat:0.0];
+            itemChosenByUser[@"position"] = position;
+        }
+        NSString * uuid = itemChosenByUser[@"uuid"];
+        if (!uuid) {
+            NSLog(@"[ERROR]%@ No UUID was found in the item chosen by user as device position; a random one set.", ERROR_DESCRIPTION_VCERRL);
+            deviceUUID = [[NSUUID UUID] UUIDString];
+            itemChosenByUser[@"uuid"] = deviceUUID;
+        } else {
+            deviceUUID = itemChosenByUser[@"uuid"];
+        }
+        [rhoRhoSystem setDeviceUUID:deviceUUID];
+        [location setPosition:position];
+        [location setDeviceUUID:deviceUUID];
+        [motion setPosition:position];
+        [motion setDeviceUUID:deviceUUID];
+        
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 /*!
@@ -694,6 +814,151 @@
     
     // Upload table
     [tableView reloadData];
+}
+
+#pragma mark - Adding VCModeDelegate methods
+/*!
+@method whileAddingUserDidTapMeasure:toMeasureItemDic:
+@discussion This method returns the behaviour when user taps 'Measure' button in Add view in RhoRhoLocating mode to measure the selected item.
+*/
+- (void)whileAddingUserDidTapMeasure:(UIButton *)measureButton
+                    toMeasureItemDic:(NSMutableDictionary *)itemDic
+{
+    // In every state the button performs different behaviours
+    if (
+        [sharedData fromSessionDataIsIdleUserWithUserDic:userDic
+                                   andCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // If idle, user can measuring; if 'Measuring' is tapped, user asks start measuring.
+        if (itemDic) {
+            
+            // Update current state
+            [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
+                                       andWithCredentialsUserDic:credentialsUserDic];
+                                       
+            // Change button layout
+            UIImage * startMeasureIcon = [VCDrawings imageForMeasureInDisabledThemeColor];
+            [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
+            
+            // And send the notification to start measure
+            NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
+            dataDic[@"itemDic"] = itemDic;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRhoLocating/start"
+                                                                object:nil
+                                                              userInfo:dataDic];
+            NSLog(@"[NOTI]%@ Notification \"lmdRhoRhoLocating/start\" posted.", ERROR_DESCRIPTION_VCERRL);
+            return;
+            } else {
+                NSLog(@"[ERROR]%@ No item chosen to be measured.", ERROR_DESCRIPTION_VCERRL);
+                return;
+            }
+        }
+    if (
+        [sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic
+                                        andCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // If measuring, user can go idle; if 'Measuring' is tapped, user asks stop measuring.
+        
+        // Update current state
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                              andWithCredentialsUserDic:credentialsUserDic];
+        
+        // Change button layout
+        UIImage * startMeasureIcon = [VCDrawings imageForMeasureInNormalThemeColor];
+        [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
+        
+        // And send the notification to stop measure
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRhoLocating/stop"
+                                                            object:nil];
+        NSLog(@"[NOTI]%@ Notification \"lmdRhoRhoLocating/stop\" posted.",ERROR_DESCRIPTION_VCERRL);
+        return;
+    }
+}
+
+/*!
+@method whileAddingRangingMeasureFinishedInViewController:withMeasureButton:
+@discussion This method returns the behaviour when the notification "rangingMeasureFinished" is recived in Add view in RhoRhoLocating mode to measure the selected item.
+*/
+- (void)whileAddingRangingMeasureFinishedInViewController:(UIViewController *)viewController
+                                        withMeasureButton:(UIButton *)measureButton
+{
+    // Update current state
+    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                          andWithCredentialsUserDic:credentialsUserDic];
+    
+    // Change button layout
+    UIImage * startMeasureIcon = [VCDrawings imageForMeasureInNormalThemeColor];
+    [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
+    
+    // And send the notification to stop measure
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRhoLocating/stop"
+                                                        object:nil];
+    NSLog(@"[NOTI]%@ Notification \"lmdRhoRhoLocating/stop\" posted.", ERROR_DESCRIPTION_VCERRL);
+    
+    // Notify user
+    [self alertUserWithTitle:@"Measure finished"
+                    message:[NSString stringWithFormat:@""]
+                 andHandler:^(UIAlertAction * action) {}
+           inViewController:viewController
+    ];
+    return;
+}
+
+/*!
+@method whileAddingRangingMeasureFinishedWithErrorsInViewController:notification:withMeasureButton:
+@discussion This method returns the behaviour when the notification "rangingMeasureFinishedWithErrors" is recived in Add view in RhoThetaModelling mode to measure the selected item.
+*/
+- (void)whileAddingRangingMeasureFinishedWithErrorsInViewController:(UIViewController *)viewController
+                                                       notification:(NSNotification *)notification
+                                                  withMeasureButton:(UIButton *)measureButton
+{
+    // Update current state
+    [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                          andWithCredentialsUserDic:credentialsUserDic];
+    
+    // Change button layout
+    UIImage * startMeasureIcon = [VCDrawings imageForMeasureInNormalThemeColor];
+    [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
+    
+    // And send the notification to stop measure and notify user
+    NSDictionary * data = notification.userInfo;
+    NSString * consecutiveInvalidMeasuresError = data[@"consecutiveInvalidMeasures"];
+    if (consecutiveInvalidMeasuresError) {
+        if ([consecutiveInvalidMeasuresError isEqualToString:@"consecutiveInvalidMeasures"]) {
+            
+            // Notify
+            NSLog(@"[NOTI]%@ Notification \"lmd/rangingMeasureFinishedWithErrors\" posted.", ERROR_DESCRIPTION_VCERRL);
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"lmd/rangingMeasureFinishedWithErrors"
+             object:nil
+             userInfo:data];
+            
+            // Alert the user
+            [self alertUserWithTitle:@"Measure error"
+                             message:@"Measure process failed in its first step due to too many measures were invalid. Please, try again."
+                          andHandler:^(UIAlertAction * action) {}
+                    inViewController:viewController
+             ];
+        }
+    } else {
+        
+        // Notify
+        NSLog(@"[NOTI]%@ Notification \"lmd/rangingMeasureFinishedWithErrors\" posted.", ERROR_DESCRIPTION_VCERRL);
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"lmd/rangingMeasureFinishedWithErrors"
+         object:nil];
+        
+        // Alert the user
+        [self alertUserWithTitle:@"Measure error"
+                         message:@"Measure process failed in its first step due an unknown error. Please, try again."
+                      andHandler:^(UIAlertAction * action) {}
+                inViewController:viewController
+         ];
+    }
+    
+    return;
 }
 
 #pragma mark - Other methods
