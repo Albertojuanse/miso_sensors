@@ -20,7 +20,6 @@
     return self;
 }
 
-
 /*!
  @method initWithSharedData:userDic:deviceUUID:andCredentialsUserDic:
  @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
@@ -97,8 +96,6 @@
 - (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithPrecisions:(NSDictionary *)precisions
 {
     NSLog(@"[INFO][TT] Start locating positions.");
-    if (!sharedData) {
-    }
     // Check the access to data shared collections
     if (
         ![sharedData validateCredentialsUserDic:credentialsUserDic]

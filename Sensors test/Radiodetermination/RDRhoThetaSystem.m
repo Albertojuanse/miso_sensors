@@ -20,7 +20,6 @@
     return self;
 }
 
-
 /*!
  @method initWithSharedData:userDic:deviceUUID:andCredentialsUserDic:
  @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
@@ -93,7 +92,7 @@
 /*!
  @method getLocationsUsingBarycenterAproximationWithPrecisions:
  precision:
- @discussion This method calculates any posible location with the measures taken from each beacon at different positions; it uses a simple grid search of the minimum of the least square of distances from positions were the measures were taken to the grid and the measures and the same point in the grid. In the '('NSDictionary' object 'precisions' must be defined the minimum requirement of precision for each axe, with floats in objects 'NSNumbers' set in the keys "xPrecision", "yPrecision" and "zPrecision".
+ @discussion This method calculates any posible location with the measures taken from each beacon at different positions. In the NSDictionary object 'precisions' must be defined the minimum requirement of precision for each axe, with floats in objects 'NSNumbers' set in the keys "xPrecision", "yPrecision" and "zPrecision".
  */
 - (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithPrecisions:(NSDictionary *)precisions
 {
@@ -115,127 +114,6 @@
     MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                     andCredentialsUserDic:credentialsUserDic];
 
-    if ([mode isModeKey:kModeRhoThetaModelling]) {
-        
-        // In a modeling mode the items must be located using the measures taken by the device or devices from items and the headings aginst them. That implies that, each UUID groups the measures taken from a certain beacon and so, for every one of them a RDPosition would be found.
-        
-        // It is also needed the info about the UUID that must be located; in this case the beacons.
-        // TODO: Multiuser measures. Alberto J. 2019/09/24.
-        NSMutableArray * everyUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
-                                                                withCredentialsUserDic:credentialsUserDic];
-        
-        // And thus, for every beacon that must be located with its unique UUID, get the measures that come from this UUID or that aim it.
-        for (NSString * UUIDtoLocate in everyUUID) {
-            
-            NSString * uuid = UUIDtoLocate;
-            
-            // Measures are only feasible if measures have both heading and rssi types.
-            BOOL isHeadingMeasure = NO;
-            BOOL isRSSIMeasure = NO;
-            
-            // For every position where measures were taken, which is usually only one,...
-            // TODO: Device can move slightly without being in a new position. Alberto J. 2019/09/234.
-            NSMutableArray * measurePositions = [sharedData fromMeasuresDataGetPositionsWithMeasuresOfUserDic:userDic
-                                                                                       withCredentialsUserDic:credentialsUserDic];
-            for (RDPosition * measurePosition in measurePositions) {
-                        
-                // ...get only the measures taken from that position and from that UUID...
-                NSMutableArray * rssiMeasures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
-                                                                               takenFromPosition:measurePosition
-                                                                                    fromItemUUID:UUIDtoLocate
-                                                                                          ofSort:@"correctedDistance"
-                                                                          withCredentialsUserDic:credentialsUserDic];
-                NSMutableArray * headingMeasures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
-                                                                                  takenFromPosition:measurePosition
-                                                                                       fromItemUUID:UUIDtoLocate
-                                                                                             ofSort:@"heading"
-                                                                             withCredentialsUserDic:credentialsUserDic];
-                // ...and for every measure calculate its mean average.
-                // TODO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
-                NSLog(@"[INFO]][RT] rssiMeasures.count %.2f", [[NSNumber numberWithInteger:rssiMeasures.count] floatValue]);
-                NSLog(@"[INFO]][RT] headingMeasures.count %.2f", [[NSNumber numberWithInteger:headingMeasures.count] floatValue]);
-                if (!(rssiMeasures.count == 0) && !(headingMeasures.count == 0)) {
-                    NSNumber * measuresRSSIAcumulation = [NSNumber numberWithFloat:0.0];
-                    NSInteger measureRSSIIndex = 0;
-                    if (rssiMeasures.count == 0) {
-                        // Not evaluate
-                    } else {
-                        isRSSIMeasure = YES;
-                        for (NSNumber * measure in rssiMeasures) {
-                            measuresRSSIAcumulation = [NSNumber numberWithFloat:
-                                                       [measuresRSSIAcumulation floatValue] +
-                                                       [measure floatValue]
-                                                       ];
-                            measureRSSIIndex++;
-                        }
-                    }
-                        
-                    NSNumber * measuresHeadingAcumulation = [NSNumber numberWithFloat:0.0];
-                    NSInteger measureHeadingIndex = 0;
-                    if (headingMeasures.count == 0) {
-                        // Not evaluate
-                    } else {
-                        isHeadingMeasure = YES;
-                        for (NSNumber * measure in headingMeasures) {
-                            measuresHeadingAcumulation = [NSNumber numberWithFloat:
-                                                          [measuresHeadingAcumulation floatValue] +
-                                                          [measure floatValue]
-                                                          ];
-                            measureHeadingIndex++;
-                        }
-                    }
-                    
-                    // Calculate the mean averages
-                    NSNumber * measureRSSIIndexFloat = [NSNumber numberWithInteger:measureRSSIIndex];
-                    NSNumber * measuresRSSIAverage = [NSNumber numberWithFloat:0.0];
-                    if (measureRSSIIndex != 0) { // Division by zero preventing
-                        measuresRSSIAverage = [NSNumber numberWithFloat:
-                                               [measuresRSSIAcumulation floatValue] /
-                                               [measureRSSIIndexFloat floatValue]
-                                               ];
-                    }
-                    
-                    NSNumber * measureHeadingIndexFloat = [NSNumber numberWithInteger:measureHeadingIndex];
-                    NSNumber * measuresHeadingAverage = [NSNumber numberWithFloat:0.0];
-                    if (measureHeadingIndex != 0) { // Division by zero preventing
-                        measuresHeadingAverage = [NSNumber numberWithFloat:
-                                                  [measuresHeadingAcumulation floatValue] /
-                                                  [measureHeadingIndexFloat floatValue]
-                                                  ];
-                    }
-                            
-                    // Final calculus is only performed if there are both RSSI and heading measures
-                    // (x_item, y_item) = (x_device, y_device) + (RSSI * cos(heading), RSSI * sen(heading)) in radians and meters
-                    NSLog(isRSSIMeasure ? @"[INFO][RT] isRSSIMeasure = YES" : @"[INFO][RT] isRSSIMeasure = NO.");
-                    NSLog(isHeadingMeasure ? @"[INFO][RT] isHeadingMeasure = YES" : @"[INFO][RT] isHeadingMeasure = NO.");
-                    if (isRSSIMeasure && isHeadingMeasure) {
-                        RDPosition * locatedPosition = [[RDPosition alloc] init];
-                        locatedPosition.x = [NSNumber numberWithFloat:[measurePosition.x floatValue] +
-                                             [measuresRSSIAverage floatValue] *
-                                             cos([measuresHeadingAverage doubleValue])
-                                             ];
-                        locatedPosition.y = [NSNumber numberWithFloat:[measurePosition.y floatValue] +
-                                             [measuresRSSIAverage floatValue] *
-                                             sin([measuresHeadingAverage doubleValue])
-                                             ];
-                        locatedPosition.z = measurePosition.z;
-                        
-                        NSLog(@"[INFO][RT] locatedPosition.x: %.2f", [locatedPosition.x floatValue]);
-                        NSLog(@"[INFO][RT] locatedPosition.y: %.2f", [locatedPosition.y floatValue]);
-                        NSLog(@"[INFO][RT] locatedPosition.z: %.2f", [locatedPosition.z floatValue]);
-                        
-                        NSLog(@"[INFO][RT] locatedPosition: %@", locatedPosition);
-                        NSLog(@"[INFO][RT] uuid: %@", uuid);
-                        [locatedPositions setObject:locatedPosition forKey:uuid];
-                    }
-                    
-                } else {
-                    // No measures taken in that position; do nothing.
-                }
-            }
-        }
-        
-    }
     if ([mode isModeKey:kModeRhoThetaLocating]) {
         
         // In a locating mode the device must be located using the measures from items and the headings aginst them. That implies that, each UUID groups the measures taken from a certain beacon and the device position must be calculed using all of them.
@@ -364,15 +242,147 @@
         }
     }
     
-    // If not a rho rho theta type system
+    if ([mode isModeKey:kModeRhoThetaModelling]) {
+        
+        // In a modeling mode the items must be located using the measures taken by the device or devices from items and the headings aginst them. That implies that, each UUID groups the measures taken of a certain beacon and so, for every one of them a RDPosition would be found.
+        // TODO: Multiuser measures. Alberto J. 2019/09/24.
+        
+        // It is also needed the info about the UUID that must be located; in this case the beacons.
+        NSMutableArray * allUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic
+                                                              withCredentialsUserDic:credentialsUserDic];
+        
+        // And thus, for every beacon that must be located with its unique UUID, get the measures of this UUID or that aim it.
+        for (NSString * uuid in allUUID) {
+            
+            // Measures are only feasible if measures have both heading and rssi types.
+            BOOL isHeadingMeasure = NO;
+            BOOL isRSSIMeasure = NO;
+            
+            // For every position where measures were taken, which is usually only one,...
+            NSMutableArray * measurePositions = [sharedData fromMeasuresDataGetPositionsWithMeasuresOfUserDic:userDic
+                                                                                       withCredentialsUserDic:credentialsUserDic];
+            for (RDPosition * measurePosition in measurePositions) {
+                        
+                // ...get only the measures taken from that position and from that UUID...
+                NSMutableArray * rssiMeasures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
+                                                                               takenFromPosition:measurePosition
+                                                                                    fromItemUUID:uuid
+                                                                                          ofSort:@"correctedDistance"
+                                                                          withCredentialsUserDic:credentialsUserDic];
+                NSMutableArray * headingMeasures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
+                                                                                  takenFromPosition:measurePosition
+                                                                                       fromItemUUID:uuid
+                                                                                             ofSort:@"heading"
+                                                                             withCredentialsUserDic:credentialsUserDic];
+                // ...and for every measure calculate its mean average.
+                // TODO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
+                NSLog(@"[INFO]][RT] rssiMeasures.count %.2f", [[NSNumber numberWithInteger:rssiMeasures.count] floatValue]);
+                NSLog(@"[INFO]][RT] headingMeasures.count %.2f", [[NSNumber numberWithInteger:headingMeasures.count] floatValue]);
+                if (!(rssiMeasures.count == 0) && !(headingMeasures.count == 0)) {
+                    NSNumber * measuresRSSIAcumulation = [NSNumber numberWithFloat:0.0];
+                    NSInteger measureRSSIIndex = 0;
+                    if (rssiMeasures.count == 0) {
+                        // Not evaluate
+                    } else {
+                        isRSSIMeasure = YES;
+                        for (NSNumber * measure in rssiMeasures) {
+                            measuresRSSIAcumulation = [NSNumber numberWithFloat:
+                                                       [measuresRSSIAcumulation floatValue] +
+                                                       [measure floatValue]
+                                                       ];
+                            measureRSSIIndex++;
+                        }
+                    }
+                        
+                    NSNumber * measuresHeadingAcumulation = [NSNumber numberWithFloat:0.0];
+                    NSInteger measureHeadingIndex = 0;
+                    if (headingMeasures.count == 0) {
+                        // Not evaluate
+                    } else {
+                        isHeadingMeasure = YES;
+                        for (NSNumber * measure in headingMeasures) {
+                            measuresHeadingAcumulation = [NSNumber numberWithFloat:
+                                                          [measuresHeadingAcumulation floatValue] +
+                                                          [measure floatValue]
+                                                          ];
+                            measureHeadingIndex++;
+                        }
+                    }
+                    
+                    // Calculate the mean averages
+                    NSNumber * measureRSSIIndexFloat = [NSNumber numberWithInteger:measureRSSIIndex];
+                    NSNumber * measuresRSSIAverage = [NSNumber numberWithFloat:0.0];
+                    if (measureRSSIIndex != 0) { // Division by zero preventing
+                        measuresRSSIAverage = [NSNumber numberWithFloat:
+                                               [measuresRSSIAcumulation floatValue] /
+                                               [measureRSSIIndexFloat floatValue]
+                                               ];
+                    }
+                    
+                    NSNumber * measureHeadingIndexFloat = [NSNumber numberWithInteger:measureHeadingIndex];
+                    NSNumber * measuresHeadingAverage = [NSNumber numberWithFloat:0.0];
+                    if (measureHeadingIndex != 0) { // Division by zero preventing
+                        measuresHeadingAverage = [NSNumber numberWithFloat:
+                                                  [measuresHeadingAcumulation floatValue] /
+                                                  [measureHeadingIndexFloat floatValue]
+                                                  ];
+                    }
+                            
+                    // Final calculus is only performed if there are both RSSI and heading measures
+                    // (x_item, y_item) = (x_device, y_device) + (RSSI * cos(heading), RSSI * sen(heading)) in radians and meters
+                    NSLog(isRSSIMeasure ? @"[INFO][RT] isRSSIMeasure = YES" : @"[INFO][RT] isRSSIMeasure = NO.");
+                    NSLog(isHeadingMeasure ? @"[INFO][RT] isHeadingMeasure = YES" : @"[INFO][RT] isHeadingMeasure = NO.");
+                    if (isRSSIMeasure && isHeadingMeasure) {
+                        RDPosition * locatedPosition = [[RDPosition alloc] init];
+                        locatedPosition.x = [NSNumber numberWithFloat:[measurePosition.x floatValue] +
+                                             [measuresRSSIAverage floatValue] *
+                                             cos([measuresHeadingAverage doubleValue])
+                                             ];
+                        locatedPosition.y = [NSNumber numberWithFloat:[measurePosition.y floatValue] +
+                                             [measuresRSSIAverage floatValue] *
+                                             sin([measuresHeadingAverage doubleValue])
+                                             ];
+                        locatedPosition.z = measurePosition.z;
+                        
+                        NSLog(@"[INFO][RT] measurePosition.x: %.2f", [measurePosition.x floatValue]);
+                        NSLog(@"[INFO][RT] measuresRSSIAverage.x: %.2f", [measuresRSSIAverage floatValue]);
+                        NSLog(@"[INFO][RT] measuresHeadingAverage.x: %.2f", [measuresHeadingAverage floatValue]);
+                        NSLog(@"[INFO][RT] cos(measuresHeadingAverage): %.2f", cos([measuresHeadingAverage doubleValue]));
+                        
+                        NSLog(@"[INFO][RT] locatedPosition.x: %.2f", [locatedPosition.x floatValue]);
+                        NSLog(@"[INFO][RT] locatedPosition.y: %.2f", [locatedPosition.y floatValue]);
+                        NSLog(@"[INFO][RT] locatedPosition.z: %.2f", [locatedPosition.z floatValue]);
+                        
+                        NSLog(@"[INFO][RT] locatedPosition: %@", locatedPosition);
+                        NSLog(@"[INFO][RT] uuid: %@", uuid);
+                        [locatedPositions setObject:locatedPosition forKey:uuid];
+                    }
+                    
+                } else {
+                    // No measures taken in that position; do nothing.
+                }
+            }
+        }
+        
+    }
+    
+    // Aks canvas to refresh if positions were located
+    if (locatedPositions.count > 0) {
+        NSLog(@"[NOTI][LMR] Notification \"canvas/refresh\" posted.");
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"canvas/refresh"
+         object:nil];
+    }
+    
+    // If not a rho theta type system
     if (
-        [mode isModeKey:kModeRhoRhoModelling] ||
         [mode isModeKey:kModeRhoRhoLocating] ||
-        [mode isModeKey:kModeThetaThetaLocating] ||
-        [mode isModeKey:kModeThetaThetaModelling]
+        [mode isModeKey:kModeRhoRhoModelling] ||
+        [mode isModeKey:kModeThetaThetaModelling] ||
+        [mode isModeKey:kModeThetaThetaLocating]
         
         ) {
-        NSLog(@"[ERROR][RT] Rho theta type system called when in %@ mode.", mode);
+        NSLog(@"[ERROR][RT] Rho theta type system called when in %@ mode.", [mode description]);
     }
     
     NSLog(@"[INFO][RT] Finish Radiolocating beacons.");

@@ -983,7 +983,7 @@
                     
                     [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
                     
-                    // It representation depends on if exist its position or its type
+                    // Its description depends on if exist its position or its type
                     // Compose the description
                     NSString * beaconDescription = [[NSString alloc] init];
                     beaconDescription = [beaconDescription stringByAppendingString:itemDic[@"identifier"]];;
