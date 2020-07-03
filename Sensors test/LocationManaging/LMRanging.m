@@ -900,16 +900,29 @@
                                  [NSNumber numberWithFloat:0.2], @"zPrecision",
                                  nil];
     NSMutableDictionary * locatedPositions;
-    if ([mode isModeKey:kModeRhoThetaModelling]) {
-        locatedPositions = [rhoRhoSystem getLocationsUsingGridAproximationWithPrecisions:precisions];
+    if ([mode isModeKey:kModeRhoRhoLocating]) {
+        locatedPositions = [rhoRhoSystem
+                            getLocationsUsingGridAproximationWithPrecisions:precisions];
+    }
+    else if ([mode isModeKey:kModeRhoRhoModelling]) {
+        locatedPositions = [rhoRhoSystem
+                            getLocationsUsingGridAproximationWithPrecisions:precisions];
+    }
+    else if ([mode isModeKey:kModeRhoThetaLocating]) {
+        locatedPositions = [rhoThetaSystem
+                            getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
     }
     else if ([mode isModeKey:kModeRhoThetaModelling]) {
-        //locatedPositions = [rhoThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
+        locatedPositions = [rhoThetaSystem
+                            getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
+    } else {
+        NSLog(@"[ERROR][LMR] Ranger was notified new measures while not in %@ mode.",
+              [mode description]);
     }
     
     if (locatedPositions) {
         NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
-        withCredentialsUserName:credentialsUserDic];
+                                                                              withCredentialsUserName:credentialsUserDic];
         
         // Save the positions as located items.
         NSArray *positionKeys = [locatedPositions allKeys];
@@ -960,11 +973,6 @@
         NSLog(@"[INFO][LMR] Generated measures:");
         NSLog(@"[INFO][LMR]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
         
-        // Ask view controller to refresh the canvas
-        NSLog(@"[NOTI][LMR] Notification \"canvas/refresh\" posted.");
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"canvas/refresh"
-         object:nil];
         
     }
     
