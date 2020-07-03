@@ -74,7 +74,7 @@
     if (!location) {
         // Load the location manager and its delegate, the component which device uses to handle location events.
         location = [[LMDelegateRhoThetaModelling alloc] initWithSharedData:sharedData
-                                                                    userDic:userDic
+                                                                   userDic:userDic
                                                             rhoThetaSystem:rhoThetaSystem
                                                                 deviceUUID:deviceUUID
                                                      andCredentialsUserDic:credentialsUserDic];
@@ -176,7 +176,7 @@
                             forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // In RhoThetaModelling, only if the item have a position can be selected.
-    // Also, models can be selected to add its items all of them toguether.
+    // Also, models can be selected to add its items all of them together.
     
     // Select the source of items; both items and models are shown
     NSMutableDictionary * itemDic = [self fromSharedDataGetItemWithIndexPath:indexPath
@@ -207,7 +207,7 @@
             
             [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
             
-            // It representation depends on if exist its position or its type
+            // Its description depends on if exist its position or its type
             // Compose the description
             NSString * beaconDescription = [[NSString alloc] init];
             beaconDescription = [beaconDescription stringByAppendingString:itemDic[@"identifier"]];;
@@ -301,7 +301,7 @@
          didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 {
     // In RhoThetaModelling, only if the item have a position can be selected.
-    // Also, models can be selected to add its items all of them toguether.
+    // Also, models can be selected to add its items all of them together.
      
     // The table was set in 'viewDidLoad' as multiple-selecting
     // Manage multi-selection
@@ -490,7 +490,7 @@
     // In RhoThetaModelling, only iBeacon devices can be positioned from a known position.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
-    // In this mode, only iBeacon devices can be positioned;
+    // In this mode, only iBeacon devices can be positioned.
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
@@ -541,7 +541,7 @@
             
             [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
             
-            // It representation depends on if exist its position or its type
+            // Its description depends on if exist its position or its type
             // Compose the description
             NSString * beaconDescription = [[NSString alloc] init];
             beaconDescription = [beaconDescription stringByAppendingString:itemDic[@"identifier"]];;
@@ -824,8 +824,8 @@
 */
 - (void)whileAddingUserDidTapMeasure:(UIButton *)measureButton
                     toMeasureItemDic:(NSMutableDictionary *)itemDic
-
 {
+    // In every state the button performs different behaviours
     if (
         [sharedData fromSessionDataIsIdleUserWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic]
