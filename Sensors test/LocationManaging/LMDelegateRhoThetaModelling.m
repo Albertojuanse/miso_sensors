@@ -567,8 +567,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  @discussion This method asks the Location Manager to stop positioning the device using compass and iBeacons.
  */
 - (void) stop:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"lmdRhoThetaModelling/start"]){
-        NSLog(@"[NOTI][LMRTM] Notification \"lmdRhoThetaModelling/start\" recived.");
+    if ([[notification name] isEqualToString:@"lmdRhoThetaModelling/stop"]){
+        NSLog(@"[NOTI][LMRTM] Notification \"lmdRhoThetaModelling/stop\" recived.");
         // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
