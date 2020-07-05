@@ -817,6 +817,11 @@
     
     // Upload table
     [tableView reloadData];
+    // Aks canvas to refresh.
+    NSLog(@"[NOTI][LMR] Notification \"canvas/refresh\" posted.");
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:@"canvas/refresh"
+     object:nil];
 }
 
 #pragma mark - Adding VCModeDelegate methods
