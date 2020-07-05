@@ -14,6 +14,7 @@
 #import "ViewControllerAddComponent.h"
 #import "ViewControllerEditComponent.h"
 #import "ViewControllerMeasure.h"
+#import "VCDrawings.h"
 
 #import "VCModeDelegate.h"
 #import "VCModeDelegateThetaThetaLocating.h"
@@ -61,6 +62,11 @@
     NSMutableArray * modeMetamodels;
     NSMutableArray * modeTypes;
     
+    // Adding alert view's variables
+    UITextField * xValueTextField;
+    UITextField * yValueTextField;
+    UITextField * zValueTextField;
+    
     // Delegate variables
     NSString * errorDescription;
     NSString * idleStateMessage;
@@ -76,7 +82,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonFinish;
 @property (weak, nonatomic) IBOutlet UIButton *buttonNext;
 @property (weak, nonatomic) IBOutlet UIButton *buttonBack;
-@property (weak, nonatomic) IBOutlet UIButton *buttonAdd;
+@property (weak, nonatomic) IBOutlet UIButton *buttonAddManual;
+@property (weak, nonatomic) IBOutlet UIButton *buttonAddMeasure;
 
 // Methods for passing volatile variables that disappear when segue between views
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;

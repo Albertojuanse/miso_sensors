@@ -67,16 +67,8 @@
 - (void)loadLayout
 {
     // Toolbar layout
-    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
-    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                 alpha:1.0];
-    UIColor * disabledThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:0.3];
+    UIColor * normalThemeColor = [VCDrawings getNormalThemeColor];
+    UIColor * disabledThemeColor = [VCDrawings getDisabledThemeColor];
     
     self.toolbar.backgroundColor = normalThemeColor;
     [self.buttonFinish setTitleColor:normalThemeColor
@@ -91,10 +83,13 @@
                           forState:UIControlStateNormal];
     [self.buttonBack setTitleColor:disabledThemeColor
                           forState:UIControlStateDisabled];
-    [self.buttonAdd setTitleColor:normalThemeColor
-                         forState:UIControlStateNormal];
-    [self.buttonAdd setTitleColor:disabledThemeColor
-                         forState:UIControlStateDisabled];
+    UIImage * measureImage = [VCDrawings imageForMeasureInNormalThemeColor];
+    [self.buttonAddMeasure setImage:measureImage forState:UIControlStateNormal];
+    [self.buttonAddMeasure setTintColor:normalThemeColor];
+    UIImage * positionImage = [VCDrawings imageForMeasureInNormalThemeColor];
+    [self.buttonAddManual setImage:positionImage forState:UIControlStateNormal];
+    [self.buttonAddManual setTintColor:normalThemeColor];
+    
     // Other components
     [self.signOutButton setTitleColor:[UIColor whiteColor]
                              forState:UIControlStateNormal];
@@ -384,7 +379,7 @@
         // Configure popover layout
         UIPopoverPresentationController * popoverMeasure =  viewControllerMeasure.popoverPresentationController;
         [popoverMeasure setDelegate:viewControllerMeasure];
-        [popoverMeasure setSourceView:self.buttonAdd];
+        [popoverMeasure setSourceView:self.buttonAddMeasure];
         [popoverMeasure setSourceRect:CGRectMake(0,0,1,1)];
         [popoverMeasure setPermittedArrowDirections:UIPopoverArrowDirectionAny];
         // Show the view
@@ -559,15 +554,17 @@
  @method handleButtonFinish:
  @discussion This method is called when user is prepared for modeling.
  */
-- (IBAction)handleButtonFinish:(id)sender {
+- (IBAction)handleButtonFinish:(id)sender
+{
     [self performSegueWithIdentifier:@"fromEDITINGToFinalModel" sender:sender];
 }
 
 /*!
- @method handleButtonAdd:
- @discussion This method is called when user wants to add a component to the model.
+ @method handleButtonAddMeasure:
+ @discussion This method is called when user wants to add a component to the model using measures.
  */
-- (IBAction)handleButtonAdd:(id)sender {
+- (IBAction)handleButtonAddMeasure:(id)sender
+{
     
     // Instance the add component view
     ViewControllerAddComponent * viewControllerAddComponent = [[[NSBundle mainBundle]
@@ -586,11 +583,130 @@
     // Configure popover layout
     UIPopoverPresentationController * popoverEditComponent =  viewControllerAddComponent.popoverPresentationController;
     [popoverEditComponent setDelegate:viewControllerAddComponent];
-    [popoverEditComponent setSourceView:self.buttonAdd];
+    [popoverEditComponent setSourceView:self.buttonAddMeasure];
     [popoverEditComponent setSourceRect:CGRectMake(0, 0, 1, 1)];
     [popoverEditComponent setPermittedArrowDirections:UIPopoverArrowDirectionAny];
     // Show the view
     [self presentViewController:viewControllerAddComponent animated:YES completion:nil];
+}
+
+/*!
+ @method handleButtonAddManual:
+ @discussion This method is called when user wants to add a component to the model given its coordinates using an alert view.
+ */
+- (IBAction)handleButtonAddManual:(id)sender
+{
+    UIAlertController * alertNewPosition = [UIAlertController
+                                            alertControllerWithTitle:@"Add position"
+                                            message:@"Please, set the coordinates of the new position."
+                                            preferredStyle:UIAlertControllerStyleAlert
+                                            ];
+    // Text fields for coordinates
+    [alertNewPosition addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        [textField setPlaceholder:@"X value as 0.0"];
+        xValueTextField = textField;
+    }];
+    [alertNewPosition addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        [textField setPlaceholder:@"Y value as 0.0"];
+        yValueTextField = textField;
+    }];
+    [alertNewPosition addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        [textField setPlaceholder:@"Z value as 0.0"];
+        zValueTextField = textField;
+    }];
+    
+    // Buttons
+    UIAlertAction * okButton = [UIAlertAction
+                                actionWithTitle:@"Ok"
+                                style:UIAlertActionStyleDefault
+                                handler:^(UIAlertAction * _Nonnull action) {
+                                    
+                                    // Get coordinates
+                                    NSString * xValueText = [xValueTextField text];
+                                    NSString * yValueText = [yValueTextField text];
+                                    NSString * zValueText = [zValueTextField text];
+
+                                    RDPosition * itemPosition = [[RDPosition alloc] init];
+                                    itemPosition.x = [NSNumber numberWithFloat:[xValueText floatValue]];
+                                    itemPosition.y = [NSNumber numberWithFloat:[yValueText floatValue]];
+                                    itemPosition.z = [NSNumber numberWithFloat:[zValueText floatValue]];
+
+                                    // Create a new item with them
+                                    [self createNewItemWithPosition:itemPosition];
+                                         
+                                 }
+                                 ];
+    
+    UIAlertAction * cancelButton = [UIAlertAction
+                                    actionWithTitle:@"Cancel"
+                                    style:UIAlertActionStyleCancel
+                                    handler:^(UIAlertAction * _Nonnull action) {
+                                        
+                                        // Do nothing
+                                        
+                                    }
+                                    ];
+    
+    [alertNewPosition addAction:okButton];
+    [alertNewPosition addAction:cancelButton];
+    [self presentViewController:alertNewPosition animated:YES completion:nil];
+}
+
+/*!
+@method createNewItemWithPosition:
+@discussion This method is called when the user did set the coordinates of the new position using a warning view to create the new item.
+*/
+- (void) createNewItemWithPosition:(RDPosition *)itemPosition
+{
+    NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
+    infoDic[@"sort"] = @"position";
+    NSString * newUUID = [[NSUUID UUID] UUIDString];
+    infoDic[@"position"] = itemPosition;
+    infoDic[@"located"] = @"NO";
+    
+    NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
+                                                                          withCredentialsUserName:credentialsUserDic];
+    NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
+    itemPositionIdNumber = [NSNumber numberWithInteger:[itemPositionIdNumber integerValue] + 1];
+    positionId = [positionId stringByAppendingString:@"@miso.uam.es"];
+    infoDic[@"identifier"] = positionId;
+    
+    BOOL savedItem = [sharedData inItemDataAddItemOfSort:@"position"
+                                                withUUID:newUUID
+                                             withInfoDic:infoDic
+                               andWithCredentialsUserDic:credentialsUserDic];
+    if (savedItem) {
+        
+    } else {
+        NSLog(@"[ERROR]%@ New position %@ could not be stored as an item.", infoDic[@"position"], ERROR_DESCRIPTION_VCERTM);
+    }
+    
+    // Save variables in device memory
+    // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
+    // Remove previous collection
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
+    [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+    [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
+    // Update information
+    NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+    [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
+    // itemBeaconIdNumber
+    NSNumber * itemBeaconIdNumber = [sharedData fromSessionDataGetItemBeaconIdNumberOfUserDic:userDic
+                                                                      withCredentialsUserName:credentialsUserDic];
+    NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
+    [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
+    // itemPositionIdNumber
+    itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
+                                                               withCredentialsUserName:credentialsUserDic];
+    NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
+    [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
+    
+    // Aks canvas to refresh.
+    NSLog(@"[NOTI][LMR] Notification \"canvas/refresh\" posted.");
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:@"canvas/refresh"
+     object:nil];
 }
 
 /*!

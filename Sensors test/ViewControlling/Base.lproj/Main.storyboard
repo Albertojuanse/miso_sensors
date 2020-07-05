@@ -1178,24 +1178,38 @@
                                                     <action selector="handleButtonFinish:" destination="okL-35-9pm" eventType="touchUpInside" id="SIJ-Rs-Rhc"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pC1-jv-prk">
-                                                <rect key="frame" x="32" y="32" width="30" height="48"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
-                                                <state key="normal" title="+"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cnN-l6-fG4">
+                                                <rect key="frame" x="32" y="32" width="31" height="31"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="31" id="fY2-ON-5Tv"/>
+                                                    <constraint firstAttribute="height" constant="31" id="gKS-VW-aFS"/>
+                                                </constraints>
                                                 <connections>
-                                                    <action selector="handleButtonAdd:" destination="okL-35-9pm" eventType="touchUpInside" id="jJZ-zC-ysM"/>
+                                                    <action selector="handleButtonAddManual:" destination="okL-35-9pm" eventType="touchUpInside" id="tIf-tE-l5c"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MbH-jr-hlt">
+                                                <rect key="frame" x="95" y="32" width="31" height="31"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="31" id="5Hl-0x-Oo7"/>
+                                                    <constraint firstAttribute="width" constant="31" id="hlB-jq-FoV"/>
+                                                </constraints>
+                                                <connections>
+                                                    <action selector="handleButtonAddMeasure:" destination="okL-35-9pm" eventType="touchUpInside" id="eYJ-sn-J1R"/>
                                                 </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstItem="pC1-jv-prk" firstAttribute="leading" secondItem="Lkn-Mp-7ch" secondAttribute="leading" constant="32" id="AFL-TA-iSF"/>
+                                            <constraint firstItem="MbH-jr-hlt" firstAttribute="top" secondItem="Lkn-Mp-7ch" secondAttribute="top" constant="32" id="BGr-Il-z3f"/>
                                             <constraint firstAttribute="bottom" secondItem="cwf-Zo-7tw" secondAttribute="bottom" constant="32" id="CUR-Pz-nNO"/>
-                                            <constraint firstItem="pC1-jv-prk" firstAttribute="top" secondItem="Lkn-Mp-7ch" secondAttribute="top" constant="32" id="EXw-XV-lz7"/>
                                             <constraint firstItem="aVK-XL-Kwy" firstAttribute="leading" secondItem="Xub-Bw-BYp" secondAttribute="trailing" constant="32" id="Lg8-4Z-fbm"/>
                                             <constraint firstAttribute="bottom" secondItem="Xub-Bw-BYp" secondAttribute="bottom" constant="32" id="Q0t-YA-ASb"/>
+                                            <constraint firstItem="cnN-l6-fG4" firstAttribute="top" secondItem="Lkn-Mp-7ch" secondAttribute="top" constant="32" id="SCg-Py-KbY"/>
+                                            <constraint firstItem="MbH-jr-hlt" firstAttribute="leading" secondItem="cnN-l6-fG4" secondAttribute="trailing" constant="32" id="TFB-9j-EDP"/>
                                             <constraint firstAttribute="bottom" secondItem="aVK-XL-Kwy" secondAttribute="bottom" constant="32" id="anx-Oc-rkb"/>
                                             <constraint firstAttribute="trailing" secondItem="aVK-XL-Kwy" secondAttribute="trailing" constant="32" id="btd-ZU-O93"/>
+                                            <constraint firstItem="cnN-l6-fG4" firstAttribute="leading" secondItem="Lkn-Mp-7ch" secondAttribute="leading" constant="32" id="d6M-cS-xzM"/>
                                             <constraint firstItem="Xub-Bw-BYp" firstAttribute="leading" secondItem="cwf-Zo-7tw" secondAttribute="trailing" constant="32" id="jxe-RP-AMl"/>
                                         </constraints>
                                     </view>
@@ -1260,7 +1274,8 @@
                     </view>
                     <navigationItem key="navigationItem" id="qT7-Rd-FSI"/>
                     <connections>
-                        <outlet property="buttonAdd" destination="pC1-jv-prk" id="gOs-lA-YqG"/>
+                        <outlet property="buttonAddManual" destination="cnN-l6-fG4" id="kjb-s0-T4A"/>
+                        <outlet property="buttonAddMeasure" destination="MbH-jr-hlt" id="rfc-ep-flX"/>
                         <outlet property="buttonBack" destination="Xub-Bw-BYp" id="gAn-Cq-CCc"/>
                         <outlet property="buttonFinish" destination="cwf-Zo-7tw" id="Mvh-6C-ig7"/>
                         <outlet property="buttonNext" destination="aVK-XL-Kwy" id="HNR-0Z-Twp"/>
