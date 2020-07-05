@@ -521,7 +521,7 @@
         NSMutableArray * itemsDic = [sharedData fromItemDataGetItemsWithSort:@"beacon"
                                                        andCredentialsUserDic:credentialsUserDic];
         
-        if (indexPath.section > itemsDic.count - 1) {
+        if (indexPath.row > itemsDic.count - 1) {
             cell.textLabel.text = [NSString stringWithFormat:@"+"];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
             cell.textLabel.textAlignment = NSTextAlignmentCenter;
@@ -608,7 +608,7 @@
             NSMutableArray * itemsDic = [sharedData fromItemDataGetItemsWithSort:@"beacon"
                                                            andCredentialsUserDic:credentialsUserDic];
             
-            if (indexPath.section > itemsDic.count - 1) {
+            if (indexPath.row > itemsDic.count - 1) {
                 // N U E V A  P O S I C I Ó N
             } else {
                 // Select the source of items
