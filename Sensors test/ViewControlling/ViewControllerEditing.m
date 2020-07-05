@@ -86,7 +86,7 @@
     UIImage * measureImage = [VCDrawings imageForMeasureInNormalThemeColor];
     [self.buttonAddMeasure setImage:measureImage forState:UIControlStateNormal];
     [self.buttonAddMeasure setTintColor:normalThemeColor];
-    UIImage * positionImage = [VCDrawings imageForMeasureInNormalThemeColor];
+    UIImage * positionImage = [VCDrawings imageForPositionInNormalThemeColor];
     [self.buttonAddManual setImage:positionImage forState:UIControlStateNormal];
     [self.buttonAddManual setTintColor:normalThemeColor];
     
@@ -703,7 +703,7 @@
     [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
     
     // Aks canvas to refresh.
-    NSLog(@"[NOTI][LMR] Notification \"canvas/refresh\" posted.");
+    NSLog(@"[NOTI]%@ Notification \"canvas/refresh\" posted.", errorDescription);
     [[NSNotificationCenter defaultCenter]
      postNotificationName:@"canvas/refresh"
      object:nil];
@@ -731,10 +731,10 @@
         // TODO: This to each delegate. Alberto J. 2019/06/19
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoRhoLocating/stop"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRRL] Notification \"lmdRhoRhoLocating/stop\" posted.");
+        NSLog(@"[NOTI]%@ Notification \"lmdRhoRhoLocating/stop\" posted.", errorDescription);
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmd/reset"
                                                             object:nil];
-        NSLog(@"[NOTI][VCRRL] Notification \"lmd/reset\" posted.");
+        NSLog(@"[NOTI]%@ Notification \"lmd/reset\" posted.", errorDescription);
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
                                                             object:nil];
         NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", errorDescription);
