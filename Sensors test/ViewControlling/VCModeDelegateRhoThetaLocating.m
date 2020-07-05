@@ -809,7 +809,22 @@
                                              withInfoDic:infoDic
                                andWithCredentialsUserDic:credentialsUserDic];
     if (savedItem) {
-        
+        // Set the new item as chosen and the old one as no chosen
+        NSMutableArray * savedItemDics = [sharedData fromItemDataGetItemsWithIdentifier:positionId andCredentialsUserDic:credentialsUserDic];
+        NSMutableDictionary * savedItemDic;
+        if ([savedItemDics count] > 0) {
+            savedItemDic = [savedItemDics objectAtIndex:0];
+        }
+        if (savedItemDic) {
+            [sharedData inSessionDataSetAsChosenItem:savedItemDic
+                                   toUserWithUserDic:userDic
+                              withCredentialsUserDic:credentialsUserDic];
+        } else {
+            NSLog(@"[ERROR]%@ New position %@ could not be stored as an item.", infoDic[@"position"], ERROR_DESCRIPTION_VCERTL);
+        }
+        [sharedData inSessionDataSetAsNotChosenItem:itemDic
+                                  toUserWithUserDic:userDic
+                             withCredentialsUserDic:credentialsUserDic];
     } else {
         NSLog(@"[ERROR]%@ Located position %@ could not be stored as an item.", infoDic[@"position"], ERROR_DESCRIPTION_VCERTL);
     }
@@ -838,7 +853,7 @@
     // Upload table
     [tableView reloadData];
     // Aks canvas to refresh.
-    NSLog(@"[NOTI][LMR] Notification \"canvas/refresh\" posted.");
+    NSLog(@"[NOTI]%@ Notification \"canvas/refresh\" posted.", ERROR_DESCRIPTION_VCERTL);
     [[NSNotificationCenter defaultCenter]
      postNotificationName:@"canvas/refresh"
      object:nil];

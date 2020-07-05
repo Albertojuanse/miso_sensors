@@ -794,9 +794,24 @@
                                              withInfoDic:infoDic
                                andWithCredentialsUserDic:credentialsUserDic];
     if (savedItem) {
-        
+        // Set the new item as chosen and the old one as no chosen
+        NSMutableArray * savedItemDics = [sharedData fromItemDataGetItemsWithIdentifier:positionId andCredentialsUserDic:credentialsUserDic];
+        NSMutableDictionary * savedItemDic;
+        if ([savedItemDics count] > 0) {
+            savedItemDic = [savedItemDics objectAtIndex:0];
+        }
+        if (savedItemDic) {
+            [sharedData inSessionDataSetAsChosenItem:savedItemDic
+                                   toUserWithUserDic:userDic
+                              withCredentialsUserDic:credentialsUserDic];
+        } else {
+            NSLog(@"[ERROR]%@ New position %@ could not be stored as an item.", infoDic[@"position"], ERROR_DESCRIPTION_VCERRL);
+        }
+        [sharedData inSessionDataSetAsNotChosenItem:itemDic
+                                  toUserWithUserDic:userDic
+                             withCredentialsUserDic:credentialsUserDic];
     } else {
-        NSLog(@"[ERROR][LMTTL] Located position %@ could not be stored as an item.", infoDic[@"position"]);
+        NSLog(@"[ERROR]%@ Located position %@ could not be stored as an item.", infoDic[@"position"], ERROR_DESCRIPTION_VCERRL);
     }
     
     // Save variables in device memory
