@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "SharedData.h"
+#import "VCDrawings.h"
 #import "LMDelegateCalibrating.h"
 #import "LMRanging.h"
 

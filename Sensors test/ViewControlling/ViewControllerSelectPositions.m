@@ -118,16 +118,8 @@
 - (void)loadLayout
 {
     // Toolbar layout
-    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
-    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    UIColor * normalThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                 green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                  blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                 alpha:1.0];
-    UIColor * disabledThemeColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:0.3];
+    UIColor * normalThemeColor = [VCDrawings getNormalThemeColor];
+    UIColor * disabledThemeColor = [VCDrawings getDisabledThemeColor];
     
     self.toolbar.backgroundColor = normalThemeColor;
     [self.backButton setTitleColor:normalThemeColor
