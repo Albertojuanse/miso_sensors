@@ -486,7 +486,7 @@
                    inViewController:(UIViewController *)viewController
               numberOfRowsInSection:(NSInteger)section
 {
-    // In RhoThetaLocating, any device or new positions can be positioned.
+    // In RhoThetaLocating, any device or new positions can be positioned. Only iBeacons devices can be chosen by user.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
     // In this mode, any device can be positioned, and new positions can be located, so an aditional row is added.
@@ -518,7 +518,7 @@
                                        cell:(UITableViewCell *)cell
                           forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // In RhoThetaLocating, any device or new positions can be positioned, so an aditional row was added.
+    // In RhoThetaLocating, any device or new positions can be positioned, so an aditional row was added. Only iBeacons devices can be chosen by user.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
     // Configure individual cells
@@ -602,7 +602,7 @@
               inViewController:(UIViewController *)viewController
        didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // In RhoThetaLocating, any device or new positions can be positioned, so an aditional row was added.
+    // In RhoThetaLocating, any device or new positions can be positioned, so an aditional row was added. Only iBeacons devices can be chosen by user.
     // If one of these items have already got a position assigned, that position must be transferred to another item
     
     // Database could not be accessed.
@@ -686,11 +686,19 @@
 */
 -(BOOL)processItemChosenByUser
 {
+    // In RhoThetaLocating, any device or new positions can be positioned, so an aditional row was added. Only iBeacons devices can be chosen by user.
     NSMutableDictionary * itemChosenByUser = [sharedData
                                               fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
                                               andCredentialsUserDic:credentialsUserDic
                                               ];
     if (itemChosenByUser) {
+        // Only iBeacons devices can be chosen by user.
+        NSString * sort = itemChosenByUser[@"position"];
+        if (![sort isEqualToString:@"beacon"]) {
+            return NO;
+        }
+        
+        // Set it
         RDPosition * position = itemChosenByUser[@"position"];
         if (!position) {
             NSLog(@"[ERROR]%@ No position was found in the item chosen by user as device position; (0,0,0) is set.", ERROR_DESCRIPTION_VCERTL);
