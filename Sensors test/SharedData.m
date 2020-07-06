@@ -3422,7 +3422,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 {
     if([self validateCredentialsUserDic:credentialsUserDic]) {
-        [itemsData addObject:itemDic];
+        [itemsData addObject:givenItemDic];
         return YES;
     } else {
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
