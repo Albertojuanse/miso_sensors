@@ -357,7 +357,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic];
         monitoredRegions = [[NSMutableArray alloc] init];
-        monitoredPositions = [[NSMutableArray alloc] init];
         
         // If using location services is allowed
         if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
@@ -397,10 +396,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     NSLog(@"[INFO][LMRRL] Device monitorizes a region:");
                     NSLog(@"[INFO][LMRRL] -> %@", [[region proximityUUID] UUIDString]);
                     
-                    // But if its position is loaded, the user wants to use it to locate itself against them
-                    if (itemDic[@"position"]) {
-                        [monitoredPositions addObject:itemDic[@"position"]];
-                    }
                 } else {
                     NSLog(@"[ERROR][LMRRL] Item to measure is not a iBeacon device.");
                 }

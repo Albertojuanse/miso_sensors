@@ -110,7 +110,6 @@
 }
 
 #pragma mark - Instance methods
-
 /*!
  @method setCredentialUserDic:
  @discussion This method sets the dictionary with the user's credentials for access the collections in shared data database.
@@ -130,9 +129,9 @@
     userDic = givenUserDic;
     return;
 }
-#pragma mark - Location manager delegated methods - iBeacons
 
-/*!
+#pragma mark - Location manager delegated methods - iBeacons
+/*
  @method locationManager:didChangeAuthorizationStatus:
  @discussion This method is called when the device's location permission change because user's desire or automatic routines; depending on the current permission status this delegate will start searching for beacon's regions or not.
  */
@@ -361,7 +360,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic];
         monitoredRegions = [[NSMutableArray alloc] init];
-        monitoredPositions = [[NSMutableArray alloc] init];
         
         // If using location services is allowed
         if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
@@ -389,14 +387,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                         [locationManager startRangingBeaconsInRegion:region];
                         NSLog(@"[INFO][LMM] Device monitorizes a region:");
                         NSLog(@"[INFO][LMM] -> %@", [[region proximityUUID] UUIDString]);
-                        
-                        // But if its position is loaded, the user wants to use it to locate itself against them
-                        if (itemDic[@"position"]) {
-                            [monitoredPositions addObject:itemDic[@"position"]];
-                        }
-                    }
-                    if ([@"position" isEqualToString:itemDic[@"sort"]]) {
-                        [monitoredPositions addObject:itemDic[@"position"]];
                     }
                     
                 }

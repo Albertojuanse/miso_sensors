@@ -458,7 +458,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic];
         monitoredRegions = [[NSMutableArray alloc] init];
-        monitoredPositions = [[NSMutableArray alloc] init];
         
         // If using location services is allowed
         if(CLLocationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||

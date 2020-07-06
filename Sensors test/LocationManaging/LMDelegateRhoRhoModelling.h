@@ -35,7 +35,6 @@
     
     // Data store
     NSMutableArray * monitoredRegions;
-    NSMutableArray * monitoredPositions;
     
 }
 
