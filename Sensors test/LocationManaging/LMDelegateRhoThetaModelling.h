@@ -28,8 +28,8 @@
     RDRhoThetaSystem * rhoThetaSystem;
     CLLocationManager * locationManager;
     
-    // Variables
-    RDPosition * devicePosition;  // Current position of device
+    // Variables (modelling mode)
+    RDPosition * devicePosition;
     NSString * deviceUUID;
     NSString * itemToMeasureUUID;
     BOOL isItemToMeasureRanged;

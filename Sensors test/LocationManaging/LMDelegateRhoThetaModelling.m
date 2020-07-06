@@ -22,7 +22,7 @@
         // Components
         sharedData = initSharedData;
         
-        // Instance variables
+        // Instance variables (modelling mode)
         // Set device's location at the origin
         devicePosition = [[RDPosition alloc] init];
         devicePosition.x = [NSNumber numberWithFloat:0.0];
@@ -296,7 +296,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                                             andCredentialsUserDic:credentialsUserDic];
             
             // If a monitoring type system; needs to save the UUID
-            if ([mode isModeKey:kModeRhoThetaModelling]) {
+            if ([mode isModeKey:kModeRhoThetaModelling]) { // (modelling mode)
                 
                 BOOL newMeasuresSaved = NO;
                 // For every ranged beacon...
@@ -414,7 +414,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         // If a rho type system
         if ([mode isModeKey:kModeRhoThetaModelling]) {
             
-            // The heading measures in this mode are only saved if there is already any beacon measure saved...
+            // The heading measures in this mode are only saved if there is already any beacon measure saved
             if(isItemToMeasureRanged) {
                 
                 if (itemToMeasureUUID) {
@@ -504,7 +504,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             // Resgiter the region to be monitorized
             if ([mode isModeKey:kModeRhoThetaModelling]) {
                 
-                // Get class variables to get the item's position facet from the item chosen by user to be the device
+                // Get class variables to get the item's position facet from the item chosen by user to be the device (modelling mode)
                 NSMutableDictionary * itemChosenByUserDic = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
                 deviceUUID = itemChosenByUserDic[@"uuid"];
                 if (itemChosenByUserDic[@"position"]) {
@@ -513,7 +513,7 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     NSLog(@"[ERROR][LMRTM] No position found in item to be measured.");
                 }
                 
-                // Retrieve notification data of the item that must be measured
+                // Get class variables to get the item's position facet from the item chosen by user to measure (modelling mode)
                 NSDictionary * dataDic = [notification userInfo];
                 NSMutableDictionary * itemDic = dataDic[@"itemDic"];
                 itemToMeasureUUID = itemDic[@"uuid"];
@@ -536,10 +536,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     NSLog(@"[INFO][LMRTM] Device monitorizes a region:");
                     NSLog(@"[INFO][LMRTM] -> %@", [[region proximityUUID] UUIDString]);
                     
-                    // But if its position is loaded, the user wants to use it to locate itself against them
-                    if (itemDic[@"position"]) {
-                        [monitoredPositions addObject:itemDic[@"position"]];
-                    }
                 } else {
                     NSLog(@"[ERROR][LMRTM] Item to measure is not a iBeacon device.");
                 }

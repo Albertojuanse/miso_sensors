@@ -22,12 +22,12 @@
         // Components
         sharedData = initSharedData;
         
-        // Instance variables
-        // Set device's location at the origin
-        position = [[RDPosition alloc] init];
-        position.x = [NSNumber numberWithFloat:0.0];
-        position.y = [NSNumber numberWithFloat:0.0];
-        position.z = [NSNumber numberWithFloat:0.0];
+        // Instance variables (locating mode)
+        // Set item to measure's location at the origin
+        itemToMeasurePosition = [[RDPosition alloc] init];
+        itemToMeasurePosition.x = [NSNumber numberWithFloat:0.0];
+        itemToMeasurePosition.y = [NSNumber numberWithFloat:0.0];
+        itemToMeasurePosition.z = [NSNumber numberWithFloat:0.0];
         
         // Initialize location manager and set this class as the delegate which implement the event response's methods
         locationManager = [[CLLocationManager alloc] init];
@@ -148,9 +148,9 @@
  */
 - (RDPosition *) getPosition {
     RDPosition * newPosition = [[RDPosition alloc] init];
-    newPosition.x = [NSNumber numberWithFloat:[position.x floatValue]];
-    newPosition.y = [NSNumber numberWithFloat:[position.y floatValue]];
-    newPosition.z = [NSNumber numberWithFloat:[position.z floatValue]];
+    newPosition.x = [NSNumber numberWithFloat:[itemToMeasurePosition.x floatValue]];
+    newPosition.y = [NSNumber numberWithFloat:[itemToMeasurePosition.y floatValue]];
+    newPosition.z = [NSNumber numberWithFloat:[itemToMeasurePosition.z floatValue]];
     return newPosition;
 }
 
@@ -159,15 +159,14 @@
  @discussion This method sets the device's position.
  */
 - (void) setPosition:(RDPosition *)givenPosition{
-    position = nil; // ARC disposing
-    position = [[RDPosition alloc] init];
-    position.x = [NSNumber numberWithFloat:[givenPosition.x floatValue]];
-    position.y = [NSNumber numberWithFloat:[givenPosition.y floatValue]];
-    position.z = [NSNumber numberWithFloat:[givenPosition.z floatValue]];
+    itemToMeasurePosition = nil; // ARC disposing
+    itemToMeasurePosition = [[RDPosition alloc] init];
+    itemToMeasurePosition.x = [NSNumber numberWithFloat:[givenPosition.x floatValue]];
+    itemToMeasurePosition.y = [NSNumber numberWithFloat:[givenPosition.y floatValue]];
+    itemToMeasurePosition.z = [NSNumber numberWithFloat:[givenPosition.z floatValue]];
 }
 
 #pragma mark - Location manager delegated methods - iBeacons
-
 /*!
  @method locationManager:didChangeAuthorizationStatus:
  @discussion This method is called when the device's location permission change because user's desire or automatic routines; depending on the current permission status this delegate will start searching for beacon's regions or not.
@@ -297,61 +296,51 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                                             andCredentialsUserDic:credentialsUserDic];
             
             // If a monitoring type system; needs to save the UUID
-            if ([mode isModeKey:kModeRhoThetaLocating]) {
+            if ([mode isModeKey:kModeRhoThetaLocating]) { // (locating mode)
                 
+                BOOL newMeasuresSaved = NO;
                 // For every ranged beacon...
                 for (CLBeacon *beacon in beacons) {
                     
                     // ...get its information...
                     NSString * uuid = [[beacon proximityUUID] UUIDString];
-                    RDPosition * measurePosition = [[RDPosition alloc] init];
-                    measurePosition.x = position.x;
-                    measurePosition.y = position.y;
-                    measurePosition.z = position.z;
                     
-                    // ...and retrieve the aimed item information.
-                    //      In this mode, the user must select an item to measure, whose item dictionary is stored in session dictionary as 'itemChosenByUser'.
-                    NSMutableDictionary * itemChosenByUserDic = [sharedData
-                                                                 fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                                 andCredentialsUserDic:credentialsUserDic
-                                                                 ];
-                    // If its not null retrieve the information needed.
-                    NSString * itemUUID;
-                    if (itemChosenByUserDic) {
-                        itemUUID = itemChosenByUserDic[@"uuid"];
-                        
-                        // If the UUID is not found, the measure cannot be saved
-                        if (!itemUUID) {
-                            NSLog(@"[ERROR][LMRTL] Measure not saved since the item selected had no UUID.");
-                            return;
-                        } else {
+                    // ...get position facet's information...
+                    RDPosition * measurePosition = [[RDPosition alloc] init];
+                    measurePosition.x = itemToMeasurePosition.x;
+                    measurePosition.y = itemToMeasurePosition.y;
+                    measurePosition.z = itemToMeasurePosition.z;
+                    
+                    // ...and save the measure of the item.
+                    if (itemToMeasureUUID) {
                                 
-                            // The measure is saved only if event's uuid and the chosen one are the same; also, the heading measures only will be saved if becons measures are saved, when 'isItemToMeasureRanged' is true.
-                            if ([itemUUID isEqualToString:uuid]) {
-                                
-                                // Conditional clausule for an specific issue with Apple devices' heading measures:
-                                if (!isItemToMeasureRanged) {
-                                    // Device does not deliver heading measures unless new values available; when RSSI measures from the chosen item is saved, can occur that no heading is saved until user moves the device. If it happens, the delegated method 'locationManager:didUpdateHeading:' is never called, and so, this method saves its value once. If 'isItemToMeasureRanged' flag is false means this is the first time that this item is ranged, and thus, this heading is saved as a first heading measure to, at least, save one.
-                                    [sharedData inMeasuresDataSetMeasure:lastHeadingPosition
-                                                                  ofSort:@"heading"
-                                                            withItemUUID:itemUUID
-                                                          withDeviceUUID:deviceUUID
-                                                              atPosition:measurePosition
-                                                          takenByUserDic:userDic
-                                               andWithCredentialsUserDic:credentialsUserDic];
-                                }
-                                
-                                isItemToMeasureRanged = YES;
-                                // Save the measure
-                                [sharedData inMeasuresDataSetMeasure:beacon
-                                                              ofSort:@"rssi"
-                                                        withItemUUID:itemUUID
+                        // The measure is saved only if event's uuid and the chosen one are the same; also, the heading measures only will be saved if becons measures are saved, when 'isItemToMeasureRanged' is true.
+                        if ([itemToMeasureUUID isEqualToString:uuid]) {
+                            
+                            // Conditional clausule for an specific issue with Apple devices' heading measures:
+                            if (!isItemToMeasureRanged) {
+                                // Device does not deliver heading measures unless new values available; when RSSI measures from the chosen item is saved, can occur that no heading is saved until user moves the device. If it happens, the delegated method 'locationManager:didUpdateHeading:' is never called, and so, this method saves its value once. If 'isItemToMeasureRanged' flag is false means this is the first time that this item is ranged, and thus, this heading is saved as a first heading measure to, at least, save one.
+                                [sharedData inMeasuresDataSetMeasure:lastHeadingPosition
+                                                              ofSort:@"heading"
+                                                        withItemUUID:itemToMeasureUUID
                                                       withDeviceUUID:deviceUUID
                                                           atPosition:measurePosition
                                                       takenByUserDic:userDic
                                            andWithCredentialsUserDic:credentialsUserDic];
                             }
+                                
+                            isItemToMeasureRanged = YES;
+                            newMeasuresSaved = YES;
+                            // Save the measure
+                            [sharedData inMeasuresDataSetMeasure:beacon
+                                                          ofSort:@"rssi"
+                                                    withItemUUID:itemToMeasureUUID
+                                                  withDeviceUUID:deviceUUID
+                                                      atPosition:measurePosition
+                                                  takenByUserDic:userDic
+                                       andWithCredentialsUserDic:credentialsUserDic];
                         }
+                        
                     } else {
                         NSLog(@"[ERROR][LMRTL] Measure not saved since user did not choose any item.");
                         return;
@@ -359,12 +348,19 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     
                 }
                 
-                // Notify that there are new measures
-                NSLog(@"[NOTI][LMRTL] Notification \"ranging/newMeasuresAvalible\" posted.");
-                [[NSNotificationCenter defaultCenter]
-                 postNotificationName:@"ranging/newMeasuresAvalible"
-                 object:nil];
+                if(newMeasuresSaved){
+                    // Notify that there are new measures
+                    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+                    [data setObject:itemToMeasureUUID forKey:@"calibrationUUID"];
+                    NSLog(@"[NOTI][LMRTL] Notification \"ranging/newMeasuresAvalible\" posted.");
+                    [[NSNotificationCenter defaultCenter]
+                     postNotificationName:@"ranging/newMeasuresAvalible"
+                     object:nil
+                     userInfo:data];
+                }
                                     
+            } else {
+                NSLog(@"[ERROR][LMRTL] Calling mode is not kModeRhoThetaLocating.");
             }
             
         } else { // If is idle or traveling...
@@ -419,36 +415,32 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         // If a rho type system
         if ([mode isModeKey:kModeRhoThetaLocating]) {
             
-            // The heading measures in this mode are only saved if there is already any beacon measure saved...
+            // The heading measures in this mode are only saved if there is already any beacon measure saved
             if(isItemToMeasureRanged) {
-                // ...and if the user did select the item to aim to, whose item dictionary is stored in session dictionary as 'itemChosenByUser'.
-                NSMutableDictionary * itemChosenByUserDic = [sharedData
-                                                             fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                             andCredentialsUserDic:credentialsUserDic
-                                                             ];
-                // If its not null retrieve the information needed.
-                NSString * itemUUID;
-                if (itemChosenByUserDic) {
-                    itemUUID = itemChosenByUserDic[@"uuid"];
-                }
                 
-                if (itemChosenByUserDic) {
+                if (itemToMeasureUUID) {
+                    
+                    // Get position facet's information...
                     RDPosition * measurePosition = [[RDPosition alloc] init];
-                    measurePosition.x = position.x;
-                    measurePosition.y = position.y;
-                    measurePosition.z = position.z;
+                    measurePosition.x = itemToMeasurePosition.x;
+                    measurePosition.y = itemToMeasurePosition.y;
+                    measurePosition.z = itemToMeasurePosition.z;
+                    measurePosition.z = itemToMeasurePosition.z;
                     
                     [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithDouble:[newHeading trueHeading]*M_PI/180.0]
                                                   ofSort:@"heading"
-                                            withItemUUID:itemUUID
+                                            withItemUUID:itemToMeasureUUID
                                           withDeviceUUID:deviceUUID
                                               atPosition:nil
                                           takenByUserDic:userDic
                                andWithCredentialsUserDic:credentialsUserDic];
                 }
+                
             } else {
                 NSLog(@"[INFO][LMRTL] User did choose a UUID source that is not being ranging; disposing.");
             }
+        } else {
+            NSLog(@"[ERROR][LMRTL] Calling mode is not kModeRhoThetaModelling.");
         }
         
     } else { // If is idle...
@@ -502,7 +494,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         }
         
         // Get the measuring mode and items for initializing
-        NSMutableArray * items = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
         MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                         andCredentialsUserDic:credentialsUserDic];
         monitoredRegions = [[NSMutableArray alloc] init];
@@ -514,42 +505,48 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             
             if ([mode isModeKey:kModeRhoThetaLocating]) {
                 
-                // Resgiter the regions to be monitorized
-                for (NSMutableDictionary * itemDic in items) {
+                // Get class variables to get the item's position facet from the item chosen by user to measure (locating mode)
+                NSMutableDictionary * itemChosenByUserDic = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
+                itemToMeasureUUID = itemChosenByUserDic[@"uuid"];
+                if (itemChosenByUserDic[@"position"]) {
+                    itemToMeasurePosition = itemChosenByUserDic[@"position"];
+                } else {
+                    NSLog(@"[ERROR][LMRTL] No position found in item to be measured.");
+                }
+                
+                // Get class variables to get the item's position facet from the item chosen by user to be the device (locating mode)
+                NSDictionary * dataDic = [notification userInfo];
+                NSMutableDictionary * itemDic = dataDic[@"itemDic"];
+                deviceUUID = itemDic[@"uuid"];
                     
-                    // Could be a position or a beacon
-                    if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
-                        NSString * uuidString = itemDic[@"uuid"];
-                        NSInteger major = [itemDic[@"major"] integerValue];
-                        NSInteger minor = [itemDic[@"minor"] integerValue];
-                        NSString * identifier = itemDic[@"identifier"];
-                        
-                        // Create a NSUUID with proximity UUID of the broadcasting beacons
-                        NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:uuidString];
-                        
-                        // Setup searching region with proximity UUID as the broadcasting beacon
-                        CLBeaconRegion * region = [[CLBeaconRegion alloc] initWithProximityUUID:uuid major:major minor:minor identifier:identifier];
-                        [monitoredRegions addObject:region];
-                        
-                        [locationManager startRangingBeaconsInRegion:region];
-                        NSLog(@"[INFO][LMRTL] Device monitorizes a region:");
-                        NSLog(@"[INFO][LMRTL] -> %@", [[region proximityUUID] UUIDString]);
-                        
-                        // But if its position is loaded, the user wants to use it to locate itself against them
-                        if (itemDic[@"position"]) {
-                            [monitoredPositions addObject:itemDic[@"position"]];
-                        }
-                    }
-                    if ([@"position" isEqualToString:itemDic[@"sort"]]) {
-                        [monitoredPositions addObject:itemDic[@"position"]];
-                    }
+                // Could be a position or a beacon
+                if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
+                    NSString * uuidString = itemDic[@"uuid"];
+                    NSInteger major = [itemDic[@"major"] integerValue];
+                    NSInteger minor = [itemDic[@"minor"] integerValue];
+                    NSString * identifier = itemDic[@"identifier"];
                     
+                    // Create a NSUUID with proximity UUID of the broadcasting beacons
+                    NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:uuidString];
+                    
+                    // Setup searching region with proximity UUID as the broadcasting beacon
+                    CLBeaconRegion * region = [[CLBeaconRegion alloc] initWithProximityUUID:uuid major:major minor:minor identifier:identifier];
+                    [monitoredRegions addObject:region];
+                    
+                    [locationManager startRangingBeaconsInRegion:region];
+                    NSLog(@"[INFO][LMRTL] Device monitorizes a region:");
+                    NSLog(@"[INFO][LMRTL] -> %@", [[region proximityUUID] UUIDString]);
+                    
+                } else {
+                    NSLog(@"[ERROR][LMRTL] Item to measure is not a iBeacon device.");
                 }
                 
                 // Start heading mesures
                 [locationManager startUpdatingHeading];
                 
                 NSLog(@"[INFO][LMRTL] Start updating compass and iBeacons.");
+            } else {
+                NSLog(@"[ERROR][LMRTL] Calling mode is not kModeRhoThetaLocating.");
             }
             
         }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied ||
@@ -583,11 +580,11 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
  */
 - (void) rangingMeasureFinishedWithErrors:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"lmd/rangingMeasureFinishedWithErrors"]){
-        NSLog(@"[NOTI][LMRTM] Notification \"lmd/rangingMeasureFinishedWithErrors\" recived.");
+        NSLog(@"[NOTI][LMRTL] Notification \"lmd/rangingMeasureFinishedWithErrors\" recived.");
         [self stopRoutine];
         // Components
         [sharedData resetMeasuresWithCredentialsUserDic:credentialsUserDic];
-        NSLog(@"[INFO][LMRTM] Stop updating compass and iBeacons.");
+        NSLog(@"[INFO][LMRTL] Stop updating compass and iBeacons.");
     }
 }
 
@@ -620,10 +617,10 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
         
         // Instance variables
         // Set device's location at the origin
-        position = [[RDPosition alloc] init];
-        position.x = [NSNumber numberWithFloat:0.0];
-        position.y = [NSNumber numberWithFloat:0.0];
-        position.z = [NSNumber numberWithFloat:0.0];
+        itemToMeasurePosition = [[RDPosition alloc] init];
+        itemToMeasurePosition.x = [NSNumber numberWithFloat:0.0];
+        itemToMeasurePosition.y = [NSNumber numberWithFloat:0.0];
+        itemToMeasurePosition.z = [NSNumber numberWithFloat:0.0];
         
         isItemToMeasureRanged = NO;
         // Heading is not delivered unless new values available; when RSSI measures from the chosen UUID is saved, no heading is saved until user moves the device; thus, this location is saved if no heading measure is taken
