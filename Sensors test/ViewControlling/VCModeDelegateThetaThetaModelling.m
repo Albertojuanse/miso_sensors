@@ -483,8 +483,12 @@
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
     {
-        return [[sharedData fromItemDataGetItemsWithSort:@"beacon"
-                                   andCredentialsUserDic:credentialsUserDic] count] + 1;
+        // Select the source of items; both beacons and empty positions are shown
+        NSInteger beaconsCount = [[sharedData fromItemDataGetItemsWithSort:@"beacon"
+                                                     andCredentialsUserDic:credentialsUserDic] count];
+        NSInteger emptyPositionsCount = [[sharedData fromItemDataGetItemsWithSort:@"empty_position"
+                                                            andCredentialsUserDic:credentialsUserDic] count];
+        return beaconsCount + emptyPositionsCount + 1;
     } else { // Type not found
         [self alertUserWithTitle:@"Items won't be loaded."
                          message:[NSString stringWithFormat:@"Database could not be accessed; please, try again later."]
@@ -516,24 +520,40 @@
     if (
         [sharedData validateCredentialsUserDic:credentialsUserDic]
         )
-    {        
-        // Check weather it is a cell with an item or the extra one
-        NSMutableArray * itemsDic = [sharedData fromItemDataGetItemsWithSort:@"beacon"
-                                                       andCredentialsUserDic:credentialsUserDic];
+    {
         
-        if (indexPath.row > itemsDic.count - 1) {
+        // Select the source of items; both beacons and empty positions are shown
+        NSMutableArray * beaconItems = [sharedData fromItemDataGetItemsWithSort:@"beacon"
+                                                          andCredentialsUserDic:credentialsUserDic];
+        NSInteger beaconsCount = [beaconItems count];
+        NSMutableArray * emptyPositionItems = [sharedData fromItemDataGetItemsWithSort:@"empty_position"
+                                                          andCredentialsUserDic:credentialsUserDic];
+        NSInteger emptyPositionsCount = [emptyPositionItems count];
+        
+        // Check weather it is a cell with an item or the extra one
+        if (indexPath.row >= beaconsCount + emptyPositionsCount) {
+            // Empty cell
             cell.textLabel.text = [NSString stringWithFormat:@"+"];
             cell.textLabel.textColor = [UIColor colorWithWhite: 0.0 alpha:1];
             cell.textLabel.textAlignment = NSTextAlignmentCenter;
+            
         } else {
-            // Select the source of items
-            NSMutableDictionary * itemDic = [itemsDic objectAtIndex:indexPath.row];
+            
+            // Load the item depending of the source
+            NSMutableDictionary * itemDic = nil;
+            if (indexPath.row < beaconsCount) {
+                itemDic = [beaconItems objectAtIndex:indexPath.row];
+            }
+            if (indexPath.row >= beaconsCount && indexPath.row < beaconsCount + emptyPositionsCount) {
+                itemDic = [beaconItems objectAtIndex:indexPath.row - beaconsCount];
+            }
+            
             cell.textLabel.numberOfLines = 0; // Means any number
             
             // If it is a beacon
             if ([@"beacon" isEqualToString:itemDic[@"sort"]]) {
                 
-                            [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
+                [cell.imageView setImage:[VCDrawings imageForBeaconInNormalThemeColor]];
                 
                 // Its description depends on if exist its position or its type
                 // Compose the description
@@ -563,6 +583,30 @@
                                      itemMinor];
                 cell.textLabel.text = beaconDescription;
 
+            } else if ([@"empty_position" isEqualToString:itemDic[@"sort"]]) {
+                
+                // Set its icon
+                [cell.imageView setImage:[VCDrawings imageForPositionInNormalThemeColor]];
+
+                // Compose the description
+                NSString * positionDescription = [[NSString alloc] init];
+                positionDescription = [positionDescription stringByAppendingString:itemDic[@"identifier"]];;
+                positionDescription = [positionDescription stringByAppendingString:@" "];
+                // If its type is set
+                MDType * type = itemDic[@"type"];
+                if (type) {
+                   positionDescription = [positionDescription stringByAppendingString:[type description]];
+                }
+                positionDescription = [positionDescription stringByAppendingString:@"\n"];
+                // Can have a position
+                RDPosition * position = itemDic[@"position"];
+                if (position) {
+                   positionDescription = [positionDescription stringByAppendingString:[position description]];
+                   // Inform that this item has a position
+                   [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
+                }
+                cell.textLabel.text = positionDescription;
+                
             } else {
                 NSLog(@"[ERROR]%@ An item of sort %@ loaded as a beacon.",
                       ERROR_DESCRIPTION_VCETTM,
@@ -604,18 +648,60 @@
         // First, verify that the user did choose a position to measure from.
         if ([self processItemChosenByUser]) {
             
-            // Check weather it is a cell with an item or the extra one
-            NSMutableArray * itemsDic = [sharedData fromItemDataGetItemsWithSort:@"beacon"
-                                                           andCredentialsUserDic:credentialsUserDic];
+            // Select the source of items; both beacons and empty positions are shown
+            NSMutableArray * beaconItems = [sharedData fromItemDataGetItemsWithSort:@"beacon"
+                                                              andCredentialsUserDic:credentialsUserDic];
+            NSInteger beaconsCount = [beaconItems count];
+            NSMutableArray * emptyPositionItems = [sharedData fromItemDataGetItemsWithSort:@"empty_position"
+                                                              andCredentialsUserDic:credentialsUserDic];
+            NSInteger emptyPositionsCount = [emptyPositionItems count];
             
-            if (indexPath.row > itemsDic.count - 1) {
-                // N U E V A  P O S I C I Ó N
+            // Check weather it is a cell with an item or the extra one
+            if (indexPath.row >= beaconsCount + emptyPositionsCount) {
+                
+                // The user wants to create a new position item based on some measures.
+                // Create an "empty" position and save
+                NSMutableDictionary * itemDic = [[NSMutableDictionary alloc] init];
+                itemDic[@"sort"] = @"empty_position";
+                NSString * itemUUID = [[NSUUID UUID] UUIDString];
+                itemDic[@"uuid"] = itemUUID;
+                NSString * itemIdentifier = [@"empty_position" stringByAppendingString:[itemUUID substringFromIndex:24]];
+                itemIdentifier = [itemIdentifier stringByAppendingString:@"@miso.uam.es"];
+                itemDic[@"identifier"] = itemIdentifier;
+                
+                // Upload the table when the item is added
+                [tableView performBatchUpdates:^
+                {
+                    // Add the item in shared data
+                    [sharedData inItemDataAddItemDic:itemDic
+                              withCredentialsUserDic:credentialsUserDic];
+                    
+                    // Update the table
+                    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+                    [tableView insertRowsAtIndexPaths:@[indexPath]
+                                     withRowAnimation:UITableViewRowAnimationAutomatic];
+                }
+                                    completion:^(BOOL finished)
+                {
+                    [tableView reloadData];
+                }
+                 ];
+                
+                // The user will select it again and the following else statement is executed
+                
             } else {
+
                 // Select the source of items
                 UITableViewCell * selectedCell = [tableView cellForRowAtIndexPath:indexPath];
                 
-                // Load the item depending and set as selected
-                NSMutableDictionary * itemDic = [itemsDic objectAtIndex:indexPath.row];
+                // Load the item depending of the source
+                NSMutableDictionary * itemDic = nil;
+                if (indexPath.row < beaconsCount) {
+                    itemDic = [beaconItems objectAtIndex:indexPath.row];
+                }
+                if (indexPath.row >= beaconsCount && indexPath.row < beaconsCount + emptyPositionsCount) {
+                    itemDic = [beaconItems objectAtIndex:indexPath.row - beaconsCount];
+                }
                 
                 // The beacons with positions have got a detailMark
                 if ([selectedCell accessoryType] == UITableViewCellAccessoryDetailButton) { // If detailed
