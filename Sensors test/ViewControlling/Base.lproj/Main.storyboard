@@ -1157,22 +1157,15 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lkn-Mp-7ch" userLabel="Canvas" customClass="Canvas">
                                         <rect key="frame" x="32" y="92" width="704" height="847"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aVK-XL-Kwy">
-                                                <rect key="frame" x="640" y="785" width="32" height="30"/>
-                                                <state key="normal" title="Next"/>
-                                                <connections>
-                                                    <action selector="handleButtonNext:" destination="okL-35-9pm" eventType="touchUpInside" id="bzY-pL-xA0"/>
-                                                </connections>
-                                            </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xub-Bw-BYp">
-                                                <rect key="frame" x="574" y="785" width="34" height="30"/>
+                                                <rect key="frame" x="638" y="785" width="34" height="30"/>
                                                 <state key="normal" title="Back"/>
                                                 <connections>
                                                     <action selector="handleButtonBack:" destination="okL-35-9pm" eventType="touchUpInside" id="IdH-l2-m5C"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cwf-Zo-7tw">
-                                                <rect key="frame" x="501" y="785" width="41" height="30"/>
+                                                <rect key="frame" x="565" y="785" width="41" height="30"/>
                                                 <state key="normal" title="Finish"/>
                                                 <connections>
                                                     <action selector="handleButtonFinish:" destination="okL-35-9pm" eventType="touchUpInside" id="SIJ-Rs-Rhc"/>
@@ -1203,14 +1196,12 @@
                                         <constraints>
                                             <constraint firstItem="MbH-jr-hlt" firstAttribute="top" secondItem="Lkn-Mp-7ch" secondAttribute="top" constant="32" id="BGr-Il-z3f"/>
                                             <constraint firstAttribute="bottom" secondItem="cwf-Zo-7tw" secondAttribute="bottom" constant="32" id="CUR-Pz-nNO"/>
-                                            <constraint firstItem="aVK-XL-Kwy" firstAttribute="leading" secondItem="Xub-Bw-BYp" secondAttribute="trailing" constant="32" id="Lg8-4Z-fbm"/>
                                             <constraint firstAttribute="bottom" secondItem="Xub-Bw-BYp" secondAttribute="bottom" constant="32" id="Q0t-YA-ASb"/>
                                             <constraint firstItem="cnN-l6-fG4" firstAttribute="top" secondItem="Lkn-Mp-7ch" secondAttribute="top" constant="32" id="SCg-Py-KbY"/>
                                             <constraint firstItem="MbH-jr-hlt" firstAttribute="leading" secondItem="cnN-l6-fG4" secondAttribute="trailing" constant="32" id="TFB-9j-EDP"/>
-                                            <constraint firstAttribute="bottom" secondItem="aVK-XL-Kwy" secondAttribute="bottom" constant="32" id="anx-Oc-rkb"/>
-                                            <constraint firstAttribute="trailing" secondItem="aVK-XL-Kwy" secondAttribute="trailing" constant="32" id="btd-ZU-O93"/>
                                             <constraint firstItem="cnN-l6-fG4" firstAttribute="leading" secondItem="Lkn-Mp-7ch" secondAttribute="leading" constant="32" id="d6M-cS-xzM"/>
                                             <constraint firstItem="Xub-Bw-BYp" firstAttribute="leading" secondItem="cwf-Zo-7tw" secondAttribute="trailing" constant="32" id="jxe-RP-AMl"/>
+                                            <constraint firstAttribute="trailing" secondItem="Xub-Bw-BYp" secondAttribute="trailing" constant="32" id="vbu-cd-6DE"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QG3-lL-fir" customClass="VCToolbar">
@@ -1278,7 +1269,6 @@
                         <outlet property="buttonAddMeasure" destination="MbH-jr-hlt" id="rfc-ep-flX"/>
                         <outlet property="buttonBack" destination="Xub-Bw-BYp" id="gAn-Cq-CCc"/>
                         <outlet property="buttonFinish" destination="cwf-Zo-7tw" id="Mvh-6C-ig7"/>
-                        <outlet property="buttonNext" destination="aVK-XL-Kwy" id="HNR-0Z-Twp"/>
                         <outlet property="canvas" destination="Lkn-Mp-7ch" id="gAM-lh-vkf"/>
                         <outlet property="labelStatus" destination="2gF-xs-nhO" id="SKS-cI-4cu"/>
                         <outlet property="logOutButton" destination="arb-kn-b7V" id="ZvU-gU-TVH"/>

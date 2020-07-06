@@ -75,10 +75,6 @@
                             forState:UIControlStateNormal];
     [self.buttonFinish setTitleColor:disabledThemeColor
                             forState:UIControlStateDisabled];
-    [self.buttonNext setTitleColor:normalThemeColor
-                          forState:UIControlStateNormal];
-    [self.buttonNext setTitleColor:disabledThemeColor
-                          forState:UIControlStateDisabled];
     [self.buttonBack setTitleColor:normalThemeColor
                           forState:UIControlStateNormal];
     [self.buttonBack setTitleColor:disabledThemeColor
@@ -512,25 +508,6 @@
 - (IBAction)handleButtonBack:(id)sender
 {
     [self performSegueWithIdentifier:@"fromEDITINGToSelectPosition" sender:sender];
-}
-
-/*!
- @method handleButtonNext:
- @discussion This method is called one the user wnats to locate a new position and thus a new UUID is generated for it.
- */
-- (IBAction)handleButtonNext:(id)sender
-{
-    // New UUID
-    // TODO: To notification. Aberto J. 2020/06/13.
-    if ([mode isModeKey:kModeThetaThetaLocating]) {
-        LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)location;
-        locatedPositionUUID = [[NSUUID UUID] UUIDString];
-        [lmdelegate setDeviceUUID:locatedPositionUUID];
-    }
-    if ([mode isModeKey:kModeRhoThetaModelling]) {
-        LMDelegateRhoThetaModelling * lmdelegate = (LMDelegateRhoThetaModelling *)location;
-        locatedPositionUUID = [[NSUUID UUID] UUIDString];
-    }
 }
 
 /*!
