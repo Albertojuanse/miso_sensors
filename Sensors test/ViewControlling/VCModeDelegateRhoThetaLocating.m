@@ -671,7 +671,7 @@
                 itemDic[@"sort"] = @"empty_position";
                 NSString * itemUUID = [[NSUUID UUID] UUIDString];
                 itemDic[@"uuid"] = itemUUID;
-                NSString * itemIdentifier = [@"empty_position" stringByAppendingString:[itemUUID substringFromIndex:24]];
+                NSString * itemIdentifier = [@"empty_position" stringByAppendingString:[itemUUID substringFromIndex:31]];
                 itemIdentifier = [itemIdentifier stringByAppendingString:@"@miso.uam.es"];
                 itemDic[@"identifier"] = itemIdentifier;
                 
