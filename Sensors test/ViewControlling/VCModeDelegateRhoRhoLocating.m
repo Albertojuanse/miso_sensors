@@ -543,7 +543,7 @@
                 itemDic = [beaconItems objectAtIndex:indexPath.row];
             }
             if (indexPath.row >= beaconsCount && indexPath.row < beaconsCount + emptyPositionsCount) {
-                itemDic = [beaconItems objectAtIndex:indexPath.row - beaconsCount];
+                itemDic = [emptyPositionItems objectAtIndex:indexPath.row - beaconsCount];
             }
             
             cell.textLabel.numberOfLines = 0; // Means any number
