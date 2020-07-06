@@ -22,7 +22,6 @@
 @required
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 #pragma mark - General VCModeDelegate methods
 - (NSString *)getErrorDescription;

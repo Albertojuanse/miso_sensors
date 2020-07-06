@@ -114,11 +114,6 @@
 */
 - (void)loadComponents
 {
-    // TODO: Use UUID from component 'device'. Alberto J. 2020/01/20.
-    if (!deviceUUID) {
-        deviceUUID = [[NSUUID UUID] UUIDString];
-    }
-    
     // Strategy pattern; different location delegate for each mode
     delegate = [sharedData fromSessionDataGetDelegateFromUserWithUserDic:userDic
                                                    andCredentialsUserDic:credentialsUserDic];
@@ -509,15 +504,6 @@
     location = givenLocation;
 }
 
-/*!
- @method setDeviceUUID:
- @discussion This method sets the NSString variable 'deviceUUID'.
- */
-- (void) setDeviceUUID:(NSString *)givenDeviceUUID
-{
-    deviceUUID = givenDeviceUUID;
-}
-
 #pragma mark - Buttons event handlers
 /*!
  @method handleButtonBack:
@@ -540,13 +526,10 @@
         LMDelegateThetaThetaLocating * lmdelegate = (LMDelegateThetaThetaLocating *)location;
         locatedPositionUUID = [[NSUUID UUID] UUIDString];
         [lmdelegate setDeviceUUID:locatedPositionUUID];
-        [motion setDeviceUUID:locatedPositionUUID];
     }
     if ([mode isModeKey:kModeRhoThetaModelling]) {
         LMDelegateRhoThetaModelling * lmdelegate = (LMDelegateRhoThetaModelling *)location;
         locatedPositionUUID = [[NSUUID UUID] UUIDString];
-        [lmdelegate setDeviceUUID:locatedPositionUUID];
-        [motion setDeviceUUID:locatedPositionUUID];
     }
 }
 

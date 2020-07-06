@@ -88,13 +88,12 @@
 }
 
 /*!
- @method initWithSharedData:userDic:thetaThetaSystem:deviceUUID:andCredentialsUserDic:
- @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
+ @method initWithSharedData:userDic:thetaThetaSystem:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved and the credentials of the user for access it.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
                   thetaThetaSystem:(RDThetaThetaSystem *)initThetaThetaSystem
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self initWithSharedData:initSharedData];
@@ -102,7 +101,6 @@
         sharedData = initSharedData;
         credentialsUserDic = initCredentialsUserDic;
         userDic = initUserDic;
-        deviceUUID = initDeviceUUID;
         thetaThetaSystem = initThetaThetaSystem;
     }
     return self;
@@ -127,16 +125,6 @@
 - (void)setUserDic:(NSMutableDictionary *)givenUserDic
 {
     userDic = givenUserDic;
-    return;
-}
-
-/*!
- @method setDeviceUUID:
- @discussion This method sets the UUID to identify the measures when self-locating.
- */
-- (void)setDeviceUUID:(NSString *)givenDeviceUUID
-{
-    deviceUUID = givenDeviceUUID;
     return;
 }
 

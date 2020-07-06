@@ -11,12 +11,11 @@
 @implementation VCModeDelegateRhoRhoLocating : NSObject
 
 /*!
- @method initWithSharedData:userDic:deviceUUID:andCredentialsUserDic:
- @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
+ @method initWithSharedData:userDic:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved and the credentials of the user for access it.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [super init];
@@ -24,7 +23,7 @@
         sharedData = initSharedData;
         credentialsUserDic = initCredentialsUserDic;
         userDic = initUserDic;
-        deviceUUID = initDeviceUUID;
+        deviceUUID = [[NSUUID UUID] UUIDString];
     }
     
     return self;
@@ -68,7 +67,6 @@
     if (!rhoRhoSystem) {
         rhoRhoSystem = [[RDRhoRhoSystem alloc] initWithSharedData:sharedData
                                                               userDic:userDic
-                                                           deviceUUID:deviceUUID
                                                 andCredentialsUserDic:credentialsUserDic];
     }
     if (!location) {
@@ -76,7 +74,6 @@
         location = [[LMDelegateRhoRhoLocating alloc] initWithSharedData:sharedData
                                                                     userDic:userDic
                                                             rhoRhoSystem:rhoRhoSystem
-                                                                deviceUUID:deviceUUID
                                                      andCredentialsUserDic:credentialsUserDic];
     }
     return location;
@@ -91,14 +88,12 @@
     if (!rhoRhoSystem) {
         rhoRhoSystem = [[RDRhoRhoSystem alloc] initWithSharedData:sharedData
                                                           userDic:userDic
-                                                       deviceUUID:deviceUUID
                                             andCredentialsUserDic:credentialsUserDic];
     }
     if (!ranger) {
         ranger = [[LMRanging alloc] initWithSharedData:sharedData
                                           rhoRhoSystem:rhoRhoSystem
                                                userDic:userDic
-                                            deviceUUID:deviceUUID
                                  andCredentialsUserDic:credentialsUserDic];
     }
     return ranger;
@@ -788,11 +783,8 @@
         } else {
             deviceUUID = itemChosenByUser[@"uuid"];
         }
-        [rhoRhoSystem setDeviceUUID:deviceUUID];
         [location setPosition:position];
-        [location setDeviceUUID:deviceUUID];
         [motion setPosition:position];
-        [motion setDeviceUUID:deviceUUID];
         
         return YES;
     } else {

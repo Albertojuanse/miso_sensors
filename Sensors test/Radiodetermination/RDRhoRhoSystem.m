@@ -21,19 +21,17 @@
 }
 
 /*!
- @method initWithSharedData:userDic:deviceUUID:andCredentialsUserDic:
- @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
+ @method initWithSharedData:userDic:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved and the credentials of the user for access it.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self init];
     sharedData = initSharedData;
     credentialsUserDic = initCredentialsUserDic;
     userDic = initUserDic;
-    deviceUUID = initDeviceUUID;
     return self;
 }
 
@@ -55,16 +53,6 @@
 - (void)setUserDic:(NSMutableDictionary *)givenUserDic
 {
     userDic = givenUserDic;
-    return;
-}
-
-/*!
- @method setDeviceUUID:
- @discussion This method sets the UUID to identify the measures when self-locating.
- */
-- (void)setDeviceUUID:(NSString *)givenDeviceUUID
-{
-    deviceUUID = givenDeviceUUID;
     return;
 }
 
@@ -352,8 +340,8 @@
             }
         }
     }
+    /*
     if ([mode isModeKey:kModeRhoRhoLocating]) {
-        
         // In a locating mode the device must be located using the measures from items. That implies that, each UUID groups the measures taken from a certain beacon and the device position must be calculed using all of them.
         
         // It is needed the whole of positions where measures were generated and its maximun value to caluculate a grid in which locate every item; save also its UUID in the same order. Retrieve that data using selected items by user.
@@ -488,6 +476,7 @@
             }
         }
     }
+     */
 
     // If not a rho rho type system
     if (

@@ -186,22 +186,20 @@
 }
 
 /*!
- @method initWithSharedData:userDic:rhoRhoSystem:rhoThetaSystem:thetaThetaSystem:deviceUUID:andCredentialsUserDic:
- @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the location systems, the device's UUID and the credentials of the user for access it.
+ @method initWithSharedData:userDic:rhoRhoSystem:rhoThetaSystem:thetaThetaSystem:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the location systems and the credentials of the user for access it.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
                       rhoRhoSystem:(RDRhoRhoSystem *)initRhoRhoSystem
                     rhoThetaSystem:(RDRhoThetaSystem *)initRhoThetaSystem
                   thetaThetaSystem:(RDThetaThetaSystem *)initThetaThetaSystem
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self initWithSharedData:initSharedData];
     if (self) {
         credentialsUserDic = initCredentialsUserDic;
         userDic = initUserDic;
-        deviceUUID = initDeviceUUID;
         rhoRhoSystem = initRhoRhoSystem;
         rhoThetaSystem = initRhoThetaSystem;
         thetaThetaSystem = initThetaThetaSystem;
@@ -210,20 +208,18 @@
 }
 
 /*!
- @method initWithSharedData:userDic:thetaThetaSystem:deviceUUID:andCredentialsUserDic:
- @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the location systems, the device's UUID and the credentials of the user for access it.
+ @method initWithSharedData:userDic:thetaThetaSystem:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the location systems and the credentials of the user for access it.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
                   thetaThetaSystem:(RDThetaThetaSystem *)initThetaThetaSystem
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self initWithSharedData:initSharedData];
     if (self) {
         credentialsUserDic = initCredentialsUserDic;
         userDic = initUserDic;
-        deviceUUID = initDeviceUUID;
         thetaThetaSystem = initThetaThetaSystem;
     }
     return self;
@@ -231,19 +227,17 @@
 
 /*!
 @method initWithSharedData:userDic:rhoThetaSystem:deviceUUID:andCredentialsUserDic:
-@discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the location systems, the device's UUID and the credentials of the user for access it.
+@discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the location systems and the credentials of the user for access it.
 */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
                     rhoThetaSystem:(RDRhoThetaSystem *)initRhoThetaSystem
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self initWithSharedData:initSharedData];
     if (self) {
         credentialsUserDic = initCredentialsUserDic;
         userDic = initUserDic;
-        deviceUUID = initDeviceUUID;
         rhoThetaSystem = initRhoThetaSystem;
     }
     return self;
@@ -293,25 +287,6 @@
     position.x = [NSNumber numberWithFloat:[givenPosition.x floatValue]];
     position.y = [NSNumber numberWithFloat:[givenPosition.y floatValue]];
     position.z = [NSNumber numberWithFloat:[givenPosition.z floatValue]];
-}
-
-/*!
- @method setDeviceUUID:
- @discussion This method sets the UUID to identify the measures when self-locating.
- */
-- (void)setDeviceUUID:(NSString *)givenDeviceUUID
-{
-    deviceUUID = givenDeviceUUID;
-    if (rhoRhoSystem) {
-        [rhoRhoSystem setDeviceUUID:deviceUUID];
-    }
-    if (rhoThetaSystem) {
-        [rhoThetaSystem setDeviceUUID:deviceUUID];
-    }
-    if (thetaThetaSystem) {
-        [thetaThetaSystem setDeviceUUID:deviceUUID];
-    }
-    return;
 }
 
 #pragma mark - Location manager methods
@@ -952,6 +927,24 @@
 - (void) startGyroscopeHeadingMeasuring:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"startGyroscopeHeadingMeasuring"]){
         NSLog(@"[NOTI][MM] Notification \"startGyroscopeHeadingMeasuring\" recived.");
+        
+        // TODO: Motion depending on the mode. Alberto J. 2020/07/07.
+        /*
+        // Get class variables to get the item's position facet from the item chosen by user to measure (locating mode)
+        NSMutableDictionary * itemChosenByUserDic = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
+        itemToMeasureUUID = itemChosenByUserDic[@"uuid"];
+        if (itemChosenByUserDic[@"position"]) {
+            itemToMeasurePosition = itemChosenByUserDic[@"position"];
+        } else {
+            NSLog(@"[ERROR][LMRTL] No position found in item to be measured.");
+        }
+        
+        // Get class variables to get the item's position facet from the item chosen by user to be the device (locating mode)
+        NSDictionary * dataDic = [notification userInfo];
+        NSMutableDictionary * itemDic = dataDic[@"itemDic"];
+        deviceUUID = itemDic[@"uuid"];
+         */
+        
         // Reset the gyroscope values
         calibration_counter = 0;
         d_gy_p = 0.0;

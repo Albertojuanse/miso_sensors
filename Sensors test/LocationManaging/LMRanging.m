@@ -86,12 +86,11 @@
 }
 
 /*!
- @method initWithSharedData:userDic:deviceUUID:andCredentialsUserDic:
- @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
+ @method initWithSharedData:userDic:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved and the credentials of the user for access it.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self initWithSharedData:initSharedData];
@@ -99,24 +98,21 @@
         sharedData = initSharedData;
         credentialsUserDic = initCredentialsUserDic;
         userDic = initUserDic;
-        deviceUUID = initDeviceUUID;
     }
     return self;
 }
 
 /*!
- @method initWithSharedData:rhoRhoSystem:userDic:deviceUUID:andCredentialsUserDic:
- @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
+ @method initWithSharedData:rhoRhoSystem:userDic:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved and the credentials of the user for access it.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                       rhoRhoSystem:(RDRhoRhoSystem *)initRhoRhoSystem
                            userDic:(NSMutableDictionary *)initUserDic
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self initWithSharedData:initSharedData
                             userDic:initUserDic
-                         deviceUUID:initDeviceUUID
               andCredentialsUserDic:initCredentialsUserDic];
     if (self) {
         rhoRhoSystem = initRhoRhoSystem;
@@ -125,18 +121,16 @@
 }
 
 /*!
- @method initWithSharedData:rhoThetaSystem:userDic:deviceUUID:andCredentialsUserDic:
- @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
+ @method initWithSharedData:rhoThetaSystem:userDic:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved and the credentials of the user for access it.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                     rhoThetaSystem:(RDRhoThetaSystem *)initRhoThetaSystem
                            userDic:(NSMutableDictionary *)initUserDic
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self initWithSharedData:initSharedData
                             userDic:initUserDic
-                         deviceUUID:initDeviceUUID
               andCredentialsUserDic:initCredentialsUserDic];
     if (self) {
         rhoThetaSystem = initRhoThetaSystem;
@@ -145,18 +139,16 @@
 }
 
 /*!
- @method initWithSharedData:thetaThetaSystem:userDic:deviceUUID:andCredentialsUserDic:
- @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
+ @method initWithSharedData:thetaThetaSystem:userDic:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved and the credentials of the user for access it.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                   thetaThetaSystem:(RDThetaThetaSystem *)initThetaThetaSystem
                            userDic:(NSMutableDictionary *)initUserDic
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self initWithSharedData:initSharedData
                             userDic:initUserDic
-                         deviceUUID:initDeviceUUID
               andCredentialsUserDic:initCredentialsUserDic];
     if (self) {
         thetaThetaSystem = initThetaThetaSystem;
@@ -184,17 +176,6 @@
     userDic = givenUserDic;
     return;
 }
-
-/*!
- @method setDeviceUUID:
- @discussion This method sets the UUID to identify the measures when self-locating.
- */
-- (void)setDeviceUUID:(NSString *)givenDeviceUUID
-{
-    deviceUUID = givenDeviceUUID;
-    return;
-}
-
 #pragma mark - Notification event handles
 /*!
  @method newMeasuresAvalible

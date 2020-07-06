@@ -177,15 +177,6 @@
     itemChosenByUser = givenItemChosenByUser;
 }
 
-/*!
- @method setDeviceUUID:
- @discussion This method sets the NSString variable 'deviceUUID'.
- */
-- (void) setDeviceUUID:(NSString *)givenDeviceUUID
-{
-    deviceUUID = givenDeviceUUID;
-}
-
 #pragma mark - Notification event handles
 /*!
  @method firstStepFinished:
@@ -374,11 +365,9 @@
     // Components
     location = [[LMDelegateCalibrating alloc] initWithSharedData:sharedData
                                                          userDic:userDic
-                                                      deviceUUID:deviceUUID
                                            andCredentialsUserDic:credentialsUserDic];
     ranger = [[LMRanging alloc] initWithSharedData:sharedData
                                            userDic:userDic
-                                        deviceUUID:deviceUUID
                              andCredentialsUserDic:credentialsUserDic];
     
     // Variables
@@ -404,6 +393,7 @@
     NSString * uuidToCalibrate = itemChosenByUser[@"uuid"];
     NSLog(@"[INFO][VCIS] User asked to start first calibration step with UUID: %@", uuidToCalibrate);
     [data setObject:uuidToCalibrate forKey:@"calibrationUUID"];
+    [data setObject:[[NSUUID UUID] UUIDString] forKey:@"deviceUUID"]; // Random device UUID, not used
     // And send the notification
     [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/startFirstStep"
                                                         object:nil

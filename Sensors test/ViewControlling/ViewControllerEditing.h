@@ -57,7 +57,6 @@
     
     // Context variables
     NSString * locatedPositionUUID; // This one changes when the user measures and generates a new position for the device.
-    NSString * deviceUUID;
     MDMode * mode;
     NSMutableArray * modeMetamodels;
     NSMutableArray * modeTypes;
@@ -91,6 +90,5 @@
 - (void) setSharedData:(SharedData *)givenSharedData;
 - (void) setMotionManager:(MotionManager *)givenMotion;
 - (void) setLocationManager:(CLLocationManager *)givenLocationManager;
-- (void) setDeviceUUID:(NSString *)givenDeviceUUID;
 
 @end

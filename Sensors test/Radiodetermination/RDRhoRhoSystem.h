@@ -20,7 +20,6 @@
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
-    NSString * deviceUUID;
     
     // Components
     SharedData * sharedData;
@@ -31,7 +30,6 @@
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (NSMutableDictionary *) getLocationsUsingGridAproximationWithPrecisions:(NSDictionary *)precisions;
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;

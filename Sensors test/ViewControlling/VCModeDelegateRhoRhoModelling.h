@@ -45,7 +45,6 @@ static NSString * MEASURING_STATE_MESSAGE_VCERRM = @"MEASURING; please, do not m
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 #pragma mark - General VCModeDelegate methods
 - (NSString *)getErrorDescription;

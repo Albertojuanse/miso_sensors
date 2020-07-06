@@ -42,11 +42,9 @@
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
                       rhoRhoSystem:(RDRhoRhoSystem *)initRhoRhoSystem
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void)setUserDic:(NSMutableDictionary *)givenUserDic;
-- (void)setDeviceUUID:(NSString *)givenDeviceUUID;
 - (void)setPosition:(RDPosition *)givenPosition;
 - (RDPosition *)getPosition;
 

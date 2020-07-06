@@ -42,7 +42,7 @@
 - (instancetype)initWithName:(NSString *)name
                      andRole:(NSString *)role;
 - (void)resetWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
-- (void) resetMeasuresWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (void)resetMeasuresWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // General getters
 - (NSMutableArray *)getUserDataWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;

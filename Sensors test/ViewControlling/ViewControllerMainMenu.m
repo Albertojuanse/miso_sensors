@@ -649,7 +649,6 @@
                 [sharedData inSessionDataSetDelegate:[[VCModeDelegateRhoRhoModelling alloc]
                                                       initWithSharedData:sharedData
                                                       userDic:userDic
-                                                      deviceUUID:deviceUUID
                                                       andCredentialsUserDic:credentialsUserDic]
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
@@ -662,7 +661,6 @@
                 [sharedData inSessionDataSetDelegate:[[VCModeDelegateRhoThetaModelling alloc]
                                                       initWithSharedData:sharedData
                                                       userDic:userDic
-                                                      deviceUUID:deviceUUID
                                                       andCredentialsUserDic:credentialsUserDic]
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
@@ -675,7 +673,6 @@
                 [sharedData inSessionDataSetDelegate:[[VCModeDelegateThetaThetaModelling alloc]
                                                       initWithSharedData:sharedData
                                                       userDic:userDic
-                                                      deviceUUID:deviceUUID
                                                       andCredentialsUserDic:credentialsUserDic]
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
@@ -688,7 +685,6 @@
                 [sharedData inSessionDataSetDelegate:[[VCModeDelegateRhoRhoLocating alloc]
                                                       initWithSharedData:sharedData
                                                       userDic:userDic
-                                                      deviceUUID:deviceUUID
                                                       andCredentialsUserDic:credentialsUserDic]
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
@@ -702,7 +698,6 @@
                 [sharedData inSessionDataSetDelegate:[[VCModeDelegateRhoThetaLocating alloc]
                                                       initWithSharedData:sharedData
                                                       userDic:userDic
-                                                      deviceUUID:deviceUUID
                                                       andCredentialsUserDic:credentialsUserDic]
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
@@ -716,7 +711,6 @@
                 [sharedData inSessionDataSetDelegate:[[VCModeDelegateThetaThetaLocating alloc]
                                                       initWithSharedData:sharedData
                                                       userDic:userDic
-                                                      deviceUUID:deviceUUID
                                                       andCredentialsUserDic:credentialsUserDic]
                                    toUserWithUserDic:userDic
                                andCredentialsUserDic:credentialsUserDic];
@@ -724,9 +718,7 @@
             }
             // TODO: Move this to final model view. Alberto J. 2020/01/20
             if ([chosenMode isModeKey:kModeGPSSelfLocating]) { // GPS_SELF_LOCATING
-                if (!deviceUUID) {
-                    deviceUUID = [[NSUUID UUID] UUIDString];
-                }
+                
                 // Mode is only set in shared data when GPS is started, to use it as orchestration variable
                 MDMode * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                                          andCredentialsUserDic:credentialsUserDic];
@@ -754,7 +746,6 @@
                         if (!locationGPS) {
                             locationGPS = [[LMDelegateGPS alloc] initWithSharedData:sharedData
                                                                             userDic:credentialsUserDic
-                                                                         deviceUUID:deviceUUID
                                                               andCredentialsUserDic:credentialsUserDic];
                         }
                         
@@ -771,7 +762,6 @@
                     if (!locationGPS) {
                         locationGPS = [[LMDelegateGPS alloc] initWithSharedData:sharedData
                                                                         userDic:credentialsUserDic
-                                                                     deviceUUID:deviceUUID
                                                           andCredentialsUserDic:credentialsUserDic];
                     }
                     
@@ -786,9 +776,7 @@
             }
             // TODO: Move this to final model view. Alberto J. 2020/01/20
             if ([chosenMode isModeKey:kModeCompassSelfLocating]) { // COMPASS_SELF_LOCATING
-                if (!deviceUUID) {
-                    deviceUUID = [[NSUUID UUID] UUIDString];
-                }
+                
                 // Mode is only set in shared data when GPS is started, to use it as orchestration variable
                 MDMode * currentMode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
                                                                        andCredentialsUserDic:credentialsUserDic];
@@ -816,7 +804,6 @@
                         if (!locationHeading) {
                             locationHeading = [[LMDelegateHeading alloc] initWithSharedData:sharedData
                                                                                     userDic:credentialsUserDic
-                                                                                 deviceUUID:deviceUUID
                                                                       andCredentialsUserDic:credentialsUserDic];
                         }
                         
@@ -833,7 +820,6 @@
                     if (!locationHeading) {
                         locationHeading = [[LMDelegateHeading alloc] initWithSharedData:sharedData
                                                                                 userDic:credentialsUserDic
-                                                                             deviceUUID:deviceUUID
                                                                   andCredentialsUserDic:credentialsUserDic];
                     }
                     
@@ -1209,7 +1195,6 @@ trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
                             [viewControllerItemSettings setCredentialsUserDic:credentialsUserDic];
                             [viewControllerItemSettings setUserDic:userDic];
                             [viewControllerItemSettings setSharedData:sharedData];
-                            [viewControllerItemSettings setDeviceUUID:deviceUUID];
                             [viewControllerItemSettings setItemChosenByUser:itemDic];
                             // Configure popover layout
                             UIPopoverPresentationController * popoverItemSettings =  viewControllerItemSettings.popoverPresentationController;

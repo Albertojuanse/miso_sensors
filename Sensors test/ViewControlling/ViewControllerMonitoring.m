@@ -74,11 +74,8 @@
     }
     
     // Components
-    // TODO: Use UUID from component 'device'. Alberto J. 2020/01/20.
-    NSString * deviceUUID = [[NSUUID UUID] UUIDString];
     location = [[LMDelegateMonitoring alloc] initWithSharedData:sharedData
                                                         userDic:userDic
-                                                     deviceUUID:deviceUUID
                                           andCredentialsUserDic:credentialsUserDic];
     
     // Get chosen item and set as device position

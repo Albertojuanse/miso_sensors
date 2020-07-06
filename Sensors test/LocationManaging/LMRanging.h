@@ -25,7 +25,6 @@
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
-    NSString * deviceUUID;
     
     // Components
     SharedData * sharedData;
@@ -60,22 +59,18 @@
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                       rhoRhoSystem:(RDRhoRhoSystem *)initRhoRhoSystem
                            userDic:(NSMutableDictionary *)initUserDic
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                     rhoThetaSystem:(RDRhoThetaSystem *)initRhoThetaSystem
                            userDic:(NSMutableDictionary *)initUserDic
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                   thetaThetaSystem:(RDThetaThetaSystem *)initThetaThetaSystem
                            userDic:(NSMutableDictionary *)initUserDic
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void)setUserDic:(NSMutableDictionary *)givenUserDic;

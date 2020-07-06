@@ -30,7 +30,6 @@
     NSMutableDictionary * userDic;
     
     // Variables
-    NSString * deviceUUID;
     NSMutableDictionary * itemChosenByUser;
     BOOL calibrating;
 }
@@ -51,7 +50,6 @@
 - (void) setCredentialsUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void) setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void) setSharedData:(SharedData *)givenSharedData;
-- (void) setDeviceUUID:(NSString *)givenDeviceUUID;
 - (void) setItemChosenByUser:(NSMutableDictionary *)givenItemChosenByUser;
 
 @end

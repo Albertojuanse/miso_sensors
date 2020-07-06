@@ -11,8 +11,8 @@
 @implementation VCModeDelegateRhoThetaModelling : NSObject
 
 /*!
- @method initWithSharedData:userDic:deviceUUID:andCredentialsUserDic:
- @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the device's UUID and the credentials of the user for access it.
+ @method initWithSharedData:userDic:andCredentialsUserDic:
+ @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved and the credentials of the user for access it.
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
@@ -24,7 +24,7 @@
         sharedData = initSharedData;
         credentialsUserDic = initCredentialsUserDic;
         userDic = initUserDic;
-        deviceUUID = initDeviceUUID;
+        deviceUUID = [[NSUUID UUID] UUIDString];
     }
     
     return self;
@@ -68,7 +68,6 @@
     if (!rhoThetaSystem) {
         rhoThetaSystem = [[RDRhoThetaSystem alloc] initWithSharedData:sharedData
                                                               userDic:userDic
-                                                           deviceUUID:deviceUUID
                                                 andCredentialsUserDic:credentialsUserDic];
     }
     if (!location) {
@@ -76,7 +75,6 @@
         location = [[LMDelegateRhoThetaModelling alloc] initWithSharedData:sharedData
                                                                    userDic:userDic
                                                             rhoThetaSystem:rhoThetaSystem
-                                                                deviceUUID:deviceUUID
                                                      andCredentialsUserDic:credentialsUserDic];
     }
     return location;
@@ -91,14 +89,12 @@
     if (!rhoThetaSystem) {
         rhoThetaSystem = [[RDRhoThetaSystem alloc] initWithSharedData:sharedData
                                                               userDic:userDic
-                                                           deviceUUID:deviceUUID
                                                 andCredentialsUserDic:credentialsUserDic];
     }
     if (!ranger) {
         ranger = [[LMRanging alloc] initWithSharedData:sharedData
                                         rhoThetaSystem:rhoThetaSystem
                                                userDic:userDic
-                                            deviceUUID:deviceUUID
                                  andCredentialsUserDic:credentialsUserDic];
     }
     return ranger;
@@ -115,7 +111,6 @@
         motion = [[MotionManager alloc] initWithSharedData:sharedData
                                                    userDic:credentialsUserDic
                                             rhoThetaSystem:rhoThetaSystem
-                                                deviceUUID:deviceUUID
                                      andCredentialsUserDic:credentialsUserDic];
         
         // TODO: make this configurable or properties. Alberto J. 2019/09/13.
@@ -694,11 +689,8 @@
         } else {
             deviceUUID = itemChosenByUser[@"uuid"];
         }
-        [rhoThetaSystem setDeviceUUID:deviceUUID];
         [location setPosition:position];
-        [location setDeviceUUID:deviceUUID];
         [motion setPosition:position];
-        [motion setDeviceUUID:deviceUUID];
         
         return YES;
     } else {

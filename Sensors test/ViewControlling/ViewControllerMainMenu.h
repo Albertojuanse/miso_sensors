@@ -52,7 +52,6 @@
     
     // Variables
     MDMode * chosenMode;
-    NSString * deviceUUID;
     
     // Login
     BOOL userDidAskLogOut;
