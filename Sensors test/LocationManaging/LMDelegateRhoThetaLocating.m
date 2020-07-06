@@ -111,7 +111,6 @@
 }
 
 #pragma mark - Instance methods
-
 /*!
  @method setCredentialUserDic:
  @discussion This method sets the dictionary with the user's credentials for access the collections in shared data database.
@@ -377,7 +376,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 }
 
 #pragma mark - Location manager delegated methods - Compass
-
 /*!
  @method locationManager:didUpdateHeading:
  @discussion This method is called when the device wants to deliver a data about its heading.
@@ -462,7 +460,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
 }
 
 #pragma mark - Notification event handles
-
 /*!
  @method start:
  @discussion This method asks the Location Manager to start positioning the device using compass and iBeacons.

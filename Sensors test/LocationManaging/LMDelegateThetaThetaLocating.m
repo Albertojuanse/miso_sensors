@@ -22,12 +22,12 @@
         // Components
         sharedData = initSharedData;
         
-        // Instance variables
+        // Instance variables (locating mode)
         // Set device's location at the origin
-        position = [[RDPosition alloc] init];
-        position.x = [NSNumber numberWithFloat:0.0];
-        position.y = [NSNumber numberWithFloat:0.0];
-        position.z = [NSNumber numberWithFloat:0.0];
+        itemToMeasurePosition = [[RDPosition alloc] init];
+        itemToMeasurePosition.x = [NSNumber numberWithFloat:0.0];
+        itemToMeasurePosition.y = [NSNumber numberWithFloat:0.0];
+        itemToMeasurePosition.z = [NSNumber numberWithFloat:0.0];
         currentCompassHeading = [locationManager heading];
         lastMeasuredHeading = nil;
         needMeasureHeading = NO;
@@ -146,9 +146,9 @@
  */
 - (RDPosition *) getPosition {
     RDPosition * newPosition = [[RDPosition alloc] init];
-    newPosition.x = [NSNumber numberWithFloat:[position.x floatValue]];
-    newPosition.y = [NSNumber numberWithFloat:[position.y floatValue]];
-    newPosition.z = [NSNumber numberWithFloat:[position.z floatValue]];
+    newPosition.x = [NSNumber numberWithFloat:[itemToMeasurePosition.x floatValue]];
+    newPosition.y = [NSNumber numberWithFloat:[itemToMeasurePosition.y floatValue]];
+    newPosition.z = [NSNumber numberWithFloat:[itemToMeasurePosition.z floatValue]];
     return newPosition;
 }
 
@@ -157,11 +157,11 @@
  @discussion This method sets the device's position.
  */
 - (void) setPosition:(RDPosition *)givenPosition{
-    position = nil; // ARC disposing
-    position = [[RDPosition alloc] init];
-    position.x = [NSNumber numberWithFloat:[givenPosition.x floatValue]];
-    position.y = [NSNumber numberWithFloat:[givenPosition.y floatValue]];
-    position.z = [NSNumber numberWithFloat:[givenPosition.z floatValue]];
+    itemToMeasurePosition = nil; // ARC disposing
+    itemToMeasurePosition = [[RDPosition alloc] init];
+    itemToMeasurePosition.x = [NSNumber numberWithFloat:[givenPosition.x floatValue]];
+    itemToMeasurePosition.y = [NSNumber numberWithFloat:[givenPosition.y floatValue]];
+    itemToMeasurePosition.z = [NSNumber numberWithFloat:[givenPosition.z floatValue]];
 }
 
 #pragma mark - Location manager delegated methods - Compass
@@ -296,6 +296,21 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
             
             if ([mode isModeKey:kModeThetaThetaLocating]) {
                 
+                // Get class variables to get the item's position facet from the item chosen by user to measure (locating mode)
+                NSMutableDictionary * itemChosenByUserDic = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
+                itemToMeasureUUID = itemChosenByUserDic[@"uuid"];
+                if (itemChosenByUserDic[@"position"]) {
+                    itemToMeasurePosition = itemChosenByUserDic[@"position"];
+                } else {
+                    NSLog(@"[ERROR][LMRTL] No position found in item to be measured.");
+                }
+                
+                // Get class variables to get the item's position facet from the item chosen by user to be the device (locating mode)
+                NSDictionary * dataDic = [notification userInfo];
+                NSMutableDictionary * itemDic = dataDic[@"itemDic"];
+                deviceUUID = itemDic[@"uuid"];
+                
+                // Start heading mesures
                 [locationManager startUpdatingHeading];
                 NSLog(@"[INFO][LMTTL] Start updating compass heading.");
                 needMeasureHeading = YES;
@@ -368,16 +383,14 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         
         if ([mode isModeKey:kModeThetaThetaLocating]) {
             
-            // The heading measures in this mode are only saved if the user did select the item to aim to whose item dictionary is stored in session dictionary as 'itemChosenByUser'.
-            NSMutableDictionary * itemChosenByUser = [sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                                                                 andCredentialsUserDic:credentialsUserDic];
-            if(itemChosenByUser) {
-                // If its not null retrieve the information needed...
-                NSString * itemUUID = itemChosenByUser[@"uuid"];
+            // The heading measures in this mode are only saved if the user did select the item to aim.
+            if(itemToMeasureUUID) {
+                
+                // Get position facet's information...
                 RDPosition * measurePosition = [[RDPosition alloc] init];
-                measurePosition.x = position.x;
-                measurePosition.y = position.y;
-                measurePosition.z = position.z;
+                measurePosition.x = itemToMeasurePosition.x;
+                measurePosition.y = itemToMeasurePosition.y;
+                measurePosition.z = itemToMeasurePosition.z;
                 
                 double lastMeasuredHeadingValue = [lastMeasuredHeading trueHeading]*M_PI/180.0;
                 double currentCompassHeadingValue = [currentCompassHeading trueHeading]*M_PI/180.0;
@@ -386,16 +399,14 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
                 // ...and save data
                 [sharedData inMeasuresDataSetMeasure:measure
                                               ofSort:@"heading"
-                                        withItemUUID:itemUUID
+                                        withItemUUID:itemToMeasureUUID
                                       withDeviceUUID:deviceUUID
-                                          atPosition:nil
+                                          atPosition:measurePosition
                                       takenByUserDic:userDic
                            andWithCredentialsUserDic:credentialsUserDic];
             } else {
                 NSLog(@"[INFO][LMTTL] User did choose a UUID source that is not being ranging; disposing.");
             }
-            
-            NSMutableDictionary * locatedPositions;
             
             // Precision is arbitrary set to 10 cm
             // TODO: Make this configurable. Alberto J. 2019/09/12.
@@ -406,6 +417,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
                                          nil];
             
             // Ask radiolocation of beacons if posible...
+            NSMutableDictionary * locatedPositions;
             locatedPositions = [thetaThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
             // ...and save them as a located item.
             NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
@@ -422,6 +434,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
                 infoDic[@"identifier"] = positionId;
                 infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
                 // Check if it is a item chosen by user
+                // TODO: This is not needed anymore. Alberto J. 2020/07/06.
                 MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
                                                                             andCredentialsUserDic:credentialsUserDic];
                 if(type) {
@@ -432,7 +445,11 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
                                                          withInfoDic:infoDic
                                            andWithCredentialsUserDic:credentialsUserDic];
                 if (savedItem) {
-                    
+                    // Ask view controller to refresh the canvas
+                    NSLog(@"[NOTI][LMTTL] Notification \"canvas/refresh\" posted.");
+                    [[NSNotificationCenter defaultCenter]
+                     postNotificationName:@"canvas/refresh"
+                     object:nil];
                 } else {
                     NSLog(@"[ERROR][LMTTL] Located position %@ could not be stored as an item.", infoDic[@"position"]);
                 }
@@ -443,12 +460,6 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
                                                                 andCredentialsUserDic:credentialsUserDic]);
             NSLog(@"[INFO][LMTTL] Generated measures:");
             NSLog(@"[INFO][LMTTL]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
-            
-            // Ask view controller to refresh the canvas
-            NSLog(@"[NOTI][LMTTL] Notification \"canvas/refresh\" posted.");
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"canvas/refresh"
-             object:nil];
             
         }
         
@@ -508,10 +519,10 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         
         // Instance variables
         // Set device's location at the origin
-        position = [[RDPosition alloc] init];
-        position.x = [NSNumber numberWithFloat:0.0];
-        position.y = [NSNumber numberWithFloat:0.0];
-        position.z = [NSNumber numberWithFloat:0.0];
+        itemToMeasurePosition = [[RDPosition alloc] init];
+        itemToMeasurePosition.x = [NSNumber numberWithFloat:0.0];
+        itemToMeasurePosition.y = [NSNumber numberWithFloat:0.0];
+        itemToMeasurePosition.z = [NSNumber numberWithFloat:0.0];
         
         // Delete registered regions and heading updates
         [self stopRoutine];

@@ -28,12 +28,13 @@
     RDThetaThetaSystem * thetaThetaSystem;
     CLLocationManager * locationManager;
     
-    // Variables
-    RDPosition * position;  // Current position of device
+    // Variables (modelling mode)
+    RDPosition * devicePosition;
+    NSString * deviceUUID;
+    NSString * itemToMeasureUUID;
     CLHeading * currentCompassHeading;
     CLHeading * lastMeasuredHeading;
     BOOL needMeasureHeading;
-    NSString * deviceUUID;
     
 }
 
