@@ -954,30 +954,27 @@
         )
     {
         // If idle, user can measuring; if 'Measuring' is tapped, ask start measuring.
-        if ([sharedData fromSessionDataGetItemChosenByUserFromUserWithUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic]) {
-            if(itemDic) {
-                
-                // Update current state
-                [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
-                                           andWithCredentialsUserDic:credentialsUserDic];
-                
-                // Change button layout
-                UIImage * startMeasureIcon = [VCDrawings imageForMeasureInDisabledThemeColor];
-                [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
+        if(itemDic) {
             
-                // And send the notification
-                NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
-                dataDic[@"itemDic"] = itemDic;
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaLocating/start"
-                                                                    object:nil
-                                                                  userInfo:dataDic];
-                NSLog(@"[NOTI]%@ Notification \"lmdRhoThetaLocating/start\" posted.", ERROR_DESCRIPTION_VCERTL);
-                return;
-            } else {
-                NSLog(@"[ERROR]%@ No item chosen to be measured.", ERROR_DESCRIPTION_VCERTL);
-                return;
-            }
+            // Update current state
+            [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
+                                       andWithCredentialsUserDic:credentialsUserDic];
+            
+            // Change button layout
+            UIImage * startMeasureIcon = [VCDrawings imageForMeasureInDisabledThemeColor];
+            [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
+        
+            // And send the notification
+            NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
+            dataDic[@"itemDic"] = itemDic;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdRhoThetaLocating/start"
+                                                                object:nil
+                                                              userInfo:dataDic];
+            NSLog(@"[NOTI]%@ Notification \"lmdRhoThetaLocating/start\" posted.", ERROR_DESCRIPTION_VCERTL);
+            return;
+        } else {
+            NSLog(@"[ERROR]%@ No item chosen to be measured.", ERROR_DESCRIPTION_VCERTL);
+            return;
         }
     }
     if (
