@@ -324,7 +324,10 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 }
                                     
             } else {
-                NSLog(@"[ERROR][LMRTM] Calling mode is not kModeRhoThetaModelling.");
+                NSLog(@"[ERROR][LMTTM] Instantiated class %@ when using %@ mode.",
+                      NSStringFromClass([self class]),
+                      mode
+                      );
             }
             
         } else { // If is idle or traveling...
@@ -402,8 +405,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             } else {
                 NSLog(@"[INFO][LMRTM] User did choose a UUID source that is not being ranging; disposing.");
             }
+            
         } else {
-            NSLog(@"[ERROR][LMRTM] Calling mode is not kModeRhoThetaModelling.");
+            NSLog(@"[ERROR][LMRTM] Instantiated class %@ when using %@ mode.",
+                  NSStringFromClass([self class]),
+                  mode
+                  );
         }
         
     } else { // If is idle...
@@ -508,7 +515,10 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                 
                 NSLog(@"[INFO][LMRTM] Start updating compass and iBeacons.");
             } else {
-                NSLog(@"[ERROR][LMRTM] Calling mode is not kModeRhoThetaModelling.");
+                NSLog(@"[ERROR][LMRTM] Instantiated class %@ when using %@ mode.",
+                      NSStringFromClass([self class]),
+                      mode
+                      );
             }
             
         }else if (CLLocationManager.authorizationStatus == kCLAuthorizationStatusDenied ||
