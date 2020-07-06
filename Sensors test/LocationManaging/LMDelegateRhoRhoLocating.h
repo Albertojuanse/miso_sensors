@@ -28,9 +28,10 @@
     RDRhoRhoSystem * rhoRhoSystem;
     CLLocationManager * locationManager;
     
-    // Variables
-    RDPosition * position;  // Current position of device
+    // Variables (locating mode)
     NSString * deviceUUID;
+    RDPosition * itemToMeasurePosition;
+    NSString * itemToMeasureUUID;
     
     // Data store
     NSMutableArray * monitoredRegions;
