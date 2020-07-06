@@ -627,20 +627,17 @@
     NSString * newUUID = [[NSUUID UUID] UUIDString];
     infoDic[@"position"] = itemPosition;
     infoDic[@"located"] = @"NO";
-    
-    NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
-                                                                          withCredentialsUserName:credentialsUserDic];
-    NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
-    itemPositionIdNumber = [NSNumber numberWithInteger:[itemPositionIdNumber integerValue] + 1];
-    positionId = [positionId stringByAppendingString:@"@miso.uam.es"];
-    infoDic[@"identifier"] = positionId;
+    NSString * itemIdentifier = [@"position" stringByAppendingString:[newUUID substringFromIndex:31]];
+    itemIdentifier = [itemIdentifier stringByAppendingString:@"@miso.uam.es"];
+    infoDic[@"identifier"] = itemIdentifier;
     
     BOOL savedItem = [sharedData inItemDataAddItemOfSort:@"position"
                                                 withUUID:newUUID
                                              withInfoDic:infoDic
                                andWithCredentialsUserDic:credentialsUserDic];
     if (savedItem) {
-        NSMutableArray * savedItemDics = [sharedData fromItemDataGetItemsWithIdentifier:positionId andCredentialsUserDic:credentialsUserDic];
+        NSMutableArray * savedItemDics = [sharedData fromItemDataGetItemsWithIdentifier:itemIdentifier
+                                                                  andCredentialsUserDic:credentialsUserDic];
         NSMutableDictionary * savedItemDic;
         if ([savedItemDics count] > 0) {
             savedItemDic = [savedItemDics objectAtIndex:0];
@@ -656,27 +653,6 @@
         NSLog(@"[ERROR]%@ New position %@ could not be stored as an item.", infoDic[@"position"], ERROR_DESCRIPTION_VCERTM);
     }
     // TODO: The position added is not saved persistently in the model. Alberto J. 2020/07/06.
-    
-    // Save variables in device memory
-    // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
-    // Remove previous collection
-    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-    // Update information
-    NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-    [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
-    // itemBeaconIdNumber
-    NSNumber * itemBeaconIdNumber = [sharedData fromSessionDataGetItemBeaconIdNumberOfUserDic:userDic
-                                                                      withCredentialsUserName:credentialsUserDic];
-    NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
-    [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-    // itemPositionIdNumber
-    itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
-                                                               withCredentialsUserName:credentialsUserDic];
-    NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
-    [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
     
     // Aks canvas to refresh.
     NSLog(@"[NOTI]%@ Notification \"canvas/refresh\" posted.", errorDescription);

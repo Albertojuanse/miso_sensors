@@ -26,8 +26,6 @@
     UITabBarController * tabBar;
     
     // Varibles
-    NSNumber * itemBeaconIdNumber;
-    NSNumber * itemPositionIdNumber;
     NSMutableArray * items;
     NSMutableDictionary * chosenItem;    
     // User selection in main manu

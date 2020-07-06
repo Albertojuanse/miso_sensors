@@ -70,27 +70,6 @@
     userWantsToSetRoutine = NO;
     // Search for variables from device memory
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    NSData * areIdNumbersData = [userDefaults objectForKey:@"es.uam.miso/variables/areIdNumbers"];
-    NSString * areIdNumbers;
-    if (areIdNumbersData) {
-        areIdNumbers = [NSKeyedUnarchiver unarchiveObjectWithData:areIdNumbersData];
-    }
-    if (areIdNumbersData && areIdNumbers && [areIdNumbers isEqualToString:@"YES"]) {
-        
-        // Existing saved data
-        // Retrieve the items using the index
-        
-        // Retrieve the variables
-       NSData * itemBeaconIdNumberData = [userDefaults objectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-        NSData * itemPositionIdNumberData = [userDefaults objectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-        // ...and retrieve each item
-        itemBeaconIdNumber = [NSKeyedUnarchiver unarchiveObjectWithData:itemBeaconIdNumberData];
-        itemPositionIdNumber = [NSKeyedUnarchiver unarchiveObjectWithData:itemPositionIdNumberData];
-        
-        NSLog(@"[INFO][VCCB] Variable itemBeaconIdNumber found in device.");
-        NSLog(@"[INFO][VCCB] Variable itemPositionIdNumber found in device.");
-        
-    }
     
     // Search for 'areItems' boolean and if so, load the items' NSMutableDictionary array
     NSData * areItemsData = [userDefaults objectForKey:@"es.uam.miso/data/items/areItems"];
@@ -335,23 +314,21 @@
     
     if (selectedSegmentIndex == 0) { // position mode
         infoDic[@"sort"] = @"position";
-        infoDic[@"uuid"] = [[NSUUID UUID] UUIDString];
-        NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
-        itemPositionIdNumber = [NSNumber numberWithInteger:[itemPositionIdNumber integerValue] + 1];
-        [self updatePersistentVariables];
-        positionId = [positionId stringByAppendingString:@"@miso.uam.es"];
-        infoDic[@"identifier"] = positionId;
+        NSString * itemUUID = [[NSUUID UUID] UUIDString];
+        infoDic[@"uuid"] = itemUUID;
+        NSString * itemIdentifier = [@"position" stringByAppendingString:[itemUUID substringFromIndex:31]];
+        itemIdentifier = [itemIdentifier stringByAppendingString:@"@miso.uam.es"];
+        infoDic[@"identifier"] = itemIdentifier;
     }
     if (selectedSegmentIndex == 1) { // iBeacon mode
         infoDic[@"sort"] = @"beacon";
-        infoDic[@"uuid"] = [self.textUUID text];
+        NSString * itemUUID = [self.textUUID text];
+        infoDic[@"uuid"] = itemUUID;
         infoDic[@"major"] = [self.textMajor text];
         infoDic[@"minor"] = [self.textMinor text];
-        NSString * beaconId = [@"beacon" stringByAppendingString:[itemBeaconIdNumber stringValue]];
-        itemBeaconIdNumber = [NSNumber numberWithInteger:[itemBeaconIdNumber integerValue] + 1];
-        [self updatePersistentVariables];
-        beaconId = [beaconId stringByAppendingString:@"@miso.uam.es"];
-        infoDic[@"identifier"] = beaconId;
+        NSString * itemIdentifier = [@"position" stringByAppendingString:[itemUUID substringFromIndex:31]];
+        itemIdentifier = [itemIdentifier stringByAppendingString:@"@miso.uam.es"];
+        infoDic[@"identifier"] = itemIdentifier;
     }
     
     // Position
@@ -636,28 +613,6 @@
     }
     
     return isDuplicated;
-}
-
-/*!
- @method updatePersistentVariables
- @discussion This method is called when user creates new items and ask variables like 'itemPositionIdNumber' or 'itemBeaconIdNumber' to be saved.
- */
-- (BOOL)updatePersistentVariables
-{
-    // Remove previous collection
-    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-    
-    // Save information
-    NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-    [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
-    NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
-    NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
-    [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-    [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-    return YES;
 }
 
 /*!

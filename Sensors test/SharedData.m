@@ -42,8 +42,6 @@
 //     "itemsChosenByUser": (NSMutableArray *)items1;
 //     "typeChosenByUser": (MDType *)type1;
 //     "referencesByUser": (NSMutableArray *)references1
-//     "itemBeaconIdNumber": (NSNumber *)itemBeaconIdNumber1
-//     "itemPositionIdNumber": (NSNumber *)itemPositionIdNumber1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
 //     (···)
@@ -573,8 +571,6 @@
 //     "itemsChosenByUser": (NSMutableArray *)items1;
 //     "typeChosenByUser": (MDType *)type1;
 //     "referencesByUser": (NSMutableArray *)references1
-//     "itemBeaconIdNumber": (NSNumber *)itemBeaconIdNumber1
-//     "itemPositionIdNumber": (NSNumber *)itemPositionIdNumber1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
 //     (···)
@@ -1179,46 +1175,6 @@
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
-}
-
-/*!
-@method fromSessionDataGetItemPositionIdNumberOfUserDic:andCredentialsUserDic:
-@discussion This method returns the variable 'itemPositionIdNumber' of user from the session data collection given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
-*/
-- (NSNumber *)fromSessionDataGetItemPositionIdNumberOfUserDic:(NSMutableDictionary *)givenUserDic
-                                      withCredentialsUserName:(NSMutableDictionary *)credentialsUserDic
-{
-    return [self fromSessionDataGetKey:@"itemPositionIdNumber" fromUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
-}
-
-/*!
-@method fromSessionDataGetTypeChosenByUserFromUserWithUserName:andCredentialsUserDic:
-@discussion This method returns the variable 'itemPositionIdNumber' of user from the session data collection given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
-*/
-- (NSNumber *)fromSessionDataGetItemPositionIdNumberOfUserName:(NSString *)givenUserName
-                                       withCredentialsUserName:(NSMutableDictionary *)credentialsUserDic
-{
-    return [self fromSessionDataGetKey:@"itemPositionIdNumber" fromUserWithUserName:givenUserName andCredentialsUserDic:credentialsUserDic];
-}
-
-/*!
-@method fromSessionDataGetItemBeaconIdNumberOfUserDic:andCredentialsUserDic:
-@discussion This method returns the variable 'itemBeaconIdNumber' of user from the session data collection given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
-*/
-- (NSNumber *)fromSessionDataGetItemBeaconIdNumberOfUserDic:(NSMutableDictionary *)givenUserDic
-                                    withCredentialsUserName:(NSMutableDictionary *)credentialsUserDic
-{
-    return [self fromSessionDataGetKey:@"itemBeaconIdNumber" fromUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
-}
-
-/*!
-@method fromSessionDataGetItemBeaconIdNumberOfUserName:andCredentialsUserDic:
-@discussion This method returns the variable 'itemBeaconIdNumber' of user from the session data collection given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
-*/
-- (NSNumber *)fromSessionDataGetItemBeaconIdNumberOfUserName:(NSString *)givenUserName
-                                     withCredentialsUserName:(NSMutableDictionary *)credentialsUserDic
-{
-    return [self fromSessionDataGetKey:@"itemBeaconIdNumber" fromUserWithUserName:givenUserName andCredentialsUserDic:credentialsUserDic];
 }
 
 #pragma mark - Item data specific getters
@@ -2721,8 +2677,6 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 //     "itemsChosenByUser": (NSMutableArray *)items1;
 //     "typeChosenByUser": (MDType *)type1;
 //     "referencesByUser": (NSMutableArray *)references1
-//     "itemBeaconIdNumber": (NSNumber *)itemBeaconIdNumber1
-//     "itemPositionIdNumber": (NSNumber *)itemPositionIdNumber1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
 //     (···)
@@ -3340,50 +3294,6 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
-}
-
-/*!
-@method inSessionDataSetItemBeaconIdNumber:toUserWithUserDic:andCredentialsUserDic:
-@discussion This method sets in session data collection the parameter 'itemBeaconIdNumber' state to the given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
-*/
-- (BOOL) inSessionDataSetItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
-                         toUserWithUserName:(NSString *)userName
-                     withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    return [self inSessionDataSetObject:givenItemBeaconIdNumber forKey:@"itemBeaconIdNumber" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
-}
-
-/*!
-@method inSessionDataSetItemBeaconIdNumber:toUserWithUserName:andCredentialsUserDic:
-@discussion This method sets in session data collection the parameter 'itemBeaconIdNumber' state to the given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
-*/
-- (BOOL) inSessionDataSetItemBeaconIdNumber:(NSNumber *)givenItemBeaconIdNumber
-                          toUserWithUserDic:(NSMutableDictionary *)givenUserDic
-                     withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    return [self inSessionDataSetObject:givenItemBeaconIdNumber forKey:@"itemBeaconIdNumber" toUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
-}
-
-/*!
-@method inSessionDataSetItemPositionIdNumber:toUserWithUserDic:andCredentialsUserDic:
-@discussion This method sets in session data collection the parameter 'itemPositionIdNumber' state to the given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
-*/
-- (BOOL) inSessionDataSetItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
-                           toUserWithUserName:(NSString *)userName
-                       withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    return [self inSessionDataSetObject:givenItemPositionIdNumber forKey:@"itemPositionIdNumber" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
-}
-
-/*!
-@method inSessionDataSetItemPositionIdNumber:toUserWithUserDic:andCredentialsUserDic:
-@discussion This method sets in session data collection the parameter 'itemPositionIdNumber' state to the given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
-*/
-- (BOOL) inSessionDataSetItemPositionIdNumber:(NSNumber *)givenItemPositionIdNumber
-                            toUserWithUserDic:(NSMutableDictionary *)givenUserDic
-                       withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    return [self inSessionDataSetObject:givenItemPositionIdNumber forKey:@"itemPositionIdNumber" toUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
 }
 
 #pragma mark - Item data specific setters

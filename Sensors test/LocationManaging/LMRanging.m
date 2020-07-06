@@ -902,19 +902,15 @@
     }
     
     if (locatedPositions) {
-        NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
-                                                                              withCredentialsUserName:credentialsUserDic];
-        
         // Save the positions as located items.
         NSArray *positionKeys = [locatedPositions allKeys];
         for (id positionKey in positionKeys) {
             NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
             infoDic[@"located"] = @"YES";
             infoDic[@"sort"] = @"position";
-            NSString * positionId = [@"position" stringByAppendingString:[itemPositionIdNumber stringValue]];
-            itemPositionIdNumber = [NSNumber numberWithInteger:[itemPositionIdNumber integerValue] + 1];
-            positionId = [positionId stringByAppendingString:@"@miso.uam.es"];
-            infoDic[@"identifier"] = positionId;
+            NSString * itemIdentifier = [@"position" stringByAppendingString:[positionKey substringFromIndex:31]];
+            itemIdentifier = [itemIdentifier stringByAppendingString:@"@miso.uam.es"];
+            infoDic[@"identifier"] = itemIdentifier;
             infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
             BOOL savedItem = [sharedData inItemDataAddItemOfSort:@"position"
                                                         withUUID:positionKey
@@ -924,28 +920,6 @@
                 NSLog(@"[ERROR][LMR] Located position %@ could not be stored as an item.", infoDic[@"position"]);
             }
         }
-        
-        // Save variables in device memory
-        // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
-        // Remove previous collection
-        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-        [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
-        [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-        [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-
-        // Save information
-        NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-        [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
-        // itemBeaconIdNumber
-        NSNumber * itemBeaconIdNumber = [sharedData fromSessionDataGetItemBeaconIdNumberOfUserDic:userDic
-                                                                          withCredentialsUserName:credentialsUserDic];
-        NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
-        [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-        // itemPositionIdNumber
-        itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
-                                                                   withCredentialsUserName:credentialsUserDic];
-        NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
-        [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
 
         NSLog(@"[INFO][LMR] Generated locations:");
         NSLog(@"[INFO][LMR]  -> %@",  [sharedData fromItemDataGetLocatedItemsByUser:userDic

@@ -295,8 +295,6 @@
     //     "itemsChosenByUser": (NSMutableArray *)items1;
     //     "typeChosenByUser": (MDType *)type1;
     //     "referencesByUser": (NSMutableArray *)references1
-    //     "itemBeaconIdNumber": (NSNumber *)itemBeaconIdNumber1
-    //     "itemPositionIdNumber": (NSNumber *)itemPositionIdNumber1
     //   },
     //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
     //     (···)

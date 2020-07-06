@@ -44,8 +44,6 @@
 //     "itemsChosenByUser": (NSMutableArray *)items1;
 //     "typeChosenByUser": (MDType *)type1;
 //     "referencesByUser": (NSMutableArray *)references1
-//     "itemBeaconIdNumber": (NSNumber *)itemBeaconIdNumber1
-//     "itemPositionIdNumber": (NSNumber *)itemPositionIdNumber1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
 //     (···)
@@ -161,8 +159,9 @@
     [self loadRoutine];
     [self loadModels];
     
-    // Load the saved variables
-    [self loadVariables];
+    // Load variables
+    // The mode chosen by user each time must be nil in each load
+    chosenMode = nil;
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
     self.tableModes.delegate = self;
@@ -290,51 +289,6 @@
         NSMutableDictionary * sessionDic = [[NSMutableDictionary alloc] init];
         sessionDic [@"user"] = userDic;
         [[sharedData getSessionDataWithCredentialsUserDic:credentialsUserDic] addObject:sessionDic];
-    }
-}
-
-/*!
- @method loadVariables
- @discussion This method loads any saved variable in device's persistent memory
- */
-- (void)loadVariables
-{
-    // The mode chosen by user each time must be nil in each load
-    chosenMode = nil;
-    
-    // Variables for naming porpuses; each new component created increases this counters to generate unique names.
-    // Search for variables from device memory
-    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    NSData * areIdNumbersData = [userDefaults objectForKey:@"es.uam.miso/variables/areIdNumbers"];
-    NSString * areIdNumbers;
-    if (areIdNumbersData) {
-        areIdNumbers = [NSKeyedUnarchiver unarchiveObjectWithData:areIdNumbersData];
-    }
-    
-    if (areIdNumbersData && areIdNumbers && [areIdNumbers isEqualToString:@"YES"]) {
-        
-        // Existing saved data
-        // Retrieve the items using the index
-        
-        // Retrieve the variables
-        NSData * itemBeaconIdNumberData = [userDefaults objectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-        // ...and retrieve each item
-        NSNumber * itemBeaconIdNumber = [NSKeyedUnarchiver unarchiveObjectWithData:itemBeaconIdNumberData];
-        [sharedData inSessionDataSetItemBeaconIdNumber:itemBeaconIdNumber
-                                     toUserWithUserDic:userDic
-                                withCredentialsUserDic:credentialsUserDic];
-        NSLog(@"[INFO][VCMM] Variable itemBeaconIdNumber found in device.");
-        
-        NSData * itemPositionIdNumberData = [userDefaults objectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-        // ...and retrieve each item
-        NSNumber * itemPositionIdNumber = [NSKeyedUnarchiver unarchiveObjectWithData:itemPositionIdNumberData];
-        [sharedData inSessionDataSetItemPositionIdNumber:itemPositionIdNumber
-                                       toUserWithUserDic:userDic
-                                  withCredentialsUserDic:credentialsUserDic];
-        NSLog(@"[INFO][VCMM] Variable itemPositionIdNumber found in device.");
-        
-    } else {
-        NSLog(@"[ERROR][VCMM] Missing itemPositionIdNumber or itemBeaconIdNumber in device.");
     }
 }
 
@@ -516,29 +470,6 @@
  */
 - (IBAction)handleButtonSingOut:(id)sender {
     userDidAskSignOut = YES;
-    
-    // Save variables in device memory
-    // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
-    // Remove previous collection
-    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-    
-    // Save information
-    NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-    [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
-    // itemBeaconIdNumber
-    NSNumber * itemBeaconIdNumber = [sharedData fromSessionDataGetItemBeaconIdNumberOfUserDic:userDic
-                                                                      withCredentialsUserName:credentialsUserDic];
-    NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
-    [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-    // itemPositionIdNumber
-    NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
-                                                                          withCredentialsUserName:credentialsUserDic];
-    NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
-    [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-    
     [self performSegueWithIdentifier:@"fromMainToLogin" sender:sender];
 }
 
@@ -548,29 +479,6 @@
  */
 - (IBAction)handleButtonLogOut:(id)sender {
     userDidAskLogOut = YES;
-    
-    // Save variables in device memory
-    // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
-    // Remove previous collection
-    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/areIdNumbers"];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-    [userDefaults removeObjectForKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-    
-    // Save information
-    NSData * areIdNumbersData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
-    [userDefaults setObject:areIdNumbersData forKey:@"es.uam.miso/variables/areIdNumbers"];
-    // itemBeaconIdNumber
-    NSNumber * itemBeaconIdNumber = [sharedData fromSessionDataGetItemBeaconIdNumberOfUserDic:userDic
-                                                                      withCredentialsUserName:credentialsUserDic];
-    NSData * itemBeaconIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemBeaconIdNumber];
-    [userDefaults setObject:itemBeaconIdNumberData forKey:@"es.uam.miso/variables/itemBeaconIdNumber"];
-    // itemPositionIdNumber
-    NSNumber * itemPositionIdNumber = [sharedData fromSessionDataGetItemPositionIdNumberOfUserDic:userDic
-                                                                          withCredentialsUserName:credentialsUserDic];
-    NSData * itemPositionIdNumberData = [NSKeyedArchiver archivedDataWithRootObject:itemPositionIdNumber];
-    [userDefaults setObject:itemPositionIdNumberData forKey:@"es.uam.miso/variables/itemPositionIdNumber"];
-    
     [self performSegueWithIdentifier:@"fromMainToLogin" sender:sender];
 }
 
