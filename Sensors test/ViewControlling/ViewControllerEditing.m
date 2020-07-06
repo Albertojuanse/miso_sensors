@@ -556,6 +556,10 @@
  */
 - (IBAction)handleButtonFinish:(id)sender
 {
+    // Items of sort "empty_position" may have been created to locate them; remove them
+    [sharedData inItemDataRemoveItemsWithSort:@"empty_position"
+                       withCredentialsUserDic:credentialsUserDic];
+    
     [self performSegueWithIdentifier:@"fromEDITINGToFinalModel" sender:sender];
 }
 
@@ -691,6 +695,7 @@
     } else {
         NSLog(@"[ERROR]%@ New position %@ could not be stored as an item.", infoDic[@"position"], ERROR_DESCRIPTION_VCERTM);
     }
+    // TODO: The position added is not saved persistently in the model. Alberto J. 2020/07/06.
     
     // Save variables in device memory
     // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.

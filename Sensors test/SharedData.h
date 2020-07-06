@@ -432,8 +432,10 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 // Specific session data specific removers
 
 // Specific items data specific removers
-- (NSMutableDictionary*) inItemDataRemoveItemWithInfoDic:(NSMutableDictionary *)infoDic
-                                  withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableDictionary *) inItemDataRemoveItemWithInfoDic:(NSMutableDictionary *)infoDic
+                                   withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL) inItemDataRemoveItemsWithSort:(NSString *)sort
+                withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific measures data specific removers
 

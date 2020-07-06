@@ -57,7 +57,7 @@
 //
 // The schema of the itemsData collection is:
 //
-//  [{ "sort": @"beacon" | @"position";                      //  itemDic
+//  [{ "sort": @"beacon" | @"position" | @"empty_position";  //  itemDic
 //     "identifier": (NSString *)identifier1;
 //
 //     "uuid": (NSString *)uuid1;

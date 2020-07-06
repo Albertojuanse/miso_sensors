@@ -55,7 +55,7 @@
 //
 // The schema of the itemsData collection is:
 //
-//  [{ "sort": @"beacon" | @"position";                      //  itemDic
+//  [{ "sort": @"beacon" | @"position" | @"empty_position";  //  itemDic
 //     "identifier": (NSString *)identifier1;
 //
 //     "uuid": (NSString *)uuid1;
@@ -1226,7 +1226,7 @@
 //
 // The schema of the itemsData collection is:
 //
-//  [{ "sort": @"beacon" | @"position";                      //  itemDic
+//  [{ "sort": @"beacon" | @"position" | @"empty_position";  //  itemDic
 //     "identifier": (NSString *)identifier1;
 //
 //     "uuid": (NSString *)uuid1;
@@ -3391,7 +3391,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 //
 // The schema of the itemsData collection is:
 //
-//  [{ "sort": @"beacon" | @"position";                      //  itemDic
+//  [{ "sort": @"beacon" | @"position" | @"empty_position";  //  itemDic
 //     "identifier": (NSString *)identifier1;
 //
 //     "uuid": (NSString *)uuid1;
@@ -4038,6 +4038,44 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
     } else {
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
+    }
+}
+
+/*!
+@method inItemDataRemoveItemsWithSort:withCredentialsUserDic:
+@discussion This method removes in the items collection data those whose sort is equals to the given one; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+*/
+- (BOOL) inItemDataRemoveItemsWithSort:(NSString *)sort
+                withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        // Search for the items
+        BOOL itemsFound = NO;
+        NSMutableArray * itemsToRemove = [[NSMutableArray alloc] init];
+        
+        // Search for it and delete it
+        for (NSMutableDictionary * itemDic in itemsData) {
+            
+            if ([sort isEqualToString:itemDic[@"sort"]]) {
+                
+                itemsFound = YES;
+                [itemsToRemove addObject:itemDic];
+            }
+        }
+        // If not found, return NO; if found, remove them and return YES
+        if (itemsFound) {
+            for (NSMutableDictionary * itemDic in itemsToRemove) {
+                [itemsData removeObject:itemDic];
+            }
+            return YES;
+        } else {
+            return NO;
+        }
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return NO;
     }
 }
 
