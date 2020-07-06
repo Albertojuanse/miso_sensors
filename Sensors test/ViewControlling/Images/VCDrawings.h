@@ -20,6 +20,8 @@
 + (UIImage *)imageForPositionInNormalThemeColor;
 + (UIImage *)imageForBeaconInNormalThemeColor;
 + (UIImage *)imageForModelInNormalThemeColor;
++ (UIImage *)imageForAddManualInNormalThemeColor;
++ (UIImage *)imageForAddMeasureInNormalThemeColor;
 + (UIImage *)imageForMeasureInNormalThemeColor;
 + (UIImage *)imageForMeasureInDisabledThemeColor;
 

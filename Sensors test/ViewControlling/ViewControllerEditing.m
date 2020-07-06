@@ -83,11 +83,11 @@
                           forState:UIControlStateNormal];
     [self.buttonBack setTitleColor:disabledThemeColor
                           forState:UIControlStateDisabled];
-    UIImage * measureImage = [VCDrawings imageForMeasureInNormalThemeColor];
-    [self.buttonAddMeasure setImage:measureImage forState:UIControlStateNormal];
+    UIImage * addMeasureImage = [VCDrawings imageForAddMeasureInNormalThemeColor];
+    [self.buttonAddMeasure setImage:addMeasureImage forState:UIControlStateNormal];
     [self.buttonAddMeasure setTintColor:normalThemeColor];
-    UIImage * positionImage = [VCDrawings imageForPositionInNormalThemeColor];
-    [self.buttonAddManual setImage:positionImage forState:UIControlStateNormal];
+    UIImage * addManualImage = [VCDrawings imageForAddManualInNormalThemeColor];
+    [self.buttonAddManual setImage:addManualImage forState:UIControlStateNormal];
     [self.buttonAddManual setTintColor:normalThemeColor];
     
     // Other components

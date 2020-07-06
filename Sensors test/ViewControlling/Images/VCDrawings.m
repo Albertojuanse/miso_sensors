@@ -258,6 +258,300 @@
 }
 
 /*!
+@method imageForAddManualInNormalThemeColor
+@discussion This method draws the add manual icon for buttons.
+*/
++ (UIImage *)imageForAddManualInNormalThemeColor
+{
+    // Create a frame for the image
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSNumber * buttonWidth = layoutDic[@"buttons/normal/measure/width"];
+    NSNumber * buttonHeight = layoutDic[@"buttons/normal/measure/height"];
+    CGRect rect = CGRectMake(0,
+                             0,
+                             [buttonWidth integerValue],
+                             [buttonHeight integerValue]);
+
+    // Create a view to embed the image using the frame
+    UIView * view = [[UIView alloc] initWithFrame:rect];
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, [[UIScreen mainScreen] scale]);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // POSITION
+    // Get the rect in which the drawn must be embebed its dimensions
+    CGSize rectSize = rect.size;
+    CGFloat rectHeight = rectSize.height;
+    CGFloat rectWidth = rectSize.width;
+    CGPoint rectOrigin = rect.origin;
+    
+    // Points for Bezier path
+    CGFloat margin = rectWidth * 0.05;
+    CGFloat circlesCenterX = rectOrigin.x + rectWidth/2;
+    CGFloat circlesCenterY = rectOrigin.y + rectHeight/3 + margin;
+    CGPoint circlesCenter = CGPointMake(circlesCenterX, circlesCenterY);
+    CGPoint arrowPoint = CGPointMake(rectWidth/2, rectHeight);
+    
+    // Draw the path
+    UIColor * normalThemeColor = [self getNormalThemeColor];
+    [normalThemeColor setStroke];
+    [normalThemeColor setFill];
+    
+    UIBezierPath * outterRightBezierPath = [UIBezierPath bezierPath];
+    [outterRightBezierPath setLineWidth:1];
+    [outterRightBezierPath addArcWithCenter:circlesCenter radius:rectWidth/3 startAngle:3.0*M_PI/2.0 endAngle:5.0*M_PI/6.0 clockwise:NO];
+    [outterRightBezierPath addLineToPoint:arrowPoint];
+    [outterRightBezierPath stroke];
+    CGContextAddPath(context, outterRightBezierPath.CGPath);
+    
+    UIBezierPath * outterLeftBezierPath = [UIBezierPath bezierPath];
+    [outterLeftBezierPath setLineWidth:1];
+    [outterLeftBezierPath addArcWithCenter:circlesCenter radius:rectWidth/3 startAngle:3.0*M_PI/2.0 endAngle:M_PI/6.0 clockwise:YES];
+    [outterLeftBezierPath addLineToPoint:arrowPoint];
+    [outterLeftBezierPath stroke];
+    CGContextAddPath(context, outterLeftBezierPath.CGPath);
+    
+    UIBezierPath * innerCircleBezierPath = [UIBezierPath bezierPath];
+    [innerCircleBezierPath setLineWidth:1];
+    [innerCircleBezierPath addArcWithCenter:circlesCenter radius:rectWidth/6 startAngle:0 endAngle:2.0*M_PI clockwise:YES];
+    [innerCircleBezierPath stroke];
+    CGContextAddPath(context, innerCircleBezierPath.CGPath);
+    
+    // PLUS SIGN
+    // Get the rect in which the drawn must be embebed its dimensions
+    rectSize = rect.size;
+    rectHeight = rectSize.height;
+    rectWidth = rectSize.width;
+    rectOrigin = rect.origin;
+    
+    // Points for Bezier path
+    CGFloat plusCenterX = rectOrigin.x + 3.0*rectWidth/4.0;
+    CGFloat plusCenterY = rectOrigin.y + 2.0*rectHeight/3.0;
+    CGFloat segmentLength = 2.0*rectWidth/10.0;
+    
+    // Draw the path
+    normalThemeColor = [self getNormalThemeColor];
+    [normalThemeColor setStroke];
+    [normalThemeColor setFill];
+    
+    UIBezierPath * horizontalPlusLine = [UIBezierPath bezierPath];
+    [horizontalPlusLine setLineWidth:2];
+    [horizontalPlusLine moveToPoint:CGPointMake(plusCenterX - segmentLength, plusCenterY)];
+    [horizontalPlusLine addLineToPoint:CGPointMake(plusCenterX + segmentLength, plusCenterY)];
+    [horizontalPlusLine stroke];
+    CGContextAddPath(context, horizontalPlusLine.CGPath);
+    
+    UIBezierPath * verticalPlusLine = [UIBezierPath bezierPath];
+    [verticalPlusLine setLineWidth:2];
+    [verticalPlusLine moveToPoint:CGPointMake(plusCenterX, plusCenterY - segmentLength)];
+    [verticalPlusLine addLineToPoint:CGPointMake(plusCenterX, plusCenterY + segmentLength)];
+    [verticalPlusLine stroke];
+    CGContextAddPath(context, verticalPlusLine.CGPath);
+    
+    // Render the image
+    UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
+/*!
+@method imageForAddMeasureInNormalThemeColor
+@discussion This method draws the add measure icon for buttons.
+*/
++ (UIImage *)imageForAddMeasureInNormalThemeColor
+{
+    // Create a frame for the image
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSNumber * buttonWidth = layoutDic[@"buttons/normal/measure/width"];
+    NSNumber * buttonHeight = layoutDic[@"buttons/normal/measure/height"];
+    CGRect rect = CGRectMake(0,
+                             0,
+                             [buttonWidth integerValue],
+                             [buttonHeight integerValue]);
+
+    // Create a view to embed the image using the frame
+    UIView * view = [[UIView alloc] initWithFrame:rect];
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, [[UIScreen mainScreen] scale]);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // DIAL
+    // Get the rect in which the drawn must be embebed its dimensions
+    CGSize rectSize = rect.size;
+    CGFloat rectHeight = rectSize.height;
+    CGFloat rectWidth = rectSize.width;
+    CGPoint rectOrigin = rect.origin;
+    CGFloat margin = rectWidth * 0.1;
+    CGFloat innerRadius = rectWidth/2;
+    CGFloat outterRadius = rectWidth/1.3;
+    CGFloat startAngle = 8.0*M_PI/6.0;
+    CGFloat endAngle = 10.0*M_PI/6.0;
+    CGFloat innerDialRadius = rectWidth/1.6;
+    CGFloat outterDialRadius = rectWidth/1.4;
+    CGFloat stepDialAngle = (endAngle-startAngle)/8.0;
+    
+    // Points for Bezier path
+    CGPoint bottomCenter = CGPointMake((rectOrigin.x + rectWidth)/2.0,
+                                       (rectOrigin.y + rectWidth));
+    CGPoint leftLineOutter = CGPointMake(bottomCenter.x + outterRadius*cosf(startAngle),
+                                         bottomCenter.y + outterRadius*sinf(startAngle));
+    CGPoint leftLineInner = CGPointMake(bottomCenter.x + innerRadius*cosf(startAngle),
+                                        bottomCenter.y + innerRadius*sinf(startAngle));
+    CGPoint rightLineOutter = CGPointMake(bottomCenter.x + outterRadius*cosf(endAngle),
+                                          bottomCenter.y + outterRadius*sinf(endAngle));
+    CGPoint rightLineInner = CGPointMake(bottomCenter.x + innerRadius*cosf(endAngle),
+                                         bottomCenter.y + innerRadius*sinf(endAngle));
+    
+    
+    CGPoint dialLineOutter = CGPointMake(bottomCenter.x + innerDialRadius*cosf(startAngle + stepDialAngle),
+                                         bottomCenter.y + innerDialRadius*sinf(startAngle + stepDialAngle));
+    CGPoint dialLineInner = CGPointMake(bottomCenter.x + innerRadius*cosf(startAngle + stepDialAngle),
+                                        bottomCenter.y + innerRadius*sinf(startAngle + stepDialAngle));
+    CGPoint scaleLineOutter1 = CGPointMake(bottomCenter.x + outterRadius*cosf(startAngle + stepDialAngle),
+                                           bottomCenter.y + outterRadius*sinf(startAngle + stepDialAngle));
+    CGPoint scaleLineInner1 = CGPointMake(bottomCenter.x + outterDialRadius*cosf(startAngle + stepDialAngle),
+                                          bottomCenter.y + outterDialRadius*sinf(startAngle + stepDialAngle));
+    CGPoint scaleLineOutter2 = CGPointMake(bottomCenter.x + outterRadius*cosf(startAngle + 2.0*stepDialAngle),
+                                           bottomCenter.y + outterRadius*sinf(startAngle + 2.0*stepDialAngle));
+    CGPoint scaleLineInner2 = CGPointMake(bottomCenter.x + outterDialRadius*cosf(startAngle + 2.0*stepDialAngle),
+                                          bottomCenter.y + outterDialRadius*sinf(startAngle + 2.0*stepDialAngle));
+    CGPoint scaleLineOutter3 = CGPointMake(bottomCenter.x + outterRadius*cosf(startAngle + 3.0*stepDialAngle),
+                                           bottomCenter.y + outterRadius*sinf(startAngle + 3.0*stepDialAngle));
+    CGPoint scaleLineInner3 = CGPointMake(bottomCenter.x + outterDialRadius*cosf(startAngle + 3.0*stepDialAngle),
+                                          bottomCenter.y + outterDialRadius*sinf(startAngle + 3.0*stepDialAngle));
+    CGPoint scaleLineOutter4 = CGPointMake(bottomCenter.x + outterRadius*cosf(startAngle + 4.0*stepDialAngle),
+                                           bottomCenter.y + outterRadius*sinf(startAngle + 4.0*stepDialAngle));
+    CGPoint scaleLineInner4 = CGPointMake(bottomCenter.x + outterDialRadius*cosf(startAngle + 4.0*stepDialAngle),
+                                          bottomCenter.y + outterDialRadius*sinf(startAngle + 4.0*stepDialAngle));
+    CGPoint scaleLineOutter5 = CGPointMake(bottomCenter.x + outterRadius*cosf(startAngle + 5.0*stepDialAngle),
+                                           bottomCenter.y + outterRadius*sinf(startAngle + 5.0*stepDialAngle));
+    CGPoint scaleLineInner5 = CGPointMake(bottomCenter.x + outterDialRadius*cosf(startAngle + 5.0*stepDialAngle),
+                                          bottomCenter.y + outterDialRadius*sinf(startAngle + 5.0*stepDialAngle));
+    CGPoint scaleLineOutter6 = CGPointMake(bottomCenter.x + outterRadius*cosf(startAngle + 6.0*stepDialAngle),
+                                           bottomCenter.y + outterRadius*sinf(startAngle + 6.0*stepDialAngle));
+    CGPoint scaleLineInner6 = CGPointMake(bottomCenter.x + outterDialRadius*cosf(startAngle + 6.0*stepDialAngle),
+                                          bottomCenter.y + outterDialRadius*sinf(startAngle + 6.0*stepDialAngle));
+    CGPoint scaleLineOutter7 = CGPointMake(bottomCenter.x + outterRadius*cosf(startAngle + 7.0*stepDialAngle),
+                                           bottomCenter.y + outterRadius*sinf(startAngle + 7.0*stepDialAngle));
+    CGPoint scaleLineInner7 = CGPointMake(bottomCenter.x + outterDialRadius*cosf(startAngle + 7.0*stepDialAngle),
+                                          bottomCenter.y + outterDialRadius*sinf(startAngle + 7.0*stepDialAngle));
+    
+    // Draw the path
+    UIColor * normalThemeColor = [self getNormalThemeColor];
+    [normalThemeColor setStroke];
+    
+    UIBezierPath * outterArcBezierPath = [UIBezierPath bezierPath];
+    [outterArcBezierPath addArcWithCenter:bottomCenter radius:innerRadius startAngle:startAngle endAngle:endAngle clockwise:YES];
+    [outterArcBezierPath stroke];
+    CGContextAddPath(context, outterArcBezierPath.CGPath);
+    
+    UIBezierPath * innerArcBezierPath = [UIBezierPath bezierPath];
+    [innerArcBezierPath addArcWithCenter:bottomCenter radius:outterRadius startAngle:startAngle endAngle:endAngle clockwise:YES];
+    [innerArcBezierPath stroke];
+    CGContextAddPath(context, innerArcBezierPath.CGPath);
+    
+    UIBezierPath * leftLineBezierPath = [UIBezierPath bezierPath];
+    [leftLineBezierPath moveToPoint:leftLineOutter];
+    [leftLineBezierPath addLineToPoint:leftLineInner];
+    [leftLineBezierPath stroke];
+    CGContextAddPath(context, leftLineBezierPath.CGPath);
+    
+    UIBezierPath * rightLineBezierPath = [UIBezierPath bezierPath];
+    [rightLineBezierPath moveToPoint:rightLineOutter];
+    [rightLineBezierPath addLineToPoint:rightLineInner];
+    [rightLineBezierPath stroke];
+    CGContextAddPath(context, rightLineBezierPath.CGPath);
+    
+    UIBezierPath * dialLineBezierPath = [UIBezierPath bezierPath];
+    [dialLineBezierPath moveToPoint:dialLineOutter];
+    [dialLineBezierPath addLineToPoint:dialLineInner];
+    [dialLineBezierPath stroke];
+    CGContextAddPath(context, rightLineBezierPath.CGPath);
+    
+    UIBezierPath * scaleLineBezierPath1 = [UIBezierPath bezierPath];
+    [scaleLineBezierPath1 moveToPoint:scaleLineOutter1];
+    [scaleLineBezierPath1 addLineToPoint:scaleLineInner1];
+    [scaleLineBezierPath1 stroke];
+    CGContextAddPath(context, scaleLineBezierPath1.CGPath);
+    
+    UIBezierPath * scaleLineBezierPath2 = [UIBezierPath bezierPath];
+    [scaleLineBezierPath2 moveToPoint:scaleLineOutter2];
+    [scaleLineBezierPath2 addLineToPoint:scaleLineInner2];
+    [scaleLineBezierPath2 stroke];
+    CGContextAddPath(context, scaleLineBezierPath2.CGPath);
+    
+    UIBezierPath * scaleLineBezierPath3 = [UIBezierPath bezierPath];
+    [scaleLineBezierPath3 moveToPoint:scaleLineOutter3];
+    [scaleLineBezierPath3 addLineToPoint:scaleLineInner3];
+    [scaleLineBezierPath3 stroke];
+    CGContextAddPath(context, scaleLineBezierPath3.CGPath);
+    
+    UIBezierPath * scaleLineBezierPath4 = [UIBezierPath bezierPath];
+    [scaleLineBezierPath4 moveToPoint:scaleLineOutter4];
+    [scaleLineBezierPath4 addLineToPoint:scaleLineInner4];
+    [scaleLineBezierPath4 stroke];
+    CGContextAddPath(context, scaleLineBezierPath4.CGPath);
+    
+    UIBezierPath * scaleLineBezierPath5 = [UIBezierPath bezierPath];
+    [scaleLineBezierPath5 moveToPoint:scaleLineOutter5];
+    [scaleLineBezierPath5 addLineToPoint:scaleLineInner5];
+    [scaleLineBezierPath5 stroke];
+    CGContextAddPath(context, scaleLineBezierPath5.CGPath);
+    
+    UIBezierPath * scaleLineBezierPath6 = [UIBezierPath bezierPath];
+    [scaleLineBezierPath6 moveToPoint:scaleLineOutter6];
+    [scaleLineBezierPath6 addLineToPoint:scaleLineInner6];
+    [scaleLineBezierPath6 stroke];
+    CGContextAddPath(context, scaleLineBezierPath6.CGPath);
+    
+    UIBezierPath * scaleLineBezierPath7 = [UIBezierPath bezierPath];
+    [scaleLineBezierPath7 moveToPoint:scaleLineOutter7];
+    [scaleLineBezierPath7 addLineToPoint:scaleLineInner7];
+    [scaleLineBezierPath7 stroke];
+    CGContextAddPath(context, scaleLineBezierPath7.CGPath);
+    
+    // PLUS SIGN
+    // Get the rect in which the drawn must be embebed its dimensions
+    rectSize = rect.size;
+    rectHeight = rectSize.height;
+    rectWidth = rectSize.width;
+    rectOrigin = rect.origin;
+    
+    // Points for Bezier path
+    CGFloat plusCenterX = rectOrigin.x + 3.0*rectWidth/4.0;
+    CGFloat plusCenterY = rectOrigin.y + 2.0*rectHeight/3.0;
+    CGFloat segmentLength = 2.0*rectWidth/10.0;
+    
+    // Draw the path
+    normalThemeColor = [self getNormalThemeColor];
+    [normalThemeColor setStroke];
+    [normalThemeColor setFill];
+    
+    UIBezierPath * horizontalPlusLine = [UIBezierPath bezierPath];
+    [horizontalPlusLine setLineWidth:2];
+    [horizontalPlusLine moveToPoint:CGPointMake(plusCenterX - segmentLength, plusCenterY)];
+    [horizontalPlusLine addLineToPoint:CGPointMake(plusCenterX + segmentLength, plusCenterY)];
+    [horizontalPlusLine stroke];
+    CGContextAddPath(context, horizontalPlusLine.CGPath);
+    
+    UIBezierPath * verticalPlusLine = [UIBezierPath bezierPath];
+    [verticalPlusLine setLineWidth:2];
+    [verticalPlusLine moveToPoint:CGPointMake(plusCenterX, plusCenterY - segmentLength)];
+    [verticalPlusLine addLineToPoint:CGPointMake(plusCenterX, plusCenterY + segmentLength)];
+    [verticalPlusLine stroke];
+    CGContextAddPath(context, verticalPlusLine.CGPath);
+    
+    // Render the image
+    UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
+/*!
 @method imageForMeasureInNormalThemeColor
 @discussion This method draws the measure icon for buttons.
 */
