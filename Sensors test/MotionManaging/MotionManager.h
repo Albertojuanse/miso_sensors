@@ -180,7 +180,6 @@
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void)setUserDic:(NSMutableDictionary *)givenUserDic;
-- (void)setPosition:(RDPosition *)givenPosition;
 - (void) startAccelerometers;
 - (void) stopAccelerometers;
 - (void) startGyroscopes;

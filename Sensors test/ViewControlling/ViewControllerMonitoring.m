@@ -89,17 +89,6 @@
             NSLog(@"[ERROR][VCM] The collection with the items chosen by user have more than one item; the first one is set as device position.");
         }
     }
-    if (itemChosenByUserAsDevicePosition) {
-        RDPosition * position = itemChosenByUserAsDevicePosition[@"position"];
-        if (!position) {
-            NSLog(@"[ERROR][VCM] No position was found in the item chosen by user as device position; (0,0,0) is set.");
-            position = [[RDPosition alloc] init];
-            position.x = [NSNumber numberWithFloat:0.0];
-            position.y = [NSNumber numberWithFloat:0.0];
-            position.z = [NSNumber numberWithFloat:0.0];
-        }
-        [location setPosition:position];
-    }
     
     // Ask canvas to initialize
     [self.canvas prepareCanvasWithSharedData:sharedData userDic:userDic andCredentialsUserDic:credentialsUserDic];
@@ -119,7 +108,22 @@
     // Initial state measuring and init measures
     [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
                                andWithCredentialsUserDic:credentialsUserDic];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdMonitoring/start" object:nil];
+    RDPosition * position;
+    if (itemChosenByUserAsDevicePosition) {
+        position = itemChosenByUserAsDevicePosition[@"position"];
+        if (!position) {
+            NSLog(@"[ERROR][VCM] No position was found in the item chosen by user as device position; (0,0,0) is set.");
+            position = [[RDPosition alloc] init];
+            position.x = [NSNumber numberWithFloat:0.0];
+            position.y = [NSNumber numberWithFloat:0.0];
+            position.z = [NSNumber numberWithFloat:0.0];
+        }
+    }
+    NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
+    dataDic[@"position"] = position;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdMonitoring/start"
+                                                        object:nil
+                                                      userInfo:dataDic];
     NSLog(@"[NOTI][VCM] Notification \"lmdMonitoring/start\" posted.");
 }
 

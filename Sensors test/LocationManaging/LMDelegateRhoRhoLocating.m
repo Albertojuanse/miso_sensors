@@ -128,30 +128,6 @@
     return;
 }
 
-/*!
- @method getPosition
- @discussion This method gets the device's position.
- */
-- (RDPosition *) getPosition {
-    RDPosition * newPosition = [[RDPosition alloc] init];
-    newPosition.x = [NSNumber numberWithFloat:[itemToMeasurePosition.x floatValue]];
-    newPosition.y = [NSNumber numberWithFloat:[itemToMeasurePosition.y floatValue]];
-    newPosition.z = [NSNumber numberWithFloat:[itemToMeasurePosition.z floatValue]];
-    return newPosition;
-}
-
-/*!
- @method setPosition:
- @discussion This method sets the device's position.
- */
-- (void) setPosition:(RDPosition *)givenPosition{
-    itemToMeasurePosition = nil; // ARC disposing
-    itemToMeasurePosition = [[RDPosition alloc] init];
-    itemToMeasurePosition.x = [NSNumber numberWithFloat:[givenPosition.x floatValue]];
-    itemToMeasurePosition.y = [NSNumber numberWithFloat:[givenPosition.y floatValue]];
-    itemToMeasurePosition.z = [NSNumber numberWithFloat:[givenPosition.z floatValue]];
-}
-
 #pragma mark - Location manager delegated methods - iBeacons
 /*!
  @method locationManager:didChangeAuthorizationStatus:

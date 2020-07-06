@@ -264,31 +264,6 @@
     return;
 }
 
-/*!
- @method getPosition
- @discussion This method gets the device's position.
- */
-- (RDPosition *) getPosition
-{
-    RDPosition * newPosition = [[RDPosition alloc] init];
-    newPosition.x = [NSNumber numberWithFloat:[position.x floatValue]];
-    newPosition.y = [NSNumber numberWithFloat:[position.y floatValue]];
-    newPosition.z = [NSNumber numberWithFloat:[position.z floatValue]];
-    return newPosition;
-}
-
-/*!
- @method setPosition:
- @discussion This method sets the device's position.
- */
-- (void) setPosition:(RDPosition *)givenPosition
-{
-    position = [[RDPosition alloc] init];
-    position.x = [NSNumber numberWithFloat:[givenPosition.x floatValue]];
-    position.y = [NSNumber numberWithFloat:[givenPosition.y floatValue]];
-    position.z = [NSNumber numberWithFloat:[givenPosition.z floatValue]];
-}
-
 #pragma mark - Location manager methods
 
 /*!
@@ -1118,10 +1093,12 @@
     }
 }
 
+// TODO: Evaluate removing. Alberto J. 2020/07/07.
 /*!
  @method startTraveling
  @discussion This method simulate a traveling in space from a given 'RDPosition'.
  */
+/*
 - (void) startTraveling:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"startTraveling"]){
         NSLog(@"[NOTI][MM] Notification \"startTraveling\" recived.");
@@ -1131,11 +1108,13 @@
         NSLog(@"[NOTI][MM] Notification \"getPosition\" posted.");
     }
 }
+*/
 
 /*!
  @method stopTraveling
  @discussion This method simulate a traveling in space from a given 'RDPosition'.
  */
+/*
 - (void) stopTraveling:(NSNotification *) notification  {
     if ([[notification name] isEqualToString:@"stopTraveling"]){
         NSLog(@"[NOTI][MM] Notification \"stopTraveling\" recived.");
@@ -1155,11 +1134,13 @@
         NSLog(@"[NOTI][MM] Notification \"setPosition\" posted.");
     }
 }
+*/
 
 /*!
  @method startTravelingFrom
  @discussion This method simulate a traveling in space from a given 'RDPosition'.
  */
+/*
 - (void) startTravelingFrom:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"getPositionRespond"]){
         NSLog(@"[NOTI][MM] Notification \"getPositionRespond\" recived.");
@@ -1177,5 +1158,6 @@
         position.z = [NSNumber numberWithFloat:[initialPosition.z floatValue]];
     }
 }
+*/
 
 @end

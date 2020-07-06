@@ -130,31 +130,6 @@
     userDic = givenUserDic;
     return;
 }
-
-/*!
- @method getPosition
- @discussion This method gets the device's position.
- */
-- (RDPosition *) getPosition {
-    RDPosition * newPosition = [[RDPosition alloc] init];
-    newPosition.x = [NSNumber numberWithFloat:[position.x floatValue]];
-    newPosition.y = [NSNumber numberWithFloat:[position.y floatValue]];
-    newPosition.z = [NSNumber numberWithFloat:[position.z floatValue]];
-    return newPosition;
-}
-
-/*!
- @method setPosition:
- @discussion This method sets the device's position.
- */
-- (void) setPosition:(RDPosition *)givenPosition{
-    position = nil; // ARC disposing
-    position = [[RDPosition alloc] init];
-    position.x = [NSNumber numberWithFloat:[givenPosition.x floatValue]];
-    position.y = [NSNumber numberWithFloat:[givenPosition.y floatValue]];
-    position.z = [NSNumber numberWithFloat:[givenPosition.z floatValue]];
-}
-
 #pragma mark - Location manager delegated methods - iBeacons
 
 /*!
@@ -375,7 +350,12 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
             NSLog(@"[ERROR][LMM] Shared data could not be accessed while starting locating measure.");
             return;
         }
+        // TODO: This as the rest. Alberto J. 2020/07/07
+        // Get class variables to get the item's position facet from the item chosen by user to measure (modelling mode)
+        NSDictionary * dataDic = [notification userInfo];
+        position = dataDic[@"position"];
         
+        // (···)
         // Get the measuring mode and items for initializing
         NSMutableArray * items = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
         MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic

@@ -46,7 +46,5 @@
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void)setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void)setDeviceUUID:(NSString *)givenDeviceUUID;
-- (void)setPosition:(RDPosition *)givenPosition;
-- (RDPosition *)getPosition;
 
 @end

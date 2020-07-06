@@ -772,13 +772,8 @@
         NSString * uuid = itemChosenByUser[@"uuid"];
         if (!uuid) {
             NSLog(@"[ERROR]%@ No UUID was found in the item chosen by user as device position; a random one set.", ERROR_DESCRIPTION_VCETTM);
-            deviceUUID = [[NSUUID UUID] UUIDString];
-            itemChosenByUser[@"uuid"] = deviceUUID;
-        } else {
-            deviceUUID = itemChosenByUser[@"uuid"];
+            itemChosenByUser[@"uuid"] = [[NSUUID UUID] UUIDString];
         }
-        [location setPosition:position];
-        [motion setPosition:position];
         
         return YES;
     } else {
