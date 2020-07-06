@@ -414,6 +414,8 @@
     // Transform the real positions to an apropiate canvas ones, with the barycenter of the set of points in the center of the canvas
     // This method also sets the ratios in the class variables 'rWidth' and 'rHeight'; then, they will be used for transform every single point
     // TODO: make the SafeAreaRatio configurable (zoom). Alberto J. 2019/09/16.
+    // TODO: make center of drawing fixed. Alberto J. 2020/07/07.
+    // TODO: remove old layers not working. Alberto J. 2020/07/07.
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
     NSNumber * safeAreaRatio = layoutDic[@"canvas/safeAreaRatio"];
