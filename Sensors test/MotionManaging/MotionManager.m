@@ -1058,12 +1058,7 @@
                                            [positionKey length] - 4]
                                           ];
                 infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
-                // Check if it is a item chosen by user
-                MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
-                                                                            andCredentialsUserDic:credentialsUserDic];
-                if(type) {
-                    infoDic[@"type"] = type;
-                }
+                
                 BOOL savedItem = [sharedData inItemDataAddItemOfSort:@"position"
                                                             withUUID:positionKey
                                                          withInfoDic:infoDic

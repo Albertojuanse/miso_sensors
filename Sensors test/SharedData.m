@@ -953,26 +953,6 @@
 }
 
 /*!
- @method fromSessionDataGetTypeChosenByUserFromUserWithUserDic:andCredentialsUserDic:
- @discussion This method returns the type chosen by user from the session data collection given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
- */
-- (MDType *)fromSessionDataGetTypeChosenByUserFromUserWithUserDic:(NSMutableDictionary *)userDic
-                                            andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    return [self fromSessionDataGetKey:@"typeChosenByUser" fromUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
-}
-
-/*!
- @method fromSessionDataGetTypeChosenByUserFromUserWithUserName:andCredentialsUserDic:
- @discussion This method returns the type chosen by user from the session data collection given the user's name; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
- */
-- (MDType *)fromSessionDataGetTypeChosenByUserFromUserWithUserName:(NSString *)userName
-                                             andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    return [self fromSessionDataGetKey:@"typeChosenByUser" fromUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
-}
-
-/*!
 @method fromSessionDataIsChosenItemByUser:byUserWithUserDic:andCredentialsUserDic:
 @discussion This method returns true if the user did choose the provided 'item chosen by user' given the user's dictionary; if is not found, return nil; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
 */
@@ -2992,28 +2972,6 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
 {
     return [self inSessionDataSetObject:itemChosenByUser forKey:@"itemChosenByUser" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
-}
-
-/*!
- @method inSessionDataSetTypeChosenByUser:toUserWithUserDic:andCredentialsUserDic:
- @discussion This method sets in session data collection the parameter 'typeChosenByUser' state to the given user's dictionary; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
- */
-- (BOOL)inSessionDataSetTypeChosenByUser:(MDType *)typeChosenByUser
-                       toUserWithUserDic:(NSMutableDictionary *)userDic
-                   andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    return [self inSessionDataSetObject:typeChosenByUser forKey:@"typeChosenByUser" toUserWithUserDic:userDic andCredentialsUserDic:credentialsUserDic];
-}
-
-/*!
- @method inSessionDataSetTypeChosenByUser:toUserWithUserName:andCredentialsUserDic:
- @discussion This method sets in session data collection the parameter 'typeChosenByUser' state to the given user's name; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
- */
-- (BOOL)inSessionDataSetTypeChosenByUser:(MDType *)typeChosenByUser
-                      toUserWithUserName:(NSString *)userName
-                   andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
-{
-    return [self inSessionDataSetObject:typeChosenByUser forKey:@"typeChosenByUser" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
 }
 
 /*!

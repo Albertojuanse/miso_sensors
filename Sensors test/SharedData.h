@@ -115,10 +115,6 @@
                                                          andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSString *)fromSessionDataGetModeChosenByUserFromUserWithUserName:(NSString *)userName
                                                           andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
-- (MDType *)fromSessionDataGetTypeChosenByUserFromUserWithUserDic:(NSMutableDictionary *)userDic
-                                            andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
-- (MDType *)fromSessionDataGetTypeChosenByUserFromUserWithUserName:(NSString *)userName
-                                             andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)fromSessionDataIsChosenItemByUser:(NSMutableDictionary *)itemChosenByUser
                         byUserWithUserDic:(NSMutableDictionary *)givenUserDic
                     andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
@@ -331,12 +327,6 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
                        toUserWithUserDic:(NSMutableDictionary *)userDic
                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL)inSessionDataSetItemChosenByUser:(NSMutableDictionary *)itemChosenByUser
-                      toUserWithUserName:(NSString *)userName
-                   andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
-- (BOOL)inSessionDataSetTypeChosenByUser:(MDType *)typeChosenByUser
-                       toUserWithUserDic:(NSMutableDictionary *)userDic
-                   andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
-- (BOOL)inSessionDataSetTypeChosenByUser:(MDType *)typeChosenByUser
                       toUserWithUserName:(NSString *)userName
                    andCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL) inSessionDataSetAsChosenItem:(NSMutableDictionary *)givenItemDic

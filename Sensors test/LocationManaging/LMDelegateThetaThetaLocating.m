@@ -393,13 +393,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
                 itemIdentifier = [itemIdentifier stringByAppendingString:@"@miso.uam.es"];
                 infoDic[@"identifier"] = itemIdentifier;
                 infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
-                // Check if it is a item chosen by user
-                // TODO: This is not needed anymore. Alberto J. 2020/07/06.
-                MDType * type = [sharedData fromSessionDataGetTypeChosenByUserFromUserWithUserDic:userDic
-                                                                            andCredentialsUserDic:credentialsUserDic];
-                if(type) {
-                    infoDic[@"type"] = type;
-                }
+                
                 BOOL savedItem = [sharedData inItemDataAddItemOfSort:@"position"
                                                             withUUID:positionKey
                                                          withInfoDic:infoDic
