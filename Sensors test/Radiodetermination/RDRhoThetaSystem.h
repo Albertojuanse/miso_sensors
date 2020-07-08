@@ -17,6 +17,7 @@
  @discussion This class creates a system capable of locate a position in space given other positions and both a value related to the distance within them and a value related to its heading.
  */
 @interface RDRhoThetaSystem: NSObject {
+    
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
@@ -24,8 +25,6 @@
     // Components
     SharedData * sharedData;
     
-    // Variables
-    NSMutableArray * rssiMeasures;
 }
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
