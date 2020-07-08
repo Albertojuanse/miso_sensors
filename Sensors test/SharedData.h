@@ -160,6 +160,10 @@
 - (NSMutableArray *)fromMeasuresDataGetPositionsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)fromMeasuresDataGetItemUUIDsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)fromMeasuresDataGetDeviceUUIDsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray *)fromMeasuresDataGetMeasuresFromItemUUID:(NSString *)itemUUID
+                                     withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfDeviceUUID:(NSString *)deviceUUID
+                                     withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)fromMeasuresDataGetPositionsOfUserDic:(NSMutableDictionary *)givenUserDic
                                    withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 

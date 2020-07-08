@@ -1597,6 +1597,66 @@
 }
 
 /*!
+ @method fromMeasuresDataGetMeasuresFromItemUUID:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken from a given item UUID; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromMeasuresDataGetMeasuresFromItemUUID:(NSString *)itemUUID
+                                     withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * measures = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and save the measures.
+        for (measureDic in measuresData) {
+            NSString * storedItemUUID = measureDic[@"itemUUID"];
+            if ([storedItemUUID isEqualToString:itemUUID]) {
+                
+                if (measureDic[@"measure"]) {
+                    [measures addObject:measureDic[@"measure"]];
+                }
+            }
+        }
+        
+        return measures;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetMeasuresOfDeviceUUID:withCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every measure taken from a given device UUID; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfDeviceUUID:(NSString *)deviceUUID
+                                     withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * measures = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and save the measures.
+        for (measureDic in measuresData) {
+            NSString * storedDeviceUUID = measureDic[@"deviceUUID"];
+            if ([storedDeviceUUID isEqualToString:deviceUUID]) {
+                
+                if (measureDic[@"measure"]) {
+                    [measures addObject:measureDic[@"measure"]];
+                }
+            }
+        }
+        
+        return measures;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
  @method fromMeasuresDataGetPositionsOfUserDic:withCredentialsUserDic:
  @discussion This method returns a 'NSMutableArray' with every position taken from a given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */
