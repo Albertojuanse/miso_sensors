@@ -1515,6 +1515,88 @@
 }
 
 /*!
+ @method fromMeasuresDataGetItemUUIDsWithCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every item UUID taken; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromMeasuresDataGetItemUUIDsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * uuid = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and copy and save the UUID if it's from the user
+        for (measureDic in measuresData) {
+            if (measureDic[@"itemUUID"]) {
+                
+                // Search for different UUID
+                if(uuid.count == 0) {
+                    [uuid addObject:measureDic[@"itemUUID"]];
+                } else {
+                    BOOL foundUUID = NO;
+                    for (NSString * existingUUID in uuid) {
+                        if ([existingUUID isEqualToString:measureDic[@"itemUUID"]]) {
+                            foundUUID = YES;
+                        } else {
+                            
+                        }
+                    }
+                    if (!foundUUID) {
+                        [uuid addObject:measureDic[@"itemUUID"]];
+                    }
+                }
+            }
+        }
+        
+        return uuid;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
+ @method fromMeasuresDataGetDeviceUUIDsWithCredentialsUserDic:
+ @discussion This method returns a 'NSMutableArray' with every device UUID taken; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+ */
+- (NSMutableArray *)fromMeasuresDataGetDeviceUUIDsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    if([self validateCredentialsUserDic:credentialsUserDic]) {
+        
+        NSMutableArray * uuid = [[NSMutableArray alloc] init];
+        
+        // Get every dictionary with measures and copy and save the UUID
+        for (measureDic in measuresData) {
+            if (measureDic[@"deviceUUID"]) {
+                
+                // Search for different UUID
+                if(uuid.count == 0) {
+                    [uuid addObject:measureDic[@"deviceUUID"]];
+                } else {
+                    BOOL foundUUID = NO;
+                    for (NSString * existingUUID in uuid) {
+                        if ([existingUUID isEqualToString:measureDic[@"deviceUUID"]]) {
+                            foundUUID = YES;
+                        } else {
+                            
+                        }
+                    }
+                    if (!foundUUID) {
+                        [uuid addObject:measureDic[@"deviceUUID"]];
+                    }
+                }
+            }
+        }
+        
+        return uuid;
+        
+    } else {
+        NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
+        return nil;
+    }
+}
+
+/*!
  @method fromMeasuresDataGetPositionsOfUserDic:withCredentialsUserDic:
  @discussion This method returns a 'NSMutableArray' with every position taken from a given user; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
  */

@@ -158,6 +158,8 @@
 
 // Specific measures measure getters
 - (NSMutableArray *)fromMeasuresDataGetPositionsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray *)fromMeasuresDataGetItemUUIDsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray *)fromMeasuresDataGetDeviceUUIDsWithCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)fromMeasuresDataGetPositionsOfUserDic:(NSMutableDictionary *)givenUserDic
                                    withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
