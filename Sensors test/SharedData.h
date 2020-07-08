@@ -164,6 +164,12 @@
                                      withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)fromMeasuresDataGetMeasuresOfDeviceUUID:(NSString *)deviceUUID
                                      withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray *)fromMeasuresDataGetMeasuresFromItemUUID:(NSString *)itemUUID
+                                                     ofSort:(NSString *)sort
+                                     withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSMutableArray *)fromMeasuresDataGetMeasuresOfDeviceUUID:(NSString *)deviceUUID
+                                                     ofSort:(NSString *)sort
+                                     withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray *)fromMeasuresDataGetPositionsOfUserDic:(NSMutableDictionary *)givenUserDic
                                    withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
