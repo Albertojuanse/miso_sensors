@@ -378,19 +378,4 @@
     return locatedPositions;
 }
 
-/*!
- @method calculateDistanceWithRssi:
- @discussion This method calculates the distance from a signal was transmited using reception's RSSI value.
- */
-+ (NSNumber *) calculateDistanceWithRssi: (NSInteger) rssi
-{
-    // Absolute values of speed of light, frecuency, and antenna's join gain
-    float C = 299792458.0;
-    float F = 2440000000.0; // 2400 - 2480 MHz
-    float G = 1.0; // typically 2.16 dBi
-    // Calculate the distance
-    NSNumber * distance = [[NSNumber alloc] initWithFloat:( (C / (4.0 * M_PI * F)) * sqrt(G * pow(10.0, (float)rssi/ 10.0)) )];
-    return distance;
-}
-
 @end

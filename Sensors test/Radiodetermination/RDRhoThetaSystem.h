@@ -35,6 +35,4 @@
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void)setUserDic:(NSMutableDictionary *)givenUserDic;
 
-+ (NSNumber *) calculateDistanceWithRssi:(NSInteger) rssi;
-
 @end

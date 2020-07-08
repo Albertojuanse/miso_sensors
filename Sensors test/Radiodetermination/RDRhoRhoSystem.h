@@ -36,6 +36,4 @@
 - (void)setUserDic:(NSMutableDictionary *)givenUserDic;
 - (void)setDeviceUUID:(NSString *)givenDeviceUUID;
 
-+ (NSNumber *) calculateDistanceWithRssi:(NSInteger) rssi;
-
 @end

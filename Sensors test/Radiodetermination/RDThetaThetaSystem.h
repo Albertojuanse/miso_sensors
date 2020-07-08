@@ -17,6 +17,7 @@
  @discussion This class creates a system capable of locate a position in space given other positions and values related to its heading.
  */
 @interface RDThetaThetaSystem : NSObject {
+    
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
@@ -34,7 +35,5 @@
 - (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithPrecisions:(NSDictionary *)precisions;
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void)setUserDic:(NSMutableDictionary *)givenUserDic;
-
-+ (NSNumber *) calculateDistanceWithRssi:(NSInteger) rssi;
 
 @end
