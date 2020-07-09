@@ -284,17 +284,21 @@
                     // ...and for every measure do the calculations:
                     // - calculate its mean average and
                     // - calculate the location.
+                    // minarg_{gridPosition} of { SUM{
+                    //      (|| itemPosition - gridPosition || - measure)^2
+                    //  } }
+                
                     NSNumber * measuresRSSIAverage = [self getMeanOf:rssiMeasures];
                     
                     // Get the item position using its UUID
                     NSMutableArray * itemsMeasured = [sharedData fromItemDataGetItemsWithUUID:itemUUID
                                                                         andCredentialsUserDic:credentialsUserDic];
                     if (itemsMeasured.count == 0) {
-                        NSLog(@"[ERROR][RT] No items found with the itemUUID in measures.");
+                        NSLog(@"[ERROR][RR] No items found with the itemUUID in measures.");
                         break;
                     }
                     if (itemsMeasured.count > 1) {
-                        NSLog(@"[ERROR][RT] More than one items stored with the same UUID: using first one.");
+                        NSLog(@"[ERROR][RR] More than one items stored with the same UUID: using first one.");
                     }
                     NSMutableDictionary * itemMeasured = [itemsMeasured objectAtIndex:0];
                     RDPosition * itemPosition = itemMeasured[@"position"];
@@ -332,119 +336,80 @@
         }
         
     } else if ([mode isModeKey:kModeRhoRhoModelling]) {
-        /*
-        // In a locating mode the device must be located using the measures from items. That implies that, each UUID groups the measures taken from a certain beacon and the device position must be calculed using all of them.
         
-        // It is needed the whole of positions where measures were generated and its maximun value to caluculate a grid in which locate every item; save also its UUID in the same order. Retrieve that data using selected items by user.
-        NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
-                                                                          andCredentialsUserDic:credentialsUserDic];
-        NSMutableArray * itemsPositions = [[NSMutableArray alloc] init];
-        NSMutableArray * itemsUUID = [[NSMutableArray alloc] init];
-        for (NSMutableDictionary * itemDic in itemsChosenByUser) {
-            
-            // For every item selected by user, only get the positions of beacons
-            NSString * itemUUID = itemDic[@"uuid"];
-            NSString * sort = itemDic[@"sort"];
-            if ([sort isEqualToString:@"beacon"]) {
-                if (itemDic[@"position"]) {
-                    RDPosition * itemPosition = [[RDPosition alloc] init];
-                    RDPosition * newPosition = [[RDPosition alloc] init];
-                    itemPosition = itemDic[@"sort"];
-                    newPosition.x = itemPosition.x;
-                    newPosition.y = itemPosition.y;
-                    newPosition.z = itemPosition.z;
-                    [itemsPositions addObject:newPosition];
-                    [itemsUUID addObject:itemUUID];
-                }
-            }
-        }
-        NSNumber * maxMeasure = [sharedData fromMeasuresDataGetMaxMeasureOfSort:@"correctedDistance" withCredentialsUserDic:credentialsUserDic];
-        NSMutableArray * grid = [self generateGridUsingPositions:itemsPositions
+        // In a modelling mode the measures use
+        // - as the 'deviceUUID' the UUID of the item chosen in the canvas, and
+        // - as the 'itemUUID' the UUID of the item chosen in the adding menu.
+        // A location will be found for each 'itemUUID'
+        
+        // This method uses a grid search, and the grid is calculated with the maximum value of measures.
+        NSMutableArray * measurePositions = [sharedData fromMeasuresDataGetPositionsWithCredentialsUserDic:credentialsUserDic];
+        NSNumber * maxMeasure = [sharedData fromMeasuresDataGetMaxMeasureOfSort:@"correctedDistance"
+                                                         withCredentialsUserDic:credentialsUserDic];
+        NSMutableArray * grid = [self generateGridUsingPositions:measurePositions
                                                    andMaxMeasure:maxMeasure
                                                    andPrecisions:precisions];
         
-        // It is also needed the info about the UUID that must be located; in this case the device's UUID.
-        // TODO: Multiuser measures. Alberto J. 2019/09/24.
-        NSMutableArray * everyUUID = [[NSMutableArray alloc] initWithObjects:deviceUUID, nil];
+        // Get all UUID from the measures
+        NSMutableArray * allDeviceUUID = [sharedData fromMeasuresDataGetDeviceUUIDsWithCredentialsUserDic:credentialsUserDic];
+        NSMutableArray * allItemUUID = [sharedData fromMeasuresDataGetItemUUIDsWithCredentialsUserDic:credentialsUserDic];
         
-        // And thus, for every device that must be located with its unique UUID, get from every item where measures were generated its measures and use them.
-        for (NSString * UUIDtoLocate in everyUUID) {
+        // And thus, for every item that must be located...
+        for (NSString * itemUUID in allItemUUID) {
             
-            // Optimization search over the grid
+            // Measures are only possible if measures were take from at least 3 positions with measures, what means, 3 tuples (itemUUID, deviceUUID) with the same 'deviceUUID' but different 'itemUUID'.
+            NSInteger itemsWithMeasures = 0;
+            
+            // Perform the calculus searching over the grid the optimum solution
             NSNumber * minarg = [NSNumber numberWithFloat:FLT_MAX];
             RDPosition * minargPosition;
-            NSString * minargUUID = UUIDtoLocate; // In this mode it is known.
-            
+        
             // For every position in the grid,...
             for (RDPosition * gridPosition in grid) {
                 
                 NSNumber * sum = [NSNumber numberWithFloat:0.0];
-                
-                // Measures are only feasible if measures were take from at least 3 positions with measures.
-                NSInteger itemsWithMeasures = 0;
-                
-                // ...and for every position where measures come from...
-                for (RDPosition * itemPosition in itemsPositions) {
+            
+                // ...evaluate the diferent items that are measured...
+                for (NSString * deviceUUID in allDeviceUUID) {
                     
-                    // ...calculate the euclidean distance between them;...
-                    NSNumber * positionsDistance = [itemPosition euclideanDistance3Dto:gridPosition];
-                    // ...this will be used for comparing with each beacon's measures and minimization.
+                    // ...and get every measure of the tuple (itemUUID, deviceUUID)
+                    NSMutableArray * rssiMeasures = [sharedData fromMeasuresDataGetMeasuresOfDeviceUUID:deviceUUID
+                                                                                           fromItemUUID:itemUUID
+                                                                                                 ofSort:@"correctedDistance"
+                                                                                 withCredentialsUserDic:credentialsUserDic];
+                    // ...and for every measure do the calculations:
+                    // - calculate its mean average and
+                    // - calculate the location.
+                    // minarg_{gridPosition} of { SUM{
+                    //      (|| itemPosition - gridPosition || - measure)^2
+                    //  } }
+                    NSNumber * measuresRSSIAverage = [self getMeanOf:rssiMeasures];
                     
-                    // To get the measures taken from the item in that position its UUID can be used
-                    NSString * itemUUID = [itemsUUID objectAtIndex:
-                                           [itemsPositions indexOfObject:itemPosition]
-                                           ];
-                   
+                    // Get the item position using its UUID
+                    NSMutableArray * itemsMeasured = [sharedData fromItemDataGetItemsWithUUID:deviceUUID
+                                                                        andCredentialsUserDic:credentialsUserDic];
+                    if (itemsMeasured.count == 0) {
+                        NSLog(@"[ERROR][RR] No items found with the itemUUID in measures.");
+                        break;
+                    }
+                    if (itemsMeasured.count > 1) {
+                        NSLog(@"[ERROR][RR] More than one items stored with the same UUID: using first one.");
+                    }
+                    NSMutableDictionary * itemMeasured = [itemsMeasured objectAtIndex:0];
+                    RDPosition * itemPosition = itemMeasured[@"position"];
                     
-                            
-                    // Now, get only the measures taken from that item and its UUID...
-                    NSMutableArray * measures = [sharedData fromMeasuresDataGetMeasuresOfUserDic:userDic
-                                                                            takenFromItemUUID:itemUUID
-                                                                                        ofSort:@"correctedDistance"
-                                                                        withCredentialsUserDic:credentialsUserDic];
-                    // ...and for every measure calculate its mean average.
-                    // TODO: Other statistical such as a deviation ponderate average. Alberto J. 2019/06/25.
-                    
-                    
-                    if (measures.count == 0) {
-                        // Not evaluate
-                    } else {
-                        NSNumber * measuresAcumulation = [NSNumber numberWithFloat:0.0];
-                        NSInteger measureIndex = 0;
-                        for (NSNumber * measure in measures) {
-                            // Only evaluate if it is a RSSI measure
-                            measuresAcumulation = [NSNumber numberWithFloat:
-                                                   [measuresAcumulation floatValue] +
-                                                   [measure floatValue]
-                                                   ];
-                            measureIndex++;
-                        }
-                        NSNumber * measureIndexFloat = [NSNumber numberWithInteger:measureIndex];
-                        NSNumber * measuresAverage = [NSNumber numberWithFloat:0.0];
-                        if (measureIndex != 0) { // Division by zero preventing
-                            measuresAverage = [NSNumber numberWithFloat:
-                                               [measuresAcumulation floatValue] / [measureIndexFloat floatValue]
-                                               ];
-                        }
-                        // Count as valid position with measures
-                        if (measureIndex > 0) {
-                            itemsWithMeasures++;
-                        }
+                    if (itemPosition) {
+                        itemsWithMeasures++; // valid item
                         
-                        // And perform the calculus to minimizate; is squared difference.
-                        sum = [NSNumber numberWithFloat:
-                               (
-                                [sum floatValue] +
-                                [positionsDistance floatValue] -
-                                [measuresAverage floatValue]) *
-                               (
-                                [sum floatValue] +
-                                [positionsDistance floatValue] -
-                                [measuresAverage floatValue]
-                                )
+                        // Perform the calculus to minimizate; is squared difference.
+                        NSNumber * positionsDistance = [itemPosition euclideanDistance3Dto:gridPosition];
+                        sum = [NSNumber numberWithFloat: [sum floatValue] +
+                               ([positionsDistance floatValue]-[measuresRSSIAverage floatValue]) *
+                               ([positionsDistance floatValue]-[measuresRSSIAverage floatValue])
                                ];
                     }
                 }
+                
                 // Evaluate feasibility
                 if (itemsWithMeasures > 2) {
                     // Minimization
@@ -456,19 +421,17 @@
                         minargPosition.y = gridPosition.y;
                         minargPosition.z = gridPosition.z;
                     }
-                    
-                } else {
-                    minargPosition = nil;
                 }
             }
-            // Add the minimum position for this UUID
+            
+            // Save the result for this deviceUUID.
             if (minargPosition) {
-                [locatedPositions setObject:minargPosition forKey:minargUUID];
+                [locatedPositions setObject:minargPosition forKey:itemUUID];
             }
         }
-     */
+        
     } else {
-       NSLog(@"[ERROR][RR] Instantiated rho-theta type system  when using %@ mode.", mode);
+       NSLog(@"[ERROR][RR] Instantiated rho-rho type system  when using %@ mode.", mode);
     }
    
     NSLog(@"[INFO][RR] Finish Radiolocating beacons.");
