@@ -82,6 +82,7 @@ static NSString * MEASURING_STATE_MESSAGE_VCERTM = @"MEASURING; please, do not m
               inViewController:(UIViewController *)viewController
        didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 #pragma mark - Adding VCModeDelegate methods
+- (UIImage *)imageForMeasureIcon;
 - (void)whileAddingUserDidTapMeasure:(UIButton *)buttonMeasure
                     toMeasureItemDic:(NSMutableDictionary *)itemDic;
 - (void)whileAddingRangingMeasureFinishedInViewController:(UIViewController *)viewController

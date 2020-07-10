@@ -894,6 +894,7 @@
 */
 - (UIImage *)imageForMeasureIcon
 {
+    NSLog(@"[HOLA] imageForMeasureIcon in delegate");
     return [UIImage imageNamed:@"Measure thetaTheta.png"];
 }
 

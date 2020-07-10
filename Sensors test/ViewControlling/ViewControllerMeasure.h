@@ -30,5 +30,6 @@
 
 - (void) setItemDicToMeasure:(NSMutableDictionary *)givenItemDic;
 - (void) setDelegate:(id<VCModeDelegate>)givenDelegate;
+- (void) loadMeasureImage;
 
 @end

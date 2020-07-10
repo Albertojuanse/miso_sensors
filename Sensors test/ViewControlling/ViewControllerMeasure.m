@@ -23,8 +23,6 @@
     UIImage * measureImage = [VCDrawings imageForMeasureInNormalThemeColor];
     [self.measureButton setImage:measureImage forState:UIControlStateNormal];
     [self.measureButton setTintColor:[VCDrawings getNormalThemeColor]];
-    UIImage * tutorialImage = [delegate imageForMeasureIcon];
-    [self.tutorialImageView setImage:tutorialImage];
     
     // Load event listeners
     [self loadEventListeners];
@@ -64,6 +62,16 @@
                                              selector:@selector(rangingMeasureFinished:)
                                                  name:@"vcMeasure/rangingMeasureFinished"
                                                object:nil];
+}
+
+/*!
+@method loadMeasureImage
+@discussion This method just display the measure tutorial image; it is needed since for loading the image the delegate is needed, and it is set after the load of this view.
+*/
+- (void) loadMeasureImage
+{
+    UIImage * tutorialImage = [delegate imageForMeasureIcon];
+    [self.tutorialImageView setImage:tutorialImage];
 }
 
 #pragma mark - Instance methods

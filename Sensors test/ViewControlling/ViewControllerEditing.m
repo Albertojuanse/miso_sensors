@@ -366,6 +366,7 @@
         // Set the variables
         [viewControllerMeasure setDelegate:delegate];
         [viewControllerMeasure setItemDicToMeasure:itemDic];
+        [viewControllerMeasure loadMeasureImage];
         
         // Configure popover layout
         UIPopoverPresentationController * popoverMeasure =  viewControllerMeasure.popoverPresentationController;
