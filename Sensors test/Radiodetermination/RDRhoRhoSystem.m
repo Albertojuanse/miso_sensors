@@ -357,7 +357,7 @@
         // And thus, for every item that must be located...
         for (NSString * itemUUID in allItemUUID) {
             
-            // Measures are only possible if measures were take from at least 3 positions with measures, what means, 3 tuples (itemUUID, deviceUUID) with the same 'deviceUUID' but different 'itemUUID'.
+            // Measures are only possible if measures were take from at least 3 positions with measures, what means, 3 tuples (itemUUID, deviceUUID) with the same 'itemUUID' but different 'deviceUUID'.
             NSInteger itemsWithMeasures = 0;
             
             // Perform the calculus searching over the grid the optimum solution

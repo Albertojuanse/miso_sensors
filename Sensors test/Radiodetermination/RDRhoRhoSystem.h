@@ -24,8 +24,6 @@
     // Components
     SharedData * sharedData;
     
-    // Variables
-    NSMutableArray * rssiMeasures;
 }
 
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
