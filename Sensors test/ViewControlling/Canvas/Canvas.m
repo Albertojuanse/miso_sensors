@@ -218,16 +218,23 @@
             if ([oldLayer isKindOfClass:[CAShapeLayer class]] ||[oldLayer isKindOfClass:[CATextLayer class]] ) {
                 [oldLayer removeFromSuperlayer];
             }
+            //[oldLayer removeFromSuperlayer];
         }
     }
     if (self.subviews.count > 0) {
         NSArray * oldViews = [NSArray arrayWithArray:self.subviews];
         for (UIView * oldView in oldViews) {
             if ([oldView isKindOfClass:[VCType class]] ||
-                [oldView isKindOfClass:[VCComponent class]]
+                [oldView isKindOfClass:[VCComponent class]] ||
+                [oldView isKindOfClass:[VCComponentInfo class]] ||
+                [oldView isKindOfClass:[VCPosition class]] ||
+                [oldView isKindOfClass:[VCCorner class]] ||
+                [oldView isKindOfClass:[VCColumn class]] ||
+                [oldView isKindOfClass:[VCType class]]
                 ) {
                 [oldView removeFromSuperview];
             }
+            //[oldView removeFromSuperview];
         }
     }
     
