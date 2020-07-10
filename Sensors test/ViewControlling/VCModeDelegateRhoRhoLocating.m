@@ -895,6 +895,15 @@
 
 #pragma mark - Adding VCModeDelegate methods
 /*!
+@method imageForMeasureIcon
+@discussion This method returns the image for measuring interface in RhoRhoLocating mode to measure the selected item.
+*/
+- (UIImage *)imageForMeasureIcon
+{
+    return [UIImage imageNamed:@"Measure rhoRho.png"];
+}
+
+/*!
 @method whileAddingUserDidTapMeasure:toMeasureItemDic:
 @discussion This method returns the behaviour when user taps 'Measure' button in Add view in RhoRhoLocating mode to measure the selected item.
 */

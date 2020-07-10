@@ -82,6 +82,8 @@
 		42D610772428CD6800D45EB7 /* VCCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 42D610762428CD6800D45EB7 /* VCCorner.m */; };
 		42D6107A24292DCF00D45EB7 /* VCPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 42D6107924292DCF00D45EB7 /* VCPosition.m */; };
 		42D6107E24294D9700D45EB7 /* VCColumn.m in Sources */ = {isa = PBXBuildFile; fileRef = 42D6107D24294D9700D45EB7 /* VCColumn.m */; };
+		42DB2F0B24B889A20054CCAA /* Measure thetaTheta.png in Resources */ = {isa = PBXBuildFile; fileRef = 42DB2F0A24B889A20054CCAA /* Measure thetaTheta.png */; };
+		42DB2F0D24B88BE50054CCAA /* Measure rhoRho.png in Resources */ = {isa = PBXBuildFile; fileRef = 42DB2F0C24B88BE50054CCAA /* Measure rhoRho.png */; };
 		42E4B7E523D8BCDD003888C0 /* MDRoutine.m in Sources */ = {isa = PBXBuildFile; fileRef = 42E4B7E423D8BCDD003888C0 /* MDRoutine.m */; };
 		42E4B7E823D8BE03003888C0 /* MDMetamodel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42E4B7E723D8BE03003888C0 /* MDMetamodel.m */; };
 		42ED9F6D23D7415500537FE6 /* LMDelegateRhoRhoLocating.m in Sources */ = {isa = PBXBuildFile; fileRef = 42ED9F6C23D7415500537FE6 /* LMDelegateRhoRhoLocating.m */; };
@@ -225,6 +227,8 @@
 		42D6107924292DCF00D45EB7 /* VCPosition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCPosition.m; sourceTree = "<group>"; };
 		42D6107C24294D8900D45EB7 /* VCColumn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCColumn.h; sourceTree = "<group>"; };
 		42D6107D24294D9700D45EB7 /* VCColumn.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCColumn.m; sourceTree = "<group>"; };
+		42DB2F0A24B889A20054CCAA /* Measure thetaTheta.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Measure thetaTheta.png"; sourceTree = "<group>"; };
+		42DB2F0C24B88BE50054CCAA /* Measure rhoRho.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Measure rhoRho.png"; sourceTree = "<group>"; };
 		42E4B7E323D8BCBD003888C0 /* MDRoutine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDRoutine.h; sourceTree = "<group>"; };
 		42E4B7E423D8BCDD003888C0 /* MDRoutine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDRoutine.m; sourceTree = "<group>"; };
 		42E4B7E623D8BDEE003888C0 /* MDMetamodel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDMetamodel.h; sourceTree = "<group>"; };
@@ -446,6 +450,8 @@
 				423A46DC249B58E600BF0265 /* VCDrawings.m */,
 				421E741E245B20A700AC8FC8 /* Calibration.png */,
 				42B686AB24A232240065A0D1 /* Measure rhoTheta.png */,
+				42DB2F0C24B88BE50054CCAA /* Measure rhoRho.png */,
+				42DB2F0A24B889A20054CCAA /* Measure thetaTheta.png */,
 				42776ACC23F30D9400CE44A0 /* beacon.png */,
 				427828BB23E322F8005D19B3 /* metamodel.png */,
 				427828BC23E322F8005D19B3 /* routine.png */,
@@ -538,6 +544,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				42B686AC24A232240065A0D1 /* Measure rhoTheta.png in Resources */,
+				42DB2F0D24B88BE50054CCAA /* Measure rhoRho.png in Resources */,
 				421E741F245B20A700AC8FC8 /* Calibration.png in Resources */,
 				421E741A245AE76600AC8FC8 /* ViewItemSettings.xib in Resources */,
 				422798902271F37800E07C39 /* LaunchScreen.storyboard in Resources */,
@@ -546,6 +553,7 @@
 				421550EF23D9B67F00945294 /* PListLayout.plist in Resources */,
 				427828C123E322F8005D19B3 /* type.png in Resources */,
 				42412F2C24980DF5002EB1A5 /* ViewAddComponent.xib in Resources */,
+				42DB2F0B24B889A20054CCAA /* Measure thetaTheta.png in Resources */,
 				421550FA23DA0D8700945294 /* icon.png in Resources */,
 				4227988D2271F37800E07C39 /* Assets.xcassets in Resources */,
 				427828C023E322F8005D19B3 /* routine.png in Resources */,

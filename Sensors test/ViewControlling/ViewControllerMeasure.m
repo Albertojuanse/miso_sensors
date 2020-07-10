@@ -23,7 +23,7 @@
     UIImage * measureImage = [VCDrawings imageForMeasureInNormalThemeColor];
     [self.measureButton setImage:measureImage forState:UIControlStateNormal];
     [self.measureButton setTintColor:[VCDrawings getNormalThemeColor]];
-    UIImage * tutorialImage = [UIImage imageNamed:@"Measure rhoTheta.png"];
+    UIImage * tutorialImage = [delegate imageForMeasureIcon];
     [self.tutorialImageView setImage:tutorialImage];
     
     // Load event listeners

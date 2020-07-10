@@ -802,6 +802,15 @@
 
 #pragma mark - Adding VCModeDelegate methods
 /*!
+@method imageForMeasureIcon
+@discussion This method returns the image for measuring interface in RhoThetaModelling mode to measure the selected item.
+*/
+- (UIImage *)imageForMeasureIcon
+{
+    return [UIImage imageNamed:@"Measure rhoTheta.png"];
+}
+
+/*!
 @method whileAddingUserDidTapMeasure:toMeasureItemDic:
 @discussion This method returns the behaviour when user taps 'Measure' button in Add view in RhoThetaModelling mode to measure the selected item.
 */
