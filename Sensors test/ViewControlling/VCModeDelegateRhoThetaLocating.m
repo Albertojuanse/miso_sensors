@@ -766,7 +766,7 @@
                                               ];
     if (itemChosenByUser) {
         // Only iBeacons devices can be chosen by user.
-        NSString * sort = itemChosenByUser[@"position"];
+        NSString * sort = itemChosenByUser[@"sort"];
         if (![sort isEqualToString:@"beacon"]) {
             return NO;
         }

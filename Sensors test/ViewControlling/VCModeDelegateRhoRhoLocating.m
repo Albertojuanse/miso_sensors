@@ -724,7 +724,7 @@
                 }
             }
         } else {
-            [self alertUserWithTitle:@"No device position chosen."
+            [self alertUserWithTitle:@"No iBeacon chosen."
                              message:[NSString stringWithFormat:@"The user did not choose an iBeacon to measure. Please, choose one in the model."]
                           andHandler:^(UIAlertAction * action) {
                 [viewController dismissViewControllerAnimated:YES completion:nil];
