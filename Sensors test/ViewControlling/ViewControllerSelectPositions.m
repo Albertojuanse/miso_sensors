@@ -313,6 +313,16 @@
     
     // This view can segue with different views depending on the mode chosen by the user in the main menu
     
+    if ([[segue identifier] isEqualToString:@"fromSelectPositionsToMain"]) {
+        
+        // Get destination view
+        ViewControllerMainMenu * viewControllerMainMenu = [segue destinationViewController];
+        // Set the variables
+        [viewControllerMainMenu setCredentialsUserDic:credentialsUserDic];
+        [viewControllerMainMenu setUserDic:userDic];
+        [viewControllerMainMenu setSharedData:sharedData];
+        
+    }
     if ([[segue identifier] isEqualToString:@"fromSelectPositionsToMONITORING"]) {
         
         // Get destination view
