@@ -16,7 +16,6 @@
  */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [super init];
@@ -24,7 +23,6 @@
         sharedData = initSharedData;
         credentialsUserDic = initCredentialsUserDic;
         userDic = initUserDic;
-        deviceUUID = [[NSUUID UUID] UUIDString];
     }
     
     return self;

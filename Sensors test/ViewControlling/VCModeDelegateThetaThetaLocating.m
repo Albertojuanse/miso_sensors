@@ -23,7 +23,6 @@
         sharedData = initSharedData;
         credentialsUserDic = initCredentialsUserDic;
         userDic = initUserDic;
-        deviceUUID = [[NSUUID UUID] UUIDString];
     }
     
     return self;

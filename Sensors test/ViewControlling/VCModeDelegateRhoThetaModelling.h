@@ -29,8 +29,6 @@ static NSString * MEASURING_STATE_MESSAGE_VCERTM = @"MEASURING; please, do not m
     // Session and user context
     NSMutableDictionary * credentialsUserDic;
     NSMutableDictionary * userDic;
-    // Beacons' region identifiers
-    NSString * deviceUUID;
     
     // Components
     SharedData * sharedData;

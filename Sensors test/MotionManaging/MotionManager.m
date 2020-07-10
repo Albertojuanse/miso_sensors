@@ -226,7 +226,7 @@
 }
 
 /*!
-@method initWithSharedData:userDic:rhoThetaSystem:deviceUUID:andCredentialsUserDic:
+@method initWithSharedData:userDic:rhoThetaSystem:andCredentialsUserDic:
 @discussion Constructor given the shared data collection, the dictionary of the user in whose name the measures are saved, the location systems and the credentials of the user for access it.
 */
 - (instancetype)initWithSharedData:(SharedData *)initSharedData

@@ -94,7 +94,6 @@
 - (instancetype)initWithSharedData:(SharedData *)initSharedData
                            userDic:(NSMutableDictionary *)initUserDic
                   thetaThetaSystem:(RDThetaThetaSystem *)initThetaThetaSystem
-                        deviceUUID:(NSString *)initDeviceUUID
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic
 {
     self = [self initWithSharedData:initSharedData];
