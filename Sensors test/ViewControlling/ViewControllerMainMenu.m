@@ -244,15 +244,6 @@
             NSLog(@"[NOTI][VCMM] Notification \"lmdHeading/start\" posted.");
             
             // Ask the user to take the measure
-            [self alertUserWithTitle:@"Heading measure acquiered."
-                            message:[NSString stringWithFormat:@"A heading measure has been acquired; it will be used as an attribute of the model."]
-                         andHandler:^(UIAlertAction * action) {
-                             // Nothing to do.
-                         }
-            ];
-            
-            
-            // Let user know that the measure is done
             [self alertUserWithTitle:@"Model's north not found."
                              message:[NSString stringWithFormat:@"Please, aim the device to the direction that will be the model's north."]
                           andHandler:^(UIAlertAction * action) {
