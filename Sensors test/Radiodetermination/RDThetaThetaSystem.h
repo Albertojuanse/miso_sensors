@@ -31,6 +31,7 @@
                            userDic:(NSMutableDictionary *)initUserDic
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithPrecisions:(NSDictionary *)precisions;
+- (NSMutableDictionary *) getRelativeLocationsUsingBarycenterAproximationWithPrecisions:(NSDictionary *)precisions;
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void)setUserDic:(NSMutableDictionary *)givenUserDic;
 

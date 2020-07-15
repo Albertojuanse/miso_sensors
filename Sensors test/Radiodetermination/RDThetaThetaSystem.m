@@ -103,9 +103,463 @@
 
 /*!
  @method getLocationsUsingBarycenterAproximationWithPrecisions:
- @discussion This method ocates a point given the heading measures from different points aiming it and calculates the barycenter of the solutions.
+ @discussion This method ocates a point given the heading measures from different points aiming it and calculates the barycenter of the solutions; it uses direct angles measures, such as the compass ones, to locate the position with the efect of the North.
  */
 - (NSMutableDictionary *) getLocationsUsingBarycenterAproximationWithPrecisions:(NSDictionary *)precisions
+{
+    NSLog(@"[INFO][TT] Start locating positions.");
+    // Check the access to data shared collections
+    if (
+        ![sharedData validateCredentialsUserDic:credentialsUserDic]
+        )
+    {
+        // TODO: handle intrusion situations. Alberto J. 2019/09/10.
+        NSLog(@"[ERROR][TT] Shared data could not be accessed before use barycenter aproximation.");
+    }
+    
+    // Declare collections
+    NSMutableDictionary * locatedPositions = [[NSMutableDictionary alloc] init];
+    
+    // Different behaviour depending on location mode
+    MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                    andCredentialsUserDic:credentialsUserDic];
+    
+    if ([mode isModeKey:kModeThetaThetaLocating]) {
+    
+        // In a locating mode the measures use
+        // - as the 'deviceUUID' the UUID of the item chosen in the adding menu, and
+        // - as the 'itemUUID' the UUID of the item chosen in the canvas.
+        // A location will be found for each 'deviceUUID'
+        
+        // Also, in this system, the measures for each tuple (itemUUID, deviceUUID) will be found, averaged and saved as single new measures for doing the final calculus with all of them at the same time; ordering them is needed.
+        
+        // Get all UUID from the measures
+        NSMutableArray * allDeviceUUID = [sharedData fromMeasuresDataGetDeviceUUIDsWithCredentialsUserDic:credentialsUserDic];
+        NSMutableArray * allItemUUID = [sharedData fromMeasuresDataGetItemUUIDsWithCredentialsUserDic:credentialsUserDic];
+        
+        // And thus, for every item that must be located...
+        for (NSString * deviceUUID in allDeviceUUID) {
+            
+            // Measures are only possible if measures were take from at least 3 positions with measures, what means, 3 tuples (itemUUID, deviceUUID) with the same 'deviceUUID' but different 'itemUUID'.
+            
+            // Create a collection for saving this new single new measures
+            NSMutableArray * itemsDicWithMeasures = [[NSMutableArray alloc] init];
+            
+            // ...evaluate the diferent items that are measured...
+            for (NSString * itemUUID in allItemUUID) {
+                
+                // ...and get every measure of the tuple (itemUUID, deviceUUID)
+                NSMutableArray * headingMeasures = [sharedData fromMeasuresDataGetMeasuresOfDeviceUUID:deviceUUID
+                                                                                          fromItemUUID:itemUUID
+                                                                                                ofSort:@"heading"
+                                                                                withCredentialsUserDic:credentialsUserDic];
+                
+                // ...and for every measure compose a new measure with the mean value; the calculus will be done when every item has its own measure because they have to be ordered.
+                // TODO: IF headingMeasures.count > 0. Alberto J. 2020/07/10.
+
+                NSNumber * measuresHeadingAverage = [self getMeanOf:headingMeasures];
+                
+                // Get the item position using its UUID
+                NSMutableArray * itemsMeasured = [sharedData fromItemDataGetItemsWithUUID:itemUUID
+                                                                    andCredentialsUserDic:credentialsUserDic];
+                if (itemsMeasured.count == 0) {
+                    NSLog(@"[ERROR][TT] No items found with the itemUUID in measures.");
+                    break;
+                }
+                if (itemsMeasured.count > 1) {
+                    NSLog(@"[ERROR][TT] More than one items stored with the same UUID: using first one.");
+                }
+                NSMutableDictionary * itemMeasured = [itemsMeasured objectAtIndex:0];
+                RDPosition * itemPosition = itemMeasured[@"position"];
+                
+                if (itemPosition) {
+                    // Valid item measured
+                    
+                    // Save the new measure in data
+                    NSMutableDictionary * itemDic = [[NSMutableDictionary alloc] init];
+                    itemDic[@"itemUUID"] = itemUUID;
+                    itemDic[@"deviceUUID"] = deviceUUID;
+                    itemDic[@"position"] = itemPosition;
+                    itemDic[@"measure"] = measuresHeadingAverage;
+                    [itemsDicWithMeasures addObject:itemDic];
+                    
+                }
+            }
+                        
+            NSMutableArray * deviceUUIDPositions = [[NSMutableArray alloc] init];
+            
+            // Evaluate feasibility
+            if (itemsDicWithMeasures.count > 2) {
+                
+                // Perform the calculus.
+                NSLog(@"[INFO][TT] Final calculus.");
+                // In this aproximate calculus, one of the trigonometrical equation got from the measures is solved with another one, this second with aother third, etc., in pairs, and then calculated the barycenter of the results. The selection criteria of this first, second, third... equations is to order from the lowest to the higest, and thus the dilution of precision is minimized; convergence problems appears if not.
+                // Also, before solving the equations, the model is rotated to substract the North.
+                // Angles measured by the compass are clockwise, while the cosine and sine definitions and usage are counter-clockwise; all measured angles must be inverted.
+                
+                // Sort the measures
+                NSMutableDictionary * sortedItemsDic = [[NSMutableDictionary alloc] init];
+                NSInteger index = 0;
+                NSNumber * lastSavedMin = [NSNumber numberWithFloat:-FLT_MAX];
+                for (NSUInteger i = 0; i < [itemsDicWithMeasures count]; i++) {
+                    
+                    // As many times as elements to be sorted
+                    NSNumber * min = [NSNumber numberWithFloat:FLT_MAX];
+                    NSDictionary * minItemDic;
+                    
+                    // Search for the next min
+                    for (NSUInteger j = 0; j < [itemsDicWithMeasures count]; j++) {
+                        NSMutableDictionary * eachItemDic = [itemsDicWithMeasures objectAtIndex:j];
+                        NSNumber * eachMeasure = eachItemDic[@"measure"];
+                        NSLog(@"[INFO][TT] Evaluating heading %.2f ", [eachMeasure floatValue]);
+                        NSLog(@"[INFO][TT] -> with last min saved heading %.2f ", [lastSavedMin floatValue]);
+                        if ([eachMeasure floatValue] > [lastSavedMin floatValue]) {
+                            NSLog(@"[INFO][TT] -> and with the partial min %.2f ", [min floatValue]);
+                            if ([eachMeasure floatValue] <= [min floatValue]) {
+                                min = eachMeasure;
+                                minItemDic = eachItemDic;
+                            }
+                        }
+                    }
+                    
+                    // Save this min and update the last saved min
+                    NSLog(@"[INFO][TT] Ordered the heading %.2f ", [min floatValue]);
+                    NSLog(@"[INFO][TT] -> at index %tuf ", index);
+                    NSString * indexKey = [NSString stringWithFormat:@"%tu", index];
+                    [sortedItemsDic setObject:minItemDic forKey:indexKey];
+                    lastSavedMin = min;
+                    index++;
+                }
+                
+                // Once sorted, perform the calculus
+                
+                // Clockwise angles to counter-clockwise angles reversion
+                // and rotation from the north to the model 'north'
+                // TODO: North (not inversion). Alberto J. 2020/07/15.
+                NSNumber * north = [NSNumber numberWithFloat:-0.0];
+                
+                NSMutableArray * rotatedItemsDic = [[NSMutableArray alloc] init];
+                for (NSMutableDictionary * eachItemDic in sortedItemsDic) {
+                    
+                    NSMutableDictionary * newItemDic = [[NSMutableDictionary alloc] init];
+                    
+                    // Inversion
+                    NSNumber * eachMeasure = eachItemDic[@"measure"];
+                    newItemDic[@"measure"] = [NSNumber numberWithFloat:-[eachMeasure floatValue]];
+                    
+                    // Rotation
+                    RDPosition * eachPosition = eachItemDic[@"postion"];
+                    RDPosition * newPosition = [[RDPosition alloc] init];
+                    newPosition.x = [NSNumber numberWithFloat:
+                                     (cos([north floatValue])*[eachPosition.x floatValue] +
+                                      sin([north floatValue])*[eachPosition.y floatValue])];
+                    newPosition.y = [NSNumber numberWithFloat:
+                                     (cos([north floatValue])*[eachPosition.y floatValue] -
+                                      sin([north floatValue])*[eachPosition.x floatValue])];
+                    newPosition.z = [NSNumber numberWithFloat:[newPosition.z floatValue]];
+                    newItemDic[@"measure"] = newPosition;
+                    
+                    [rotatedItemsDic addObject:newItemDic];
+                }
+                
+                NSNumber * lastHeading = nil;
+                RDPosition * lastPosition = nil;
+                
+                for (NSUInteger m = 0; m < [sortedItemsDic count]; m++) {
+                    
+                    NSString * indexKey = [NSString stringWithFormat:@"%tu", m];
+                    NSDictionary * eachItemDic = sortedItemsDic[indexKey];
+                    
+                    NSNumber * eachHeading = eachItemDic[@"measure"];
+                    RDPosition * eachPosition = eachItemDic[@"position"];
+                    
+                    // The first one is saved.
+                    if (m == 0) {
+                        lastHeading = eachHeading;
+                        lastPosition = eachPosition;
+                        NSLog(@"[INFO][TT] First heading %.2f ", [eachHeading floatValue]);
+                        NSLog(@"[INFO][TT] First position %@", lastPosition);
+                    } else {
+                        
+                        // The rest of iterations, the code executed is the following
+
+                        
+                        RDPosition * solution = [[RDPosition alloc] init];
+                        solution.x = [NSNumber numberWithFloat:
+                                      (
+                                       ([lastPosition.y floatValue]-[lastPosition.x floatValue]*tan([lastHeading floatValue]))
+                                       -
+                                       ([eachPosition.y floatValue]-[eachPosition.x floatValue]*tan([eachHeading floatValue]))
+                                       )
+                                       /
+                                       (-tan([lastHeading floatValue]) + -tan([eachHeading floatValue]))
+                                      ];
+                        solution.y = [NSNumber numberWithFloat:
+                                      (
+                                       ([lastPosition.y floatValue]-[lastPosition.x floatValue]*tan([lastHeading floatValue]))
+                                       * tan([eachHeading floatValue])
+                                       -
+                                       ([eachPosition.y floatValue]-[eachPosition.x floatValue]*tan([eachHeading floatValue]))
+                                       * tan([lastHeading floatValue])
+                                       )
+                                      /
+                                      (-tan([lastHeading floatValue]) + -tan([eachHeading floatValue]))
+                                      ];
+                        // ARC disposing
+                        lastPosition = nil;
+                        lastPosition = eachPosition;
+                        lastHeading = nil;
+                        lastHeading = eachHeading;
+                        
+                        // TODO: Z coordinate. Alberto J. 2019/09/24.
+                        solution.z = [NSNumber numberWithFloat:0.0];
+                        
+                        // Counter rotation
+                        solution.x = [NSNumber numberWithFloat:
+                                         (cos([north floatValue])*[solution.x floatValue] -
+                                          sin([north floatValue])*[solution.y floatValue])];
+                        solution.y = [NSNumber numberWithFloat:
+                                         (cos([north floatValue])*[solution.y floatValue] +
+                                          sin([north floatValue])*[solution.x floatValue])];
+                        
+                        NSLog(@"[INFO][TT] Solution %@", solution);
+                        [deviceUUIDPositions addObject:solution];
+                    }
+                }
+                
+            }
+            
+            // Get the barycenter as an aproximation and save the result for this deviceUUID.
+            RDPosition * deviceUUIDPosition = [self getBarycenterOf:deviceUUIDPositions];
+            [locatedPositions setObject:deviceUUIDPosition forKey:deviceUUID];
+            
+        }
+    
+    } else if ([mode isModeKey:kModeRhoThetaModelling]) {
+        
+        // In a modelling mode the measures use
+        // - as the 'deviceUUID' the UUID of the item chosen in the canvas, and
+        // - as the 'itemUUID' the UUID of the item chosen in the adding menu.
+        // A location will be found for each 'itemUUID'
+        
+        // Also, in this system, the measures for each tuple (itemUUID, deviceUUID) will be found, averaged and saved as single new measures for doing the final calculus with all of them at the same time; ordering them is needed.
+        
+        // Get all UUID from the measures
+        NSMutableArray * allDeviceUUID = [sharedData fromMeasuresDataGetDeviceUUIDsWithCredentialsUserDic:credentialsUserDic];
+        NSMutableArray * allItemUUID = [sharedData fromMeasuresDataGetItemUUIDsWithCredentialsUserDic:credentialsUserDic];
+        
+        // And thus, for every item that must be located...
+        for (NSString * itemUUID in allItemUUID) {
+            
+            // Measures are only possible if measures were take from at least 3 positions with measures, what means, 3 tuples (itemUUID, deviceUUID) with the same 'deviceUUID' but different 'itemUUID'.
+            
+            // Create a collection for saving this new single new measures
+            NSMutableArray * itemsDicWithMeasures = [[NSMutableArray alloc] init];
+            
+            // ...evaluate the diferent items that are measured...
+            for (NSString * deviceUUID in allDeviceUUID) {
+                
+                // ...and get every measure of the tuple (itemUUID, deviceUUID)
+                NSMutableArray * headingMeasures = [sharedData fromMeasuresDataGetMeasuresOfDeviceUUID:deviceUUID
+                                                                                          fromItemUUID:itemUUID
+                                                                                                ofSort:@"heading"
+                                                                                withCredentialsUserDic:credentialsUserDic];
+                
+                // ...and for every measure compose a new measure with the mean value; the calculus will be done when every item has its own measure because they have to be ordered.
+                // TODO: IF headingMeasures.count > 0. Alberto J. 2020/07/10.
+
+                NSNumber * measuresHeadingAverage = [self getMeanOf:headingMeasures];
+                
+                // Get the item position using its UUID
+                NSMutableArray * itemsMeasured = [sharedData fromItemDataGetItemsWithUUID:deviceUUID
+                                                                    andCredentialsUserDic:credentialsUserDic];
+                if (itemsMeasured.count == 0) {
+                    NSLog(@"[ERROR][TT] No items found with the itemUUID in measures.");
+                    break;
+                }
+                if (itemsMeasured.count > 1) {
+                    NSLog(@"[ERROR][TT] More than one items stored with the same UUID: using first one.");
+                }
+                NSMutableDictionary * itemMeasured = [itemsMeasured objectAtIndex:0];
+                RDPosition * itemPosition = itemMeasured[@"position"];
+                
+                if (itemPosition) {
+                    // Valid item measured
+                    
+                    // Save the new measure in data
+                    NSMutableDictionary * itemDic = [[NSMutableDictionary alloc] init];
+                    itemDic[@"itemUUID"] = itemUUID;
+                    itemDic[@"deviceUUID"] = deviceUUID;
+                    itemDic[@"position"] = itemPosition;
+                    itemDic[@"measure"] = measuresHeadingAverage;
+                    [itemsDicWithMeasures addObject:itemDic];
+                    
+                }
+            }
+                        
+            NSMutableArray * deviceUUIDPositions = [[NSMutableArray alloc] init];
+            
+            // Evaluate feasibility
+            if (itemsDicWithMeasures.count > 2) {
+                
+                // Perform the calculus.
+                NSLog(@"[INFO][TT] Final calculus.");
+                // In this aproximate calculus, one of the trigonometrical equation got from the measures is solved with another one, this second with aother third, etc., in pairs, and then calculated the barycenter of the results. The selection criteria of this first, second, third... equations is to order from the lowest to the higest, and thus the dilution of precision is minimized; convergence problems appears if not.
+                // Also, before solving the equations, the model is rotated to substract the North.
+                // Angles measured by the compass are clockwise, while the cosine and sine definitions and usage are counter-clockwise; all measured angles must be inverted.
+                
+                // Sort the measures
+                NSMutableDictionary * sortedItemsDic = [[NSMutableDictionary alloc] init];
+                NSInteger index = 0;
+                NSNumber * lastSavedMin = [NSNumber numberWithFloat:-FLT_MAX];
+                for (NSUInteger i = 0; i < [itemsDicWithMeasures count]; i++) {
+                    
+                    // As many times as elements to be sorted
+                    NSNumber * min = [NSNumber numberWithFloat:FLT_MAX];
+                    NSDictionary * minItemDic;
+                    
+                    // Search for the next min
+                    for (NSUInteger j = 0; j < [itemsDicWithMeasures count]; j++) {
+                        NSMutableDictionary * eachItemDic = [itemsDicWithMeasures objectAtIndex:j];
+                        NSNumber * eachMeasure = eachItemDic[@"measure"];
+                        NSLog(@"[INFO][TT] Evaluating heading %.2f ", [eachMeasure floatValue]);
+                        NSLog(@"[INFO][TT] -> with last min saved heading %.2f ", [lastSavedMin floatValue]);
+                        if ([eachMeasure floatValue] > [lastSavedMin floatValue]) {
+                            NSLog(@"[INFO][TT] -> and with the partial min %.2f ", [min floatValue]);
+                            if ([eachMeasure floatValue] <= [min floatValue]) {
+                                min = eachMeasure;
+                                minItemDic = eachItemDic;
+                            }
+                        }
+                    }
+                    
+                    // Save this min and update the last saved min
+                    NSLog(@"[INFO][TT] Ordered the heading %.2f ", [min floatValue]);
+                    NSLog(@"[INFO][TT] -> at index %tuf ", index);
+                    NSString * indexKey = [NSString stringWithFormat:@"%tu", index];
+                    [sortedItemsDic setObject:minItemDic forKey:indexKey];
+                    lastSavedMin = min;
+                    index++;
+                }
+                
+                // Once sorted, perform the calculus
+                
+                // Clockwise angles to counter-clockwise angles reversion
+                // and rotation from the north to the model 'north'
+                // TODO: North (not inversion). Alberto J. 2020/07/15.
+                NSNumber * north = [NSNumber numberWithFloat:-0.0];
+                
+                NSMutableArray * rotatedItemsDic = [[NSMutableArray alloc] init];
+                for (NSMutableDictionary * eachItemDic in sortedItemsDic) {
+                    
+                    NSMutableDictionary * newItemDic = [[NSMutableDictionary alloc] init];
+                    
+                    // Inversion
+                    NSNumber * eachMeasure = eachItemDic[@"measure"];
+                    newItemDic[@"measure"] = [NSNumber numberWithFloat:-[eachMeasure floatValue]];
+                    
+                    // Rotation
+                    RDPosition * eachPosition = eachItemDic[@"postion"];
+                    RDPosition * newPosition = [[RDPosition alloc] init];
+                    newPosition.x = [NSNumber numberWithFloat:
+                                     (cos([north floatValue])*[eachPosition.x floatValue] +
+                                      sin([north floatValue])*[eachPosition.y floatValue])];
+                    newPosition.y = [NSNumber numberWithFloat:
+                                     (cos([north floatValue])*[eachPosition.y floatValue] -
+                                      sin([north floatValue])*[eachPosition.x floatValue])];
+                    newPosition.z = [NSNumber numberWithFloat:[newPosition.z floatValue]];
+                    newItemDic[@"measure"] = newPosition;
+                    
+                    [rotatedItemsDic addObject:newItemDic];
+                }
+                
+                NSNumber * lastHeading = nil;
+                RDPosition * lastPosition = nil;
+                
+                for (NSUInteger m = 0; m < [sortedItemsDic count]; m++) {
+                    
+                    NSString * indexKey = [NSString stringWithFormat:@"%tu", m];
+                    NSDictionary * eachItemDic = sortedItemsDic[indexKey];
+                    
+                    NSNumber * eachHeading = eachItemDic[@"measure"];
+                    RDPosition * eachPosition = eachItemDic[@"position"];
+                    
+                    // The first one is saved.
+                    if (m == 0) {
+                        lastHeading = eachHeading;
+                        lastPosition = eachPosition;
+                        NSLog(@"[INFO][TT] First heading %.2f ", [eachHeading floatValue]);
+                        NSLog(@"[INFO][TT] First position %@", lastPosition);
+                    } else {
+                        
+                        // The rest of iterations, the code executed is the following
+
+                        
+                        RDPosition * solution = [[RDPosition alloc] init];
+                        solution.x = [NSNumber numberWithFloat:
+                                      (
+                                       ([lastPosition.y floatValue]-[lastPosition.x floatValue]*tan([lastHeading floatValue]))
+                                       -
+                                       ([eachPosition.y floatValue]-[eachPosition.x floatValue]*tan([eachHeading floatValue]))
+                                       )
+                                       /
+                                       (-tan([lastHeading floatValue]) + -tan([eachHeading floatValue]))
+                                      ];
+                        solution.y = [NSNumber numberWithFloat:
+                                      (
+                                       ([lastPosition.y floatValue]-[lastPosition.x floatValue]*tan([lastHeading floatValue]))
+                                       * tan([eachHeading floatValue])
+                                       -
+                                       ([eachPosition.y floatValue]-[eachPosition.x floatValue]*tan([eachHeading floatValue]))
+                                       * tan([lastHeading floatValue])
+                                       )
+                                      /
+                                      (-tan([lastHeading floatValue]) + -tan([eachHeading floatValue]))
+                                      ];
+                        // ARC disposing
+                        lastPosition = nil;
+                        lastPosition = eachPosition;
+                        lastHeading = nil;
+                        lastHeading = eachHeading;
+                        
+                        // TODO: Z coordinate. Alberto J. 2019/09/24.
+                        solution.z = [NSNumber numberWithFloat:0.0];
+                        
+                        // Counter rotation
+                        solution.x = [NSNumber numberWithFloat:
+                                         (cos([north floatValue])*[solution.x floatValue] -
+                                          sin([north floatValue])*[solution.y floatValue])];
+                        solution.y = [NSNumber numberWithFloat:
+                                         (cos([north floatValue])*[solution.y floatValue] +
+                                          sin([north floatValue])*[solution.x floatValue])];
+                        
+                        NSLog(@"[INFO][TT] Solution %@", solution);
+                        [deviceUUIDPositions addObject:solution];
+                    }
+                }
+                
+            }
+            
+            // Get the barycenter as an aproximation and save the result for this deviceUUID.
+            RDPosition * deviceUUIDPosition = [self getBarycenterOf:deviceUUIDPositions];
+            [locatedPositions setObject:deviceUUIDPosition forKey:itemUUID];
+            
+        }
+        
+    } else {
+        NSLog(@"[ERROR][TT] Instantiated theta-theta type system  when using %@ mode.", mode);
+    }
+    
+    NSLog(@"[INFO][TT] Finish Radiolocating beacons.");
+    
+    return locatedPositions;
+}
+
+/*!
+ @method getRelativeLocationsUsingBarycenterAproximationWithPrecisions:
+ @discussion This method locates a point given the heading measures from different points aiming it and calculates the barycenter of the solutions; it uses swept angles measures, such as the gyroscope ones, to locate the position without the efect of the North.
+ */
+- (NSMutableDictionary *) getRelativeLocationsUsingBarycenterAproximationWithPrecisions:(NSDictionary *)precisions
 {
     NSLog(@"[INFO][TT] Start locating positions.");
     // Check the access to data shared collections
