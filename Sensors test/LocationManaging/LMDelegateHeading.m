@@ -146,21 +146,31 @@
         NSLog(@"[ERROR][LMH] Shared data could not be accessed while starting travel.");
         return;
     }
+    // Get the measuring mode
+    MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                    andCredentialsUserDic:credentialsUserDic];
+    if (mode) {
+        if ([mode isModeKey:kModeCompassSelfLocating]) {
+            NSString * itemUUID = [[NSUUID UUID] UUIDString];
+            [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithDouble:[newHeading trueHeading]*M_PI/180.0]
+                                          ofSort:@"deviceheading"
+                                    withItemUUID:itemUUID
+                                  withDeviceUUID:deviceUUID
+                                      atPosition:nil
+                                  takenByUserDic:userDic
+                       andWithCredentialsUserDic:credentialsUserDic];
+            NSLog(@"[INFO][LMH] Device did update its heading:");
+            NSLog(@"[INFO][LMH] ->  %.3f", [newHeading trueHeading]*M_PI/180.0);
             
-    NSString * itemUUID = [[NSUUID UUID] UUIDString];
-    [sharedData inMeasuresDataSetMeasure:[NSNumber numberWithDouble:[newHeading trueHeading]*M_PI/180.0]
-                                  ofSort:@"deviceheading"
-                            withItemUUID:itemUUID
-                          withDeviceUUID:deviceUUID
-                              atPosition:nil
-                          takenByUserDic:userDic
-               andWithCredentialsUserDic:credentialsUserDic];
-    NSLog(@"[INFO][LMH] Device did update its heading:");
-    NSLog(@"[INFO][LMH] ->  %.3f", [newHeading trueHeading]*M_PI/180.0);
-    
-    [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic];
-    NSLog(@"[INFO][LMH] Generated measures:");
-    NSLog(@"[INFO][LMH]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
+            [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic];
+            NSLog(@"[INFO][LMH] Generated measures:");
+            NSLog(@"[INFO][LMH]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
+        } else {
+            lastMeasuredHeading = newHeading;
+        }
+    } else {
+        lastMeasuredHeading = newHeading;
+    }
     return;
 }
 
@@ -270,10 +280,33 @@
 */
 - (void) stop:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"lmdHeading/stop"]){
+        
+        // Get the measuring mode
+        MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                        andCredentialsUserDic:credentialsUserDic];
+        if (mode) {
+            if ([mode isModeKey:kModeCompassSelfLocating]) {
+                // Nothing
+            } else {
+            NSNumber * north = [NSNumber numberWithDouble:[lastMeasuredHeading trueHeading]*M_PI/180.0];
+            [sharedData inSessionDataSetCurrentModelNorth:north
+                                        toUserWithUserDic:userDic
+                                   withCredentialsUserDic:credentialsUserDic];
+                NSLog(@"[INFO][LMH] North value set in session data: %.2f.", [lastMeasuredHeading trueHeading]*M_PI/180.0);
+            }
+        } else {
+            NSNumber * north = [NSNumber numberWithDouble:[lastMeasuredHeading trueHeading]*M_PI/180.0];
+            [sharedData inSessionDataSetCurrentModelNorth:north
+                                        toUserWithUserDic:userDic
+                                   withCredentialsUserDic:credentialsUserDic];
+            NSLog(@"[INFO][LMH] North value set in session data: %.2f.", [lastMeasuredHeading trueHeading]*M_PI/180.0);
+        }
+            
         NSLog(@"[NOTI][LMH] Notification \"lmdHeading/stop\" recived.");
         [locationManager stopUpdatingHeading];
-        NSLog(@"[INFO][LM] Stop updating device heading.");
+        NSLog(@"[INFO][LMH] Stop updating device heading.");
     }
+    return;
 }
 
 /*!

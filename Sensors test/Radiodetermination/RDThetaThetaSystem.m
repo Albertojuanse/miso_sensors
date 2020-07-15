@@ -136,6 +136,7 @@
         // Get all UUID from the measures
         NSMutableArray * allDeviceUUID = [sharedData fromMeasuresDataGetDeviceUUIDsWithCredentialsUserDic:credentialsUserDic];
         NSMutableArray * allItemUUID = [sharedData fromMeasuresDataGetItemUUIDsWithCredentialsUserDic:credentialsUserDic];
+        NSNumber * north = [sharedData fromSessionDataGetCurrentModelNorthWithUserDic:userDic withCredentialsUserDic:credentialsUserDic];
         
         // And thus, for every item that must be located...
         for (NSString * deviceUUID in allDeviceUUID) {
@@ -235,8 +236,6 @@
                 
                 // Clockwise angles to counter-clockwise angles reversion
                 // and rotation from the north to the model 'north'
-                // TODO: North (not inversion). Alberto J. 2020/07/15.
-                NSNumber * north = [NSNumber numberWithFloat:-0.0];
                 
                 NSMutableArray * rotatedItemsDic = [[NSMutableArray alloc] init];
                 for (NSMutableDictionary * eachItemDic in sortedItemsDic) {
@@ -347,6 +346,7 @@
         // Get all UUID from the measures
         NSMutableArray * allDeviceUUID = [sharedData fromMeasuresDataGetDeviceUUIDsWithCredentialsUserDic:credentialsUserDic];
         NSMutableArray * allItemUUID = [sharedData fromMeasuresDataGetItemUUIDsWithCredentialsUserDic:credentialsUserDic];
+        NSNumber * north = [sharedData fromSessionDataGetCurrentModelNorthWithUserDic:userDic withCredentialsUserDic:credentialsUserDic];
         
         // And thus, for every item that must be located...
         for (NSString * itemUUID in allItemUUID) {
@@ -446,8 +446,6 @@
                 
                 // Clockwise angles to counter-clockwise angles reversion
                 // and rotation from the north to the model 'north'
-                // TODO: North (not inversion). Alberto J. 2020/07/15.
-                NSNumber * north = [NSNumber numberWithFloat:-0.0];
                 
                 NSMutableArray * rotatedItemsDic = [[NSMutableArray alloc] init];
                 for (NSMutableDictionary * eachItemDic in sortedItemsDic) {

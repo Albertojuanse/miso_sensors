@@ -27,6 +27,7 @@
     
     // Variables
     NSString * deviceUUID;
+    CLHeading * lastMeasuredHeading;
     
 }
 

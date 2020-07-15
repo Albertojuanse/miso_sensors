@@ -219,6 +219,56 @@
         NSLog(@"[ERROR][VCMM] Shared data could not be accessed after view loading.");
         // TODO: handle intrusion situations. Alberto J. 2019/09/10.
     }
+    
+    // Load the model's north or ask the user to measure it; this is needed if any theta theta calculus must be performed, and 'northNeeded' is onlyset true in the
+    if (northNeeded) {
+        NSLog(@"[INFO][VCMM] The model's north must be measured by user");
+        
+        NSNumber * north = [sharedData fromSessionDataGetCurrentModelNorthWithUserDic:userDic
+                                                               withCredentialsUserDic:credentialsUserDic];
+        
+        if (!north) {
+            
+            // Alloc and init the location manager
+            if (!locationHeading) {
+                locationHeading = [[LMDelegateHeading alloc] initWithSharedData:sharedData
+                                                                        userDic:credentialsUserDic
+                                                          andCredentialsUserDic:credentialsUserDic];
+            }
+            
+            [sharedData inSessionDataSetMode:chosenMode
+                           toUserWithUserDic:userDic
+                       andCredentialsUserDic:credentialsUserDic];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdHeading/start"
+                                                                object:nil];
+            NSLog(@"[NOTI][VCMM] Notification \"lmdHeading/start\" posted.");
+            
+            // Ask the user to take the measure
+            [self alertUserWithTitle:@"Heading measure acquiered."
+                            message:[NSString stringWithFormat:@"A heading measure has been acquired; it will be used as an attribute of the model."]
+                         andHandler:^(UIAlertAction * action) {
+                             // Nothing to do.
+                         }
+            ];
+            
+            
+            // Let user know that the measure is done
+            [self alertUserWithTitle:@"Model's north not found."
+                             message:[NSString stringWithFormat:@"Please, aim the device to the direction that will be the model's north."]
+                          andHandler:^(UIAlertAction * action) {
+                              [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdHeading/stop"
+                                                                                  object:nil];
+                              NSLog(@"[NOTI][VCMM] Notification \"lmdHeading/stop\" posted.");
+                              // Dealloc location manager
+                              locationHeading = nil;
+                          }
+             ];
+            
+            
+        } else {
+            NSLog(@"[ERROR][VCMM] North exists in shared data when is needed to measure it.");
+        }
+    }
 }
 
 /*!
@@ -323,6 +373,9 @@
             // Routine found
             NSLog(@"[INFO][VCMM] Loading routine from device.");
             
+            // The model's north is needed if any theta theta calculus must be performed
+            northNeeded = NO;
+            
             NSMutableArray * types = [routine getTypes];
             NSMutableArray * metamodels = [routine getMetamodels];
             NSMutableArray * items = [routine getItems];
@@ -358,7 +411,13 @@
                         }
                     }
                     if (!modeFound) {
-                        [modes addObject:[[MDMode alloc] initWithModeKey:[eachMode intValue]]];
+                        MDMode * newMode = [[MDMode alloc] initWithModeKey:[eachMode intValue]];
+                        [modes addObject:newMode];
+                        // North need checking
+                        if ([newMode isModeKey:kModeThetaThetaLocating] ||
+                            [newMode isModeKey:kModeThetaThetaLocating]) {
+                            northNeeded = YES;
+                        }
                     }
                     
                 }

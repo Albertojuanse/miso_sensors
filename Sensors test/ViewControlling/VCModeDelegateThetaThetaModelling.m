@@ -924,14 +924,14 @@
             // And send the notification to start measure
             NSMutableDictionary * dataDic = [[NSMutableDictionary alloc] init];
             dataDic[@"itemDic"] = itemDic;
-            // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
-            // [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaModelling/start" object:nil userInfo:dataDic];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
-            NSLog(@"[NOTI]%@ Notification \"startGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTM);
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring"
+            NSLog(@"[NOTI]%@ Notification \"lmdThetaThetaModelling/start\" posted.", ERROR_DESCRIPTION_VCETTM);
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaModelling/start"
                                                                 object:nil
                                                               userInfo:dataDic];
-            NSLog(@"[NOTI]%@ Notification \"startGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTM);
+            //[[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopes" object:nil];
+            //NSLog(@"[NOTI]%@ Notification \"startGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTM);
+            //[[NSNotificationCenter defaultCenter] postNotificationName:@"startGyroscopeHeadingMeasuring" object:nil userInfo:dataDic];
+            //NSLog(@"[NOTI]%@ Notification \"startGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTM);
             return;
         } else {
             NSLog(@"[ERROR]%@ No item chosen to be measured.", ERROR_DESCRIPTION_VCETTM);
@@ -954,13 +954,13 @@
         [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
         
         // And send the notification to stop measure
-        // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
-        //[[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaModelling/stop" object:nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
-        NSLog(@"[NOTI]%@ Notification \"stopGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTM);
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
+        NSLog(@"[NOTI]%@ Notification \"lmdThetaThetaModelling/stop\" posted.", ERROR_DESCRIPTION_VCETTM);
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaModelling/stop"
                                                             object:nil];
-        NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTM);
+        //[[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
+        //NSLog(@"[NOTI]%@ Notification \"stopGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTM);
+        //[[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring" object:nil];
+        //NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTM);
         return;
     }
 }
@@ -981,13 +981,13 @@
     [measureButton setImage:startMeasureIcon forState:UIControlStateNormal];
     
     // And send the notification to stop measure
-    // TODO: Decide if use this or not. Combined? Alberto J. 2020/01/21.
-    //[[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaModelling/stop" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
-    NSLog(@"[NOTI]%@ Notification \"stopGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTM);
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring"
+    NSLog(@"[NOTI]%@ Notification \"lmdThetaThetaModelling/stop\" posted.", ERROR_DESCRIPTION_VCETTM);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdThetaThetaModelling/stop"
                                                         object:nil];
-    NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTM);
+    //[[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopes" object:nil];
+    //NSLog(@"[NOTI]%@ Notification \"stopGyroscopes\" posted.", ERROR_DESCRIPTION_VCETTM);
+    //[[NSNotificationCenter defaultCenter] postNotificationName:@"stopGyroscopeHeadingMeasuring" object:nil];
+    //NSLog(@"[NOTI]%@ Notification \"stopGyroscopeHeadingMeasuring\" posted.", ERROR_DESCRIPTION_VCETTM);
     
     // Notify user
     [self alertUserWithTitle:@"Measure finished"

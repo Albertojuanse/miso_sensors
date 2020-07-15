@@ -52,6 +52,7 @@
     
     // Variables
     MDMode * chosenMode;
+    BOOL northNeeded;
     
     // Login
     BOOL userDidAskLogOut;
