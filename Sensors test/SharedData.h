@@ -131,6 +131,10 @@
                                                withCredentialsUserName:(NSMutableDictionary *)credentialsUserDic;
 - (NSMutableArray*) fromSessionDataGetReferencesByUserDic:(NSMutableDictionary *)givenUserDic
                                    withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSNumber *)fromSessionDataGetCurrentModelNorthWithUserDic:(NSMutableDictionary *)givenUserDic
+                                     withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (NSNumber *)fromSessionDataGetCurrentModelNorthWithUserName:(NSString *)givenUserName
+                                      withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific items data getters
 - (NSMutableArray *)fromItemDataGetItemsWithSort:(NSString *)sort
@@ -360,6 +364,12 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 - (BOOL) inSessionDataAddReference:(MDReference *)givenReference
                  toUserWithUserDic:(NSMutableDictionary *)givenUserDic
             withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL) inSessionDataSetCurrentModelNorth:(NSNumber *)givenNorth
+                        toUserWithUserName:(NSString *)userName
+                    withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
+- (BOOL) inSessionDataSetCurrentModelNorth:(NSNumber *)givenNorth
+                         toUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                    withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 
 // Specific items data setters
 - (BOOL) inItemDataAddItemDic:(NSMutableDictionary *)givenItemDic

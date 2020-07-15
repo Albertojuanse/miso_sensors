@@ -302,6 +302,7 @@
     //     "itemsChosenByUser": (NSMutableArray *)items1;
     //     "typeChosenByUser": (MDType *)type1;
     //     "referencesByUser": (NSMutableArray *)references1
+//     "currentModelNorth": (NSNumber *)currentModelNorth1
     //   },
     //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
     //     (···)

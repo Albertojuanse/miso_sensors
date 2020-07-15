@@ -42,6 +42,7 @@
 //     "itemsChosenByUser": (NSMutableArray *)items1;
 //     "typeChosenByUser": (MDType *)type1;
 //     "referencesByUser": (NSMutableArray *)references1
+//     "currentModelNorth": (NSNumber *)currentModelNorth1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
 //     (···)
@@ -571,6 +572,7 @@
 //     "itemsChosenByUser": (NSMutableArray *)items1;
 //     "typeChosenByUser": (MDType *)type1;
 //     "referencesByUser": (NSMutableArray *)references1
+//     "currentModelNorth": (NSNumber *)currentModelNorth1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
 //     (···)
@@ -1155,6 +1157,26 @@
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return nil;
     }
+}
+
+/*!
+@method fromSessionDataGetCurrentModelNorthWithUserDic:withCredentialsUserDic:
+@discussion This method returns the 'NSNumber' heading measure with the model's north desired by the user; if is not found, NO is return; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+*/
+- (NSNumber *)fromSessionDataGetCurrentModelNorthWithUserDic:(NSMutableDictionary *)givenUserDic
+                                      withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self fromSessionDataGetKey:@"currentModelNorth" fromUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+@method fromSessionDataGetCurrentModelNorthWithUserName:withCredentialsUserDic:
+@discussion This method returns the 'NSNumber' heading measure with the model's north desired by the user; if is not found, NO is return; it is necesary to give a valid user credentials user dictionary for grant the acces and null is returned if not.
+*/
+- (NSNumber *)fromSessionDataGetCurrentModelNorthWithUserName:(NSString *)givenUserName
+                                       withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self fromSessionDataGetKey:@"currentModelNorth" fromUserWithUserName:givenUserName andCredentialsUserDic:credentialsUserDic];
 }
 
 #pragma mark - Item data specific getters
@@ -2897,6 +2919,7 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
 //     "itemsChosenByUser": (NSMutableArray *)items1;
 //     "typeChosenByUser": (MDType *)type1;
 //     "referencesByUser": (NSMutableArray *)references1
+//     "currentModelNorth": (NSNumber *)currentModelNorth1
 //   },
 //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
 //     (···)
@@ -3492,6 +3515,28 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
         NSLog(@"[ALARM][SD] User tried to access with no valid user credentials.");
         return NO;
     }
+}
+
+/*!
+@method inSessionDataSetCurrentModelNorth:toUserWithUserName:withCredentialsUserDic:
+@discussion This method adds a 'NSNumber' heading measure with the model's north desired by the user; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+*/
+- (BOOL) inSessionDataSetCurrentModelNorth:(NSNumber *)givenNorth
+                        toUserWithUserName:(NSString *)userName
+                    withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self inSessionDataSetObject:givenNorth forKey:@"currentModelNorth" toUserWithUserName:userName andCredentialsUserDic:credentialsUserDic];
+}
+
+/*!
+@method inSessionDataSetCurrentModelNorth:toUserWithUserDic:withCredentialsUserDic:
+@discussion This method adds a 'NSNumber' heading measure with the model's north desired by the user; it is necesary to give a valid user credentials user dictionary for grant the acces and NO is returned if not.
+*/
+- (BOOL) inSessionDataSetCurrentModelNorth:(NSNumber *)givenNorth
+                         toUserWithUserDic:(NSMutableDictionary *)givenUserDic
+                    withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic
+{
+    return [self inSessionDataSetObject:givenNorth forKey:@"currentModelNorth" toUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic];
 }
 
 #pragma mark - Item data specific setters
