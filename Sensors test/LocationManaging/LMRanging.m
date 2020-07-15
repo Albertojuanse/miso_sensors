@@ -254,7 +254,7 @@
 - (void)reset:(NSNotification *) notification
 {
     if ([[notification name] isEqualToString:@"ranging/reset"]){
-        NSLog(@"[NOTI][LM] Notification \"ranging/reset\" recived.");
+        NSLog(@"[NOTI][LMR] Notification \"ranging/reset\" recived.");
         
         // Components
         [sharedData resetMeasuresWithCredentialsUserDic:credentialsUserDic];

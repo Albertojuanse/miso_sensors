@@ -1078,7 +1078,7 @@
             NSLog(@"[INFO][MM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
             
             // Ask view controller to refresh the canvas
-            NSLog(@"[NOTI][LM] Notification \"canvas/refresh\" posted.");
+            NSLog(@"[NOTI][MM] Notification \"canvas/refresh\" posted.");
             [[NSNotificationCenter defaultCenter]
              postNotificationName:@"canvas/refresh"
              object:nil];

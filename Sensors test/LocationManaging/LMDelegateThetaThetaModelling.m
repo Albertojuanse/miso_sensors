@@ -447,7 +447,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 - (void) reset:(NSNotification *) notification
 {
     if ([[notification name] isEqualToString:@"lmdThetaThetaModelling/reset"]){
-        NSLog(@"[NOTI][LM] Notification \"lmdThetaThetaModelling/reset\" recived.");
+        NSLog(@"[NOTI][LMTTM] Notification \"lmdThetaThetaModelling/reset\" recived.");
         
         // Instance variables
         // Set device's location at the origin

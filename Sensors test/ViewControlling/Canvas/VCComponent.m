@@ -178,7 +178,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"vcEditing/chooseItem"
                                                         object:self
                                                       userInfo:nil];
-    NSLog(@"[NOTI][LM] Notification \"vcEditing/chooseItem\" posted.");
+    NSLog(@"[NOTI][VCC]  Notification \"vcEditing/chooseItem\" posted.");
 }
 
 /*!
@@ -193,7 +193,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"vcEditing/presentEditComponentView"
                                                         object:self
                                                       userInfo:nil];
-    NSLog(@"[NOTI][LM] Notification \"vcEditing/presentEditComponentView\" posted.");
+    NSLog(@"[NOTI][VCC] Notification \"vcEditing/presentEditComponentView\" posted.");
 }
 
 #pragma mark - NSItemProviderWriting methods
@@ -383,7 +383,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"vcEditing/createReference"
                                                                 object:nil
                                                               userInfo:dataDic];
-            NSLog(@"[NOTI][LM] Notification \"vcEditing/createReference\" posted.");
+            NSLog(@"[NOTI][VCC] Notification \"vcEditing/createReference\" posted.");
         }
          ];
     }
