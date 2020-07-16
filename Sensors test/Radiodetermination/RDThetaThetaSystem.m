@@ -609,34 +609,35 @@
                                                                                 withCredentialsUserDic:credentialsUserDic];
                 
                 // ...and for every measure compose a new measure with the mean value; the calculus will be done when every item has its own measure because they have to be ordered.
-                // TODO: IF headingMeasures.count > 0. Alberto J. 2020/07/10.
+                if ([headingMeasures count] > 0) {
 
-                NSNumber * measuresHeadingAverage = [self getMeanOf:headingMeasures];
-                
-                // Get the item position using its UUID
-                NSMutableArray * itemsMeasured = [sharedData fromItemDataGetItemsWithUUID:itemUUID
-                                                                    andCredentialsUserDic:credentialsUserDic];
-                if (itemsMeasured.count == 0) {
-                    NSLog(@"[ERROR][TT] No items found with the itemUUID in measures.");
-                    break;
-                }
-                if (itemsMeasured.count > 1) {
-                    NSLog(@"[ERROR][TT] More than one items stored with the same UUID: using first one.");
-                }
-                NSMutableDictionary * itemMeasured = [itemsMeasured objectAtIndex:0];
-                RDPosition * itemPosition = itemMeasured[@"position"];
-                
-                if (itemPosition) {
-                    // Valid item measured
+                    NSNumber * measuresHeadingAverage = [self getMeanOf:headingMeasures];
                     
-                    // Save the new measure in data
-                    NSMutableDictionary * itemDic = [[NSMutableDictionary alloc] init];
-                    itemDic[@"itemUUID"] = itemUUID;
-                    itemDic[@"deviceUUID"] = deviceUUID;
-                    itemDic[@"position"] = itemPosition;
-                    itemDic[@"measure"] = measuresHeadingAverage;
-                    [itemsDicWithMeasures addObject:itemDic];
+                    // Get the item position using its UUID
+                    NSMutableArray * itemsMeasured = [sharedData fromItemDataGetItemsWithUUID:itemUUID
+                                                                        andCredentialsUserDic:credentialsUserDic];
+                    if (itemsMeasured.count == 0) {
+                        NSLog(@"[ERROR][TT] No items found with the itemUUID in measures.");
+                        break;
+                    }
+                    if (itemsMeasured.count > 1) {
+                        NSLog(@"[ERROR][TT] More than one items stored with the same UUID: using first one.");
+                    }
+                    NSMutableDictionary * itemMeasured = [itemsMeasured objectAtIndex:0];
+                    RDPosition * itemPosition = itemMeasured[@"position"];
                     
+                    if (itemPosition) {
+                        // Valid item measured
+                        
+                        // Save the new measure in data
+                        NSMutableDictionary * itemDic = [[NSMutableDictionary alloc] init];
+                        itemDic[@"itemUUID"] = itemUUID;
+                        itemDic[@"deviceUUID"] = deviceUUID;
+                        itemDic[@"position"] = itemPosition;
+                        itemDic[@"measure"] = measuresHeadingAverage;
+                        [itemsDicWithMeasures addObject:itemDic];
+                        
+                    }
                 }
             }
                         
@@ -797,34 +798,35 @@
                                                                                 withCredentialsUserDic:credentialsUserDic];
                 
                 // ...and for every measure compose a new measure with the mean value; the calculus will be done when every item has its own measure because they have to be ordered.
-                // TODO: IF headingMeasures.count > 0. Alberto J. 2020/07/10.
+                if ([headingMeasures count] > 0) {
 
-                NSNumber * measuresHeadingAverage = [self getMeanOf:headingMeasures];
-                
-                // Get the item position using its UUID
-                NSMutableArray * itemsMeasured = [sharedData fromItemDataGetItemsWithUUID:deviceUUID
-                                                                    andCredentialsUserDic:credentialsUserDic];
-                if (itemsMeasured.count == 0) {
-                    NSLog(@"[ERROR][TT] No items found with the itemUUID in measures.");
-                    break;
-                }
-                if (itemsMeasured.count > 1) {
-                    NSLog(@"[ERROR][TT] More than one items stored with the same UUID: using first one.");
-                }
-                NSMutableDictionary * itemMeasured = [itemsMeasured objectAtIndex:0];
-                RDPosition * itemPosition = itemMeasured[@"position"];
-                
-                if (itemPosition) {
-                    // Valid item measured
+                    NSNumber * measuresHeadingAverage = [self getMeanOf:headingMeasures];
                     
-                    // Save the new measure in data
-                    NSMutableDictionary * itemDic = [[NSMutableDictionary alloc] init];
-                    itemDic[@"itemUUID"] = itemUUID;
-                    itemDic[@"deviceUUID"] = deviceUUID;
-                    itemDic[@"position"] = itemPosition;
-                    itemDic[@"measure"] = measuresHeadingAverage;
-                    [itemsDicWithMeasures addObject:itemDic];
+                    // Get the item position using its UUID
+                    NSMutableArray * itemsMeasured = [sharedData fromItemDataGetItemsWithUUID:deviceUUID
+                                                                        andCredentialsUserDic:credentialsUserDic];
+                    if (itemsMeasured.count == 0) {
+                        NSLog(@"[ERROR][TT] No items found with the itemUUID in measures.");
+                        break;
+                    }
+                    if (itemsMeasured.count > 1) {
+                        NSLog(@"[ERROR][TT] More than one items stored with the same UUID: using first one.");
+                    }
+                    NSMutableDictionary * itemMeasured = [itemsMeasured objectAtIndex:0];
+                    RDPosition * itemPosition = itemMeasured[@"position"];
                     
+                    if (itemPosition) {
+                        // Valid item measured
+                        
+                        // Save the new measure in data
+                        NSMutableDictionary * itemDic = [[NSMutableDictionary alloc] init];
+                        itemDic[@"itemUUID"] = itemUUID;
+                        itemDic[@"deviceUUID"] = deviceUUID;
+                        itemDic[@"position"] = itemPosition;
+                        itemDic[@"measure"] = measuresHeadingAverage;
+                        [itemsDicWithMeasures addObject:itemDic];
+                        
+                    }
                 }
             }
                         
