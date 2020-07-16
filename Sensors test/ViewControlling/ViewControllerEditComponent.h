@@ -11,6 +11,7 @@
 #import "SharedData.h"
 #import "MDAttribute.h"
 #import "MDType.h"
+#import "VCDrawings.h"
 #import "VCComponent.h"
 #import "VCComponentInfo.h"
 

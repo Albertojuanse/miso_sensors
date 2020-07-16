@@ -11,6 +11,7 @@
 #import "MDMode.h"
 #import "MDMetamodel.h"
 #import "MDRoutine.h"
+#import "VCDrawings.h"
 #import "VCToolbar.h"
 
 /*!

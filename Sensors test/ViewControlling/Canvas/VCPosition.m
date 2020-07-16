@@ -32,11 +32,7 @@
     // Color of canvas
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    UIColor * canvasColor = [UIColor colorWithRed:[layoutDic[@"canvas/red"] floatValue]/255.0
-                                            green:[layoutDic[@"canvas/green"] floatValue]/255.0
-                                             blue:[layoutDic[@"canvas/blue"] floatValue]/255.0
-                                            alpha:1.0
-                             ];
+    UIColor * canvasColor = [VCDrawings getNormalThemeColor];
     
     // Draw the path
     UIBezierPath * outterRightBezierPath = [UIBezierPath bezierPath];

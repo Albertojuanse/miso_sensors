@@ -19,42 +19,16 @@
 - (void)viewDidLoad
 {
     // Toolbar layout
-    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
-    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1.0
-                                    ];
-    [self.buttonLogin setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                    alpha:1.0
-                                     ]
+    self.toolbar.backgroundColor = [VCDrawings getNormalThemeColor];
+    [self.buttonLogin setTitleColor:[VCDrawings getNormalThemeColor]
                            forState:UIControlStateNormal];
-    [self.buttonLogin setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                    green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                     blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                    alpha:0.3
-                                     ]
+    [self.buttonLogin setTitleColor:[VCDrawings getDisabledThemeColor]
                            forState:UIControlStateDisabled];
-    [self.buttonSignin setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                      blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                     alpha:1.0
-                                      ]
+    [self.buttonSignin setTitleColor:[VCDrawings getNormalThemeColor]
                             forState:UIControlStateNormal];
-    [self.buttonSignin setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                      blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                     alpha:0.3
-                                      ]
+    [self.buttonSignin setTitleColor:[VCDrawings getDisabledThemeColor]
                             forState:UIControlStateDisabled];
-    [self.buttonConfiguration setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                      blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                     alpha:1.0
-                                      ]
+    [self.buttonConfiguration setTitleColor:[VCDrawings getNormalThemeColor]
                                    forState:UIControlStateNormal];
     
     if (userDidAskSignOut) {

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "RDPosition.h"
+#import "VCDrawings.h"
 #import "VCToolbar.h"
 #import "MDRoutine.h"
 

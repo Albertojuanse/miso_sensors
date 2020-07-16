@@ -23,17 +23,9 @@
     // Toolbar layout
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    [self.cancelButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                     green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                      blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                     alpha:1.0
-                                      ]
+    [self.cancelButton setTitleColor:[VCDrawings getNormalThemeColor]
                             forState:UIControlStateNormal];
-    [self.editButton setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                    alpha:1.0
-                                    ]
+    [self.editButton setTitleColor:[VCDrawings getNormalThemeColor]
                           forState:UIControlStateNormal];
     
     // Picker delegates

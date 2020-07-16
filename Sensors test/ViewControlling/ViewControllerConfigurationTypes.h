@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "VCDrawings.h"
 #import "VCToolbar.h"
 #import "MDType.h"
 #import "MDAttribute.h"

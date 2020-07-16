@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "RDPosition.h"
+#import "VCDrawings.h"
 #import "VCComponent.h"
 #import "VCCorner.h"
 

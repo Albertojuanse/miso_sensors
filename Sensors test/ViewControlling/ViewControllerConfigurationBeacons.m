@@ -23,13 +23,7 @@
     selectedSegmentIndex = 0;
     
     // Toolbar layout
-    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
-    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    self.toolbar.backgroundColor = [UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1.0
-                                    ];
+    self.toolbar.backgroundColor = [VCDrawings getNormalThemeColor];
     
     // View layout
     [self.segmentedControl setSelectedSegmentIndex:selectedSegmentIndex];
@@ -45,23 +39,11 @@
     [self.textMajor setText:@""];
     [self.textMinor setPlaceholder:@"0"];
     [self.textMinor setText:@""];
-    [self.buttonSave setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1.0
-                                    ]
+    [self.buttonSave setTitleColor:[VCDrawings getNormalThemeColor]
                           forState:UIControlStateNormal];
-    [self.buttonEdit setTitleColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                   green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                    blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                   alpha:1.0
-                                    ]
+    [self.buttonEdit setTitleColor:[VCDrawings getNormalThemeColor]
                           forState:UIControlStateNormal];
-    [self.segmentedControl setTintColor:[UIColor colorWithRed:[layoutDic[@"navbar/red"] floatValue]/255.0
-                                                        green:[layoutDic[@"navbar/green"] floatValue]/255.0
-                                                         blue:[layoutDic[@"navbar/blue"] floatValue]/255.0
-                                                        alpha:1.0
-                                         ]];
+    [self.segmentedControl setTintColor:[VCDrawings getNormalThemeColor]];
     [self.buttonBack setTitleColor:[UIColor whiteColor]
                           forState:UIControlStateNormal];
     [self changeView];
