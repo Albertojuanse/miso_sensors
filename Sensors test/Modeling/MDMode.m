@@ -138,7 +138,7 @@
             description = @"Locate others using iBeacon";
             break;
         case 2:
-            description = @"Locate others using iBeacon and brújula";
+            description = @"Locate others using iBeacon and compass";
             break;
         case 3:
             description = @"Locate others using compass";
@@ -147,7 +147,7 @@
             description = @"Self locate using iBeacon";
             break;
         case 5:
-            description = @"Self locate using iBeacon and brújula";
+            description = @"Self locate using iBeacon and compass";
             break;
         case 6:
             description = @"Self locate using compass";
