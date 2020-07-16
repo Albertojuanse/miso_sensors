@@ -13,7 +13,6 @@
 - (void)drawRect:(CGRect)rect
 {
     // Layout
-    // TODO: This is not working. Alberto J. 2020/01/23.
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
     self.backgroundColor = [VCDrawings getNormalThemeColor];

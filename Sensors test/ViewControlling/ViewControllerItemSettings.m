@@ -325,7 +325,6 @@
 - (IBAction)handleButtonCancel:(id)sender
 {
     // Dismiss the popover view
-    // TODO: Notify cancel event to location manager. Alberto J. 2020/04/30.
     // Deallocate location manager; ARC disposal.
     [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
                                                         object:nil];
@@ -342,7 +341,6 @@
 - (IBAction)handleButtonEdit:(id)sender
 {
     // Dismiss the popover view
-    // TODO: Notify cancel event to location manager if process is not finished. Alberto J. 2020/04/30.
     // Deallocate location manager; ARC disposal.
     [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
                                                         object:nil];

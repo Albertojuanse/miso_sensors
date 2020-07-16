@@ -177,7 +177,6 @@
  */
 - (IBAction)handleButtonFinish:(id)sender
 {
-    // TODO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
     // Check if in routine
     NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
                                                              andCredentialsUserDic:credentialsUserDic];
@@ -200,7 +199,6 @@
                 [sharedData validateCredentialsUserDic:credentialsUserDic]
                 )
             {
-                // TODO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
                 
                 // Stop measuring
                 [sharedData inSessionDataSetIdleUserWithUserDic:userDic
@@ -244,7 +242,6 @@
  */
 - (IBAction)handleButtonBack:(id)sender
 {
-    // TODO: Alert user that measures will be disposed. Alberto J. 2020/01/20.
     [self performSegueWithIdentifier:@"fromMONITORINGToSelectPosition" sender:sender];
 }
 

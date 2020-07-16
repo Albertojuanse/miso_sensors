@@ -321,7 +321,6 @@
     // Check if a session with this user is created before
     if ([sharedData fromSessionDataGetSessionWithUserDic:userDic
                                    andCredentialsUserDic:credentialsUserDic]) {
-        // TODO: Session control to prevent data loss. Alberto J. 2020/02/17.
     } else {
         NSMutableDictionary * sessionDic = [[NSMutableDictionary alloc] init];
         sessionDic [@"user"] = userDic;
