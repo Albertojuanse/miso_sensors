@@ -125,6 +125,27 @@
 */
 - (IBAction)handleButtonEdit:(id)sender
 {
+    // Get attributes from text fields and upload the item
+    NSMutableArray * typeChosenByUserAttributes = [typeChosenByUser getAttributes];
+    NSMutableArray * textFields = [[NSMutableArray alloc] init];
+    for (UIView * eachSubview in self.scrolledView.subviews) {
+        if ([eachSubview isKindOfClass:[UITextField class]]) {
+            [textFields addObject:eachSubview];
+        }
+    }
+    itemChosenByUser[@"attributes"] = nil; // ARC disposal of old attributes
+    NSMutableArray * itemChosenByUserAttributes = [[NSMutableArray alloc] init];
+    NSInteger index = 0;
+    for (MDAttribute * eachAttribute in typeChosenByUserAttributes) {
+        UITextField * eachTextField = [textFields objectAtIndex:index];
+        NSString * attributeValue = [eachTextField text];
+        NSString * attributeName = [eachAttribute getName];
+        MDAttribute * newAttribute = [[MDAttribute alloc] initWithName:attributeName andAttribute:attributeValue];
+        [itemChosenByUserAttributes addObject:newAttribute];
+        index++;
+    }
+    itemChosenByUser[@"attributes"] = itemChosenByUserAttributes;
+    
     // Dismiss the popover view
     itemChosenByUser[@"type"] = nil; // ARC dispose
     itemChosenByUser[@"type"] = typeChosenByUser; // ARC dispose
@@ -376,7 +397,26 @@ rowHeightForComponent:(NSInteger)component
             UITextField * attributesTextField = [[UITextField alloc] init];
             [attributesTextField setTranslatesAutoresizingMaskIntoConstraints:NO];
             [attributesTextField setBorderStyle:UITextBorderStyleRoundedRect];
-            [attributesTextField setText:[NSString stringWithFormat:@"%@", [eachAttribute getAttribute]]];
+            // If the attribute in the item chosen by user exists, show it; if not, the default value
+            NSString * attributeValue;
+            NSMutableArray * itemChosenByUserAttributes = itemChosenByUser[@"attributes"];
+            if (itemChosenByUserAttributes) {
+                MDAttribute * attributeFound;
+                for (MDAttribute * eachSavedAttribute in itemChosenByUserAttributes) {
+                    NSString * eachSavedAttributeName = [eachSavedAttribute getName];
+                    if ([eachSavedAttributeName isEqualToString:[eachAttribute getName]]) {
+                        attributeFound = eachSavedAttribute;
+                    }
+                }
+                if (attributeFound) {
+                    attributeValue = [attributeFound getAttribute];
+                } else {
+                    attributeValue = [eachAttribute getAttribute];
+                }
+            } else {
+                attributeValue = [eachAttribute getAttribute];
+            }
+            [attributesTextField setText:[NSString stringWithFormat:@"%@", attributeValue]];
             
             // Add the label
             [self.scrolledView addSubview:attributesTextField];

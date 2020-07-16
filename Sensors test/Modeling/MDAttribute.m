@@ -129,7 +129,11 @@
  */
 - (NSString *)description
 {
-    return [NSString stringWithFormat: @"%@ = ", name];
+    if (attribute) {
+        return [NSString stringWithFormat: @"%@ = %@", name, attribute];
+    } else {
+        return [NSString stringWithFormat: @"%@ = ", name];
+    }
 }
 
 /*!
