@@ -462,24 +462,12 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YH4-sT-VOJ">
-                                        <rect key="frame" x="684" y="22" width="52" height="30"/>
-                                        <state key="normal" title="Log out"/>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GB3-va-1cp">
-                                        <rect key="frame" x="595" y="22" width="57" height="30"/>
-                                        <state key="normal" title="Sign out"/>
-                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="YH4-sT-VOJ" secondAttribute="trailing" constant="32" id="2LX-f9-WUP"/>
                                     <constraint firstAttribute="bottom" secondItem="uyT-sh-Bbn" secondAttribute="bottom" constant="8" id="aqB-ZE-zwg"/>
                                     <constraint firstAttribute="height" constant="60" id="gV5-e0-gYc"/>
-                                    <constraint firstItem="YH4-sT-VOJ" firstAttribute="leading" secondItem="GB3-va-1cp" secondAttribute="trailing" constant="32" id="ggo-Z6-5Pz"/>
                                     <constraint firstItem="uyT-sh-Bbn" firstAttribute="leading" secondItem="fhW-mt-T6N" secondAttribute="leading" constant="32" id="ncH-5n-Bx6"/>
-                                    <constraint firstAttribute="bottom" secondItem="GB3-va-1cp" secondAttribute="bottom" constant="8" id="uBI-lQ-Hlb"/>
-                                    <constraint firstAttribute="bottom" secondItem="YH4-sT-VOJ" secondAttribute="bottom" constant="8" id="wBf-aA-49x"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -512,9 +500,7 @@
                     <connections>
                         <outlet property="backButton" destination="zs4-zD-73F" id="lLZ-vq-r9Z"/>
                         <outlet property="goButton" destination="4Ou-XG-xo4" id="ed4-uC-mLV"/>
-                        <outlet property="logOutButton" destination="YH4-sT-VOJ" id="0Iq-Dd-G7r"/>
                         <outlet property="loginText" destination="uyT-sh-Bbn" id="NG5-uy-3xL"/>
-                        <outlet property="signOutButton" destination="GB3-va-1cp" id="8JN-5L-ajZ"/>
                         <outlet property="tableItems" destination="zil-AZ-XAM" id="AoX-da-XFj"/>
                         <outlet property="toolbar" destination="fhW-mt-T6N" id="we9-jG-ktl"/>
                         <segue destination="lVP-jp-YaV" kind="presentation" identifier="fromSelectPositionsToMain" modalPresentationStyle="fullScreen" id="OWJ-G0-Y79"/>
@@ -580,24 +566,12 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tBJ-Hd-QNs">
-                                        <rect key="frame" x="684" y="22" width="52" height="30"/>
-                                        <state key="normal" title="Log out"/>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QZo-iA-bxR">
-                                        <rect key="frame" x="595" y="22" width="57" height="30"/>
-                                        <state key="normal" title="Sign out"/>
-                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="tBJ-Hd-QNs" secondAttribute="trailing" constant="32" id="6Jm-Im-k7V"/>
                                     <constraint firstAttribute="bottom" secondItem="gYC-is-qnb" secondAttribute="bottom" constant="8" id="MNh-Dr-cqW"/>
                                     <constraint firstItem="gYC-is-qnb" firstAttribute="leading" secondItem="Kfp-B0-wyS" secondAttribute="leading" constant="32" id="Pq4-9k-eOY"/>
                                     <constraint firstAttribute="height" constant="60" id="c26-nj-R1d"/>
-                                    <constraint firstAttribute="bottom" secondItem="tBJ-Hd-QNs" secondAttribute="bottom" constant="8" id="cPc-Ey-nkE"/>
-                                    <constraint firstItem="tBJ-Hd-QNs" firstAttribute="leading" secondItem="QZo-iA-bxR" secondAttribute="trailing" constant="32" id="iUA-y0-amp"/>
-                                    <constraint firstAttribute="bottom" secondItem="QZo-iA-bxR" secondAttribute="bottom" constant="8" id="t49-Jb-7Vu"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -629,11 +603,9 @@
                     <connections>
                         <outlet property="buttonFinish" destination="Yrl-yT-Wq9" id="Rdv-Wa-42p"/>
                         <outlet property="buttonSubmit" destination="T6r-dq-z3X" id="fyi-L9-Xj2"/>
-                        <outlet property="logOutButton" destination="tBJ-Hd-QNs" id="VfJ-s6-JeM"/>
                         <outlet property="loginText" destination="gYC-is-qnb" id="hvD-q7-qpj"/>
                         <outlet property="modelText" destination="q4F-Cp-2jo" id="gpB-7p-pda"/>
                         <outlet property="nameText" destination="eAE-qk-qLD" id="7U8-gv-FQj"/>
-                        <outlet property="signOutButton" destination="QZo-iA-bxR" id="U4U-ii-eYi"/>
                         <outlet property="statusLabel" destination="5dI-h9-4KW" id="IFd-54-UOu"/>
                         <outlet property="toolbar" destination="Kfp-B0-wyS" id="uRI-2P-aGR"/>
                         <segue destination="lVP-jp-YaV" kind="presentation" identifier="fromFinalModelToMain" modalPresentationStyle="fullScreen" id="jdU-ib-UCO"/>
@@ -693,24 +665,12 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i3P-cn-Eag">
-                                        <rect key="frame" x="684" y="22" width="52" height="30"/>
-                                        <state key="normal" title="Log out"/>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q8Q-fs-iC8">
-                                        <rect key="frame" x="595" y="22" width="57" height="30"/>
-                                        <state key="normal" title="Sign out"/>
-                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="p19-Ng-i0h" firstAttribute="leading" secondItem="bWl-5d-bi5" secondAttribute="leading" constant="32" id="2cS-mh-ZFz"/>
-                                    <constraint firstAttribute="bottom" secondItem="i3P-cn-Eag" secondAttribute="bottom" constant="8" id="D8E-tk-iRJ"/>
                                     <constraint firstAttribute="bottom" secondItem="p19-Ng-i0h" secondAttribute="bottom" constant="8" id="HPY-B4-umY"/>
-                                    <constraint firstAttribute="bottom" secondItem="Q8Q-fs-iC8" secondAttribute="bottom" constant="8" id="h6S-lV-PYn"/>
-                                    <constraint firstAttribute="trailing" secondItem="i3P-cn-Eag" secondAttribute="trailing" constant="32" id="tzV-Iv-7uu"/>
                                     <constraint firstAttribute="height" constant="60" id="uQF-TX-Xds"/>
-                                    <constraint firstItem="i3P-cn-Eag" firstAttribute="leading" secondItem="Q8Q-fs-iC8" secondAttribute="trailing" constant="32" id="uV6-6S-W5h"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -740,9 +700,7 @@
                         <outlet property="backButton" destination="wnz-eL-WVG" id="Nb7-Me-tXM"/>
                         <outlet property="buttonFinish" destination="NCE-2c-0bB" id="3xe-Tl-3qP"/>
                         <outlet property="canvas" destination="gg5-9y-kiJ" id="8vF-5y-VOZ"/>
-                        <outlet property="logOutButton" destination="i3P-cn-Eag" id="Ccf-5j-Jbj"/>
                         <outlet property="loginText" destination="p19-Ng-i0h" id="D6w-VU-Bnm"/>
-                        <outlet property="signOutButton" destination="Q8Q-fs-iC8" id="oZp-Sa-Q5F"/>
                         <outlet property="tableRegister" destination="j3a-GT-JWI" id="C96-C3-Faq"/>
                         <outlet property="toolbar" destination="bWl-5d-bi5" id="F3O-I2-fNw"/>
                         <segue destination="Yt7-Vj-vjk" kind="presentation" identifier="fromMONITORINGToFinalModel" modalPresentationStyle="fullScreen" id="crr-mq-j8Q"/>
@@ -1213,23 +1171,11 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="arb-kn-b7V">
-                                                <rect key="frame" x="684" y="22" width="52" height="30"/>
-                                                <state key="normal" title="Log out"/>
-                                            </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CvC-rh-LqE">
-                                                <rect key="frame" x="595" y="22" width="57" height="30"/>
-                                                <state key="normal" title="Sign out"/>
-                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="arb-kn-b7V" secondAttribute="trailing" constant="32" id="bmo-dX-gKE"/>
-                                            <constraint firstItem="arb-kn-b7V" firstAttribute="leading" secondItem="CvC-rh-LqE" secondAttribute="trailing" constant="32" id="cLK-da-mAR"/>
                                             <constraint firstAttribute="bottom" secondItem="Re3-2a-6t7" secondAttribute="bottom" constant="8" id="eTm-Dp-G90"/>
                                             <constraint firstItem="Re3-2a-6t7" firstAttribute="leading" secondItem="QG3-lL-fir" secondAttribute="leading" constant="32" id="mCU-Yz-RNT"/>
-                                            <constraint firstAttribute="bottom" secondItem="CvC-rh-LqE" secondAttribute="bottom" constant="8" id="on2-A6-Zgp"/>
-                                            <constraint firstAttribute="bottom" secondItem="arb-kn-b7V" secondAttribute="bottom" constant="8" id="rzT-pP-Ex0"/>
                                             <constraint firstAttribute="height" constant="60" id="s3b-zQ-hXo"/>
                                         </constraints>
                                     </view>
@@ -1271,9 +1217,7 @@
                         <outlet property="buttonFinish" destination="cwf-Zo-7tw" id="Mvh-6C-ig7"/>
                         <outlet property="canvas" destination="Lkn-Mp-7ch" id="gAM-lh-vkf"/>
                         <outlet property="labelStatus" destination="2gF-xs-nhO" id="SKS-cI-4cu"/>
-                        <outlet property="logOutButton" destination="arb-kn-b7V" id="ZvU-gU-TVH"/>
                         <outlet property="loginText" destination="Re3-2a-6t7" id="iZe-9e-Grz"/>
-                        <outlet property="signOutButton" destination="CvC-rh-LqE" id="FH6-T1-RaN"/>
                         <outlet property="toolbar" destination="QG3-lL-fir" id="wBl-rb-Msb"/>
                         <segue destination="Yt7-Vj-vjk" kind="presentation" identifier="fromEDITINGToFinalModel" modalPresentationStyle="fullScreen" id="ama-gS-GxY"/>
                         <segue destination="zBC-hA-n0a" kind="presentation" identifier="fromEDITINGToSelectPosition" modalPresentationStyle="fullScreen" id="LlF-Fb-myL"/>
@@ -1289,9 +1233,10 @@
         <image name="miso.png" width="134.39999389648438" height="108"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="WbY-sj-piI"/>
         <segue reference="ama-gS-GxY"/>
-        <segue reference="DJm-0E-zOi"/>
-        <segue reference="jUo-Ud-pm0"/>
+        <segue reference="LlF-Fb-myL"/>
+        <segue reference="OWJ-G0-Y79"/>
         <segue reference="R4c-cp-jPI"/>
     </inferredMetricsTieBreakers>
 </document>

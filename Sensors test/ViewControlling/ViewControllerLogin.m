@@ -30,6 +30,9 @@
                             forState:UIControlStateDisabled];
     [self.buttonConfiguration setTitleColor:[VCDrawings getNormalThemeColor]
                                    forState:UIControlStateNormal];
+    // TODO: Remove this. Alberto J. 2020/07/18
+    [self.passText setText:@"miso"];
+    [self.userText setText:@"miso"];
     
     if (userDidAskSignOut) {
         NSLog(@"[INFO][VCL] User did asked to sign out.");

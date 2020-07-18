@@ -23,8 +23,6 @@
     // Visualization
     [self showUser];
     // Toolbar layout
-    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
-    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
     self.toolbar.backgroundColor = [VCDrawings getNormalThemeColor];
     [self.buttonFinish setTitleColor:[VCDrawings getNormalThemeColor]
                           forState:UIControlStateNormal];
@@ -34,10 +32,6 @@
                           forState:UIControlStateNormal];
     [self.backButton setTitleColor:[VCDrawings getDisabledThemeColor]
                           forState:UIControlStateDisabled];
-    [self.signOutButton setTitleColor:[UIColor whiteColor]
-                             forState:UIControlStateNormal];
-    [self.logOutButton setTitleColor:[UIColor whiteColor]
-                            forState:UIControlStateNormal];
     [self.loginText setTextColor:[UIColor whiteColor]];
     
     // Register the current mode

@@ -33,8 +33,6 @@
 
 @property (weak, nonatomic) IBOutlet VCToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UILabel *loginText;
-@property (weak, nonatomic) IBOutlet UIButton *signOutButton;
-@property (weak, nonatomic) IBOutlet UIButton *logOutButton;
 @property (weak, nonatomic) IBOutlet UITextView *modelText;
 @property (weak, nonatomic) IBOutlet UITextField *nameText;
 @property (weak, nonatomic) IBOutlet UILabel *statusLabel;

@@ -114,10 +114,6 @@
                            forState:UIControlStateNormal];
     [self.buttonFinish setTitleColor:disabledThemeColor
                            forState:UIControlStateDisabled];
-    [self.signOutButton setTitleColor:[UIColor whiteColor]
-                             forState:UIControlStateNormal];
-    [self.logOutButton setTitleColor:[UIColor whiteColor]
-                            forState:UIControlStateNormal];
     [self.loginText setTextColor:[UIColor whiteColor]];
 }
 
