@@ -156,14 +156,11 @@
                                 <rect key="frame" x="0.0" y="60" width="768" height="964"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="YnX-CR-lc7">
-                                        <rect key="frame" x="32" y="32" width="704" height="382"/>
+                                        <rect key="frame" x="32" y="32" width="704" height="388"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="382" id="v0x-Ph-G7u"/>
-                                        </constraints>
                                     </tableView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pMp-QA-YHA">
-                                        <rect key="frame" x="706" y="430" width="30" height="36"/>
+                                        <rect key="frame" x="706" y="436" width="30" height="36"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <state key="normal" title="→"/>
                                         <connections>
@@ -171,11 +168,11 @@
                                         </connections>
                                     </button>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="RbC-qr-Qzv">
-                                        <rect key="frame" x="32" y="538" width="704" height="394"/>
+                                        <rect key="frame" x="32" y="544" width="704" height="388"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </tableView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bOD-bd-mR0">
-                                        <rect key="frame" x="381" y="446" width="54" height="60"/>
+                                        <rect key="frame" x="357" y="452" width="54" height="60"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="54" id="22p-RK-P7j"/>
                                         </constraints>
@@ -191,13 +188,14 @@
                                     <constraint firstItem="pMp-QA-YHA" firstAttribute="top" secondItem="YnX-CR-lc7" secondAttribute="bottom" constant="16" id="6AC-Aw-hpg"/>
                                     <constraint firstAttribute="trailing" secondItem="YnX-CR-lc7" secondAttribute="trailing" constant="32" id="Ess-7D-hFr"/>
                                     <constraint firstItem="YnX-CR-lc7" firstAttribute="top" secondItem="Nro-qx-VM6" secondAttribute="top" constant="32" id="Kce-co-AEg"/>
-                                    <constraint firstItem="bOD-bd-mR0" firstAttribute="leading" secondItem="Nro-qx-VM6" secondAttribute="leading" constant="381" id="O7g-OR-yjL"/>
                                     <constraint firstItem="RbC-qr-Qzv" firstAttribute="top" secondItem="bOD-bd-mR0" secondAttribute="bottom" constant="32" id="VTk-lr-E8l"/>
+                                    <constraint firstItem="RbC-qr-Qzv" firstAttribute="height" secondItem="YnX-CR-lc7" secondAttribute="height" id="X7N-tT-emw"/>
                                     <constraint firstAttribute="trailing" secondItem="pMp-QA-YHA" secondAttribute="trailing" constant="32" id="XjY-Qj-zbJ"/>
                                     <constraint firstItem="YnX-CR-lc7" firstAttribute="leading" secondItem="Nro-qx-VM6" secondAttribute="leading" constant="32" id="c7A-bu-lcG"/>
                                     <constraint firstAttribute="bottom" secondItem="RbC-qr-Qzv" secondAttribute="bottom" constant="32" id="f7z-jn-NiT"/>
                                     <constraint firstAttribute="trailing" secondItem="RbC-qr-Qzv" secondAttribute="trailing" constant="32" id="iVE-zB-ahW"/>
                                     <constraint firstItem="bOD-bd-mR0" firstAttribute="top" secondItem="YnX-CR-lc7" secondAttribute="bottom" constant="32" id="kod-Tz-Huv"/>
+                                    <constraint firstItem="bOD-bd-mR0" firstAttribute="centerX" secondItem="Nro-qx-VM6" secondAttribute="centerX" id="s8z-lY-fWd"/>
                                     <constraint firstItem="RbC-qr-Qzv" firstAttribute="leading" secondItem="Nro-qx-VM6" secondAttribute="leading" constant="32" id="uv9-0o-dq9" userLabel="Table Beacons.leading = Main.leading + 32"/>
                                 </constraints>
                             </view>
@@ -1225,7 +1223,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="ama-gS-GxY"/>
-        <segue reference="LlF-Fb-myL"/>
+        <segue reference="DJm-0E-zOi"/>
         <segue reference="OWJ-G0-Y79"/>
         <segue reference="R4c-cp-jPI"/>
     </inferredMetricsTieBreakers>
