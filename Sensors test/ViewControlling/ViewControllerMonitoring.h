@@ -39,8 +39,6 @@
 
 @property (weak, nonatomic) IBOutlet VCToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UILabel *loginText;
-@property (weak, nonatomic) IBOutlet UIButton *signOutButton;
-@property (weak, nonatomic) IBOutlet UIButton *logOutButton;
 @property (weak, nonatomic) IBOutlet UITableView *tableRegister;
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
 @property (weak, nonatomic) IBOutlet UIButton *buttonFinish;

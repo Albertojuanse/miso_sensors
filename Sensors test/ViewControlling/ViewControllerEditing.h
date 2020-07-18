@@ -74,7 +74,6 @@
 
 @property (weak, nonatomic) IBOutlet VCToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UILabel *loginText;
-@property (weak, nonatomic) IBOutlet UILabel *labelStatus;
 @property (weak, nonatomic) IBOutlet Canvas *canvas;
 @property (weak, nonatomic) IBOutlet UIButton *buttonFinish;
 @property (weak, nonatomic) IBOutlet UIButton *buttonBack;

@@ -1113,17 +1113,17 @@
                                 <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lkn-Mp-7ch" userLabel="Canvas" customClass="Canvas">
-                                        <rect key="frame" x="32" y="92" width="704" height="847"/>
+                                        <rect key="frame" x="32" y="92" width="704" height="900"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xub-Bw-BYp">
-                                                <rect key="frame" x="638" y="785" width="34" height="30"/>
+                                                <rect key="frame" x="638" y="838" width="34" height="30"/>
                                                 <state key="normal" title="Back"/>
                                                 <connections>
                                                     <action selector="handleButtonBack:" destination="okL-35-9pm" eventType="touchUpInside" id="IdH-l2-m5C"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cwf-Zo-7tw">
-                                                <rect key="frame" x="565" y="785" width="41" height="30"/>
+                                                <rect key="frame" x="565" y="838" width="41" height="30"/>
                                                 <state key="normal" title="Finish"/>
                                                 <connections>
                                                     <action selector="handleButtonFinish:" destination="okL-35-9pm" eventType="touchUpInside" id="SIJ-Rs-Rhc"/>
@@ -1179,22 +1179,14 @@
                                             <constraint firstAttribute="height" constant="60" id="s3b-zQ-hXo"/>
                                         </constraints>
                                     </view>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2gF-xs-nhO" userLabel="Label Status">
-                                        <rect key="frame" x="32" y="971" width="50" height="21"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="Lkn-Mp-7ch" secondAttribute="trailing" constant="32" id="1MD-MX-6X0"/>
                                     <constraint firstAttribute="trailing" secondItem="QG3-lL-fir" secondAttribute="trailing" id="1r3-bI-rHT"/>
-                                    <constraint firstItem="2gF-xs-nhO" firstAttribute="top" secondItem="Lkn-Mp-7ch" secondAttribute="bottom" constant="32" id="9OT-YA-24s"/>
-                                    <constraint firstItem="2gF-xs-nhO" firstAttribute="leading" secondItem="2uo-Tc-WLn" secondAttribute="leading" constant="32" id="Vlm-6q-wb9"/>
+                                    <constraint firstAttribute="bottom" secondItem="Lkn-Mp-7ch" secondAttribute="bottom" constant="32" id="DbT-Tp-csH"/>
                                     <constraint firstItem="QG3-lL-fir" firstAttribute="leading" secondItem="2uo-Tc-WLn" secondAttribute="leading" id="XLo-Co-d7I"/>
                                     <constraint firstItem="QG3-lL-fir" firstAttribute="top" secondItem="2uo-Tc-WLn" secondAttribute="top" id="XXl-Om-bG8"/>
-                                    <constraint firstAttribute="bottom" secondItem="2gF-xs-nhO" secondAttribute="bottom" constant="32" id="XcH-Ah-FYm"/>
                                     <constraint firstItem="Lkn-Mp-7ch" firstAttribute="top" secondItem="QG3-lL-fir" secondAttribute="bottom" constant="32" id="enB-QO-qrH"/>
                                     <constraint firstItem="Lkn-Mp-7ch" firstAttribute="leading" secondItem="2uo-Tc-WLn" secondAttribute="leading" constant="32" id="zxI-WB-m3q"/>
                                 </constraints>
@@ -1216,7 +1208,6 @@
                         <outlet property="buttonBack" destination="Xub-Bw-BYp" id="gAn-Cq-CCc"/>
                         <outlet property="buttonFinish" destination="cwf-Zo-7tw" id="Mvh-6C-ig7"/>
                         <outlet property="canvas" destination="Lkn-Mp-7ch" id="gAM-lh-vkf"/>
-                        <outlet property="labelStatus" destination="2gF-xs-nhO" id="SKS-cI-4cu"/>
                         <outlet property="loginText" destination="Re3-2a-6t7" id="iZe-9e-Grz"/>
                         <outlet property="toolbar" destination="QG3-lL-fir" id="wBl-rb-Msb"/>
                         <segue destination="Yt7-Vj-vjk" kind="presentation" identifier="fromEDITINGToFinalModel" modalPresentationStyle="fullScreen" id="ama-gS-GxY"/>
@@ -1233,7 +1224,6 @@
         <image name="miso.png" width="134.39999389648438" height="108"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="WbY-sj-piI"/>
         <segue reference="ama-gS-GxY"/>
         <segue reference="LlF-Fb-myL"/>
         <segue reference="OWJ-G0-Y79"/>

@@ -123,9 +123,10 @@
         motion = [delegate loadMotion];
 
         // Load the messages that are shown to user in each state
+        // TODO: Remove this or use to some "tutorial" mode. Alberto J. 2020/07/18.
         idleStateMessage = [delegate getIdleStateMessage];
         measuringStateMessage = [delegate getMeasuringStateMessage];
-        [self.labelStatus setText:idleStateMessage];
+        // [self.labelStatus setText:idleStateMessage];
     } else {
         NSLog(@"[ERROR][VCE---] No delegate for ViewControllerEditing was loaded.");
     }
