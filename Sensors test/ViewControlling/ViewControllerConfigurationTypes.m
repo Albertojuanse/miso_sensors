@@ -534,7 +534,7 @@ didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> 
 */
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
-    return;
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UItableView data delegate methods
