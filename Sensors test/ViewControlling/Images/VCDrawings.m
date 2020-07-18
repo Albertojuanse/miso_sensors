@@ -41,6 +41,23 @@
             ];
 }
 
+/*!
+@method getCanvasColor
+@discussion This method returns the default canvas color.
+*/
++ (UIColor *)getCanvasColor
+{
+    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    return [UIColor colorWithRed:[layoutDic[@"canvas/red"] floatValue]/255.0
+                           green:[layoutDic[@"canvas/green"] floatValue]/255.0
+                            blue:[layoutDic[@"canvas/blue"] floatValue]/255.0
+                           alpha:1.0
+            ];
+}
+
+
+
 #pragma mark - Drawing methods
 /*!
 @method imageForPositionInNormalThemeColor

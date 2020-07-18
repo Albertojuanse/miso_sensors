@@ -18,6 +18,7 @@
 
 + (UIColor *)getNormalThemeColor;
 + (UIColor *)getDisabledThemeColor;
++ (UIColor *)getCanvasColor;
 + (UIImage *)imageForPositionInNormalThemeColor;
 + (UIImage *)imageForBeaconInNormalThemeColor;
 + (UIImage *)imageForModelInNormalThemeColor;

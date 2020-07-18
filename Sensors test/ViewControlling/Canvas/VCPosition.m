@@ -30,9 +30,7 @@
     CGPoint arrowPoint = CGPointMake(rectWidth/2, rectHeight);
     
     // Color of canvas
-    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
-    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    UIColor * canvasColor = [VCDrawings getNormalThemeColor];
+    UIColor * canvasColor = [VCDrawings getCanvasColor];
     
     // Draw the path
     UIBezierPath * outterRightBezierPath = [UIBezierPath bezierPath];

@@ -92,9 +92,6 @@
                                              selector:@selector(canvasRefresh:)
                                                  name:@"canvas/refresh"
                                                object:nil];
-    
-    // Center point
-    [self displayCenter];
 
     [self setNeedsDisplay];
 }
@@ -196,9 +193,6 @@
     // Remove the old layers
     [self removeLayers];
     
-    // Display the center point
-    [self displayCenter];
-    
     // Inspect shared data for data retrieving
     [self inspectDataDicsAndDrawTheInfoInRect:rect];
     
@@ -240,28 +234,6 @@
     
     
     NSLog(@"[INFO][CA] Old layers removing; layers displayed: %ld", self.layer.sublayers.count);
-}
-
-/*!
- @method displayCenter
- @discussion This method creates and display a layer with the center point of the canvas.
- */
-- (void)displayCenter
-{
-    // Center point; if canvas' dimensions change, the center must be updated, so this is always done.
-    center.x = self.frame.size.width/2;
-    center.y = self.frame.size.height/2;
-    UIBezierPath *centerBezierPath = [UIBezierPath bezierPath];
-    [centerBezierPath moveToPoint:CGPointMake(center.x - 3.0, center.y)];
-    [centerBezierPath addLineToPoint:CGPointMake(center.x + 3.0, center.y)];
-    [centerBezierPath moveToPoint:CGPointMake(center.x, center.y - 3.0)];
-    [centerBezierPath addLineToPoint:CGPointMake(center.x, center.y + 3.0)];
-    
-    CAShapeLayer *centerLayer = [[CAShapeLayer alloc] init];
-    [centerLayer setPath:centerBezierPath.CGPath];
-    [centerLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-    [centerLayer setFillColor:[UIColor clearColor].CGColor];
-    [self.layer addSublayer:centerLayer];
 }
 
 /*!
