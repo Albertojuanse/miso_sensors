@@ -235,6 +235,7 @@
     
     // Save in device
     [self updatePersistentTypes];
+    chosenType = nil;
 
     // Upload layout
     [self.textName setText:@""];
