@@ -946,8 +946,8 @@
         // If measuring, user can travel or measuring; if 'Measuring' is tapped, ask stop measuring.
         
         // Update current state
-        // This next line have been moved into "stopGyroscopesHeadingMeasuring" method, because the measure is generated in this case after stop measuring
-        // [sharedData inSessionDataSetIdleUserWithUserDic:userDic andWithCredentialsUserDic:credentialsUserDic];
+        [sharedData inSessionDataSetIdleUserWithUserDic:userDic
+                              andWithCredentialsUserDic:credentialsUserDic];
         
         // Change button layout
         UIImage * startMeasureIcon = [VCDrawings imageForMeasureInNormalThemeColor];
