@@ -898,7 +898,7 @@
     center.y = self.frame.size.height/2;
     
     // Case only one point
-    if (realPoints.count == 1) {
+    if ([realPoints count] < 2) {
         scale = 1.0;
     } else {
         
@@ -947,7 +947,11 @@
         } else {
             newHeightRatio = 1.0;
         }
-        scale = MIN(newWidthRatio, newHeightRatio); // Minimum is the worse case
+        if ( maxX == minX || maxY == minY) {
+            scale = MAX(newWidthRatio, newHeightRatio);
+        } else {
+            scale = MIN(newWidthRatio, newHeightRatio);
+        }
     }
     transformToCanvas = CGAffineTransformMake(scale, 0, 0, scale, center.x, center.y);
 }
