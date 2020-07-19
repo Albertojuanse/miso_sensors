@@ -3757,11 +3757,9 @@ withCredentialsUserDic:(NSMutableDictionary *)credentialsUserDic;
         if (position) {
             measureDic[@"position"] = position;
         }
-        if ([self fromSessionDataIsMeasuringUserWithUserDic:givenUserDic andCredentialsUserDic:credentialsUserDic]) {
-            measureDic[@"itemUUID"] = itemUUID;
-            measureDic[@"deviceUUID"] = deviceUUID;
-            measureDic[@"measure"] = measure;
-        }
+        measureDic[@"itemUUID"] = itemUUID;
+        measureDic[@"deviceUUID"] = deviceUUID;
+        measureDic[@"measure"] = measure;
         
         [measuresData addObject:measureDic];
         

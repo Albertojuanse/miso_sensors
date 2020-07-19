@@ -267,15 +267,6 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                     // ...get its information...
                     NSString * uuid = [[beacon proximityUUID] UUIDString];
                     NSLog(@"[INFO][LMM] Beacon ranged %@; registering.", uuid);
-                    //NSLog(@"[HOLA][LMM] RSSI: %.6f", (float)[beacon rssi]);
-                    //float C = 299792458.0;
-                    //float F = 2440000000.0; // 2400 - 2480 MHz
-                    //float G = 1.0; // typically 2.16 dBi
-                    // Calculate the distance pow(10.0, -[[beacon rssi] floatValue]/ 10.0)
-                    //float power = 0.001*pow(10.0,(0.0/10.0))*pow(10.0,(-(float)[beacon rssi]/10.0));
-                    //NSLog(@"[HOLA][LMM] power: %.6f", power);
-                    //float distance = (C / (4.0 * M_PI * F)) * sqrt(G * power);
-                    //NSLog(@"[HOLA][LMM] distance: %.6f", distance);
                     
                     RDPosition * registerPosition = [[RDPosition alloc] init];
                     registerPosition.x = position.x;
