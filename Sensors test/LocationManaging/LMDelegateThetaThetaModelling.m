@@ -399,6 +399,26 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
                                                          withInfoDic:infoDic
                                            andWithCredentialsUserDic:credentialsUserDic];
                 if (savedItem) {
+                    
+                    // Get it as it was saved
+                    NSMutableArray * savedItemDics = [sharedData fromItemDataGetItemsWithIdentifier:itemIdentifier
+                                                                              andCredentialsUserDic:credentialsUserDic];
+                    NSMutableDictionary * savedItemDic;
+                    if ([savedItemDics count] > 0) {
+                        savedItemDic = [savedItemDics objectAtIndex:0];
+                    }
+                    if (savedItemDic) {
+                        [sharedData inSessionDataSetAsChosenItem:savedItemDic
+                                               toUserWithUserDic:userDic
+                                          withCredentialsUserDic:credentialsUserDic];
+                        
+                        // Persist it in memory
+                        [self updatePersistentItemsWithItem:savedItemDic];
+                        
+                    } else {
+                        NSLog(@"[ERROR][LMTTM] New position %@ could not be stored as an item.", infoDic[@"position"]);
+                    }
+                    
                     // Ask view controller to refresh the canvas
                     NSLog(@"[NOTI][LMTTM] Notification \"canvas/refresh\" posted.");
                     [[NSNotificationCenter defaultCenter]
@@ -420,6 +440,38 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
     } else { // If is idle...
         // Do nothing
     }
+}
+
+/*!
+ @method updatePersistentItemsWithItem:
+ @discussion This method is called when creates a new item to upload it.
+ */
+- (BOOL)updatePersistentItemsWithItem:(NSMutableDictionary *)itemDic
+{
+    // Set the variable areItems as YES
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults removeObjectForKey:@"es.uam.miso/data/items/areItems"];
+    NSData * areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+    [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
+    
+    // Get the index and upload it
+    NSData * itemsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/items/index"];
+    NSMutableArray * itemsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:itemsIndexData];
+    if (!itemsIndex) {
+        itemsIndex = [[NSMutableArray alloc] init];
+    }
+    NSString * itemIdentifier = itemDic[@"identifier"];
+    [itemsIndex addObject:itemIdentifier];
+    itemsIndexData = nil; // ARC disposal
+    itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
+    [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
+    
+    // Save the item itself
+    NSData * itemData = [NSKeyedArchiver archivedDataWithRootObject:itemDic];
+    NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
+    [userDefaults setObject:itemData forKey:itemKey];
+    
+    return YES;
 }
 
 /*!
