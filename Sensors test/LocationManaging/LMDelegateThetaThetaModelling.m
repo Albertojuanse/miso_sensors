@@ -76,7 +76,7 @@
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reset:)
-                                                     name:@"lmdThetaThetaModelling/reset"
+                                                     name:@"lmd/reset"
                                                    object:nil];
         
         NSLog(@"[INFO][LMTTM] LocationManager prepared for kModeThetaThetaModelling mode.");
@@ -261,6 +261,13 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
                 NSDictionary * dataDic = [notification userInfo];
                 NSMutableDictionary * itemDic = dataDic[@"itemDic"];
                 itemToMeasureUUID = itemDic[@"uuid"];
+                // If it is a beacon, when located must be set as beacon again
+                NSString * itemToMeasureSort = itemDic[@"sort"];
+                if ([@"beacon" isEqualToString:itemToMeasureSort]) {
+                    itemToMeasureIsBeacon = YES;
+                } else {
+                    itemToMeasureIsBeacon = NO;
+                }
                 
                 // Start heading mesures
                 [locationManager startUpdatingHeading];
@@ -372,7 +379,11 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         for (id positionKey in positionKeys) {
             NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
             infoDic[@"located"] = @"YES";
-            infoDic[@"sort"] = @"position";
+            if (itemToMeasureIsBeacon) {
+                infoDic[@"sort"] = @"beacon";
+            } else {
+                infoDic[@"sort"] = @"position";
+            }
             NSString * itemIdentifier = [@"position" stringByAppendingString:[positionKey substringFromIndex:31]];
             itemIdentifier = [itemIdentifier stringByAppendingString:@"@miso.uam.es"];
             infoDic[@"identifier"] = itemIdentifier;
@@ -478,8 +489,8 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
  */
 - (void) reset:(NSNotification *) notification
 {
-    if ([[notification name] isEqualToString:@"lmdThetaThetaModelling/reset"]){
-        NSLog(@"[NOTI][LMTTM] Notification \"lmdThetaThetaModelling/reset\" recived.");
+    if ([[notification name] isEqualToString:@"lmd/reset"]){
+        NSLog(@"[NOTI][LMTTM] Notification \"lmd/reset\" recived.");
         
         // Instance variables
         // Set device's location at the origin

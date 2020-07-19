@@ -73,7 +73,6 @@
                                                  selector:@selector(stop:)
                                                      name:@"lmdRhoThetaLocating/stop"
                                                    object:nil];
-        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(rangingMeasureFinishedWithErrors:)
                                                      name:@"lmd/rangingMeasureFinishedWithErrors"

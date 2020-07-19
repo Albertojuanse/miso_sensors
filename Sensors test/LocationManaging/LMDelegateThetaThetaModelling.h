@@ -32,6 +32,7 @@
     RDPosition * devicePosition;
     NSString * deviceUUID;
     NSString * itemToMeasureUUID;
+    BOOL itemToMeasureIsBeacon;
     CLHeading * compassHeading;
     
 }

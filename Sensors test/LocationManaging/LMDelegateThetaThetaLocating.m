@@ -76,7 +76,7 @@
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reset:)
-                                                     name:@"lmdThetaThetaLocating/reset"
+                                                     name:@"lmd/reset"
                                                    object:nil];
         
         NSLog(@"[INFO][LMTTL] LocationManager prepared for kModeThetaThetaLocating mode.");
@@ -197,6 +197,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
        didUpdateHeading:(CLHeading *)newHeading
 {
     // Upadate current compass heading
+    NSLog(@"[HOLA] compassHeading: %.2f",[newHeading trueHeading] );
     compassHeading = newHeading;
 }
 
@@ -261,6 +262,13 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
                 NSDictionary * dataDic = [notification userInfo];
                 NSMutableDictionary * itemDic = dataDic[@"itemDic"];
                 deviceUUID = itemDic[@"uuid"];
+                // If it is a beacon, when located must be set as beacon again
+                NSString * deviceSort = itemDic[@"sort"];
+                if ([@"beacon" isEqualToString:deviceSort]) {
+                    deviceIsBeacon = YES;
+                } else {
+                    deviceIsBeacon = NO;
+                }
                 
                 // Start heading mesures
                 [locationManager startUpdatingHeading];
@@ -372,7 +380,11 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         for (id positionKey in positionKeys) {
             NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
             infoDic[@"located"] = @"YES";
-            infoDic[@"sort"] = @"position";
+            if (deviceIsBeacon) {
+                infoDic[@"sort"] = @"beacon";
+            } else {
+                infoDic[@"sort"] = @"position";
+            }
             NSString * itemIdentifier = [@"position" stringByAppendingString:[positionKey substringFromIndex:31]];
             itemIdentifier = [itemIdentifier stringByAppendingString:@"@miso.uam.es"];
             infoDic[@"identifier"] = itemIdentifier;
@@ -478,8 +490,8 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
  */
 - (void) reset:(NSNotification *) notification
 {
-    if ([[notification name] isEqualToString:@"lmdThetaThetaLocating/reset"]){
-        NSLog(@"[NOTI][LMTTL] Notification \"lmdThetaThetaLocating/reset\" recived.");
+    if ([[notification name] isEqualToString:@"lmd/reset"]){
+        NSLog(@"[NOTI][LMTTL] Notification \"lmd/reset\" recived.");
         
         // Instance variables
         // Set device's location at the origin

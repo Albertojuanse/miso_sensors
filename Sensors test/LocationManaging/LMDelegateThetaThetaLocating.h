@@ -30,6 +30,7 @@
     
     // Variables (locating mode)
     NSString * deviceUUID;
+    BOOL deviceIsBeacon;
     RDPosition * itemToMeasurePosition;
     NSString * itemToMeasureUUID;
     CLHeading * compassHeading;

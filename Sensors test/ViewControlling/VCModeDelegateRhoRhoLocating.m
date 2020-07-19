@@ -808,6 +808,21 @@
                                      // Transfer the position
                                      [self transferPositionFromItemDic:itemDic
                                                           ofTableItems:tableView];
+                                    
+                                     // Ask location delegate to remove all measures
+                                     [[NSNotificationCenter defaultCenter] postNotificationName:@"lmd/reset"
+                                                                                         object:nil];
+                                     NSLog(@"[NOTI][VCM] Notification \"lmd/reset\" posted.");
+        
+                                     // Dismiss the view to force reload the table
+                                     [viewController dismissViewControllerAnimated:NO completion:nil];
+        
+                                     // Set the item chosen by user as nil to force new selecting
+                                     [sharedData
+                                      inSessionDataSetItemChosenByUser:nil
+                                      toUserWithUserDic:userDic
+                                      andCredentialsUserDic:credentialsUserDic
+                                      ];
                                      
                                  }
                                  ];

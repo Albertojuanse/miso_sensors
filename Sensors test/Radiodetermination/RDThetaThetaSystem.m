@@ -234,7 +234,7 @@
                     
                     // Save this min and update the last saved min
                     NSLog(@"[INFO][TT] Ordered the heading %.2f ", [min floatValue]);
-                    NSLog(@"[INFO][TT] -> at index %tuf ", index);
+                    NSLog(@"[INFO][TT] -> at index %tu ", index);
                     NSString * indexKey = [NSString stringWithFormat:@"%tu", index];
                     [sortedItemsDic setObject:minItemDic forKey:indexKey];
                     lastSavedMin = min;
@@ -246,17 +246,24 @@
                 // Clockwise angles to counter-clockwise angles reversion
                 // and rotation from the north to the model 'north'
                 
-                NSMutableArray * rotatedItemsDic = [[NSMutableArray alloc] init];
-                for (NSMutableDictionary * eachItemDic in sortedItemsDic) {
+                NSMutableDictionary * rotatedItemsDic = [[NSMutableDictionary alloc] init];
+                for (NSUInteger k = 0; k < [itemsDicWithMeasures count]; k++) {
+                    NSString * indexKey = [NSString stringWithFormat:@"%tu", k];
+                    NSMutableDictionary * eachItemDic = sortedItemsDic[indexKey];
+                    NSLog(@"[INFO][TT] Transforming itemDic: %@", eachItemDic);
                     
                     NSMutableDictionary * newItemDic = [[NSMutableDictionary alloc] init];
+                    newItemDic[@"deviceUUID"] = eachItemDic[@"deviceUUID"];
+                    newItemDic[@"itemUUID"] = eachItemDic[@"itemUUID"];
                     
                     // Inversion
                     NSNumber * eachMeasure = eachItemDic[@"measure"];
                     newItemDic[@"measure"] = [NSNumber numberWithFloat:-[eachMeasure floatValue]];
+                    NSLog(@"[INFO][TT] -> with inverted measure: %.2f", -[eachMeasure floatValue]);
                     
                     // Rotation
-                    RDPosition * eachPosition = eachItemDic[@"postion"];
+                    RDPosition * eachPosition = eachItemDic[@"position"];
+                    NSLog(@"[INFO][TT] -> from position: %@", eachPosition);
                     RDPosition * newPosition = [[RDPosition alloc] init];
                     newPosition.x = [NSNumber numberWithFloat:
                                      (cos([north floatValue])*[eachPosition.x floatValue] +
@@ -264,10 +271,12 @@
                     newPosition.y = [NSNumber numberWithFloat:
                                      (cos([north floatValue])*[eachPosition.y floatValue] -
                                       sin([north floatValue])*[eachPosition.x floatValue])];
-                    newPosition.z = [NSNumber numberWithFloat:[newPosition.z floatValue]];
-                    newItemDic[@"measure"] = newPosition;
+                    newPosition.z = [NSNumber numberWithFloat:[eachPosition.z floatValue]];
+                    newItemDic[@"position"] = newPosition;
+                    NSLog(@"[INFO][TT] -> to rotated position: %@", newPosition);
                     
-                    [rotatedItemsDic addObject:newItemDic];
+                    [rotatedItemsDic setObject:newItemDic forKey:indexKey];
+                    NSLog(@"[INFO][TT] Transformed itemDic: %@", newItemDic);
                 }
                 
                 NSNumber * lastHeading = nil;
@@ -276,7 +285,8 @@
                 for (NSUInteger m = 0; m < [sortedItemsDic count]; m++) {
                     
                     NSString * indexKey = [NSString stringWithFormat:@"%tu", m];
-                    NSDictionary * eachItemDic = sortedItemsDic[indexKey];
+                    NSDictionary * eachItemDic = rotatedItemsDic[indexKey];
+                    NSLog(@"[INFO][TT] Evaluating itemDic: %@", eachItemDic);
                     
                     NSNumber * eachHeading = eachItemDic[@"measure"];
                     RDPosition * eachPosition = eachItemDic[@"position"];
@@ -290,8 +300,6 @@
                     } else {
                         
                         // The rest of iterations, the code executed is the following
-
-                        
                         RDPosition * solution = [[RDPosition alloc] init];
                         solution.x = [NSNumber numberWithFloat:
                                       (
@@ -318,6 +326,7 @@
                         lastPosition = eachPosition;
                         lastHeading = nil;
                         lastHeading = eachHeading;
+                        NSLog(@"[INFO][TT] Solution before counter rotating: %@", solution);
                         
                         // TODO: Z coordinate. Alberto J. 2019/09/24.
                         solution.z = [NSNumber numberWithFloat:0.0];
@@ -464,17 +473,24 @@
                 // Clockwise angles to counter-clockwise angles reversion
                 // and rotation from the north to the model 'north'
                 
-                NSMutableArray * rotatedItemsDic = [[NSMutableArray alloc] init];
-                for (NSMutableDictionary * eachItemDic in sortedItemsDic) {
+                NSMutableDictionary * rotatedItemsDic = [[NSMutableDictionary alloc] init];
+                for (NSUInteger k = 0; k < [itemsDicWithMeasures count]; k++) {
+                    NSString * indexKey = [NSString stringWithFormat:@"%tu", k];
+                    NSMutableDictionary * eachItemDic = sortedItemsDic[indexKey];
+                    NSLog(@"[INFO][TT] Transforming itemDic: %@", eachItemDic);
                     
                     NSMutableDictionary * newItemDic = [[NSMutableDictionary alloc] init];
+                    newItemDic[@"deviceUUID"] = eachItemDic[@"deviceUUID"];
+                    newItemDic[@"itemUUID"] = eachItemDic[@"itemUUID"];
                     
                     // Inversion
                     NSNumber * eachMeasure = eachItemDic[@"measure"];
                     newItemDic[@"measure"] = [NSNumber numberWithFloat:-[eachMeasure floatValue]];
+                    NSLog(@"[INFO][TT] -> with inverted measure: %.2f", -[eachMeasure floatValue]);
                     
                     // Rotation
-                    RDPosition * eachPosition = eachItemDic[@"postion"];
+                    RDPosition * eachPosition = eachItemDic[@"position"];
+                    NSLog(@"[INFO][TT] -> from position: %@", eachPosition);
                     RDPosition * newPosition = [[RDPosition alloc] init];
                     newPosition.x = [NSNumber numberWithFloat:
                                      (cos([north floatValue])*[eachPosition.x floatValue] +
@@ -483,9 +499,11 @@
                                      (cos([north floatValue])*[eachPosition.y floatValue] -
                                       sin([north floatValue])*[eachPosition.x floatValue])];
                     newPosition.z = [NSNumber numberWithFloat:[newPosition.z floatValue]];
-                    newItemDic[@"measure"] = newPosition;
+                    NSLog(@"[INFO][TT] -> to rotated position: %@", newPosition);
+                    newItemDic[@"position"] = newPosition;
                     
-                    [rotatedItemsDic addObject:newItemDic];
+                    NSLog(@"[INFO][TT] Transformed itemDic: %@", newItemDic);
+                    [rotatedItemsDic setObject:newItemDic forKey:indexKey];
                 }
                 
                 NSNumber * lastHeading = nil;
@@ -536,6 +554,7 @@
                         lastPosition = eachPosition;
                         lastHeading = nil;
                         lastHeading = eachHeading;
+                        NSLog(@"[INFO][TT] Solution before counter rotating: %@", solution);
                         
                         // TODO: Z coordinate. Alberto J. 2019/09/24.
                         solution.z = [NSNumber numberWithFloat:0.0];
