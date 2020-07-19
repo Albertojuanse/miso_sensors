@@ -32,9 +32,7 @@
     RDPosition * devicePosition;
     NSString * deviceUUID;
     NSString * itemToMeasureUUID;
-    CLHeading * currentCompassHeading;
-    CLHeading * lastMeasuredHeading;
-    BOOL needMeasureHeading;
+    CLHeading * compassHeading;
     
 }
 

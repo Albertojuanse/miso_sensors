@@ -28,9 +28,7 @@
         itemToMeasurePosition.x = [NSNumber numberWithFloat:0.0];
         itemToMeasurePosition.y = [NSNumber numberWithFloat:0.0];
         itemToMeasurePosition.z = [NSNumber numberWithFloat:0.0];
-        currentCompassHeading = [locationManager heading];
-        lastMeasuredHeading = nil;
-        needMeasureHeading = NO;
+        compassHeading = [locationManager heading];
         
         // Initialize location manager and set this class as the delegate which implement the event response's methods
         locationManager = [[CLLocationManager alloc] init];
@@ -199,14 +197,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
        didUpdateHeading:(CLHeading *)newHeading
 {
     // Upadate current compass heading
-    currentCompassHeading = newHeading;
-    
-    // Check for asynchronous measuring needs
-    if (needMeasureHeading) {
-        lastMeasuredHeading = currentCompassHeading;
-        needMeasureHeading = NO;
-        NSLog(@"[INFO][LMTTL] Measuring needed; updated last measured heading.");
-    }
+    compassHeading = newHeading;
 }
 
 /*!
@@ -227,9 +218,6 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 - (void) start:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"lmdThetaThetaLocating/start"]){
         NSLog(@"[NOTI][LMTTL] Notification \"lmdThetaThetaLocating/start\" recived.");
-        // TODO: Valorate this next sentence. Alberto J. 2019/12/11.
-        [sharedData inSessionDataSetMeasuringUserWithUserDic:userDic
-                                   andWithCredentialsUserDic:credentialsUserDic];
         
         // Start locating if it is posible.
         [self locationManager:locationManager didChangeAuthorizationStatus:CLLocationManager.authorizationStatus];
@@ -277,8 +265,6 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
                 // Start heading mesures
                 [locationManager startUpdatingHeading];
                 NSLog(@"[INFO][LMTTL] Start updating compass heading.");
-                needMeasureHeading = YES;
-                
             } else {
                 NSLog(@"[ERROR][LMTTL] Instantiated class %@ when using %@ mode.",
                       NSStringFromClass([self class]),
@@ -352,9 +338,8 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
             measurePosition.y = itemToMeasurePosition.y;
             measurePosition.z = itemToMeasurePosition.z;
             
-            double lastMeasuredHeadingValue = [lastMeasuredHeading trueHeading]*M_PI/180.0;
-            double currentCompassHeadingValue = [currentCompassHeading trueHeading]*M_PI/180.0;
-            NSNumber * measure = [NSNumber numberWithDouble:currentCompassHeadingValue - lastMeasuredHeadingValue];
+            NSNumber * measure = [NSNumber numberWithDouble:[compassHeading trueHeading]*M_PI/180.0];
+            NSLog(@"[INFO][LMTTL] Measure taken: %.2f", [measure floatValue]);
             
             // ...and save data
             [sharedData inMeasuresDataSetMeasure:measure
@@ -380,7 +365,7 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         NSMutableDictionary * locatedPositions;
         locatedPositions = [thetaThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
         if ([locatedPositions count] > 0) {
-            NSLog(@"[HOLA] [locatedPositions count] %tu", [locatedPositions count]);
+            NSLog(@"[INFO][LMTTL] Located %tu positions.", [locatedPositions count]);
         }
         // ...and save them as a located item.
         NSArray *positionKeys = [locatedPositions allKeys];
