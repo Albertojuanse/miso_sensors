@@ -37,7 +37,6 @@
 }
 
 #pragma mark - Instance methods
-
 /*!
  @method setCredentialsUserDic:
  @discussion This method sets the NSMutableDictionary with the security purposes user credentials.
@@ -69,8 +68,9 @@
     credentialsUserDic = givenCredentialsUserDic;
     userDic = givenUserDic;
     credentialsUserDic = givenCredentialsUserDic;
-    rHeight = 1.0;
-    rWidth = 1.0;
+    firstDisplay = YES;
+    scale = 1.0;
+    transformToCanvas = CGAffineTransformMake(1, 0, 0, 1, 0, 0); // Identity transform
     barycenter = [[RDPosition alloc] init];
     barycenter.x = [NSNumber numberWithFloat:0.0];
     barycenter.y = [NSNumber numberWithFloat:0.0];
@@ -78,14 +78,16 @@
     
     // Canvas configurations
     [self setUserInteractionEnabled:YES];
-    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
-    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    UIColor * canvasColor = [UIColor colorWithRed:[layoutDic[@"canvas/red"] floatValue]/255.0
-                                            green:[layoutDic[@"canvas/green"] floatValue]/255.0
-                                             blue:[layoutDic[@"canvas/blue"] floatValue]/255.0
-                                            alpha:1.0
-                             ];
-    self.backgroundColor = canvasColor;
+    [self setBackgroundColor:[VCDrawings getCanvasColor]];
+    
+    // Gestures
+    UIPinchGestureRecognizer * scalingGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self
+                                                                                          action:@selector(scale:)];
+    [scalingGesture setDelegate:self];
+    [self addGestureRecognizer:scalingGesture];
+    UIPanGestureRecognizer * moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self
+                                                                                   action:@selector(move:)];
+    [self addGestureRecognizer:moveGesture];
     
     // This object must listen to this events
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -105,85 +107,81 @@
 {
     if ([[notification name] isEqualToString:@"canvas/refresh"]){
         NSLog(@"[NOTI][VC] Notification \"canvas/refresh\" recived.");
-        // TODO. Logic. Alberto J. 2019/09/13.
+        [self setNeedsDisplay];
     }
+    
+}
+
+#pragma mark - Event handlers
+/*!
+ @method scale:
+ @discussion This method gets the gesture parameters and uploads the scaling value; this method is called when user performs a pinch gesture over the canvas.
+ */
+- (void) scale:(UIPinchGestureRecognizer *)scalingGesture
+{
+    // Different behaviour depending on the state
+    if ([scalingGesture state] == UIGestureRecognizerStateBegan ||
+        [scalingGesture state] == UIGestureRecognizerStateChanged)
+    {
+        // Upload scale dinamically
+        CGFloat instantScale = [scalingGesture scale];
+        scale = scale * instantScale;
+        
+        // Upload barycenter dinamically
+        UIView * pinchView = scalingGesture.view;
+        CGRect bounds = pinchView.bounds;
+        CGPoint pinchCenter = [scalingGesture locationInView:pinchView];
+        pinchCenter.x -= CGRectGetMidX(bounds);
+        pinchCenter.y -= CGRectGetMidY(bounds);
+        CGAffineTransform transformBarycenterToPinch = CGAffineTransformMake(1, 0,
+                                                                             0, 1,
+                                                                             pinchCenter.x, pinchCenter.y);
+        CGPoint barycenterPoint = [barycenter toCGPoint];
+        CGPoint barycenterInPinchCenter = CGPointApplyAffineTransform(barycenterPoint,
+                                                                      transformBarycenterToPinch);
+        CGPoint barycenterInPinchCenterScaled = CGPointMake(barycenterInPinchCenter.x * instantScale,
+                                                            barycenterInPinchCenter.y * instantScale);
+        CGAffineTransform transformPinchToBarycenter = CGAffineTransformInvert(transformBarycenterToPinch);
+        CGPoint barycenterScaled = CGPointApplyAffineTransform(barycenterInPinchCenterScaled,
+                                                               transformPinchToBarycenter);
+        barycenter.x = [NSNumber numberWithFloat:barycenterScaled.x];
+        barycenter.y = [NSNumber numberWithFloat:barycenterScaled.y];
+    }
+    if ([scalingGesture state] == UIGestureRecognizerStateEnded)
+    {
+        
+    }
+    // Reset each update as if they where many pinch gestures one after other
+    scalingGesture.scale = 1.0;
+    [self setNeedsDisplay];
+}
+
+
+/*!
+ @method move:
+ @discussion This method gets the gesture parameters and uploads the barycenter value; this method is called when user performs a swipe gesture over the canvas.
+ */
+- (void) move:(UIPanGestureRecognizer *)moveGesture
+{
+    // Different behaviour depending on the state
+    if ([moveGesture state] == UIGestureRecognizerStateBegan ||
+        [moveGesture state] == UIGestureRecognizerStateChanged)
+    {
+        // Upload barycenter dinamically
+        CGPoint translation = [moveGesture translationInView:self];
+        barycenter.x = [NSNumber numberWithFloat:[barycenter.x floatValue] - translation.x];
+        barycenter.y = [NSNumber numberWithFloat:[barycenter.y floatValue] - translation.y];
+    }
+    if ([moveGesture state] == UIGestureRecognizerStateEnded)
+    {
+        
+    }
+    // Reset each update as if they where many pinch gestures one after other
+    [moveGesture setTranslation:CGPointMake(0, 0) inView:self];
     [self setNeedsDisplay];
 }
 
 #pragma mark - Drawing methods
-
-/*!
- @method testCanvas
- @discussion This method displays a pattern of 8 points in canvas to test its adjustment.
- */
-- (void)testCanvas
-{
-    NSMutableArray * realPoints = [[NSMutableArray alloc] init];
-
-    RDPosition * point1 = [[RDPosition alloc] init];
-    point1.x = [[NSNumber alloc] initWithFloat:1000.0];
-    point1.y = [[NSNumber alloc] initWithFloat:1000.0];
-    point1.z = [[NSNumber alloc] initWithFloat:0.0];
-    RDPosition * point2 = [[RDPosition alloc] init];
-    point2.x = [[NSNumber alloc] initWithFloat:1000.0];
-    point2.y = [[NSNumber alloc] initWithFloat:-1000.0];
-    point2.z = [[NSNumber alloc] initWithFloat:0.0];
-    RDPosition * point3 = [[RDPosition alloc] init];
-    point3.x = [[NSNumber alloc] initWithFloat:-1000.0];
-    point3.y = [[NSNumber alloc] initWithFloat:1000.0];
-    point3.z = [[NSNumber alloc] initWithFloat:0.0];
-    RDPosition * point4 = [[RDPosition alloc] init];
-    point4.x = [[NSNumber alloc] initWithFloat:-1000.0];
-    point4.y = [[NSNumber alloc] initWithFloat:-1000.0];
-    point4.z = [[NSNumber alloc] initWithFloat:0.0];
-    RDPosition * point5 = [[RDPosition alloc] init];
-    point5.x = [[NSNumber alloc] initWithFloat:500.0];
-    point5.y = [[NSNumber alloc] initWithFloat:0.0];
-    point5.z = [[NSNumber alloc] initWithFloat:0.0];
-    RDPosition * point6 = [[RDPosition alloc] init];
-    point6.x = [[NSNumber alloc] initWithFloat:0.0];
-    point6.y = [[NSNumber alloc] initWithFloat:-500.0];
-    point6.z = [[NSNumber alloc] initWithFloat:0.0];
-    RDPosition * point7 = [[RDPosition alloc] init];
-    point7.x = [[NSNumber alloc] initWithFloat:0.0];
-    point7.y = [[NSNumber alloc] initWithFloat:500.0];
-    point7.z = [[NSNumber alloc] initWithFloat:0.0];
-    RDPosition * point8 = [[RDPosition alloc] init];
-    point8.x = [[NSNumber alloc] initWithFloat:-500.0];
-    point8.y = [[NSNumber alloc] initWithFloat:0.0];
-    point8.z = [[NSNumber alloc] initWithFloat:0.0];
-
-    [realPoints addObject:point1];
-    [realPoints addObject:point2];
-    [realPoints addObject:point3];
-    [realPoints addObject:point4];
-    [realPoints addObject:point5];
-    [realPoints addObject:point6];
-    [realPoints addObject:point7];
-    [realPoints addObject:point8];
-
-    
-    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
-    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    NSNumber * safeAreaRatio = layoutDic[@"canvas/safeAreaRatio"];
-    NSMutableArray * canvasPoints = [self transformRealPointsToCanvasPoints:realPoints
-                                                          withSafeAreaRatio:[NSNumber numberWithFloat:[safeAreaRatio floatValue]/100.0]];
-
-    for (RDPosition * canvasPoint in canvasPoints) {
-        UIBezierPath *bezierPath = [UIBezierPath bezierPath];
-        [bezierPath addArcWithCenter:[canvasPoint toNSPoint] radius:1 startAngle:0 endAngle:2 * M_PI clockwise:YES];
-        
-        CAShapeLayer *pointLayer = [[CAShapeLayer alloc] init];
-        [pointLayer setPath:bezierPath.CGPath];
-        [pointLayer setStrokeColor:[UIColor colorWithWhite:0.0 alpha:1.0].CGColor];
-        [pointLayer setFillColor:[UIColor clearColor].CGColor];
-        [[self layer] addSublayer:pointLayer];
-    }
-    NSLog(@"[INFO][CA] Testing finished.");
-
-    [self setNeedsDisplay];
-}
-
 /*!
  @method drawRect:
  @discussion This method controls the display of a new drawn area; is called when a new draw must be created and displayed.
@@ -194,7 +192,8 @@
     [self removeLayers];
     
     // Inspect shared data for data retrieving
-    [self inspectDataDicsAndDrawTheInfoInRect:rect];
+    [self defineTransform];
+    [self drawComponentsInRect:rect];
     
     [self setNeedsDisplay];
 }
@@ -237,247 +236,126 @@
 }
 
 /*!
- @method inspectDataDicsAndDrawTheInfoInRect:
- @discussion This method inspects collections in shared data for retrieving and ask to display the information.
+ @method defineTransform
+ @discussion This method calculate the scale and transform needed to show the real points in the canvas.
  */
-- (void) inspectDataDicsAndDrawTheInfoInRect:(CGRect)rect {
+- (void) defineTransform
+{
+    // Canvas must read from the shared data the items to show, and use their real positions to calculate the best transform to show them in the canvas. That way, each item is scaled and trasnlated in the screen to populate it in the best way.
     
-    //                // USER DATA //
-    //
-    // The schema of the userData collection is:
-    //
-    //  [{ "name": (NSString *)name1;                  // userDic
-    //     "pass": (NSString *)pass1;
-    //     "role": (NSString *)role1;
-    //   },
-    //   { "name": (NSString *)name2;                  // userDic
-    //     (···)
-    //   },
-    //   (···)
-    //  ]
-    //
-    //              // SESSION DATA //
-    //
-    // The schema of the sessionData collection is:
-    //
-    //  [{ "user": { "name": (NSString *)name1;                  // sessionDic; userDic
-    //               "pass": (NSString *)pass1;
-    //               "role": (NSString *)role1;
-    //             }
-    //     "modes": (NSMutableArray *)modes;
-    //     "mode": (MDMode *)mode1;
-    //     "delegate": (id<VCModeDelegate>)delegate1
-    //     "routine": (BOOL)routine;
-    //     "routineModel": (NSMutableDictionary *)routineModelDic;
-    //     "state": (NSString *)state1;
-    //     "itemChosenByUser": (NSMutableDictionary *)item1;     //  itemDic
-    //     "itemsChosenByUser": (NSMutableArray *)items1;
-    //     "typeChosenByUser": (MDType *)type1;
-    //     "referencesByUser": (NSMutableArray *)references1
-//     "currentModelNorth": (NSNumber *)currentModelNorth1
-    //   },
-    //   { "user": { "name": (NSString *)name2;                  // sessionDic; userDic
-    //     (···)
-    //   },
-    //   (···)
-    //  ]
-    //
-    //             // ITEMS DATA //
-    //
-    // The schema of the itemsData collection is:
-    //
-    //  [{ "sort": @"beacon" | @"position" | @"empty_position";  //  itemDic
-    //     "identifier": (NSString *)identifier1;
-    //
-    //     "uuid": (NSString *)uuid1;
-    //
-    //     "major": (NSString *)major1;
-    //     "minor": (NSString *)minor1;
-    //
-    //     "position": (RDPosition *)position1;
-    //
-    //     "located": @"YES" | @"NO";
-    //
-    //     "type": (MDType *)type1
-    //   },
-    //   { "sort": @"beacon" | @"position";
-    //     "identifier": (NSString *)identifier2;
-    //     (···)
-    //   },
-    //   (···)
-    //  ]
-    //
-    //            // MEASURES DATA //
-    //
-    //  [{ "user": { "name": (NSString *)name1;                  // measureDic; userDic
-    //               "pass": (NSString *)pass1;
-    //               "role": (NSString *)role1;
-    //             }
-    //     "position": (RDPosition *)position1;
-    //     "itemUUID": (NSString *)itemUUID1;
-    //     "deviceUUID": (NSString *)deviceUUID1;
-    //     "sort" : (NSString *)type1;
-    //     "measure": (id)measure1
-    //   },
-    //   { "user": { "name": (NSString *)name2;                  // measureDic; userDic
-    //               "pass": (NSString *)pass2;
-    //               "role": (NSString *)role2;
-    //             }
-    //     "position": (RDPosition *)position2;
-    //     (···)
-    //   },
-    //   (···)
-    //  ]
-    //
-    //               // TYPES DATA //
-    //
-    // The schema of typesData collection is
-    //
-    //  [ (MDType *)type1,
-    //    (···)
-    //  ]
-    //
-    //            // METAMODEL DATA //
-    //
-    // The schema of metamodelsData collection is
-    //
-    //  [ (MDMetamodel *)metamodel1,
-    //    (···)
-    //  ]
-    //
-    //              // MODEL DATA //
-    //
-    // The schema of modelData collection is is
-    //
-    //  [{ "name": name1;                                        //  modelDic
-    //     "components": [
-    //         { "position": (RDPosition *)position1;            //  componentDic
-    //           "type": (MDType *)type1;
-    //           "sourceItem": (NSMutableDictionary *)itemDic1;  //  itemDic
-    //         { "position": (RDPosition *)positionB;
-    //           (···)
-    //         },
-    //         (···)
-    //     ];
-    //     "references": [
-    //         (MDReference *)reference1,
-    //         (···)
-    //     ]
-    //   },
-    //   { "name": name2;                                        //  modelDic
-    //     (···)
-    //   },
-    //  ]
-    //
-    
-    // The positions must be scaled before its displaying
     // Get measured, chosen items' and locations' positions and merge them into a single array
     NSMutableArray * itemsPositions = [sharedData fromSessionDataGetPositionsOfItemsChosenByUserDic:credentialsUserDic
-                                                                            withCredentialsUserName:credentialsUserDic];
+                                                                           withCredentialsUserName:credentialsUserDic];
     NSMutableArray * locatedPositions = [sharedData fromItemDataGetPositionsOfLocatedItemsByUser:userDic
-                                                                andCredentialsUserDic:credentialsUserDic];
+                                                                           andCredentialsUserDic:credentialsUserDic];
     NSMutableArray * measurePositions = [sharedData fromMeasuresDataGetPositionsWithCredentialsUserDic:credentialsUserDic];
     NSMutableArray * realPositions = [[NSMutableArray alloc] init];
     for (RDPosition * position in itemsPositions) {
         [realPositions addObject:position];
-        NSLog(@"[INFO][CA] Got real item position %@", position);
+        NSLog(@"[INFO][CA] Found a real item position %@", position);
     }
     for (RDPosition * position in locatedPositions) {
         [realPositions addObject:position];
-        NSLog(@"[INFO][CA] Got real located position %@", position);
+        NSLog(@"[INFO][CA] Found a real located position %@", position);
     }
     for (RDPosition * position in measurePositions) {
         [realPositions addObject:position];
-        NSLog(@"[INFO][CA] Got real measure position %@", position);
+        NSLog(@"[INFO][CA] Found a real measure position %@", position);
     }
     
-    // Transform the real positions to an apropiate canvas ones, with the barycenter of the set of points in the center of the canvas
-    // This method also sets the ratios in the class variables 'rWidth' and 'rHeight'; then, they will be used for transform every single point
-    // TODO: make the SafeAreaRatio configurable (zoom). Alberto J. 2019/09/16.
-    // TODO: make center of drawing fixed. Alberto J. 2020/07/07.
-    // TODO: remove old layers not working. Alberto J. 2020/07/07.
+    // The first time that the canvas is compose, an automatic transform is made, but the following ones the user will use zoom and swipe gestures to rearrange the canvas.
+    if (firstDisplay) {
+        // Use these positions to calculate the best scaling value and transformation.
+        [self scaleToCanvasFromRealPoints:realPositions];
+        [self transformToCanvasFromRealPoints:realPositions];
+        
+        firstDisplay = NO;
+    } else {
+        // Update the transform since scale is changed by user and screen's center can change
+        [self transformToCanvasFromRealPoints:realPositions];
+    }
+}
+
+/*!
+ @method drawComponentsInRect:
+ @discussion This method inspects collections in shared data for retrieving the componets and display them.
+ */
+- (void) drawComponentsInRect:(CGRect)rect
+{
+    // Get some constants used before
     NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
     NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
-    NSNumber * safeAreaRatio = layoutDic[@"canvas/safeAreaRatio"];
-    [self calculateRatiosOfTransformationFromRealPointsToCanvasPoints:realPositions
-                                                    withSafeAreaRatio:[NSNumber numberWithFloat:[safeAreaRatio floatValue]/100.0]];
-    NSLog(@"[INFO][CA] Calculated trasformation ratio rWith: %.2f", rWidth);
-    NSLog(@"[INFO][CA] Calculated trasformation ratio rHeight: %.2f", rHeight);
+    NSNumber * positionWidth = layoutDic[@"canvas/position/width"];
+    NSNumber * positionHeight = layoutDic[@"canvas/position/height"];
+    NSNumber * infoWidth = layoutDic[@"canvas/info/width"];
+    NSNumber * infoHeight = layoutDic[@"canvas/info/height"];
     
-    // Now, inspect the dictionary and get the information to display
-    
-    
-    // Registro de lo que se representa
-    
-    // Representar las posiciones localizadas
-        // ¿Ya esta representada?
-            // Si sí, completar
-            // Si no
-                // Representar los tipos de las posiciones
-                // Representar los UUID de las posiciones
-    
-    // Representar las posiciones de medida
-        // ¿Ya esta representada?
-            // Si sí, completar
-            // Si no
-                // Representar los UUID de las medidas
-    
-    // Hay que representar por tanto
-        // Posiciones
-        // Tipos centrados en ellas
-        // UUID en interfaz
-        // UUID centrados en ellas
-        // Medidas centrados en ellas
-    
+    // Inspect the dictionary collections in shared data and get the information to display
     
     //              // ITEMS POSITION //
     // Show the chosen items by the user; the items used for locations like positions or beacons if known.
     // For every item position...
+    NSMutableArray * itemsPositions = [sharedData fromSessionDataGetPositionsOfItemsChosenByUserDic:credentialsUserDic
+                                                                           withCredentialsUserName:credentialsUserDic];
     for (RDPosition * realItemPosition in itemsPositions) {
         
         // ...get the transformed position...
-        RDPosition * canvasItemPosition = [self transformSingleRealPointToCanvasPoint:realItemPosition];
-        NSLog(@"[INFO][CA] Drawing canvas item position %@", canvasItemPosition);
+        CGPoint realItemPoint = [realItemPosition toCGPoint];
+        CGPoint canvasItemPoint = CGPointApplyAffineTransform(realItemPoint, transformToCanvas);
         
-        // ...,its type and UUID, ...
-        NSMutableArray * itemsInRealItemPosition = [sharedData fromItemDataGetItemsWithPosition:realItemPosition
-                                                                          andCredentialsUserDic:credentialsUserDic];
-        MDType * itemType;
-        NSString * itemUUID;
-        if (itemsInRealItemPosition) {
-            if (itemsInRealItemPosition.count != 0) {
-                if (!(itemsInRealItemPosition.count > 1)) {
-                    NSMutableDictionary * itemDicSelected = [itemsInRealItemPosition objectAtIndex:0];
-                    itemType = itemDicSelected[@"type"];
-                    itemUUID = itemDicSelected[@"uuid"];
-                } else {  // More than one items found
-                    NSLog(@"[ERROR][CA] Too items types found when getting types for some item's position; using first one.");
-                    // TODO: Manage this. Alberto J. 2019/10/1.
-                    NSMutableDictionary * itemDicSelected = [itemsInRealItemPosition objectAtIndex:0];
-                    itemType = itemDicSelected[@"type"];
-                    itemUUID = itemDicSelected[@"uuid"];
+        RDPosition * canvasItemPosition = [[RDPosition alloc] init];
+        canvasItemPosition.x = [NSNumber numberWithFloat:canvasItemPoint.x];
+        canvasItemPosition.y = [NSNumber numberWithFloat:canvasItemPoint.y];
+        canvasItemPosition.z = realItemPosition.z;
+        
+        // Not show if the position is out of the bounds
+        if (canvasItemPoint.x > [positionWidth floatValue]/2.0  &&
+            canvasItemPoint.x < center.x*2 - [infoWidth floatValue] &&
+            canvasItemPoint.y > [positionHeight floatValue] &&
+            canvasItemPoint.y < center.y*2 - [infoHeight floatValue])
+        {
+            NSLog(@"[INFO][CA] Drawing canvas item position %@", canvasItemPosition);
+            
+            // ...,its type and UUID, ...
+            NSMutableArray * itemsInRealItemPosition = [sharedData fromItemDataGetItemsWithPosition:realItemPosition
+                                                                              andCredentialsUserDic:credentialsUserDic];
+            MDType * itemType;
+            NSString * itemUUID;
+            if (itemsInRealItemPosition) {
+                if (itemsInRealItemPosition.count != 0) {
+                    if (!(itemsInRealItemPosition.count > 1)) {
+                        NSMutableDictionary * itemDicSelected = [itemsInRealItemPosition objectAtIndex:0];
+                        itemType = itemDicSelected[@"type"];
+                        itemUUID = itemDicSelected[@"uuid"];
+                    } else {  // More than one items found
+                        NSLog(@"[ERROR][CA] Too items types found when getting types for some item's position; using first one.");
+                        // TODO: Manage this. Alberto J. 2019/10/1.
+                        NSMutableDictionary * itemDicSelected = [itemsInRealItemPosition objectAtIndex:0];
+                        itemType = itemDicSelected[@"type"];
+                        itemUUID = itemDicSelected[@"uuid"];
+                    }
+                } else {  // Items not found
+                    NSLog(@"[ERROR][CA] No items found when getting types for some item's position; empty array returned.");
                 }
-            } else {  // Items not found
-                NSLog(@"[ERROR][CA] No items found when getting types for some item's position; empty array returned.");
+            } else {  // Acess could not be granted or items not found
+                NSLog(@"[ERROR][CA] No items found when getting types for some item's position; null returned.");
             }
-        } else {  // Acess could not be granted or items not found
-            NSLog(@"[ERROR][CA] No items found when getting types for some item's position; null returned.");
-        }
-        
-        // ...and draw it.
-        if (itemUUID) {  // Items UUID are always required
-            if (!itemType) {
-                [self drawPosition:realItemPosition
-                  inCanvasPosition:canvasItemPosition
-                           andUUID:itemUUID];
+            
+            // ...and draw it.
+            if (itemUUID) {  // Items UUID are always required
+                if (!itemType) {
+                    [self drawPosition:realItemPosition
+                      inCanvasPosition:canvasItemPosition
+                               andUUID:itemUUID];
+                } else {
+                    [self drawPosition:realItemPosition
+                      inCanvasPosition:canvasItemPosition
+                                  UUID:itemUUID
+                           andWithType:itemType];
+                }
             } else {
-                [self drawPosition:realItemPosition
-                  inCanvasPosition:canvasItemPosition
-                              UUID:itemUUID
-                       andWithType:itemType];
+                NSLog(@"[ERROR][CA] No item's UUID found in item while its showing.");
             }
-        } else {
-            NSLog(@"[ERROR][CA] No item's UUID found in item while its showing.");
         }
         
     }
@@ -485,48 +363,64 @@
     //              // LOCATED POSITION //
     // Show the located positions, the ones located with the radiolocation systems.
     // For every located position...
+    NSMutableArray * locatedPositions = [sharedData fromItemDataGetPositionsOfLocatedItemsByUser:userDic
+                                                                           andCredentialsUserDic:credentialsUserDic];
     for (RDPosition * realLocatedPosition in locatedPositions) {
         
         // ...get the transformed position...
-        RDPosition * canvasLocatedPosition = [self transformSingleRealPointToCanvasPoint:realLocatedPosition];
-        NSLog(@"[INFO][CA] Drawing canvas located position %@", canvasLocatedPosition);
+        CGPoint realLocatedPoint = [realLocatedPosition toCGPoint];
+        CGPoint canvasLocatedPoint = CGPointApplyAffineTransform(realLocatedPoint, transformToCanvas);
         
-        // ...,its type and UUID, ...
-        NSMutableArray * itemsInRealLocatedPosition = [sharedData fromItemDataGetItemsWithPosition:realLocatedPosition
-                                                                             andCredentialsUserDic:credentialsUserDic];
-        MDType * itemType;
-        NSString * itemUUID;
-        if (itemsInRealLocatedPosition) {
-            if (itemsInRealLocatedPosition.count != 0) {
-                if (!(itemsInRealLocatedPosition.count > 1)) {
-                    NSMutableDictionary * itemDicSelected = [itemsInRealLocatedPosition objectAtIndex:0];
-                    itemType = itemDicSelected[@"type"];
-                    itemUUID = itemDicSelected[@"uuid"];
-                } else {  // More than one items found
-                    NSLog(@"[ERROR][CA] Too items types found when getting types for some located position; using first one.");
-                    // TODO: Manage this. Alberto J. 2019/10/1.
+        RDPosition * canvasLocatedPosition = [[RDPosition alloc] init];
+        canvasLocatedPosition.x = [NSNumber numberWithFloat:canvasLocatedPoint.x];
+        canvasLocatedPosition.y = [NSNumber numberWithFloat:canvasLocatedPoint.y];
+        canvasLocatedPosition.z = realLocatedPosition.z;
+        
+        // Not show if the position is out of the bounds
+        if (canvasLocatedPoint.x > [positionWidth floatValue]/2.0  &&
+            canvasLocatedPoint.x < center.x*2 - [infoWidth floatValue] &&
+            canvasLocatedPoint.y > [positionHeight floatValue] &&
+            canvasLocatedPoint.y < center.y*2 - [infoHeight floatValue])
+        {
+            NSLog(@"[INFO][CA] Drawing canvas located position %@", canvasLocatedPosition);
+            
+            // ...,its type and UUID, ...
+            NSMutableArray * itemsInRealLocatedPosition = [sharedData fromItemDataGetItemsWithPosition:realLocatedPosition
+                                                                                 andCredentialsUserDic:credentialsUserDic];
+            MDType * itemType;
+            NSString * itemUUID;
+            if (itemsInRealLocatedPosition) {
+                if (itemsInRealLocatedPosition.count != 0) {
+                    if (!(itemsInRealLocatedPosition.count > 1)) {
+                        NSMutableDictionary * itemDicSelected = [itemsInRealLocatedPosition objectAtIndex:0];
+                        itemType = itemDicSelected[@"type"];
+                        itemUUID = itemDicSelected[@"uuid"];
+                    } else {  // More than one items found
+                        NSLog(@"[ERROR][CA] Too items types found when getting types for some located position; using first one.");
+                        // TODO: Manage this. Alberto J. 2019/10/1.
+                    }
+                } else {  // Items not found
+                    NSLog(@"[ERROR][CA] No items found when getting types for some located position; empty array returned.");
                 }
-            } else {  // Items not found
-                NSLog(@"[ERROR][CA] No items found when getting types for some located position; empty array returned.");
+            } else {  // Acess could not be granted or items not found
+                NSLog(@"[ERROR][CA] No items found when getting types for some located position; null returned.");
             }
-        } else {  // Acess could not be granted or items not found
-            NSLog(@"[ERROR][CA] No items found when getting types for some located position; null returned.");
-        }
-        
-        // ...and draw it.
-        if (itemUUID) {  // Items UUID are always required
-            if (!itemType) {
-                [self drawPosition:realLocatedPosition
-                  inCanvasPosition:canvasLocatedPosition
-                           andUUID:itemUUID];
+            
+            // ...and draw it.
+            if (itemUUID) {  // Items UUID are always required
+                if (!itemType) {
+                    [self drawPosition:realLocatedPosition
+                      inCanvasPosition:canvasLocatedPosition
+                               andUUID:itemUUID];
+                } else {
+                    [self drawPosition:realLocatedPosition
+                      inCanvasPosition:canvasLocatedPosition
+                                  UUID:itemUUID
+                           andWithType:itemType];
+                }
             } else {
-                [self drawPosition:realLocatedPosition
-                  inCanvasPosition:canvasLocatedPosition
-                              UUID:itemUUID
-                       andWithType:itemType];
+                NSLog(@"[ERROR][CA] No located position's UUID found in item while its showing.");
             }
-        } else {
-            NSLog(@"[ERROR][CA] No located position's UUID found in item while its showing.");
         }
         
     }
@@ -555,8 +449,20 @@
         if (targetPosition && sourcePosition) {
           
             // Get the transformed position...
-            RDPosition * canvasSourcePosition = [self transformSingleRealPointToCanvasPoint:sourcePosition];
-            RDPosition * canvasTargetPosition = [self transformSingleRealPointToCanvasPoint:targetPosition];
+            CGPoint sourcePoint = [sourcePosition toCGPoint];
+            CGPoint canvasSourcePoint = CGPointApplyAffineTransform(sourcePoint, transformToCanvas);
+            RDPosition * canvasSourcePosition = [[RDPosition alloc] init];
+            canvasSourcePosition.x = [NSNumber numberWithFloat:canvasSourcePoint.x];
+            canvasSourcePosition.y = [NSNumber numberWithFloat:canvasSourcePoint.y];
+            canvasSourcePosition.z = sourcePosition.z;
+            
+            CGPoint targetPoint = [targetPosition toCGPoint];
+            CGPoint canvasTargetPoint = CGPointApplyAffineTransform(targetPoint, transformToCanvas);
+            RDPosition * canvasTargetPosition = [[RDPosition alloc] init];
+            canvasTargetPosition.x = [NSNumber numberWithFloat:canvasTargetPoint.x];
+            canvasTargetPosition.y = [NSNumber numberWithFloat:canvasTargetPoint.y];
+            canvasTargetPosition.z = targetPosition.z;
+            
             NSLog(@"[INFO][CA] Drawing canvas located reference between %@ and %@", canvasSourcePosition, canvasTargetPosition);
             
             // ..., the reference type, ...
@@ -579,93 +485,6 @@
         }
     }
     
-    // For every (canvas) position where measures were taken...
-    for (RDPosition * realMeasurePosition in measurePositions) {
-        
-        // ...get the transformed position...
-        //RDPosition * canvasMeasurePosition = [self transformSingleRealPointToCanvasPoint:realMeasurePosition];
-        //NSLog(@"[INFO][CA] Drawing canvas mesure position %@", canvasMeasurePosition);
-        // ...and draw it.
-        // [self drawPosition:realMeasurePosition inCanvasPosition:canvasMeasurePosition];
-        //VCComponent * positionView = [[VCComponent alloc] initWithFrame:CGRectMake([canvasMeasurePosition.x floatValue],[canvasMeasurePosition.y floatValue],3.0,3.0)];
-        //[self addSubview:positionView];
-        
-        
-        
-        //NSLog(@"[INFO][CA] Real position to show: %@", realMeasurePosition);
-        //NSLog(@"[INFO][CA] Canvas position to show: %@",  canvasMeasurePosition);
-        //NSLog(@"[INFO][CA] rWith: %.2f", rWidth);
-        //NSLog(@"[INFO][CA] rHeight: %.2f", rHeight);
-        
-        // Get the collection of UUID measured from that position...
-        // NSMutableArray * measuredUUID = [sharedData fromMeasuresDataGetItemUUIDsOfUserDic:userDic withCredentialsUserDic:credentialsUserDic];
-        
-    }
-    
-    /*
-    for (id positionKey in positionKeys) {
-        // ...get the dictionary for this position...
-        positionDic = [self.measuresDic objectForKey:positionKey];
-        // ...but also get the transformed position.
-        RDPosition * realPosition = positionDic[@"measurePosition"];
-        RDPosition * canvasPosition = [self transformSingleRealPointToCanvasPoint:realPosition];
-        
-        //NSLog(@"[INFO][CA] Real position to show: %@", realPosition);
-        //NSLog(@"[INFO][CA] Canvas position to show: %@",  canvasPosition);
-        //NSLog(@"[INFO][CA] rWith: %.2f", rWidth);
-        //NSLog(@"[INFO][CA] rHeight: %.2f", rHeight);
-        
-        // ...and draw it.
-        [self drawPosition:realPosition inCanvasPosition:canvasPosition];
-        
-        // Get the the dictionary with the UUID's dictionaries...
-        uuidDicDic = positionDic[@"positionMeasures"];
-        // ...and for every UUID...
-        NSArray * uuidKeys = [uuidDicDic allKeys];
-        // Color for every UUID
-        NSInteger UUIDindex = 0;
-        for (id uuidKey in uuidKeys) {
-            
-            // ...get the dictionary...
-            uuidDic = [uuidDicDic objectForKey:uuidKey];
-            // ...and get the uuid.
-            NSString * uuid = [NSString stringWithString:uuidDic[@"uuid"]];
-            
-            // Also get the color for its representation, both
-            // - the beacon device or the reference position aimed that is the measures source and
-            // - the radiolocated positions, which could be or not the measure source or not.
-            
-            // Draw the source UUID identifier
-            [self drawMeasureUUID:uuid atIndex:UUIDindex andWithColor:[self getColorForIndex:UUIDindex]];
-            
-            // Get the the dictionary with the measures dictionaries...
-            measureDicDic = uuidDic[@"uuidMeasures"];
-            // ...and for every measure...
-            NSArray * measuresKeys = [measureDicDic allKeys];
-            for (id measureKey in measuresKeys) {
-                // ...get the dictionary for this measure...
-                measureDic = [measureDicDic objectForKey:measureKey];
-                // ...and the measure.
-                NSNumber * measure = [NSNumber numberWithFloat:[measureDic[@"measure"] floatValue]];
-                NSString * type = measureDic[@"sort"];
-                
-                // Draw the measure
-                [self drawMeasure:measure
-                           ofType:type
-                        withColor:[self getColorForIndex:UUIDindex]
-                       atPosition:realPosition
-                           inRect:rect];
-                
-            }
-            
-            // Before finish, draw any radiolocated position that shares UUID with the drawn one; that means that is the source of the measures or the reference position that they define.
-            [self drawLocatedPositionIfItSharesUUIDWith:uuid
-                                              withColor:[self getColorForIndex:UUIDindex]];
-            
-            UUIDindex++;
-        }
-    }
-     */
 }
 
 /*!
@@ -691,13 +510,15 @@
     [self addSubview:positionView];
     
     // Text of real position but in canvas position
+    NSNumber * infoWidth = layoutDic[@"canvas/info/width"];
+    NSNumber * infoHeight = layoutDic[@"canvas/info/height"];
     VCComponentInfo * positionTextView = [[VCComponentInfo alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue],
-                                                                                         [canvasPosition.y floatValue],
-                                                                                         100,
-                                                                                         20)
-                                                                 realPosition:realPosition
-                                                               canvasPosition:canvasPosition
-                                                                      andUUID:uuid];
+                                                                                           [canvasPosition.y floatValue],
+                                                                                           [infoWidth floatValue],
+                                                                                           [infoHeight floatValue])
+                                                                   realPosition:realPosition
+                                                                 canvasPosition:canvasPosition
+                                                                        andUUID:uuid];
     [self addSubview:positionTextView];
     
     return;
@@ -733,17 +554,6 @@
                                                      canvasPosition:canvasPosition
                                                             andUUID:uuid];
             [self addSubview:cornerView];
-            
-            // TODO: Show them if user wants so? Alberto J. 2020/03/23.
-            // Text of real position but in canvas position; not show the UUID
-            // VCComponentInfo * positionTextView = [[VCComponentInfo alloc] initWithFrame:CGRectMake([canvasPosition.x floatValue],
-            //                                                                                        [canvasPosition.y floatValue],
-            //                                                                                        100,
-            //                                                                                        20)
-            //                                                                realPosition:realPosition
-            //                                                              canvasPosition:canvasPosition
-            //                                                                     andUUID:nil];
-            // [self addSubview:positionTextView];
             
         }
         if ([@"Column" isEqualToString:[type getName]]) {
@@ -894,78 +704,6 @@
     return;
 }
 
-/*
-
-- (void) drawLocatedPositionIfItSharesUUIDWith:(NSString *)uuid
-                                     withColor:(UIColor *)color
-{
-    
-    // The schema of the locatedDic object is:
-    //
-    // { "locatedPosition1":                              //  self.locatedDic
-    //     { "locatedUUID": locatedUUID;                  //  positionDic
-    //       "locatedPosition": locatedPosition;
-    //     };
-    //   "locatedPosition2": { (···) }
-    // }
-    //
-    
-    // Declare the inner dictionaries.
-    NSMutableDictionary * positionDic;
-    
-    NSArray * locatedKeys = [self.locatedDic allKeys];
-    for (id locatedKey in locatedKeys) {
-        // ...get the dictionary for this position...
-        positionDic = [self.locatedDic objectForKey:locatedKey];
-        // ...and the UUID. If it is equal, draw the located position
-        NSString * locatedUUID = positionDic[@"locatedUUID"];
-        if ([locatedUUID isEqualToString:uuid]) {
-            RDPosition * locatedPosition = positionDic[@"locatedPosition"];
-            NSLog(@"[INFO][CA] Real located position to show: %@", locatedPosition);
-            RDPosition * canvasLocatedPosition = [self transformSingleRealPointToCanvasPoint:locatedPosition];
-            NSLog(@"[INFO][CA] Canvas located position to show: %@", canvasLocatedPosition);
-            
-            UIBezierPath * locatedBezierPath = [UIBezierPath bezierPath];
-            
-            // Display the located position
-            [locatedBezierPath moveToPoint:CGPointMake([canvasLocatedPosition.x floatValue] - 3.0,
-                                                       [canvasLocatedPosition.y floatValue]  - 3.0)];
-            [locatedBezierPath addLineToPoint:CGPointMake([canvasLocatedPosition.x floatValue] + 3.0,
-                                                          [canvasLocatedPosition.y floatValue] + 3.0)];
-            [locatedBezierPath moveToPoint:CGPointMake([canvasLocatedPosition.x floatValue] + 3.0,
-                                                       [canvasLocatedPosition.y floatValue] - 3.0)];
-            [locatedBezierPath addLineToPoint:CGPointMake([canvasLocatedPosition.x floatValue] - 3.0,
-                                                          [canvasLocatedPosition.y floatValue] + 3.0)];
-            
-            CAShapeLayer *locatedLayer = [[CAShapeLayer alloc] init];
-            [locatedLayer setPath:locatedBezierPath.CGPath];
-            [locatedLayer setStrokeColor:color.CGColor];
-            [locatedLayer setFillColor:[UIColor clearColor].CGColor];
-            [self.layer addSublayer:locatedLayer];
-            
-            
-            // Text of real located position but in located canvas position
-            CATextLayer *locatedTextLayer = [CATextLayer layer];
-            locatedTextLayer.position = CGPointMake([canvasLocatedPosition.x floatValue] + 5.0,
-                                                    [canvasLocatedPosition.y floatValue] + 5.0);
-            locatedTextLayer.frame = CGRectMake([canvasLocatedPosition.x floatValue] + 5.0,
-                                                [canvasLocatedPosition.y floatValue] + 5.0,
-                                                100,
-                                                20);
-            locatedTextLayer.string = [NSString stringWithFormat:@"(%.2f, %.2f)",
-                                       [locatedPosition.x floatValue],
-                                       [locatedPosition.y floatValue]];
-            locatedTextLayer.fontSize = 10;
-            locatedTextLayer.alignmentMode = kCAAlignmentCenter;
-            locatedTextLayer.backgroundColor = [[UIColor clearColor] CGColor];
-            locatedTextLayer.foregroundColor = [[UIColor blackColor] CGColor];
-            [[self layer] addSublayer:locatedTextLayer];
-            
-        }
-    }
-}
- */
-
 /*!
  @method getColorForIndex:
  @discussion This method returns a 'UIColor' object given the index in which certain object is found while dictionaries inspection; it provides a feed of different colors.
@@ -1015,8 +753,6 @@
 {
     UIBezierPath * uuidBezierPath = [UIBezierPath bezierPath];
     
-    
-    
     // Choose a position for display the UUID
     [uuidBezierPath moveToPoint:CGPointMake(16.0, 16.0 * (index + 1.0) + 2.0 + 10.0)];
     [uuidBezierPath addLineToPoint:CGPointMake(16.0 + 100.0, 16.0 * (index + 1.0) + 2.0 + 10.0)];
@@ -1049,7 +785,13 @@
           atPosition:(RDPosition *)realPosition
               inRect:(CGRect)rect
 {
-    RDPosition * canvasPosition = [self transformSingleRealPointToCanvasPoint:realPosition];
+    CGPoint realPoint = [realPosition toCGPoint];
+    CGPoint canvasPoint = CGPointApplyAffineTransform(realPoint, transformToCanvas);
+    RDPosition * canvasPosition = [[RDPosition alloc] init];
+    canvasPosition.x = [NSNumber numberWithFloat:canvasPoint.x];
+    canvasPosition.y = [NSNumber numberWithFloat:canvasPoint.y];
+    canvasPosition.z = realPosition.z;
+    
     if ([type isEqualToString:@"rssi"]) {
         //UIBezierPath *measureBezierPath = [UIBezierPath bezierPath];
         //[measureBezierPath addArcWithCenter:[canvasPosition toNSPoint] radius:[measure floatValue]*(rWidth+rHeight)/2.0 startAngle:0 endAngle:2 * M_PI clockwise:YES];
@@ -1057,10 +799,10 @@
         //NSLog(@"[INFO][CA][TRAN] Radius canvas: %.2f",  [measure floatValue]*(rWidth+rHeight)/2.0);
         
         
-        CGRect rect = CGRectMake([canvasPosition.x floatValue] - [measure floatValue] * rWidth,
-                                 [canvasPosition.y floatValue] - [measure floatValue] * rHeight,
-                                 2.0 * [measure floatValue] * rWidth,
-                                 2.0 * [measure floatValue] * rHeight);
+        CGRect rect = CGRectMake([canvasPosition.x floatValue] - [measure floatValue] * scale,
+                                 [canvasPosition.y floatValue] - [measure floatValue] * scale,
+                                 2.0 * [measure floatValue] * scale,
+                                 2.0 * [measure floatValue] * scale);
         UIBezierPath *measureBezierPath = [UIBezierPath bezierPathWithOvalInRect:rect];
         //NSLog(@"[INFO][CA][TRAN] Ellipse measured: %.2f, %.2f",  [measure floatValue],  [measure floatValue]);
         //NSLog(@"[INFO][CA][TRAN] Ellipse canvas: %.2f, %.2f",  [measure floatValue] * rWidth, [measure floatValue] * rHeight);
@@ -1079,8 +821,8 @@
         [measureBezierPath moveToPoint:CGPointMake([canvasPosition.x doubleValue], [canvasPosition.y doubleValue])];
         // The device is aiming the reference position, but an other way round representation is required, such as the heading measure is done from the position; a couterphase in y coordinate is needed (minus sign)
         [measureBezierPath addLineToPoint:CGPointMake(
-                                                      [canvasPosition.x doubleValue] + (self.frame.size.height/2 - 100.0) * rHeight * sin([measure doubleValue]),
-                                                      [canvasPosition.y doubleValue] - (self.frame.size.width/2 - 100.0) * rWidth * cos([measure doubleValue])
+                                                      [canvasPosition.x doubleValue] + (self.frame.size.height/2 - 100.0) * scale * sin([measure doubleValue]),
+                                                      [canvasPosition.y doubleValue] - (self.frame.size.width/2 - 100.0) * scale * cos([measure doubleValue])
                                                       )];
         
         CAShapeLayer *headingLayer = [[CAShapeLayer alloc] init];
@@ -1140,45 +882,35 @@
 }
 
 /*!
- @method transformRealPointsToCanvasPoints:withSafeAreaRatio:
- @discussion This method transform a 3D RDPosition that represents a physical location to a canvas point; z coordinate is not transformed.
+ @method scaleToCanvasFromRealPoints:
+ @discussion This method calculate the the scale needed for showing a set of real points in the canvas.
  */
-- (NSMutableArray *) transformRealPointsToCanvasPoints:(NSMutableArray *)realPoints
-                                     withSafeAreaRatio:(NSNumber *)safeAreaRatio
+- (void) scaleToCanvasFromRealPoints:(NSMutableArray *)realPoints
 {
-    
-    // Result array initialization
-    NSMutableArray * canvasPoints = [[NSMutableArray alloc] init];
-    
     // Get the canvas dimensions and its center
     float canvasWidth = self.frame.size.width;
     float canvasHeight = self.frame.size.height;
-    RDPosition * RDcenter = [[RDPosition alloc] init];
-    RDcenter.x = [[NSNumber alloc] initWithFloat:center.x];
-    RDcenter.y = [[NSNumber alloc] initWithFloat:center.y];
+    center.x = self.frame.size.width/2;
+    center.y = self.frame.size.height/2;
     
     // Case only one point
     if (realPoints.count == 1) {
-        
-        RDPosition * canvasPoint = [[RDPosition alloc] init];
-        RDPosition * realPoint = [realPoints objectAtIndex:0];
-        canvasPoint.x = [[NSNumber alloc] initWithFloat:[realPoint.x floatValue] + [RDcenter.x floatValue]];
-        canvasPoint.y = [[NSNumber alloc] initWithFloat:[realPoint.y floatValue] + [RDcenter.y floatValue]];
-        canvasPoint.z = realPoint.z;
-        [canvasPoints addObject:canvasPoint];
-        rWidth = 1.0;
-        rHeight = 1.0;
-        
+        scale = 1.0;
     } else {
-    
-        // Define a safe area
+        
+        // Get the safe area ratio, which defines a safe area near the canvas' boundaries in wich the points won't be allocated, and it is tipically 0.4, and only the centered 20% of the canvas will allocate the points.
+        NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
+        NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
+        NSNumber * safeAreaRatioSaved = layoutDic[@"canvas/safeAreaRatio"];
+        NSNumber * safeAreaRatio = [NSNumber numberWithFloat:[safeAreaRatioSaved floatValue]/100.0];
+        
+        // Use it to define a safe area
         float widthSafe = canvasWidth * [safeAreaRatio floatValue];
         float heightSafe = canvasHeight * [safeAreaRatio floatValue];
-        float widthSafeMin = 0 + widthSafe;
-        float widthSafeMax = canvasWidth - widthSafe;
-        float heightSafeMin = 0 + heightSafe;
-        float heightSafeMax = canvasHeight - heightSafe;
-
+        float safeMinX = 0 + widthSafe;
+        float safeMaxX = canvasWidth - widthSafe;
+        float safeMinY = 0 + heightSafe;
+        float safeMaxY = canvasHeight - heightSafe;
         // Get the minimum and maximum x and y values
         float maxX = -FLT_MAX;
         float minX = FLT_MAX;
@@ -1198,160 +930,51 @@
                 minY = [realPoint.y floatValue];
             }
         }
-        
+        float newWidthRatio;
+        float newHeightRatio;
         // Get the relations of the transformation
         if ( maxX != minX ) { // Division by zero preventing
-            rWidth = (widthSafeMax - widthSafeMin)/(maxX - minX);
+            newWidthRatio = (safeMaxX - safeMinX)/(maxX - minX);
         } else {
-            rWidth = 1.0;
+            newWidthRatio = 1.0;
         }
         if ( maxY != minY ) { // Division by zero preventing
-            rHeight = (heightSafeMax - heightSafeMin)/(maxY - minY);
+            newHeightRatio = (safeMaxY - safeMinY)/(maxY - minY);
         } else {
-            rHeight = 1.0;
+            newHeightRatio = 1.0;
         }
-        
-        // Transform the point's coordinates.
-        // The first position is always (0, 0), and it is centered at the origin of the canvas, the upper left corner. Hence, a correction must be done in orther to center the set in the canvas. But as is not intended to display (0, 0) in the center of te canvas, but the barycenter of the set es calculated and translated to the center of the canvas. For this, the 'vector' needed for adding is the subtract of the center of the canvas minus the barycenter.
-        
-        // Get the proportionate set of canvas points with centered at the orgin of the canvas
-        NSMutableArray * centeredCanvasPoints = [[NSMutableArray alloc] init];
-        for (RDPosition * realPoint in realPoints) {
-            RDPosition * centeredCanvasPoint = [[RDPosition alloc] init];
-            centeredCanvasPoint.x = [[NSNumber alloc] initWithFloat:[realPoint.x floatValue] * rWidth];
-            centeredCanvasPoint.y = [[NSNumber alloc] initWithFloat:[realPoint.y floatValue] * rHeight];
-            centeredCanvasPoint.z = realPoint.z;
-            [centeredCanvasPoints addObject:centeredCanvasPoint];
-        }
-        // Correct the points location.
-        barycenter = [self getBarycenterOf:centeredCanvasPoints];
-        // NSLog(@"-> [INFO][CA] transform barycenter %@", barycenter);
-        RDPosition * correction = [self subtract:RDcenter from:barycenter];
-        for (RDPosition * centeredCanvasPoint in centeredCanvasPoints) {
-            RDPosition * correctedCanvasPoint = [self add:centeredCanvasPoint to:correction];
-            [canvasPoints addObject:correctedCanvasPoint];
-        }
+        scale = MIN(newWidthRatio, newHeightRatio); // Minimum is the worse case
     }
-    return canvasPoints;
+    transformToCanvas = CGAffineTransformMake(scale, 0, 0, scale, center.x, center.y);
 }
 
 /*!
- @method calculateRatiosOfTransformationFromRealPointsToCanvasPoints:withSafeAreaRatio:
- @discussion This method calculate the ratios needed for showing a set of real points in the canvas; the 'safeAreaRatio' defines a safe area near the canvas' boundaries in wich the points won't be allocated, and it is tipically 0.4, and only the centered 20% of the canvas will allocate the points.
+ @method transformToCanvasFromRealPoints:
+ @discussion This method updates the the transform needed for showing a set of real points in the canvas.
  */
-- (void) calculateRatiosOfTransformationFromRealPointsToCanvasPoints:(NSMutableArray *)realPoints
-                                                   withSafeAreaRatio:(NSNumber *)safeAreaRatio
+- (void) transformToCanvasFromRealPoints:(NSMutableArray *)realPoints
 {
-    // Get the canvas dimensions and its center
-    float canvasWidth = self.frame.size.width;
-    float canvasHeight = self.frame.size.height;
-    RDPosition * RDcenter = [[RDPosition alloc] init];
-    RDcenter.x = [[NSNumber alloc] initWithFloat:center.x];
-    RDcenter.y = [[NSNumber alloc] initWithFloat:center.y];
-    
-    // Case only one point
-    if (realPoints.count == 1) {
-        
-        rWidth = 1.0;
-        rHeight = 1.0;
-        
-        barycenter = [[RDPosition alloc] init];
-        barycenter.x = [[NSNumber alloc] initWithFloat:0.0];
-        barycenter.y = [[NSNumber alloc] initWithFloat:0.0];
-        barycenter.z = [[NSNumber alloc] initWithFloat:0.0];
-        
-    } else {
-        
-        // Define a safe area
-        float widthSafe = canvasWidth * [safeAreaRatio floatValue];
-        float heightSafe = canvasHeight * [safeAreaRatio floatValue];
-        float widthSafeMin = 0 + widthSafe;
-        float widthSafeMax = canvasWidth - widthSafe;
-        float heightSafeMin = 0 + heightSafe;
-        float heightSafeMax = canvasHeight - heightSafe;
-        
-        // Get the minimum and maximum x and y values
-        float maxX = -FLT_MAX;
-        float minX = FLT_MAX;
-        float maxY = -FLT_MAX;
-        float minY = FLT_MAX;
-        for (RDPosition * realPoint in realPoints) {
-            if ([realPoint.x floatValue] > maxX) {
-                maxX = [realPoint.x floatValue];
-            }
-            if ([realPoint.x floatValue] < minX) {
-                minX = [realPoint.x floatValue];
-            }
-            if ([realPoint.y floatValue] > maxY) {
-                maxY = [realPoint.y floatValue];
-            }
-            if ([realPoint.y floatValue] < minY) {
-                minY = [realPoint.y floatValue];
-            }
-        }
-        
-        // Get the relations of the transformation
-        if ( maxX != minX ) { // Division by zero preventing
-            rWidth = (widthSafeMax - widthSafeMin)/(maxX - minX);
-        } else {
-            rWidth = 1.0;
-        }
-        if ( maxY != minY ) { // Division by zero preventing
-            rHeight = (heightSafeMax - heightSafeMin)/(maxY - minY);
-        } else {
-            rHeight = 1.0;
-        }
-        
-        // Transform the point's coordinates.
-        // The first position is always (0, 0), and it is centered at the origin of the canvas, the upper left corner. Hence, a correction must be done in orther to center the set in the canvas. But as is not intended to display (0, 0) in the center of te canvas, but the barycenter of the set es calculated and translated to the center of the canvas. For this, the 'vector' needed for adding is the subtract of the center of the canvas minus the barycenter.
-        
-        // Get the proportionate set of canvas points with centered at the orgin of the canvas
+    if (firstDisplay) {
+        // First, scale the real points to calculate their barycenter
         NSMutableArray * centeredCanvasPoints = [[NSMutableArray alloc] init];
         for (RDPosition * realPoint in realPoints) {
             RDPosition * centeredCanvasPoint = [[RDPosition alloc] init];
-            centeredCanvasPoint.x = [[NSNumber alloc] initWithFloat:[realPoint.x floatValue] * rWidth];
-            centeredCanvasPoint.y = [[NSNumber alloc] initWithFloat:[realPoint.y floatValue] * rHeight];
+            centeredCanvasPoint.x = [[NSNumber alloc] initWithFloat:[realPoint.x floatValue] * scale];
+            centeredCanvasPoint.y = [[NSNumber alloc] initWithFloat:[realPoint.y floatValue] * scale];
             centeredCanvasPoint.z = realPoint.z;
             [centeredCanvasPoints addObject:centeredCanvasPoint];
         }
-        // Correct the points location.
         barycenter = [self getBarycenterOf:centeredCanvasPoints];
-        // NSLog(@"-> [INFO][CA] caculate ratios barycenter %@", barycenter);
         
-        //rHeight = rWidth;
-    }
+    }   // Second, define the transform
+    RDPosition * centerPosition = [[RDPosition alloc] init];
+    centerPosition.x = [[NSNumber alloc] initWithFloat:center.x];
+    centerPosition.y = [[NSNumber alloc] initWithFloat:center.y];
+    centerPosition.z = barycenter.x;
+    RDPosition * barycenterCentered = [self subtract:centerPosition from:barycenter];
+    transformToCanvas = CGAffineTransformMake(scale, 0,
+                                              0, scale,
+                                              [barycenterCentered.x floatValue], [barycenterCentered.y floatValue]);
 }
-
-/*!
- @method transformSingleRealPointToCanvasPoint:
- @discussion This method transform a 3D RDPosition that represents a physical location to a canvas point; z coordinate is not transformed. The method 'calculateRatiosOfTransformationFromRealPointsToCanvasPoints:withSafeAreaRatio:' must be called before.
- */
-- (RDPosition *) transformSingleRealPointToCanvasPoint:(RDPosition *)realPoint
-{
-    // Get the canvas' center
-    RDPosition * RDcenter = [[RDPosition alloc] init];
-    RDcenter.x = [[NSNumber alloc] initWithFloat:center.x];
-    RDcenter.y = [[NSNumber alloc] initWithFloat:center.y];
-        
-    // Transform the point's coordinates.
-    // The first position is always (0, 0), and it is centered at the origin of the canvas, the upper left corner. Hence, a correction must be done in orther to center the set in the canvas. But as is not intended to display (0, 0) in the center of te canvas, but the barycenter of the set es calculated and translated to the center of the canvas. For this, the 'vector' needed for adding is the subtract of the center of the canvas minus the barycenter.
-    
-    // Get the proportionate canvas point centered at the orgin of the canvas
-    RDPosition * centeredCanvasPoint = [[RDPosition alloc] init];
-    centeredCanvasPoint.x = [[NSNumber alloc] initWithFloat:[realPoint.x floatValue] * rWidth];
-    centeredCanvasPoint.y = [[NSNumber alloc] initWithFloat:[realPoint.y floatValue] * rHeight];
-    centeredCanvasPoint.z = realPoint.z;
-    // Correct the points location.
-    RDPosition * correction = [self subtract:RDcenter from:barycenter];
-    RDPosition * correctedCanvasPoint = [self add:centeredCanvasPoint to:correction];
-    //NSLog(@"-> [INFO][CA] RDCenter %@", RDcenter);
-    //NSLog(@"-> [INFO][CA] centeredCanvasPoint %@", centeredCanvasPoint);
-    //NSLog(@"-> [INFO][CA] correction %@", correction);
-    //NSLog(@"-> [INFO][CA] correctedCanvasPoint %@", correctedCanvasPoint);
-    //NSLog(@"-> [INFO][CA] barycenter %@", barycenter);
-    
-    return correctedCanvasPoint;
-}
-
 
 @end

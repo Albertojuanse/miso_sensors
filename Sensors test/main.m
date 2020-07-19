@@ -12,7 +12,7 @@
 int main(int argc, char * argv[]) {
     @autoreleasepool {
         
-        // Routine for cleaning user default database
+        // Rutine for cleaning user default database
         /*
         NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
         NSArray *keys = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys];

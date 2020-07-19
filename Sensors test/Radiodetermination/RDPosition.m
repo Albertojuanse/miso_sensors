@@ -95,6 +95,14 @@
 }
 
 /*!
+ @method toCGPoint
+ @discussion This method returns a CGPoint struct type with x and y values of the point; z is ignored.
+ */
+- (CGPoint) toCGPoint {
+    return CGPointMake([self.x floatValue], [self.y floatValue]);
+}
+
+/*!
  @method isEqual
  @discussion This method overwrites the isEqual super method.
  */

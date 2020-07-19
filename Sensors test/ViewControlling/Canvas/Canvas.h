@@ -13,6 +13,7 @@
 #import "SharedData.h"
 #import <float.h>
 #import "MDReference.h"
+#import "VCDrawings.h"
 #import "VCComponent.h"
 #import "VCPosition.h"
 #import "VCCorner.h"
@@ -23,7 +24,7 @@
  @class Canvas
  @discussion This class extends UIView and creates an area in which draws can be displayed and it configuration.
  */
-@interface Canvas: UIView {
+@interface Canvas: UIView <UIGestureRecognizerDelegate> {
     
     // Components
     SharedData * sharedData;
@@ -34,10 +35,11 @@
     NSMutableDictionary * userDic;
     
     // For canvas relation of aspect
+    BOOL firstDisplay;
     CGPoint center;
-    float rWidth;
-    float rHeight;
+    CGFloat scale;
     RDPosition * barycenter;
+    CGAffineTransform transformToCanvas;
 }
 
 typedef CGPoint NSPoint;
