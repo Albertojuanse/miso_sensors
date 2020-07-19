@@ -322,7 +322,7 @@
                 
                 // Get the barycenter as an aproximation and save the result for this deviceUUID.
                 RDPosition * itemUUIDPosition = [self getBarycenterOf:itemUUIDPositions];
-                if (deviceUUIDPosition) {
+                if (itemUUIDPosition) {
                     [locatedPositions setObject:itemUUIDPosition forKey:itemUUID];
                 }
                 

@@ -413,7 +413,7 @@
                 }
             }
                         
-            NSMutableArray * deviceUUIDPositions = [[NSMutableArray alloc] init];
+            NSMutableArray * itemUUIDPositions = [[NSMutableArray alloc] init];
             
             // Evaluate feasibility
             //if (itemsDicWithMeasures.count > 2) { // 3D
@@ -549,16 +549,16 @@
                                           sin([north floatValue])*[solution.x floatValue])];
                         
                         NSLog(@"[INFO][TT] Solution %@", solution);
-                        [deviceUUIDPositions addObject:solution];
+                        [itemUUIDPositions addObject:solution];
                     }
                 }
                 
             }
             
             // Get the barycenter as an aproximation and save the result for this deviceUUID.
-            RDPosition * deviceUUIDPosition = [self getBarycenterOf:deviceUUIDPositions];
-            if (deviceUUIDPosition) {
-                [locatedPositions setObject:deviceUUIDPosition forKey:itemUUID];
+            RDPosition * itemUUIDPosition = [self getBarycenterOf:itemUUIDPositions];
+            if (itemUUIDPosition) {
+                [locatedPositions setObject:itemUUIDPosition forKey:itemUUID];
             }
             
         }
@@ -857,7 +857,7 @@
                 }
             }
                         
-            NSMutableArray * deviceUUIDPositions = [[NSMutableArray alloc] init];
+            NSMutableArray * itemUUIDPositions = [[NSMutableArray alloc] init];
             
             // Evaluate feasibility
             if (itemsDicWithMeasures.count > 2) {
@@ -971,16 +971,16 @@
                         solution.z = [NSNumber numberWithFloat:0.0];
                         
                         NSLog(@"[INFO][TT] Solution %@", solution);
-                        [deviceUUIDPositions addObject:solution];
+                        [itemUUIDPositions addObject:solution];
                     }
                 }
                 
             }
             
             // Get the barycenter as an aproximation and save the result for this deviceUUID.
-            RDPosition * deviceUUIDPosition = [self getBarycenterOf:deviceUUIDPositions];
-            if (deviceUUIDPosition) {
-                [locatedPositions setObject:deviceUUIDPosition forKey:itemUUID];
+            RDPosition * itemUUIDPosition = [self getBarycenterOf:itemUUIDPositions];
+            if (itemUUIDPosition) {
+                [locatedPositions setObject:itemUUIDPosition forKey:itemUUID];
             }
             
         }
