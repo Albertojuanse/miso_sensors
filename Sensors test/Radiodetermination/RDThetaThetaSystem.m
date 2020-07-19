@@ -62,18 +62,21 @@
  @discussion This method calculated the barycenter of a given set of RDPosition objects.
  */
 - (RDPosition *) getBarycenterOf:(NSMutableArray *)points {
-    RDPosition * barycenter = [[RDPosition alloc] init];
-    float sumx = 0.0;
-    float sumy = 0.0;
-    float sumz = 0.0;
-    for (RDPosition * point in points) {
-        sumx = sumx + [point.x floatValue];
-        sumy = sumy + [point.y floatValue];
-        sumz = sumz + [point.z floatValue];
+    RDPosition * barycenter;
+    if ([points count] > 0) {
+        barycenter = [[RDPosition alloc] init];
+        float sumx = 0.0;
+        float sumy = 0.0;
+        float sumz = 0.0;
+        for (RDPosition * point in points) {
+            sumx = sumx + [point.x floatValue];
+            sumy = sumy + [point.y floatValue];
+            sumz = sumz + [point.z floatValue];
+        }
+        barycenter.x = [[NSNumber alloc] initWithFloat: sumx / points.count];
+        barycenter.y = [[NSNumber alloc] initWithFloat: sumy / points.count];
+        barycenter.z = [[NSNumber alloc] initWithFloat: sumz / points.count];
     }
-    barycenter.x = [[NSNumber alloc] initWithFloat: sumx / points.count];
-    barycenter.y = [[NSNumber alloc] initWithFloat: sumy / points.count];
-    barycenter.z = [[NSNumber alloc] initWithFloat: sumz / points.count];
     return barycenter;
 }
 
@@ -125,6 +128,7 @@
                                                     andCredentialsUserDic:credentialsUserDic];
     
     if ([mode isModeKey:kModeThetaThetaLocating]) {
+        NSLog(@"[INFO][TT] Locating mode");
     
         // In a locating mode the measures use
         // - as the 'deviceUUID' the UUID of the item chosen in the adding menu, and
@@ -140,6 +144,7 @@
         
         // And thus, for every item that must be located...
         for (NSString * deviceUUID in allDeviceUUID) {
+            NSLog(@"[INFO][TT] Evaluating device %@", deviceUUID);
             
             // Measures are only possible if measures were take from at least 3 positions with measures, what means, 3 tuples (itemUUID, deviceUUID) with the same 'deviceUUID' but different 'itemUUID'.
             
@@ -148,12 +153,14 @@
             
             // ...evaluate the diferent items that are measured...
             for (NSString * itemUUID in allItemUUID) {
+                NSLog(@"[INFO][TT] ->Evaluating item %@", itemUUID);
                 
                 // ...and get every measure of the tuple (itemUUID, deviceUUID)
                 NSMutableArray * headingMeasures = [sharedData fromMeasuresDataGetMeasuresOfDeviceUUID:deviceUUID
                                                                                           fromItemUUID:itemUUID
                                                                                                 ofSort:@"heading"
                                                                                 withCredentialsUserDic:credentialsUserDic];
+                NSLog(@"[INFO][TT] ->%tu measures found for both", [headingMeasures count]);
                 
                 // ...and for every measure compose a new measure with the mean value; the calculus will be done when every item has its own measure because they have to be ordered.
                 if ([headingMeasures count] > 0) {
@@ -191,7 +198,8 @@
             NSMutableArray * deviceUUIDPositions = [[NSMutableArray alloc] init];
             
             // Evaluate feasibility
-            if (itemsDicWithMeasures.count > 2) {
+            //if (itemsDicWithMeasures.count > 2) { // 3D
+            if (itemsDicWithMeasures.count > 1) { // 2D
                 
                 // Perform the calculus.
                 NSLog(@"[INFO][TT] Final calculus.");
@@ -331,11 +339,14 @@
             
             // Get the barycenter as an aproximation and save the result for this deviceUUID.
             RDPosition * deviceUUIDPosition = [self getBarycenterOf:deviceUUIDPositions];
-            [locatedPositions setObject:deviceUUIDPosition forKey:deviceUUID];
+            if (deviceUUIDPosition) {
+                [locatedPositions setObject:deviceUUIDPosition forKey:deviceUUID];
+            }
             
         }
     
     } else if ([mode isModeKey:kModeRhoThetaModelling]) {
+        NSLog(@"[INFO][TT] Modelling mode");
         
         // In a modelling mode the measures use
         // - as the 'deviceUUID' the UUID of the item chosen in the canvas, and
@@ -351,6 +362,7 @@
         
         // And thus, for every item that must be located...
         for (NSString * itemUUID in allItemUUID) {
+            NSLog(@"[INFO][TT] ->Evaluating item %@", itemUUID);
             
             // Measures are only possible if measures were take from at least 3 positions with measures, what means, 3 tuples (itemUUID, deviceUUID) with the same 'deviceUUID' but different 'itemUUID'.
             
@@ -359,12 +371,14 @@
             
             // ...evaluate the diferent items that are measured...
             for (NSString * deviceUUID in allDeviceUUID) {
+                NSLog(@"[INFO][TT] Evaluating device %@", deviceUUID);
                 
                 // ...and get every measure of the tuple (itemUUID, deviceUUID)
                 NSMutableArray * headingMeasures = [sharedData fromMeasuresDataGetMeasuresOfDeviceUUID:deviceUUID
                                                                                           fromItemUUID:itemUUID
                                                                                                 ofSort:@"heading"
                                                                                 withCredentialsUserDic:credentialsUserDic];
+                NSLog(@"[INFO][TT] ->%tu measures found for both", [headingMeasures count]);
                 
                 // ...and for every measure compose a new measure with the mean value; the calculus will be done when every item has its own measure because they have to be ordered.
                 if ([headingMeasures count] > 0) {
@@ -402,7 +416,8 @@
             NSMutableArray * deviceUUIDPositions = [[NSMutableArray alloc] init];
             
             // Evaluate feasibility
-            if (itemsDicWithMeasures.count > 2) {
+            //if (itemsDicWithMeasures.count > 2) { // 3D
+            if (itemsDicWithMeasures.count > 1) { // 2D
                 
                 // Perform the calculus.
                 NSLog(@"[INFO][TT] Final calculus.");
@@ -542,7 +557,9 @@
             
             // Get the barycenter as an aproximation and save the result for this deviceUUID.
             RDPosition * deviceUUIDPosition = [self getBarycenterOf:deviceUUIDPositions];
-            [locatedPositions setObject:deviceUUIDPosition forKey:itemUUID];
+            if (deviceUUIDPosition) {
+                [locatedPositions setObject:deviceUUIDPosition forKey:itemUUID];
+            }
             
         }
         
@@ -579,7 +596,8 @@
                                                     andCredentialsUserDic:credentialsUserDic];
     
     if ([mode isModeKey:kModeThetaThetaLocating]) {
-    
+        NSLog(@"[INFO][TT] Locating mode");
+        
         // In a locating mode the measures use
         // - as the 'deviceUUID' the UUID of the item chosen in the adding menu, and
         // - as the 'itemUUID' the UUID of the item chosen in the canvas.
@@ -766,11 +784,14 @@
             
             // Get the barycenter as an aproximation and save the result for this deviceUUID.
             RDPosition * deviceUUIDPosition = [self getBarycenterOf:deviceUUIDPositions];
-            [locatedPositions setObject:deviceUUIDPosition forKey:deviceUUID];
+            if (deviceUUIDPosition) {
+                [locatedPositions setObject:deviceUUIDPosition forKey:deviceUUID];
+            }
             
         }
     
     } else if ([mode isModeKey:kModeRhoThetaModelling]) {
+        NSLog(@"[INFO][TT] Modelling mode");
         
         // In a modelling mode the measures use
         // - as the 'deviceUUID' the UUID of the item chosen in the canvas, and
@@ -958,7 +979,9 @@
             
             // Get the barycenter as an aproximation and save the result for this deviceUUID.
             RDPosition * deviceUUIDPosition = [self getBarycenterOf:deviceUUIDPositions];
-            [locatedPositions setObject:deviceUUIDPosition forKey:itemUUID];
+            if (deviceUUIDPosition) {
+                [locatedPositions setObject:deviceUUIDPosition forKey:itemUUID];
+            }
             
         }
         

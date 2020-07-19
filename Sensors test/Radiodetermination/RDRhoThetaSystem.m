@@ -62,18 +62,21 @@
  @discussion This method calculated the barycenter of a given set of RDPosition objects.
  */
 - (RDPosition *) getBarycenterOf:(NSMutableArray *)points {
-    RDPosition * barycenter = [[RDPosition alloc] init];
-    float sumx = 0.0;
-    float sumy = 0.0;
-    float sumz = 0.0;
-    for (RDPosition * point in points) {
-        sumx = sumx + [point.x floatValue];
-        sumy = sumy + [point.y floatValue];
-        sumz = sumz + [point.z floatValue];
+    RDPosition * barycenter;
+    if ([points count] > 0) {
+        barycenter = [[RDPosition alloc] init];
+        float sumx = 0.0;
+        float sumy = 0.0;
+        float sumz = 0.0;
+        for (RDPosition * point in points) {
+            sumx = sumx + [point.x floatValue];
+            sumy = sumy + [point.y floatValue];
+            sumz = sumz + [point.z floatValue];
+        }
+        barycenter.x = [[NSNumber alloc] initWithFloat: sumx / points.count];
+        barycenter.y = [[NSNumber alloc] initWithFloat: sumy / points.count];
+        barycenter.z = [[NSNumber alloc] initWithFloat: sumz / points.count];
     }
-    barycenter.x = [[NSNumber alloc] initWithFloat: sumx / points.count];
-    barycenter.y = [[NSNumber alloc] initWithFloat: sumy / points.count];
-    barycenter.z = [[NSNumber alloc] initWithFloat: sumz / points.count];
     return barycenter;
 }
 
@@ -219,7 +222,9 @@
                 
                 // Get the barycenter as an aproximation and save the result for this deviceUUID.
                 RDPosition * deviceUUIDPosition = [self getBarycenterOf:deviceUUIDPositions];
-                [locatedPositions setObject:deviceUUIDPosition forKey:deviceUUID];
+                if (deviceUUIDPosition) {
+                    [locatedPositions setObject:deviceUUIDPosition forKey:deviceUUID];
+                }
                 
             }
         }
@@ -317,7 +322,9 @@
                 
                 // Get the barycenter as an aproximation and save the result for this deviceUUID.
                 RDPosition * itemUUIDPosition = [self getBarycenterOf:itemUUIDPositions];
-                [locatedPositions setObject:itemUUIDPosition forKey:itemUUID];
+                if (deviceUUIDPosition) {
+                    [locatedPositions setObject:itemUUIDPosition forKey:itemUUID];
+                }
                 
             }
         }
