@@ -174,6 +174,31 @@
 {
     // When user taps this view, the edit component view must be presented
     // And send the notification
+    [UIView animateWithDuration:0.1
+                          delay:0.1
+                        options:UIViewAnimationOptionAllowUserInteraction
+                     animations:^{
+        CGRect oldRect = [self frame];
+        CGRect newRect = CGRectMake(oldRect.origin.x,
+                                    oldRect.origin.y - 20,
+                                    oldRect.size.width,
+                                    oldRect.size.height);
+        [self setFrame:newRect];
+    }
+                     completion:^(BOOL finished) {
+        if (finished) {
+            [UIView animateWithDuration:0.15 animations:^{
+                CGRect oldRect = [self frame];
+                CGRect newRect = CGRectMake(oldRect.origin.x,
+                                            oldRect.origin.y + 20,
+                                            oldRect.size.width,
+                                            oldRect.size.height);
+                [self setFrame:newRect];
+            }];
+        }
+    }
+     ];
+    
     NSLog(@"[INFO][VCC] User did tap on the view %@", uuid);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"vcEditing/chooseItem"
                                                         object:self
