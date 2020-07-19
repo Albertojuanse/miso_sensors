@@ -518,6 +518,27 @@
     [sharedData inItemDataRemoveItemsWithSort:@"empty_position"
                        withCredentialsUserDic:credentialsUserDic];
     
+    // If in a routine, set as finished the current mode
+    // Check if in routine
+    NSString * isRoutine = [sharedData fromSessionDataIsRoutineFromUserWithUserDic:userDic
+                                                             andCredentialsUserDic:credentialsUserDic];
+    if (isRoutine) {
+        if ([isRoutine isEqualToString:@"YES"]) {
+            
+            // Find the mode that is not finished
+            NSMutableArray * modes = [sharedData fromSessionDataGetModesFromUserWithUserDic:userDic
+                                                                      andCredentialsUserDic:credentialsUserDic];
+            
+            // Mode finished
+            for (MDMode * eachMode in modes) {
+                if ([eachMode isEqualToMDMode:mode]) {
+                    [eachMode setFinished:YES];
+                    break;
+                }
+            }
+        }
+    }
+    
     [self performSegueWithIdentifier:@"fromEDITINGToFinalModel" sender:sender];
 }
 

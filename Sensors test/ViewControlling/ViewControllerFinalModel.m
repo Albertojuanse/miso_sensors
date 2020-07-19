@@ -29,7 +29,7 @@
     if (isRoutine) {
         if ([isRoutine isEqualToString:@"YES"]) {
             
-            // Check if this is the las iteration in routine
+            // Check if this is the last iteration in routine
             MDMode * foundMode;
             NSMutableArray * modes = [sharedData fromSessionDataGetModesFromUserWithUserDic:userDic
                                                                       andCredentialsUserDic:credentialsUserDic];

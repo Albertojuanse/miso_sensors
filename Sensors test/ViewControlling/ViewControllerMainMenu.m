@@ -560,7 +560,11 @@
                 
             } else {
                 NSLog(@"[INFO][CVMM] Routine finished.");
-                // TODO: Alert the user. Alberto J. 2020/06/23.
+                [self alertUserWithTitle:@"Routine finished"
+                                 message:@"The defined modelling routine has finished."
+                              andHandler:^(UIAlertAction * action) {
+                                  // Do nothing
+                }];
             }
             
         } else {
