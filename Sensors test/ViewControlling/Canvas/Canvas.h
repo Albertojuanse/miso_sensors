@@ -36,6 +36,7 @@
     
     // For canvas relation of aspect
     BOOL firstDisplay;
+    NSInteger componentsLoaded;
     CGPoint center;
     CGFloat scale;
     RDPosition * barycenter;

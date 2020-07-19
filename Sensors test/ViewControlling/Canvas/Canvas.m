@@ -69,6 +69,7 @@
     userDic = givenUserDic;
     credentialsUserDic = givenCredentialsUserDic;
     firstDisplay = YES;
+    componentsLoaded = 0;
     scale = 1.0;
     transformToCanvas = CGAffineTransformMake(1, 0, 0, 1, 0, 0); // Identity transform
     barycenter = [[RDPosition alloc] init];
@@ -264,7 +265,7 @@
     }
     
     // The first time that the canvas is compose, an automatic transform is made, but the following ones the user will use zoom and swipe gestures to rearrange the canvas.
-    if (firstDisplay) {
+    if (firstDisplay || componentsLoaded != [realPositions count]) {
         // Use these positions to calculate the best scaling value and transformation.
         [self scaleToCanvasFromRealPoints:realPositions];
         [self transformToCanvasFromRealPoints:realPositions];
@@ -274,6 +275,9 @@
         // Update the transform since scale is changed by user and screen's center can change
         [self transformToCanvasFromRealPoints:realPositions];
     }
+    
+    // Keep the track of new elements to show
+    componentsLoaded = [realPositions count];
 }
 
 /*!
