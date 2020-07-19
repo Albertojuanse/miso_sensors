@@ -1071,11 +1071,11 @@
                 
             }
             
-            NSLog(@"[INFO][MM] Generated locations:");
-            NSLog(@"[INFO][MM]  -> %@", [sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                                andCredentialsUserDic:credentialsUserDic]);
-            NSLog(@"[INFO][MM] Generated measures:");
-            NSLog(@"[INFO][MM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
+            NSLog(@"[INFO][MM] Generated locations: %@",
+                  [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                          andCredentialsUserDic:credentialsUserDic]);
+            NSLog(@"[INFO][MM] Generated measures: %@",
+                  [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
             
             // Ask view controller to refresh the canvas
             NSLog(@"[NOTI][MM] Notification \"canvas/refresh\" posted.");

@@ -162,9 +162,8 @@
             NSLog(@"[INFO][LMH] Device did update its heading:");
             NSLog(@"[INFO][LMH] ->  %.3f", [newHeading trueHeading]*M_PI/180.0);
             
-            [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic];
-            NSLog(@"[INFO][LMH] Generated measures:");
-            NSLog(@"[INFO][LMH]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
+            NSLog(@"[INFO][LMH] Generated measures: %@",
+                  [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
         } else {
             lastMeasuredHeading = newHeading;
         }

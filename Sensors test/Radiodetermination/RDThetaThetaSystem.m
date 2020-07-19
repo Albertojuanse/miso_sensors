@@ -593,6 +593,7 @@
         
         // And thus, for every item that must be located...
         for (NSString * deviceUUID in allDeviceUUID) {
+            NSLog(@"[INFO][TT] Evaluating device %@", deviceUUID);
             
             // Measures are only possible if measures were take from at least 3 positions with measures, what means, 3 tuples (itemUUID, deviceUUID) with the same 'deviceUUID' but different 'itemUUID'.
             
@@ -601,12 +602,14 @@
             
             // ...evaluate the diferent items that are measured...
             for (NSString * itemUUID in allItemUUID) {
+                NSLog(@"[INFO][TT] ->Evaluating item %@", itemUUID);
                 
                 // ...and get every measure of the tuple (itemUUID, deviceUUID)
                 NSMutableArray * headingMeasures = [sharedData fromMeasuresDataGetMeasuresOfDeviceUUID:deviceUUID
                                                                                           fromItemUUID:itemUUID
                                                                                                 ofSort:@"heading"
                                                                                 withCredentialsUserDic:credentialsUserDic];
+                NSLog(@"[INFO][TT] ->%tu measures found for both", [headingMeasures count]);
                 
                 // ...and for every measure compose a new measure with the mean value; the calculus will be done when every item has its own measure because they have to be ordered.
                 if ([headingMeasures count] > 0) {
@@ -782,6 +785,7 @@
         
         // And thus, for every item that must be located...
         for (NSString * itemUUID in allItemUUID) {
+            NSLog(@"[INFO][TT] ->Evaluating item %@", itemUUID);
             
             // Measures are only possible if measures were take from at least 3 positions with measures, what means, 3 tuples (itemUUID, deviceUUID) with the same 'deviceUUID' but different 'itemUUID'.
             
@@ -790,12 +794,14 @@
             
             // ...evaluate the diferent items that are measured...
             for (NSString * deviceUUID in allDeviceUUID) {
+                NSLog(@"[INFO][TT] Evaluating device %@", deviceUUID);
                 
                 // ...and get every measure of the tuple (itemUUID, deviceUUID)
                 NSMutableArray * headingMeasures = [sharedData fromMeasuresDataGetMeasuresOfDeviceUUID:deviceUUID
                                                                                           fromItemUUID:itemUUID
                                                                                                 ofSort:@"heading"
                                                                                 withCredentialsUserDic:credentialsUserDic];
+                NSLog(@"[INFO][TT] ->%tu measures found for both", [headingMeasures count]);
                 
                 // ...and for every measure compose a new measure with the mean value; the calculus will be done when every item has its own measure because they have to be ordered.
                 if ([headingMeasures count] > 0) {

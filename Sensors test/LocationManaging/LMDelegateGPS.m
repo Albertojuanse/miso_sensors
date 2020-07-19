@@ -151,8 +151,8 @@
                               takenByUserDic:userDic
                    andWithCredentialsUserDic:credentialsUserDic];
         [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic];
-        NSLog(@"[INFO][LMG] Generated measures:");
-        NSLog(@"[INFO][LMG]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
+        NSLog(@"[INFO][LMG] Generated measures: %@",
+              [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
     }
 }
 

@@ -291,8 +291,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                           takenByUserDic:userDic
                                andWithCredentialsUserDic:credentialsUserDic];
                 }
-                NSLog(@"[INFO][LMM] Generated measures:");
-                NSLog(@"[INFO][LMM]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
+                NSLog(@"[INFO][LMM] Generated measures: %@",
+                      [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
                 
                 // Ask view controller to refresh the canvas and table
                 NSLog(@"[NOTI][LMM] Notification \"canvas/refresh\" posted.");

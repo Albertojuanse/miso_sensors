@@ -335,110 +335,105 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
         NSLog(@"[ERROR][LMTTL] Shared data could not be accessed while starting travel.");
         return;
     }
+    NSLog(@"[INFO][LMTTL] Saving measure.");
     
-    // Different behave depending on the current state
-    // If app is measuring the device user
-    if ([sharedData fromSessionDataIsMeasuringUserWithUserDic:userDic
-                                        andCredentialsUserDic:credentialsUserDic]) {
+    // Get the measuring mode
+    MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
+                                                    andCredentialsUserDic:credentialsUserDic];
+    
+    if ([mode isModeKey:kModeThetaThetaLocating]) {
         
-        // Get the measuring mode
-        MDMode * mode = [sharedData fromSessionDataGetModeFromUserWithUserDic:userDic
-                                                        andCredentialsUserDic:credentialsUserDic];
-        
-        if ([mode isModeKey:kModeThetaThetaLocating]) {
+        // The heading measures in this mode are only saved if the user did select the item to aim.
+        if(itemToMeasureUUID) {
             
-            // The heading measures in this mode are only saved if the user did select the item to aim.
-            if(itemToMeasureUUID) {
-                
-                // Get position facet's information...
-                RDPosition * measurePosition = [[RDPosition alloc] init];
-                measurePosition.x = itemToMeasurePosition.x;
-                measurePosition.y = itemToMeasurePosition.y;
-                measurePosition.z = itemToMeasurePosition.z;
-                
-                double lastMeasuredHeadingValue = [lastMeasuredHeading trueHeading]*M_PI/180.0;
-                double currentCompassHeadingValue = [currentCompassHeading trueHeading]*M_PI/180.0;
-                NSNumber * measure = [NSNumber numberWithDouble:currentCompassHeadingValue - lastMeasuredHeadingValue];
-                
-                // ...and save data
-                [sharedData inMeasuresDataSetMeasure:measure
-                                              ofSort:@"heading"
-                                        withItemUUID:itemToMeasureUUID
-                                      withDeviceUUID:deviceUUID
-                                          atPosition:measurePosition
-                                      takenByUserDic:userDic
-                           andWithCredentialsUserDic:credentialsUserDic];
-            } else {
-                NSLog(@"[INFO][LMTTL] User did choose a UUID source that is not being ranging; disposing.");
-            }
+            // Get position facet's information...
+            RDPosition * measurePosition = [[RDPosition alloc] init];
+            measurePosition.x = itemToMeasurePosition.x;
+            measurePosition.y = itemToMeasurePosition.y;
+            measurePosition.z = itemToMeasurePosition.z;
             
-            // Precision is arbitrary set to 10 cm
-            // TODO: Make this configurable. Alberto J. 2019/09/12.
-            NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                         [NSNumber numberWithFloat:0.1], @"xPrecision",
-                                         [NSNumber numberWithFloat:0.1], @"yPrecision",
-                                         [NSNumber numberWithFloat:0.1], @"zPrecision",
-                                         nil];
+            double lastMeasuredHeadingValue = [lastMeasuredHeading trueHeading]*M_PI/180.0;
+            double currentCompassHeadingValue = [currentCompassHeading trueHeading]*M_PI/180.0;
+            NSNumber * measure = [NSNumber numberWithDouble:currentCompassHeadingValue - lastMeasuredHeadingValue];
             
-            // Ask radiolocation of beacons if posible...
-            NSMutableDictionary * locatedPositions;
-            locatedPositions = [thetaThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
-            // ...and save them as a located item.
-            NSArray *positionKeys = [locatedPositions allKeys];
-            for (id positionKey in positionKeys) {
-                NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
-                infoDic[@"located"] = @"YES";
-                infoDic[@"sort"] = @"position";
-                NSString * itemIdentifier = [@"position" stringByAppendingString:[positionKey substringFromIndex:31]];
-                itemIdentifier = [itemIdentifier stringByAppendingString:@"@miso.uam.es"];
-                infoDic[@"identifier"] = itemIdentifier;
-                infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
-                
-                BOOL savedItem = [sharedData inItemDataAddItemOfSort:@"position"
-                                                            withUUID:positionKey
-                                                         withInfoDic:infoDic
-                                           andWithCredentialsUserDic:credentialsUserDic];
-                if (savedItem) {
-                    
-                    // Get it as it was saved
-                    NSMutableArray * savedItemDics = [sharedData fromItemDataGetItemsWithIdentifier:itemIdentifier
-                                                                              andCredentialsUserDic:credentialsUserDic];
-                    NSMutableDictionary * savedItemDic;
-                    if ([savedItemDics count] > 0) {
-                        savedItemDic = [savedItemDics objectAtIndex:0];
-                    }
-                    if (savedItemDic) {
-                        [sharedData inSessionDataSetAsChosenItem:savedItemDic
-                                               toUserWithUserDic:userDic
-                                          withCredentialsUserDic:credentialsUserDic];
-                        
-                        // Persist it in memory
-                        [self updatePersistentItemsWithItem:savedItemDic];
-                        
-                    } else {
-                        NSLog(@"[ERROR][LMTTL] New position %@ could not be stored as an item.", infoDic[@"position"]);
-                    }
-                    
-                    // Ask view controller to refresh the canvas
-                    NSLog(@"[NOTI][LMTTL] Notification \"canvas/refresh\" posted.");
-                    [[NSNotificationCenter defaultCenter]
-                     postNotificationName:@"canvas/refresh"
-                     object:nil];
-                } else {
-                    NSLog(@"[ERROR][LMTTL] Located position %@ could not be stored as an item.", infoDic[@"position"]);
-                }
-            }
-            
-            NSLog(@"[INFO][LMTTL] Generated locations:");
-            NSLog(@"[INFO][LMTTL]  -> %@", [sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                                andCredentialsUserDic:credentialsUserDic]);
-            NSLog(@"[INFO][LMTTL] Generated measures:");
-            NSLog(@"[INFO][LMTTL]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
-            
+            // ...and save data
+            [sharedData inMeasuresDataSetMeasure:measure
+                                          ofSort:@"heading"
+                                    withItemUUID:itemToMeasureUUID
+                                  withDeviceUUID:deviceUUID
+                                      atPosition:measurePosition
+                                  takenByUserDic:userDic
+                       andWithCredentialsUserDic:credentialsUserDic];
+        } else {
+            NSLog(@"[INFO][LMTTL] User did choose a UUID source that is not being ranging; disposing.");
         }
         
-    } else { // If is idle...
-        // Do nothing
+        // Precision is arbitrary set to 10 cm
+        // TODO: Make this configurable. Alberto J. 2019/09/12.
+        NSDictionary * precisions = [NSDictionary dictionaryWithObjectsAndKeys:
+                                     [NSNumber numberWithFloat:0.1], @"xPrecision",
+                                     [NSNumber numberWithFloat:0.1], @"yPrecision",
+                                     [NSNumber numberWithFloat:0.1], @"zPrecision",
+                                     nil];
+        
+        // Ask radiolocation of beacons if posible...
+        NSMutableDictionary * locatedPositions;
+        locatedPositions = [thetaThetaSystem getLocationsUsingBarycenterAproximationWithPrecisions:precisions];
+        if ([locatedPositions count] > 0) {
+            NSLog(@"[HOLA] [locatedPositions count] %tu", [locatedPositions count]);
+        }
+        // ...and save them as a located item.
+        NSArray *positionKeys = [locatedPositions allKeys];
+        for (id positionKey in positionKeys) {
+            NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
+            infoDic[@"located"] = @"YES";
+            infoDic[@"sort"] = @"position";
+            NSString * itemIdentifier = [@"position" stringByAppendingString:[positionKey substringFromIndex:31]];
+            itemIdentifier = [itemIdentifier stringByAppendingString:@"@miso.uam.es"];
+            infoDic[@"identifier"] = itemIdentifier;
+            infoDic[@"position"] = [locatedPositions objectForKey:positionKey];
+            
+            BOOL savedItem = [sharedData inItemDataAddItemOfSort:@"position"
+                                                        withUUID:positionKey
+                                                     withInfoDic:infoDic
+                                       andWithCredentialsUserDic:credentialsUserDic];
+            if (savedItem) {
+                
+                // Get it as it was saved
+                NSMutableArray * savedItemDics = [sharedData fromItemDataGetItemsWithIdentifier:itemIdentifier
+                                                                          andCredentialsUserDic:credentialsUserDic];
+                NSMutableDictionary * savedItemDic;
+                if ([savedItemDics count] > 0) {
+                    savedItemDic = [savedItemDics objectAtIndex:0];
+                }
+                if (savedItemDic) {
+                    [sharedData inSessionDataSetAsChosenItem:savedItemDic
+                                           toUserWithUserDic:userDic
+                                      withCredentialsUserDic:credentialsUserDic];
+                    
+                    // Persist it in memory
+                    [self updatePersistentItemsWithItem:savedItemDic];
+                    
+                } else {
+                    NSLog(@"[ERROR][LMTTL] New position %@ could not be stored as an item.", infoDic[@"position"]);
+                }
+                
+                // Ask view controller to refresh the canvas
+                NSLog(@"[NOTI][LMTTL] Notification \"canvas/refresh\" posted.");
+                [[NSNotificationCenter defaultCenter]
+                 postNotificationName:@"canvas/refresh"
+                 object:nil];
+            } else {
+                NSLog(@"[ERROR][LMTTL] Located position %@ could not be stored as an item.", infoDic[@"position"]);
+            }
+        }
+        
+        NSLog(@"[INFO][LMTTL] Generated locations: %@",
+              [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                                            andCredentialsUserDic:credentialsUserDic]);
+        NSLog(@"[INFO][LMTTL] Generated measures: %@",
+              [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
+        
     }
 }
 

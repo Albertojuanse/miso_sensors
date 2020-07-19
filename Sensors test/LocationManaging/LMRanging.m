@@ -942,12 +942,11 @@
             }
         }
 
-        NSLog(@"[INFO][LMR] Generated locations:");
-        NSLog(@"[INFO][LMR]  -> %@",  [sharedData fromItemDataGetLocatedItemsByUser:userDic
-                                                              andCredentialsUserDic:credentialsUserDic]);
-
-        NSLog(@"[INFO][LMR] Generated measures:");
-        NSLog(@"[INFO][LMR]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
+        NSLog(@"[INFO][LMR] Generated locations: %@",
+              [sharedData fromItemDataGetLocatedItemsByUser:userDic
+                                      andCredentialsUserDic:credentialsUserDic]);
+        NSLog(@"[INFO][LMR] Generated measures: %@",
+              [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
         
         
     }

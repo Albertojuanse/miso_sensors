@@ -266,8 +266,8 @@ rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region
                                       takenByUserDic:userDic
                            andWithCredentialsUserDic:credentialsUserDic];
             }
-            NSLog(@"[INFO][LMC] Generated measures:");
-            NSLog(@"[INFO][LMC]  -> %@", [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
+            NSLog(@"[INFO][LMC] Generated measures: %@",
+                  [sharedData getMeasuresDataWithCredentialsUserDic:credentialsUserDic]);
             
             // Notificate the new measurements
             NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
