@@ -11,20 +11,6 @@
 
 int main(int argc, char * argv[]) {
     @autoreleasepool {
-        
-        // Rutine for cleaning user default database
-        /*
-        NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-        NSArray *keys = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys];
-        NSLog(@"[MAIN] Cleaning users default memory.");
-        for(NSString * key in keys){
-            if ([key containsString:@"es.uam.miso"]) {
-                [userDefaults removeObjectForKey:key];
-                NSLog(@"[MAIN] Removed the content of key %@.", key);
-            }
-        }
-        */
-        
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
     }
 }

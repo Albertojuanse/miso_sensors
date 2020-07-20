@@ -30,6 +30,8 @@
                             forState:UIControlStateDisabled];
     [self.buttonConfiguration setTitleColor:[VCDrawings getNormalThemeColor]
                                    forState:UIControlStateNormal];
+    [self.buttonReset setTitleColor:[VCDrawings getNormalThemeColor]
+                           forState:UIControlStateNormal];
     // TODO: Remove this. Alberto J. 2020/07/18
     [self.passText setText:@"miso"];
     [self.userText setText:@"miso"];
@@ -342,8 +344,58 @@
  @method handleButtonConfiguration:
  @discussion This method handles the 'configuration' button action and segues to that view.
  */
-- (IBAction)handleButtonConfiguration:(id)sender {
+- (IBAction)handleButtonConfiguration:(id)sender
+{
     [self performSegueWithIdentifier:@"fromLoginToConfiguration" sender:sender];
+}
+
+/*!
+ @method handleButtonReset:
+ @discussion This method handles the 'reset' button action and removes the persistent memory.
+ */
+- (IBAction)handleButtonReset:(id)sender
+{
+    UIAlertController * alertReset = [UIAlertController
+                                      alertControllerWithTitle:@"Reset to default"
+                                      message:@"Warning, all saved information will be removed and default values will be loaded. Are you sure?"
+                                      preferredStyle:UIAlertControllerStyleAlert
+                                      ];
+    
+    UIAlertAction * yesButton = [UIAlertAction
+                                 actionWithTitle:@"yes"
+                                 style:UIAlertActionStyleDefault
+                                 handler:^(UIAlertAction * _Nonnull action) {
+                                     
+                                     // Rutine for cleaning user default database
+                                     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+                                     NSArray *keys = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys];
+                                     NSLog(@"[INFO][VCL] Cleaning users default memory.");
+                                     for(NSString * key in keys){
+                                         if ([key containsString:@"es.uam.miso"]) {
+                                             [userDefaults removeObjectForKey:key];
+                                             NSLog(@"[INFO][VCL] Removed the content of key %@.", key);
+                                         }
+                                     }
+        
+                                     [self viewDidAppear:NO];
+                                     
+                                 }
+                                 ];
+    
+    UIAlertAction * cancelButton = [UIAlertAction
+                                    actionWithTitle:@"No"
+                                    style:UIAlertActionStyleCancel
+                                    handler:^(UIAlertAction * _Nonnull action) {
+                                        
+                                        // Do nothing
+                                        
+                                    }
+                                    ];
+    
+    [alertReset addAction:yesButton];
+    [alertReset addAction:cancelButton];
+    [self presentViewController:alertReset animated:YES completion:nil];
+    
 }
 
 /*!

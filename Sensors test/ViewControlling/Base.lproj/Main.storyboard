@@ -92,6 +92,13 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g54-Qj-Jxm">
+                                <rect key="frame" x="571" y="962" width="39" height="30"/>
+                                <state key="normal" title="Reset"/>
+                                <connections>
+                                    <action selector="handleButtonReset:" destination="QfP-rI-9YT" eventType="touchUpInside" id="tgf-6O-QyI"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -107,6 +114,7 @@
                             <constraint firstItem="5TE-t8-hMd" firstAttribute="leading" secondItem="vOc-ui-ecN" secondAttribute="leading" id="Hwi-bP-KEK"/>
                             <constraint firstItem="vOc-ui-ecN" firstAttribute="bottom" secondItem="I2Q-7a-knt" secondAttribute="bottom" constant="107" id="LQn-wE-Cjn"/>
                             <constraint firstItem="I2Q-7a-knt" firstAttribute="leading" secondItem="S9W-ha-aXu" secondAttribute="trailing" constant="-10" id="M1i-bI-2rU"/>
+                            <constraint firstItem="11f-ay-VYk" firstAttribute="leading" secondItem="g54-Qj-Jxm" secondAttribute="trailing" constant="32" id="NLn-7m-KZy"/>
                             <constraint firstItem="5TE-t8-hMd" firstAttribute="top" secondItem="7bW-B2-Qba" secondAttribute="top" id="Sbm-ZE-DC9"/>
                             <constraint firstItem="d8a-cs-ohh" firstAttribute="top" secondItem="46T-l0-EtS" secondAttribute="bottom" constant="32" id="SoQ-q5-1M1"/>
                             <constraint firstItem="vOc-ui-ecN" firstAttribute="trailing" secondItem="qVE-ED-hWC" secondAttribute="trailing" constant="32" id="UhZ-Uk-FcH"/>
@@ -124,6 +132,7 @@
                             <constraint firstItem="qVE-ED-hWC" firstAttribute="centerY" secondItem="d8a-cs-ohh" secondAttribute="centerY" id="mg8-fu-B1w"/>
                             <constraint firstItem="th7-R7-hHM" firstAttribute="centerY" secondItem="UUy-IL-nKs" secondAttribute="centerY" id="pIZ-bp-7Hk"/>
                             <constraint firstItem="vOc-ui-ecN" firstAttribute="trailing" secondItem="11f-ay-VYk" secondAttribute="trailing" constant="32" id="tCg-Xz-zCl"/>
+                            <constraint firstItem="vOc-ui-ecN" firstAttribute="bottom" secondItem="g54-Qj-Jxm" secondAttribute="bottom" constant="32" id="tHp-f7-wsN"/>
                             <constraint firstItem="K7e-Xg-vhC" firstAttribute="leading" secondItem="vOc-ui-ecN" secondAttribute="leading" constant="64" id="zSN-3p-O4x"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="vOc-ui-ecN"/>
@@ -132,6 +141,7 @@
                     <connections>
                         <outlet property="buttonConfiguration" destination="11f-ay-VYk" id="Xmn-8T-EBS"/>
                         <outlet property="buttonLogin" destination="th7-R7-hHM" id="izD-mq-agM"/>
+                        <outlet property="buttonReset" destination="g54-Qj-Jxm" id="ErZ-UA-lOj"/>
                         <outlet property="buttonSignin" destination="UUy-IL-nKs" id="YFf-yp-a39"/>
                         <outlet property="passText" destination="qVE-ED-hWC" id="42Z-va-IDg"/>
                         <outlet property="toolbar" destination="5TE-t8-hMd" id="MM7-XF-rIw"/>
@@ -1207,10 +1217,9 @@
         <image name="miso.png" width="134.39999389648438" height="108"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="WbY-sj-piI"/>
         <segue reference="ama-gS-GxY"/>
         <segue reference="LlF-Fb-myL"/>
-        <segue reference="jdU-ib-UCO"/>
+        <segue reference="jUo-Ud-pm0"/>
         <segue reference="R4c-cp-jPI"/>
     </inferredMetricsTieBreakers>
 </document>
