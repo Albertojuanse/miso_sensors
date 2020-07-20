@@ -36,7 +36,6 @@
         
     } else {
         // No saved data
-        // TODO: Remove this. Alberto J. 2020/01/27.
         
         // Create the types and its attributes
         MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
@@ -192,7 +191,6 @@
         
     } else {
         // No saved data
-        // TODO: Remove this. Alberto J. 2020/01/27.
         
         // Create some modes to use the metamodels
         NSNumber * modeMonitorig = [NSNumber numberWithInt:0];
@@ -230,7 +228,6 @@
         [buildingTypes addObject:gatewayType];
         NSMutableArray * buildingModes = [[NSMutableArray alloc] init];
         [buildingModes addObject:modeSelfThetaTheta];
-        [buildingModes addObject:modeMonitorig];
         MDMetamodel * buildingMetamodel = [[MDMetamodel alloc] initWithName:@"Building"
                                                                 description:@"Building"
                                                                    andTypes:buildingTypes];
@@ -297,387 +294,6 @@
         // No saved data; register some items
         
         items = [[NSMutableArray alloc] init];
-        MDType * cornerType = [[MDType alloc] initWithName:@"Corner"];
-        MDType * deviceType = [[MDType alloc] initWithName:@"Device"];
-        MDType * toiletType = [[MDType alloc] initWithName:@"Toilet"];
-        MDType * columnType = [[MDType alloc] initWithName:@"Column"];
-        MDType * entranceType = [[MDType alloc] initWithName:@"Entrance Gateway"];
-        MDType * emergencyType = [[MDType alloc] initWithName:@"Emergency Gateway"];
-        
-        NSMutableDictionary * infoDic0 = [[NSMutableDictionary alloc] init];
-        RDPosition * position0 = [[RDPosition alloc] init];
-        position0.x = [NSNumber numberWithFloat:1.0];
-        position0.y = [NSNumber numberWithFloat:1.0];
-        position0.z = [NSNumber numberWithFloat:0.0];
-        [infoDic0 setValue:@"position" forKey:@"sort"];
-        [infoDic0 setValue:@"device@miso.uam.es" forKey:@"identifier"];
-        [infoDic0 setValue:position0 forKey:@"position"];
-        [infoDic0 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic0 setValue:deviceType forKey:@"type"];
-        [items addObject:infoDic0];
-        
-        NSMutableDictionary * infoDic1 = [[NSMutableDictionary alloc] init];
-        RDPosition * position1 = [[RDPosition alloc] init];
-        position1.x = [NSNumber numberWithFloat:0.0];
-        position1.y = [NSNumber numberWithFloat:0.0];
-        position1.z = [NSNumber numberWithFloat:0.0];
-        [infoDic1 setValue:@"position" forKey:@"sort"];
-        [infoDic1 setValue:@"position1@miso.uam.es" forKey:@"identifier"];
-        [infoDic1 setValue:position1 forKey:@"position"];
-        [infoDic1 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic1 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic1];
-        
-        NSMutableDictionary * infoDic2 = [[NSMutableDictionary alloc] init];
-        RDPosition * position2 = [[RDPosition alloc] init];
-        position2.x = [NSNumber numberWithFloat:3.5];
-        position2.y = [NSNumber numberWithFloat:0.0];
-        position2.z = [NSNumber numberWithFloat:0.0];
-        [infoDic2 setValue:@"position" forKey:@"sort"];
-        [infoDic2 setValue:@"position2@miso.uam.es" forKey:@"identifier"];
-        [infoDic2 setValue:position2 forKey:@"position"];
-        [infoDic2 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic2 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic2];
-        
-        NSMutableDictionary * infoDic3 = [[NSMutableDictionary alloc] init];
-        RDPosition * position3 = [[RDPosition alloc] init];
-        position3.x = [NSNumber numberWithFloat:3.5];
-        position3.y = [NSNumber numberWithFloat:-13.0];
-        position3.z = [NSNumber numberWithFloat:0.0];
-        [infoDic3 setValue:@"position" forKey:@"sort"];
-        [infoDic3 setValue:@"position3@miso.uam.es" forKey:@"identifier"];
-        [infoDic3 setValue:position3 forKey:@"position"];
-        [infoDic3 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic3 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic3];
-        
-        NSMutableDictionary * infoDic4 = [[NSMutableDictionary alloc] init];
-        RDPosition * position4 = [[RDPosition alloc] init];
-        position4.x = [NSNumber numberWithFloat:0.0];
-        position4.y = [NSNumber numberWithFloat:-13.0];
-        position4.z = [NSNumber numberWithFloat:0.0];
-        [infoDic4 setValue:@"position" forKey:@"sort"];
-        [infoDic4 setValue:@"position4@miso.uam.es" forKey:@"identifier"];
-        [infoDic4 setValue:position4 forKey:@"position"];
-        [infoDic4 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic4 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic4];
-        
-        // CASE OF USE PAPER
-        NSMutableDictionary * infoDic0_0 = [[NSMutableDictionary alloc] init];
-        RDPosition * position0_0 = [[RDPosition alloc] init];
-        position0_0.x = [NSNumber numberWithFloat:0.0];
-        position0_0.y = [NSNumber numberWithFloat:0.0];
-        position0_0.z = [NSNumber numberWithFloat:0.0];
-        [infoDic0_0 setValue:@"position" forKey:@"sort"];
-        [infoDic0_0 setValue:@"position0_0@miso.uam.es" forKey:@"identifier"];
-        [infoDic0_0 setValue:position0_0 forKey:@"position"];
-        [infoDic0_0 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic0_0 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic0_0];
-        
-        NSMutableDictionary * infoDic0_2 = [[NSMutableDictionary alloc] init];
-        RDPosition * position0_2 = [[RDPosition alloc] init];
-        position0_2.x = [NSNumber numberWithFloat:0.0];
-        position0_2.y = [NSNumber numberWithFloat:2.0];
-        position0_2.z = [NSNumber numberWithFloat:0.0];
-        [infoDic0_2 setValue:@"position" forKey:@"sort"];
-        [infoDic0_2 setValue:@"position0_2@miso.uam.es" forKey:@"identifier"];
-        [infoDic0_2 setValue:position0_2 forKey:@"position"];
-        [infoDic0_2 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic0_2 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic0_2];
-        
-        NSMutableDictionary * infoDic0_3 = [[NSMutableDictionary alloc] init];
-        RDPosition * position0_3 = [[RDPosition alloc] init];
-        position0_3.x = [NSNumber numberWithFloat:0.0];
-        position0_3.y = [NSNumber numberWithFloat:3.0];
-        position0_3.z = [NSNumber numberWithFloat:0.0];
-        [infoDic0_3 setValue:@"position" forKey:@"sort"];
-        [infoDic0_3 setValue:@"position0_3@miso.uam.es" forKey:@"identifier"];
-        [infoDic0_3 setValue:position0_3 forKey:@"position"];
-        [infoDic0_3 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic0_3 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic0_3];
-        
-        NSMutableDictionary * infoDic0_5 = [[NSMutableDictionary alloc] init];
-        RDPosition * position0_5 = [[RDPosition alloc] init];
-        position0_5.x = [NSNumber numberWithFloat:0.0];
-        position0_5.y = [NSNumber numberWithFloat:5.0];
-        position0_5.z = [NSNumber numberWithFloat:0.0];
-        [infoDic0_5 setValue:@"position" forKey:@"sort"];
-        [infoDic0_5 setValue:@"position0_5@miso.uam.es" forKey:@"identifier"];
-        [infoDic0_5 setValue:position0_5 forKey:@"position"];
-        [infoDic0_5 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic0_5 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic0_5];
-        
-        NSMutableDictionary * infoDic05_0 = [[NSMutableDictionary alloc] init];
-        RDPosition * position05_0 = [[RDPosition alloc] init];
-        position05_0.x = [NSNumber numberWithFloat:0.5];
-        position05_0.y = [NSNumber numberWithFloat:0.0];
-        position05_0.z = [NSNumber numberWithFloat:0.0];
-        [infoDic05_0 setValue:@"position" forKey:@"sort"];
-        [infoDic05_0 setValue:@"position05_0@miso.uam.es" forKey:@"identifier"];
-        [infoDic05_0 setValue:position05_0 forKey:@"position"];
-        [infoDic05_0 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic05_0 setValue:toiletType forKey:@"type"];
-        [items addObject:infoDic05_0];
-        
-        NSMutableDictionary * infoDic05_5 = [[NSMutableDictionary alloc] init];
-        RDPosition * position05_5 = [[RDPosition alloc] init];
-        position05_5.x = [NSNumber numberWithFloat:0.5];
-        position05_5.y = [NSNumber numberWithFloat:5.0];
-        position05_5.z = [NSNumber numberWithFloat:0.0];
-        [infoDic05_5 setValue:@"position" forKey:@"sort"];
-        [infoDic05_5 setValue:@"position05_5@miso.uam.es" forKey:@"identifier"];
-        [infoDic05_5 setValue:position05_5 forKey:@"position"];
-        [infoDic05_5 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic05_5 setValue:toiletType forKey:@"type"];
-        [items addObject:infoDic05_5];
-        
-        NSMutableDictionary * infoDic2_0 = [[NSMutableDictionary alloc] init];
-        RDPosition * position2_0 = [[RDPosition alloc] init];
-        position2_0.x = [NSNumber numberWithFloat:2.0];
-        position2_0.y = [NSNumber numberWithFloat:0.0];
-        position2_0.z = [NSNumber numberWithFloat:0.0];
-        [infoDic2_0 setValue:@"position" forKey:@"sort"];
-        [infoDic2_0 setValue:@"position2_0@miso.uam.es" forKey:@"identifier"];
-        [infoDic2_0 setValue:position2_0 forKey:@"position"];
-        [infoDic2_0 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic2_0 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic2_0];
-        
-        NSMutableDictionary * infoDic2_5 = [[NSMutableDictionary alloc] init];
-        RDPosition * position2_5 = [[RDPosition alloc] init];
-        position2_5.x = [NSNumber numberWithFloat:2.0];
-        position2_5.y = [NSNumber numberWithFloat:5.0];
-        position2_5.z = [NSNumber numberWithFloat:0.0];
-        [infoDic2_5 setValue:@"position" forKey:@"sort"];
-        [infoDic2_5 setValue:@"position2_5@miso.uam.es" forKey:@"identifier"];
-        [infoDic2_5 setValue:position2_5 forKey:@"position"];
-        [infoDic2_5 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic2_5 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic2_5];
-        
-        NSMutableDictionary * infoDic35_0 = [[NSMutableDictionary alloc] init];
-        RDPosition * position35_0 = [[RDPosition alloc] init];
-        position35_0.x = [NSNumber numberWithFloat:3.5];
-        position35_0.y = [NSNumber numberWithFloat:0.0];
-        position35_0.z = [NSNumber numberWithFloat:0.0];
-        [infoDic35_0 setValue:@"position" forKey:@"sort"];
-        [infoDic35_0 setValue:@"position35_0@miso.uam.es" forKey:@"identifier"];
-        [infoDic35_0 setValue:position35_0 forKey:@"position"];
-        [infoDic35_0 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic35_0 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic35_0];
-        
-        NSMutableDictionary * infoDic35_5 = [[NSMutableDictionary alloc] init];
-        RDPosition * position35_5 = [[RDPosition alloc] init];
-        position35_5.x = [NSNumber numberWithFloat:3.5];
-        position35_5.y = [NSNumber numberWithFloat:5.0];
-        position35_5.z = [NSNumber numberWithFloat:0.0];
-        [infoDic35_5 setValue:@"position" forKey:@"sort"];
-        [infoDic35_5 setValue:@"position35_5@miso.uam.es" forKey:@"identifier"];
-        [infoDic35_5 setValue:position35_5 forKey:@"position"];
-        [infoDic35_5 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic35_5 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic35_5];
-        
-        NSMutableDictionary * infoDic85_0 = [[NSMutableDictionary alloc] init];
-        RDPosition * position85_0 = [[RDPosition alloc] init];
-        position85_0.x = [NSNumber numberWithFloat:8.5];
-        position85_0.y = [NSNumber numberWithFloat:0.0];
-        position85_0.z = [NSNumber numberWithFloat:0.0];
-        [infoDic85_0 setValue:@"position" forKey:@"sort"];
-        [infoDic85_0 setValue:@"position85_0@miso.uam.es" forKey:@"identifier"];
-        [infoDic85_0 setValue:position85_0 forKey:@"position"];
-        [infoDic85_0 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic85_0 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic85_0];
-        
-        NSMutableDictionary * infoDic85_5 = [[NSMutableDictionary alloc] init];
-        RDPosition * position85_5 = [[RDPosition alloc] init];
-        position85_5.x = [NSNumber numberWithFloat:8.5];
-        position85_5.y = [NSNumber numberWithFloat:5.0];
-        position85_5.z = [NSNumber numberWithFloat:0.0];
-        [infoDic85_5 setValue:@"position" forKey:@"sort"];
-        [infoDic85_5 setValue:@"position85_5@miso.uam.es" forKey:@"identifier"];
-        [infoDic85_5 setValue:position85_5 forKey:@"position"];
-        [infoDic85_5 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic85_5 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic85_5];
-        
-        NSMutableDictionary * infoDic95_16 = [[NSMutableDictionary alloc] init];
-        RDPosition * position95_16 = [[RDPosition alloc] init];
-        position95_16.x = [NSNumber numberWithFloat:9.5];
-        position95_16.y = [NSNumber numberWithFloat:1.6];
-        position95_16.z = [NSNumber numberWithFloat:0.0];
-        [infoDic95_16 setValue:@"position" forKey:@"sort"];
-        [infoDic95_16 setValue:@"position95_16@miso.uam.es" forKey:@"identifier"];
-        [infoDic95_16 setValue:position95_16 forKey:@"position"];
-        [infoDic95_16 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic95_16 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic95_16];
-        
-        NSMutableDictionary * infoDic95_33 = [[NSMutableDictionary alloc] init];
-        RDPosition * position95_33 = [[RDPosition alloc] init];
-        position95_33.x = [NSNumber numberWithFloat:9.5];
-        position95_33.y = [NSNumber numberWithFloat:3.3];
-        position95_33.z = [NSNumber numberWithFloat:0.0];
-        [infoDic95_33 setValue:@"position" forKey:@"sort"];
-        [infoDic95_33 setValue:@"position95_33@miso.uam.es" forKey:@"identifier"];
-        [infoDic95_33 setValue:position95_33 forKey:@"position"];
-        [infoDic95_33 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDic95_33 setValue:cornerType forKey:@"type"];
-        [items addObject:infoDic95_33];
-        
-        NSMutableDictionary * infoDicColumn75_33 = [[NSMutableDictionary alloc] init];
-        RDPosition * position75_33 = [[RDPosition alloc] init];
-        position75_33.x = [NSNumber numberWithFloat:7.5];
-        position75_33.y = [NSNumber numberWithFloat:3.3];
-        position75_33.z = [NSNumber numberWithFloat:0.0];
-        [infoDicColumn75_33 setValue:@"position" forKey:@"sort"];
-        [infoDicColumn75_33 setValue:@"column75_33@miso.uam.es" forKey:@"identifier"];
-        [infoDicColumn75_33 setValue:position75_33 forKey:@"position"];
-        [infoDicColumn75_33 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDicColumn75_33 setValue:columnType forKey:@"type"];
-        [items addObject:infoDicColumn75_33];
-        
-        NSMutableDictionary * infoDicColumn75_16 = [[NSMutableDictionary alloc] init];
-        RDPosition * position75_16 = [[RDPosition alloc] init];
-        position75_16.x = [NSNumber numberWithFloat:7.5];
-        position75_16.y = [NSNumber numberWithFloat:1.6];
-        position75_16.z = [NSNumber numberWithFloat:0.0];
-        [infoDicColumn75_16 setValue:@"position" forKey:@"sort"];
-        [infoDicColumn75_16 setValue:@"column75_16@miso.uam.es" forKey:@"identifier"];
-        [infoDicColumn75_16 setValue:position75_16 forKey:@"position"];
-        [infoDicColumn75_16 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDicColumn75_16 setValue:columnType forKey:@"type"];
-        [items addObject:infoDicColumn75_16];
-        
-        NSMutableDictionary * infoDicColumn59_33 = [[NSMutableDictionary alloc] init];
-        RDPosition * position59_33 = [[RDPosition alloc] init];
-        position59_33.x = [NSNumber numberWithFloat:5.9];
-        position59_33.y = [NSNumber numberWithFloat:3.3];
-        position59_33.z = [NSNumber numberWithFloat:0.0];
-        [infoDicColumn59_33 setValue:@"position" forKey:@"sort"];
-        [infoDicColumn59_33 setValue:@"column59_33@miso.uam.es" forKey:@"identifier"];
-        [infoDicColumn59_33 setValue:position59_33 forKey:@"position"];
-        [infoDicColumn59_33 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDicColumn59_33 setValue:columnType forKey:@"type"];
-        [items addObject:infoDicColumn59_33];
-        
-        NSMutableDictionary * infoDicColumn59_16 = [[NSMutableDictionary alloc] init];
-        RDPosition * position59_16 = [[RDPosition alloc] init];
-        position59_16.x = [NSNumber numberWithFloat:5.9];
-        position59_16.y = [NSNumber numberWithFloat:1.6];
-        position59_16.z = [NSNumber numberWithFloat:0.0];
-        [infoDicColumn59_16 setValue:@"position" forKey:@"sort"];
-        [infoDicColumn59_16 setValue:@"column59_16@miso.uam.es" forKey:@"identifier"];
-        [infoDicColumn59_16 setValue:position59_16 forKey:@"position"];
-        [infoDicColumn59_16 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDicColumn59_16 setValue:columnType forKey:@"type"];
-        [items addObject:infoDicColumn59_16];
-        
-        NSMutableDictionary * infoDicColumn35_33 = [[NSMutableDictionary alloc] init];
-        RDPosition * position35_33 = [[RDPosition alloc] init];
-        position35_33.x = [NSNumber numberWithFloat:3.5];
-        position35_33.y = [NSNumber numberWithFloat:3.3];
-        position35_33.z = [NSNumber numberWithFloat:0.0];
-        [infoDicColumn35_33 setValue:@"position" forKey:@"sort"];
-        [infoDicColumn35_33 setValue:@"column35_33@miso.uam.es" forKey:@"identifier"];
-        [infoDicColumn35_33 setValue:position35_33 forKey:@"position"];
-        [infoDicColumn35_33 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDicColumn35_33 setValue:columnType forKey:@"type"];
-        [items addObject:infoDicColumn35_33];
-        
-        NSMutableDictionary * infoDicColumn35_16 = [[NSMutableDictionary alloc] init];
-        RDPosition * position35_16 = [[RDPosition alloc] init];
-        position35_16.x = [NSNumber numberWithFloat:3.5];
-        position35_16.y = [NSNumber numberWithFloat:1.6];
-        position35_16.z = [NSNumber numberWithFloat:0.0];
-        [infoDicColumn35_16 setValue:@"position" forKey:@"sort"];
-        [infoDicColumn35_16 setValue:@"column35_16@miso.uam.es" forKey:@"identifier"];
-        [infoDicColumn35_16 setValue:position35_16 forKey:@"position"];
-        [infoDicColumn35_16 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDicColumn35_16 setValue:columnType forKey:@"type"];
-        [items addObject:infoDicColumn35_16];
-        
-        NSMutableDictionary * infoDicColumn19_33 = [[NSMutableDictionary alloc] init];
-        RDPosition * position19_33 = [[RDPosition alloc] init];
-        position19_33.x = [NSNumber numberWithFloat:1.9];
-        position19_33.y = [NSNumber numberWithFloat:3.3];
-        position19_33.z = [NSNumber numberWithFloat:0.0];
-        [infoDicColumn19_33 setValue:@"position" forKey:@"sort"];
-        [infoDicColumn19_33 setValue:@"column19_33@miso.uam.es" forKey:@"identifier"];
-        [infoDicColumn19_33 setValue:position19_33 forKey:@"position"];
-        [infoDicColumn19_33 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDicColumn19_33 setValue:columnType forKey:@"type"];
-        [items addObject:infoDicColumn19_33];
-        
-        NSMutableDictionary * infoDicColumn19_16 = [[NSMutableDictionary alloc] init];
-        RDPosition * position19_16 = [[RDPosition alloc] init];
-        position19_16.x = [NSNumber numberWithFloat:1.9];
-        position19_16.y = [NSNumber numberWithFloat:1.6];
-        position19_16.z = [NSNumber numberWithFloat:0.0];
-        [infoDicColumn19_16 setValue:@"position" forKey:@"sort"];
-        [infoDicColumn19_16 setValue:@"column19_16@miso.uam.es" forKey:@"identifier"];
-        [infoDicColumn19_16 setValue:position19_16 forKey:@"position"];
-        [infoDicColumn19_16 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDicColumn19_16 setValue:columnType forKey:@"type"];
-        [items addObject:infoDicColumn19_16];
-        
-        NSMutableDictionary * infoDicEntrance95_25 = [[NSMutableDictionary alloc] init];
-        RDPosition * position95_25 = [[RDPosition alloc] init];
-        position95_25.x = [NSNumber numberWithFloat:9.5];
-        position95_25.y = [NSNumber numberWithFloat:2.5];
-        position95_25.z = [NSNumber numberWithFloat:0.0];
-        [infoDicEntrance95_25 setValue:@"position" forKey:@"sort"];
-        [infoDicEntrance95_25 setValue:@"entrance95_25@miso.uam.es" forKey:@"identifier"];
-        [infoDicEntrance95_25 setValue:position95_25 forKey:@"position"];
-        [infoDicEntrance95_25 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDicEntrance95_25 setValue:entranceType forKey:@"type"];
-        [items addObject:infoDicEntrance95_25];
-        
-        NSMutableDictionary * infoDicEntrance9_08 = [[NSMutableDictionary alloc] init];
-        RDPosition * position9_08 = [[RDPosition alloc] init];
-        position9_08.x = [NSNumber numberWithFloat:9.0];
-        position9_08.y = [NSNumber numberWithFloat:0.8];
-        position9_08.z = [NSNumber numberWithFloat:0.0];
-        [infoDicEntrance9_08 setValue:@"position" forKey:@"sort"];
-        [infoDicEntrance9_08 setValue:@"entrance9_08@miso.uam.es" forKey:@"identifier"];
-        [infoDicEntrance9_08 setValue:position9_08 forKey:@"position"];
-        [infoDicEntrance9_08 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDicEntrance9_08 setValue:entranceType forKey:@"type"];
-        [items addObject:infoDicEntrance9_08];
-        
-        NSMutableDictionary * infoDicEntrance9_42 = [[NSMutableDictionary alloc] init];
-        RDPosition * position9_42 = [[RDPosition alloc] init];
-        position9_42.x = [NSNumber numberWithFloat:9.0];
-        position9_42.y = [NSNumber numberWithFloat:4.2];
-        position9_42.z = [NSNumber numberWithFloat:0.0];
-        [infoDicEntrance9_42 setValue:@"position" forKey:@"sort"];
-        [infoDicEntrance9_42 setValue:@"entrance9_42@miso.uam.es" forKey:@"identifier"];
-        [infoDicEntrance9_42 setValue:position9_42 forKey:@"position"];
-        [infoDicEntrance9_42 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDicEntrance9_42 setValue:entranceType forKey:@"type"];
-        [items addObject:infoDicEntrance9_42];
-        
-        NSMutableDictionary * infoDicEntrance0_25 = [[NSMutableDictionary alloc] init];
-        RDPosition * position0_25 = [[RDPosition alloc] init];
-        position0_25.x = [NSNumber numberWithFloat:0.0];
-        position0_25.y = [NSNumber numberWithFloat:2.5];
-        position0_25.z = [NSNumber numberWithFloat:0.0];
-        [infoDicEntrance0_25 setValue:@"position" forKey:@"sort"];
-        [infoDicEntrance0_25 setValue:@"entrance0_25@miso.uam.es" forKey:@"identifier"];
-        [infoDicEntrance0_25 setValue:position0_25 forKey:@"position"];
-        [infoDicEntrance0_25 setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-        [infoDicEntrance0_25 setValue:emergencyType forKey:@"type"];
-        [items addObject:infoDicEntrance0_25];
-        
-        // END CASE OF USE PAPER
         
         NSMutableDictionary * infoRegionRaspiDic = [[NSMutableDictionary alloc] init];
         [infoRegionRaspiDic setValue:@"beacon" forKey:@"sort"];
@@ -710,6 +326,14 @@
         [infoItemBeacon3Dic setValue:@"1" forKey:@"major"];
         [infoItemBeacon3Dic setValue:@"1" forKey:@"minor"];
         [items addObject:infoItemBeacon3Dic];
+        
+        NSMutableDictionary * infoItemBeaconAP1Dic = [[NSMutableDictionary alloc] init];
+        [infoItemBeaconAP1Dic setValue:@"beacon" forKey:@"sort"];
+        [infoItemBeaconAP1Dic setValue:@"beaconAP1@miso.uam.es" forKey:@"identifier"];
+        [infoItemBeaconAP1Dic setValue:@"B5B182C7-EAB1-4988-AA99-B5C1517008D9" forKey:@"uuid"];
+        [infoItemBeaconAP1Dic setValue:@"1" forKey:@"major"];
+        [infoItemBeaconAP1Dic setValue:@"33288" forKey:@"minor"];
+        [items addObject:infoItemBeaconAP1Dic];
         
         
         // Save them in persistent memory

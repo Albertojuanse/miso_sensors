@@ -50,46 +50,6 @@
             }
             
         }
-        
-        // USE CASE PAPER
-        NSMutableArray * itemData = [sharedData getItemsDataWithCredentialsUserDic:credentialsUserDic];
-        for (NSMutableDictionary * itemDic in itemData) {
-            NSString * itemIdentifier = itemDic[@"identifier"];
-            if ([itemIdentifier isEqualToString:@"position95_33@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position95_16@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position85_5@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position85_0@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position35_5@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position35_0@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position2_5@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position2_0@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position05_5@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position05_0@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position0_5@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position0_3@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position0_2@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"position0_0@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"column75_16@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"column75_33@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"column59_33@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"column59_16@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"column35_33@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"column35_16@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"column19_33@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"column19_16@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"entrance95_25@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"entrance9_08@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"entrance9_42@miso.uam.es"] ||
-                [itemIdentifier isEqualToString:@"entrance0_25@miso.uam.es"]
-                )
-            {
-                [sharedData  inSessionDataSetAsChosenItem:itemDic
-                                        toUserWithUserDic:userDic
-                                   withCredentialsUserDic:credentialsUserDic];
-            }
-            
-        }
-        // END USE CASE PAPER
     }
     
     // Table delegates; the delegate methods for attending these tables are part of this class.
@@ -242,7 +202,6 @@
  */
 - (IBAction)handleButtonGo:(id)sender
 {
-    
     NSLog(@"[INFO][VCSP] Button 'go' tapped.");
     
     // Database could not be accessed.

@@ -173,29 +173,6 @@
     [self.tableModes reloadData];
     [self.tableItems reloadData];
     
-    // Test model
-    // TODO: Remove all this. Alberto J. 2020/06/23.
-    NSMutableArray * itemsDic = [sharedData fromItemDataGetItemsWithIdentifier:@"test_model@miso.uam.es"
-                                                         andCredentialsUserDic:credentialsUserDic];
-    if (itemsDic.count == 0) {
-        NSMutableDictionary * infoDic = [[NSMutableDictionary alloc] init];
-        infoDic[@"identifier"] = @"test_model@miso.uam.es";
-        infoDic[@"name"] = @"Test model";
-        [sharedData inItemDataAddItemOfSort:@"model"
-                                   withUUID:[[NSUUID UUID] UUIDString]
-                                withInfoDic:infoDic
-                  andWithCredentialsUserDic:credentialsUserDic];
-    }
-    // REMOVE RDPOSITION IMPORT
-    NSMutableDictionary * itemDic = [[sharedData fromItemDataGetItemsWithIdentifier:@"raspi@miso.uam.es"
-                                                             andCredentialsUserDic:credentialsUserDic]
-                                     objectAtIndex:0];
-    RDPosition * itemPosition = [[RDPosition alloc] init];
-    itemPosition.x = [NSNumber numberWithFloat:0.0];
-    itemPosition.y = [NSNumber numberWithFloat:0.0];
-    itemPosition.z = [NSNumber numberWithFloat:0.0];
-    itemDic[@"position"] = itemPosition;
-    
 }
 
 /*!
