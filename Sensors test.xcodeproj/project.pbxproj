@@ -114,7 +114,7 @@
 		42263BBA2447A81E00161AB2 /* LMDelegateHeading.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateHeading.m; sourceTree = "<group>"; };
 		4227338923D0BB5500F79364 /* LMDelegateMonitoring.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMDelegateMonitoring.h; sourceTree = "<group>"; };
 		4227338A23D0BB6B00F79364 /* LMDelegateMonitoring.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMDelegateMonitoring.m; sourceTree = "<group>"; };
-		422798802271F37800E07C39 /* Sensors test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sensors test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		422798802271F37800E07C39 /* Metaphore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Metaphore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		422798832271F37800E07C39 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		422798842271F37800E07C39 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		4227988A2271F37800E07C39 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -265,7 +265,7 @@
 		422798812271F37800E07C39 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				422798802271F37800E07C39 /* Sensors test.app */,
+				422798802271F37800E07C39 /* Metaphore.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -502,7 +502,7 @@
 			);
 			name = "Sensors test";
 			productName = "Sensors test";
-			productReference = 422798802271F37800E07C39 /* Sensors test.app */;
+			productReference = 422798802271F37800E07C39 /* Metaphore.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -774,7 +774,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.miso.Sensors-test";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Metaphore;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -789,7 +789,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.miso.Sensors-test";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Metaphore;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
