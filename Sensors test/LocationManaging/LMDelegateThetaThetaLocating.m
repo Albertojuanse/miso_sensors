@@ -197,7 +197,6 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
        didUpdateHeading:(CLHeading *)newHeading
 {
     // Upadate current compass heading
-    NSLog(@"[HOLA] compassHeading: %.2f",[newHeading trueHeading] );
     compassHeading = newHeading;
 }
 

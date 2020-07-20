@@ -169,7 +169,6 @@
         }
     } else {
         lastMeasuredHeading = newHeading;
-        NSLog(@"[HOLA] lastMeasuredHeading %.2f", [lastMeasuredHeading trueHeading]);
     }
     return;
 }
