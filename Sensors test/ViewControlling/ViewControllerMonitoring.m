@@ -56,7 +56,18 @@
     NSMutableArray * itemsChosenByUser = [sharedData fromSessionDataGetItemsChosenByUserDic:userDic
                                                                       andCredentialsUserDic:credentialsUserDic];
     if (itemsChosenByUser.count == 0) {
-        NSLog(@"[ERROR][VCM] The collection with the items chosen by user is empty; no device position provided.");
+        NSLog(@"[ERROR][VCM] No device position found; using a generic one.");
+        NSMutableDictionary * itemDic = [[NSMutableDictionary alloc] init];
+        itemDic[@"sort"] = @"position";
+        NSString * itemUUID = [[NSUUID UUID] UUIDString];
+        itemDic[@"uuid"] = itemUUID;
+        NSString * itemIdentifier = [@"position" stringByAppendingString:[itemUUID substringFromIndex:31]];
+        itemIdentifier = [itemIdentifier stringByAppendingString:@"@miso.uam.es"];
+        itemDic[@"identifier"] = itemIdentifier;
+        RDPosition * itemPosition = [[RDPosition alloc] init];
+        itemPosition.x = [NSNumber numberWithFloat:0.0];
+        itemDic[@"position"] = itemPosition;
+        itemChosenByUserAsDevicePosition = itemDic;
     } else {
         itemChosenByUserAsDevicePosition = [itemsChosenByUser objectAtIndex:0];
         if (itemsChosenByUser.count > 1) {
