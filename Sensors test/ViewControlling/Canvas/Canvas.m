@@ -692,7 +692,6 @@
     NSNumber * middleY = [NSNumber numberWithFloat:
                           ([targetPosition.y floatValue] + [sourcePosition.y floatValue])/2.0
                           ];
-    CGPoint middlePoint = CGPointMake([middleX floatValue],[middleY floatValue]);
     
     // ...and draw it
     if (![@"" isEqualToString:[referenceType getName]]) {

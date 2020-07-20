@@ -44,6 +44,5 @@
              andCredentialsUserDic:(NSMutableDictionary *)initCredentialsUserDic;
 - (void)setCredentialUserDic:(NSMutableDictionary *)givenCredentialsUserDic;
 - (void)setUserDic:(NSMutableDictionary *)givenUserDic;
-- (void)setDeviceUUID:(NSString *)givenDeviceUUID;
 
 @end

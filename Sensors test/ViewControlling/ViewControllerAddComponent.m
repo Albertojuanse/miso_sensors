@@ -21,8 +21,6 @@
     
     // Visualization
     // Toolbar layout
-    NSString * path = [[NSBundle mainBundle] pathForResource:@"PListLayout" ofType:@"plist"];
-    NSDictionary * layoutDic = [NSDictionary dictionaryWithContentsOfFile:path];
     [self.cancelButton setTitleColor:[VCDrawings getNormalThemeColor]
                             forState:UIControlStateNormal];
     [self.editButton setTitleColor:[VCDrawings getNormalThemeColor]

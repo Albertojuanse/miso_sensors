@@ -185,7 +185,7 @@
         return nil;
     }
     NSNumber * codedMode = [decoder decodeObjectForKey:@"mode"];
-    mode = [codedMode integerValue];
+    mode = [codedMode intValue];
     return self;
 }
 

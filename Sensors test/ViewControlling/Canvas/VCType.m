@@ -60,10 +60,6 @@
 - (void)drawRect:(CGRect)rect {
     
     // Get the rect in which the drawn must be embebed its dimensions
-    CGSize rectSize = rect.size;
-    CGFloat rectHeight = rectSize.height;
-    CGFloat rectWidth = rectSize.width;
-    CGPoint rectOrigin = rect.origin;
     
     // Draw the point
     UILabel * typeTextView = [[UILabel alloc] initWithFrame:rect];

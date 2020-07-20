@@ -144,24 +144,12 @@
         
         // This object must listen to this events
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(startTraveling:)
-                                                     name:@"startTraveling"
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(stopTraveling:)
-                                                     name:@"stopTraveling"
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(startGyroscopeHeadingMeasuring:)
                                                      name:@"startGyroscopeHeadingMeasuring"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(stopGyroscopeHeadingMeasuring:)
                                                      name:@"stopGyroscopeHeadingMeasuring"
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(startTravelingFrom:)
-                                                     name:@"getPositionRespond"
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(startAccelerometers)

@@ -401,7 +401,6 @@
     CGFloat rectHeight = rectSize.height;
     CGFloat rectWidth = rectSize.width;
     CGPoint rectOrigin = rect.origin;
-    CGFloat margin = rectWidth * 0.1;
     CGFloat innerRadius = rectWidth/2;
     CGFloat outterRadius = rectWidth/1.3;
     CGFloat startAngle = 8.0*M_PI/6.0;
@@ -595,7 +594,6 @@
     CGFloat rectHeight = rectSize.height;
     CGFloat rectWidth = rectSize.width;
     CGPoint rectOrigin = rect.origin;
-    CGFloat margin = rectWidth * 0.1;
     CGFloat innerRadius = rectWidth/2;
     CGFloat outterRadius = rectWidth/1.3;
     CGFloat startAngle = 8.0*M_PI/6.0;
@@ -758,7 +756,6 @@
     CGFloat rectHeight = rectSize.height;
     CGFloat rectWidth = rectSize.width;
     CGPoint rectOrigin = rect.origin;
-    CGFloat margin = rectWidth * 0.1;
     CGFloat innerRadius = rectWidth/2;
     CGFloat outterRadius = rectWidth/1.3;
     CGFloat startAngle = 8.0*M_PI/6.0;
