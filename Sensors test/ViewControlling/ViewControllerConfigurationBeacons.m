@@ -308,7 +308,7 @@
         infoDic[@"uuid"] = itemUUID;
         infoDic[@"major"] = [self.textMajor text];
         infoDic[@"minor"] = [self.textMinor text];
-        NSString * itemIdentifier = [@"position" stringByAppendingString:[itemUUID substringFromIndex:31]];
+        NSString * itemIdentifier = [@"beacon" stringByAppendingString:[itemUUID substringFromIndex:31]];
         itemIdentifier = [itemIdentifier stringByAppendingString:@"@miso.uam.es"];
         infoDic[@"identifier"] = itemIdentifier;
     }
@@ -931,7 +931,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
         if (indexPath.row <= items.count) {
             chosenItem = [items objectAtIndex:indexPath.row];
-            //NSLog(@"[INFO][VCCB] User did select item: %@", chosenItem);
+            NSLog(@"[INFO][VCCB] User did select item: %@", chosenItem);
         }
         
     }

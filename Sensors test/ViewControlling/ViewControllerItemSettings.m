@@ -113,6 +113,8 @@
     [self.secondButton setTitleColor:disabledThemeColor
                             forState:UIControlStateDisabled];
     [self.secondButton setEnabled:NO];
+    
+    [[self secondDistanceText] setText:@"2.0"];
 }
 
 /*!
@@ -255,6 +257,15 @@
         [sharedData inSessionDataSetIdleUserWithUserDic:userDic
                               andWithCredentialsUserDic:credentialsUserDic];
         
+        // Get variables and update
+        NSDictionary * data = notification.userInfo;
+        NSMutableDictionary * itemToCalibrate = data[@"itemToCalibrate"];
+        itemChosenByUser[@"refRSSI"] = itemToCalibrate[@"refRSSI"];
+        itemChosenByUser[@"refDistance"] = itemToCalibrate[@"refDistance"];
+        itemChosenByUser[@"attenuationFactor"] = itemToCalibrate[@"attenuationFactor"];
+        itemChosenByUser[@"attenuationDistance"] = itemToCalibrate[@"attenuationDistance"];
+        [self updatePersistentItemsWithItem:itemChosenByUser];
+        
         // Deallocate location manager; ARC disposal.
         [[NSNotificationCenter defaultCenter] postNotificationName:@"lmdCalibrating/stop"
                                                             object:nil];
@@ -315,6 +326,44 @@
         // Layout
         [self.calibrateButton setEnabled:YES];
     }
+}
+
+/*!
+ @method updatePersistentItemsWithItem:
+ @discussion This method is called when creates a new item to upload it.
+ */
+- (BOOL)updatePersistentItemsWithItem:(NSMutableDictionary *)itemDic
+{
+    // Set the variable areItems as YES
+    NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults removeObjectForKey:@"es.uam.miso/data/items/areItems"];
+    NSData * areItemsData = [NSKeyedArchiver archivedDataWithRootObject:@"YES"];
+    [userDefaults setObject:areItemsData forKey:@"es.uam.miso/data/items/areItems"];
+    
+    // Remove the item; warning, THIS is not done in other copies of the method
+    NSString * itemToRemoveIdentifier = itemDic[@"identifier"];
+    NSString * itemKeyToRemove = [@"es.uam.miso/data/items/items/"
+                                  stringByAppendingString:itemToRemoveIdentifier];
+    [userDefaults removeObjectForKey:itemKeyToRemove];
+    
+    // Get the index and upload it
+    NSData * itemsIndexData = [userDefaults objectForKey:@"es.uam.miso/data/items/index"];
+    NSMutableArray * itemsIndex = [NSKeyedUnarchiver unarchiveObjectWithData:itemsIndexData];
+    if (!itemsIndex) {
+        itemsIndex = [[NSMutableArray alloc] init];
+    }
+    NSString * itemIdentifier = itemDic[@"identifier"];
+    [itemsIndex addObject:itemIdentifier];
+    itemsIndexData = nil; // ARC disposal
+    itemsIndexData = [NSKeyedArchiver archivedDataWithRootObject:itemsIndex];
+    [userDefaults setObject:itemsIndexData forKey:@"es.uam.miso/data/items/index"];
+    
+    // Save the item itself
+    NSData * itemData = [NSKeyedArchiver archivedDataWithRootObject:itemDic];
+    NSString * itemKey = [@"es.uam.miso/data/items/items/" stringByAppendingString:itemIdentifier];
+    [userDefaults setObject:itemData forKey:itemKey];
+    
+    return YES;
 }
 
 #pragma mark - Buttons event handlers
@@ -384,6 +433,18 @@
     
     // Layout
     [self.firstButton setEnabled:NO];
+    
+    // Save calibration parameters
+    NSString * refDistanceString = [[self secondDistanceText] text];
+    NSString * floatRegex = @"^$|[+-]?([0-9]*[.])?[0-9]+";
+    NSPredicate * floatTest = [NSPredicate predicateWithFormat:@"SELF MATCHES [c] %@", floatRegex];
+    if ([floatTest evaluateWithObject:refDistanceString]){
+        //Matches
+    } else {
+        return;
+    }
+    itemChosenByUser[@"attenuationDistance"] = [NSNumber numberWithFloat:[refDistanceString floatValue]];
+    itemChosenByUser[@"refDistance"] = [NSNumber numberWithFloat:1.0];
     
     // Ask Location manager to calibrate the beacon
     NSMutableDictionary * data = [[NSMutableDictionary alloc] init];

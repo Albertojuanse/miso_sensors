@@ -451,9 +451,12 @@
         if (calibrationFinished) {
             // Notify menu view that calibration is finished.
             NSLog(@"[NOTI][LMR] Notification \"vcItemSettings/secondStepFinished\" posted.");
+            NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+            [data setObject:itemToCalibrate forKey:@"itemToCalibrate"];
             [[NSNotificationCenter defaultCenter]
              postNotificationName:@"vcItemSettings/secondStepFinished"
-             object:nil];
+             object:nil
+             userInfo:data];
              firstStepFinished = NO;
         }
     }
@@ -583,7 +586,7 @@
     if(!attenuationFactor) {
         NSNumber * initAttenuationFactor = locatingDic[@"calibration/init/attenuationFactor"];
         attenuationFactor = [NSNumber numberWithFloat:[initAttenuationFactor floatValue]];
-        NSLog(@"[ERROR][LMR] Reference attenuation factor of item not found; set default.");
+        NSLog(@"[WARNING][LMR] Reference attenuation factor of item not found; set default.");
     }
     if(!attenuationDistance) {
         NSNumber * initAttenuationDistance = locatingDic[@"calibration/init/attenuationDistance"];

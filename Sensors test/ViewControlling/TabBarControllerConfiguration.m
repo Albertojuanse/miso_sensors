@@ -303,17 +303,9 @@
         [infoRegionRaspiDic setValue:@"0" forKey:@"minor"];
         [items addObject:infoRegionRaspiDic];
         
-        NSMutableDictionary * infoItemBeacon1Dic = [[NSMutableDictionary alloc] init];
-        [infoItemBeacon1Dic setValue:@"beacon" forKey:@"sort"];
-        [infoItemBeacon1Dic setValue:@"beacon1@miso.uam.es" forKey:@"identifier"];
-        [infoItemBeacon1Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825" forKey:@"uuid"];
-        [infoItemBeacon1Dic setValue:@"1" forKey:@"major"];
-        [infoItemBeacon1Dic setValue:@"1" forKey:@"minor"];
-        [items addObject:infoItemBeacon1Dic];
-        
         NSMutableDictionary * infoItemBeacon2Dic = [[NSMutableDictionary alloc] init];
         [infoItemBeacon2Dic setValue:@"beacon" forKey:@"sort"];
-        [infoItemBeacon2Dic setValue:@"beacon2@miso.uam.es" forKey:@"identifier"];
+        [infoItemBeacon2Dic setValue:@"beacon47824@miso.uam.es" forKey:@"identifier"];
         [infoItemBeacon2Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647824" forKey:@"uuid"];
         [infoItemBeacon2Dic setValue:@"1" forKey:@"major"];
         [infoItemBeacon2Dic setValue:@"1" forKey:@"minor"];
@@ -321,7 +313,7 @@
         
         NSMutableDictionary * infoItemBeacon3Dic = [[NSMutableDictionary alloc] init];
         [infoItemBeacon3Dic setValue:@"beacon" forKey:@"sort"];
-        [infoItemBeacon3Dic setValue:@"beacon3@miso.uam.es" forKey:@"identifier"];
+        [infoItemBeacon3Dic setValue:@"beacon47823@miso.uam.es" forKey:@"identifier"];
         [infoItemBeacon3Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647823" forKey:@"uuid"];
         [infoItemBeacon3Dic setValue:@"1" forKey:@"major"];
         [infoItemBeacon3Dic setValue:@"1" forKey:@"minor"];
@@ -329,11 +321,19 @@
         
         NSMutableDictionary * infoItemBeaconAP1Dic = [[NSMutableDictionary alloc] init];
         [infoItemBeaconAP1Dic setValue:@"beacon" forKey:@"sort"];
-        [infoItemBeaconAP1Dic setValue:@"beaconAP1@miso.uam.es" forKey:@"identifier"];
+        [infoItemBeaconAP1Dic setValue:@"beacon008D9@miso.uam.es" forKey:@"identifier"];
         [infoItemBeaconAP1Dic setValue:@"B5B182C7-EAB1-4988-AA99-B5C1517008D9" forKey:@"uuid"];
         [infoItemBeaconAP1Dic setValue:@"1" forKey:@"major"];
         [infoItemBeaconAP1Dic setValue:@"33288" forKey:@"minor"];
         [items addObject:infoItemBeaconAP1Dic];
+        
+        NSMutableDictionary * infoItemBeacon4Dic = [[NSMutableDictionary alloc] init];
+        [infoItemBeacon4Dic setValue:@"beacon" forKey:@"sort"];
+        [infoItemBeacon4Dic setValue:@"beacon47825@miso.uam.es" forKey:@"identifier"];
+        [infoItemBeacon4Dic setValue:@"FDA50693-A4E2-4FB1-AFCF-C6EB07647825" forKey:@"uuid"];
+        [infoItemBeacon4Dic setValue:@"5" forKey:@"major"];
+        [infoItemBeacon4Dic setValue:@"6" forKey:@"minor"];
+        [items addObject:infoItemBeacon4Dic];
         
         
         // Save them in persistent memory
