@@ -808,7 +808,7 @@
         
         // Check the device's accuracy; if not less than 0 means not calibrated by Apple device
         BOOL consecutiveInvalidMeasuresFlag = NO;
-        if (recivedRSSI < 0) {
+        if ([recivedRSSI floatValue] < 0) {
             consecutiveInvalidMeasures = 0;
             validMeasures++;
         } else {
