@@ -354,7 +354,7 @@
             
         }
     
-    } else if ([mode isModeKey:kModeRhoThetaModelling]) {
+    } else if ([mode isModeKey:kModeThetaThetaModelling]) {
         NSLog(@"[INFO][TT] Modelling mode");
         
         // In a modelling mode the measures use
@@ -809,7 +809,7 @@
             
         }
     
-    } else if ([mode isModeKey:kModeRhoThetaModelling]) {
+    } else if ([mode isModeKey:kModeThetaThetaModelling]) {
         NSLog(@"[INFO][TT] Modelling mode");
         
         // In a modelling mode the measures use
